@@ -30,6 +30,8 @@ gem 'sqlite3'
 #   gem 'webrat'
 # end
 
+gem 'rake', '0.8.7'
+
 gem 'will_paginate'
 
 gem 'nokogiri'
