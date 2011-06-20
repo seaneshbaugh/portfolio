@@ -8,9 +8,9 @@
 	<meta name="author" content="Sean Eshbaugh">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<%= stylesheet_link_tag "reset.css" %>
-	<%= stylesheet_link_tag "application.css" %>
+	<%= stylesheet_link_tag "admin.css" %>
 	<%= javascript_include_tag "jquery-1.6.1.min.js" %>
-	<%= javascript_include_tag "application.js" %>
+	<%= javascript_include_tag "admin.js" %>
 	<!--[if IE]>
 		<script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
 	<![endif]-->
@@ -34,6 +34,5 @@
 		</div>
 	<% end %>
 	<%= yield %>
-	cu:<%= debug @current_user %>
 </body>
 </html>

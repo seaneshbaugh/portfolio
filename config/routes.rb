@@ -1,4 +1,38 @@
 SeaneshbPortfolio::Application.routes.draw do
+  resources :sessions, :only => [:new, :create, :destroy] do
+    member do
+      get :recovery
+    end
+  end
+
+  resources :users, :except => [:index, :show, :new, :create, :edit, :update, :destroy] do
+    member do
+      get :send_message
+    end
+
+    collection do
+      get :help
+      post :recover
+    end
+  end
+
+  namespace :admin do
+    root :to => 'admin#index'
+
+    resources :users do
+      collection do
+        post :edit_multiple
+        put :update_multiple
+        post :destroy_multiple
+      end
+    end
+  end
+
+  get 'login' => 'sessions#new', :as => 'login'
+  get 'logout' => 'sessions#destroy', :as => 'logout'
+
+  root :to => 'sessions#new'
+
   # The priority is based upon order of creation:
   # first created -> highest priority.
 
