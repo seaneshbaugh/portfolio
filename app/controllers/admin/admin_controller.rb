@@ -17,6 +17,8 @@ class Admin::AdminController < ApplicationController
 		#if mobile_browser?
 			#render :action => "index_mobile"
 		#end
+
+		redirect_to admin_users_url(:survey => "1") and return
 	end
 
 	def reboot

@@ -94,13 +94,13 @@ class SessionsController < ApplicationController
 
 			flash[:type] = "attention"
 
-			flash[:notice] = "Please change your password."
+			flash[:notice] = t "flash.sessions.success.change_password"
 
 			redirect_to root_url and return
 		rescue ActiveRecord::RecordNotFound
 			flash[:type] = "error"
 
-			flash[:notice] = "Invalid recovery link."
+			flash[:notice] = t "flash.sessions.error.recovery_link"
 
 			redirect_to new_session_url and return
 		end
