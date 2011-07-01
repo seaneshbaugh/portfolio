@@ -40,6 +40,8 @@ GEM
       treetop (~> 1.4.8)
     mime-types (1.16)
     nokogiri (1.4.5-x86-mingw32)
+    paper_trail (2.2.5)
+      rails (~> 3)
     polyglot (0.3.1)
     rack (1.2.3)
     rack-mount (0.6.14)
@@ -72,6 +74,7 @@ PLATFORMS
 
 DEPENDENCIES
   nokogiri
+  paper_trail
   rails (= 3.0.7)
   rake (= 0.8.7)
   rmagick (= 2.12.0)

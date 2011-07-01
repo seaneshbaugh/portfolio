@@ -24,9 +24,16 @@ en:
         privilege_level_update: "Error: You cannot modify a users privilege level to be higher than your own!"
         privilege_level_destroy: "Error: You are not authorized to delete that account!"
       success:
-        created: "User %{user_name} has been created!"
-        updated: "%{user_name} account has been updated!"
-        destroyed: "%{user_name} account has been deleted!"
+        created: "User %{user_name} has been created! %{undo_link}."
+        updated: "%{user_name} account has been updated! %{undo_link}."
+        destroyed: "%{user_name} account has been deleted! %{undo_link}."
+    versions:
+      undo: "Undo"
+      redo: "Redo"
+      undid:
+        create: "Undid create."
+        update: "Undid update."
+        destroy: "Undid delete."
   activerecord:
     attributes:
       user:

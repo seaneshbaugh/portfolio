@@ -36,7 +36,7 @@ class Admin::UsersController < Admin::AdminController
 			if @user.save
 				flash[:type] = "success"
 
-				flash[:notice] = t "flash.user.success.created", :user_name => @user.name
+				flash[:notice] = t "flash.user.success.created", :user_name => @user.name, :undo_link => undo_link
 
 				redirect_to admin_users_url and return
 			else
@@ -66,7 +66,7 @@ class Admin::UsersController < Admin::AdminController
 			redirect_to admin_users_url and return
 		end
 
-		if @user.privilege_level >= @current_user.privilege_level
+		if @user.privilege_level >= @current_user.privilege_level and @user != @current_user
 			flash[:type] = "attention"
 
 			flash[:notice] = t "flash.user.error.privilege_level_edit"
@@ -79,7 +79,7 @@ class Admin::UsersController < Admin::AdminController
 		@user = User.find_by_id(params[:id])
 
 		unless @user.nil?
-			if  @user.privilege_level >= @current_user.privilege_level
+			if  @user.privilege_level >= @current_user.privilege_level and @user != @current_user
 				flash[:type] = "attention"
 
 				flash[:notice] = t "flash.user.error.privilege_level_edit"
@@ -87,7 +87,7 @@ class Admin::UsersController < Admin::AdminController
 				redirect_to :back and return
 			end
 
-			if params[:user].privilege_level > @current_user.privilege_level
+			if params[:user][:privilege_level].to_i > @current_user.privilege_level
 				flash[:type] = "attention"
 
 				flash[:notice] = t "flash.user.error.privilege_level_update"
@@ -98,7 +98,7 @@ class Admin::UsersController < Admin::AdminController
 			if @user.update_attributes(params[:person])
 				flash[:type] = "success"
 
-				flash[:notice] = t "flash.user.success.updated", :user_name => @user.name.possessive
+				flash[:notice] = t "flash.user.success.updated", :user_name => @user.name.possessive, :undo_link => undo_link
 
 				redirect_to admin_user_url(@user) and return
 			else
@@ -137,7 +137,7 @@ class Admin::UsersController < Admin::AdminController
 
 					flash[:type] = "success"
 
-					flash[:notice] = t "flash.user.success.destroyed", :user_name => @user.name.possessive
+					flash[:notice] = t "flash.user.success.destroyed", :user_name => @user.name.possessive, :undo_link => undo_link
 
 					redirect_to admin_users_url and return
 				else
@@ -167,5 +167,11 @@ class Admin::UsersController < Admin::AdminController
 
 	def destroy_multiple
 
+	end
+
+	private
+
+	def undo_link
+		view_context.link_to(t("flash.versions.undo"), revert_version_path(@user.versions.scoped.last), :method => :post)
 	end
 end

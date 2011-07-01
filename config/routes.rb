@@ -1,4 +1,6 @@
 SeaneshbPortfolio::Application.routes.draw do
+  post "versions/:id/revert" => "versions#revert", :as => "revert_version"
+
   resources :sessions, :only => [:new, :create, :destroy] do
     member do
       get :recovery

@@ -35,7 +35,7 @@
 		</div>
 	<% end %>
 	<li>
-		<ul><%= link_to User.model_name.human, admin_users_url %></ul>
+		<ul><%= link_to User.model_name.human.pluralize, admin_users_url %></ul>
 	</li>
 	<%= yield %>
 </body>

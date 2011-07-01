@@ -37,3 +37,5 @@ gem 'rake', '0.8.7'
 gem 'nokogiri'
 
 gem 'rmagick', '2.12.0'
+
+gem 'paper_trail'

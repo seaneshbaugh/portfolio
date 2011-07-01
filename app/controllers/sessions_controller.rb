@@ -39,7 +39,7 @@ class SessionsController < ApplicationController
 					user.login_count = 0
 				end
 
-				user.login_count.to_i += 1
+				user.login_count += 1
 
 				user.save
 

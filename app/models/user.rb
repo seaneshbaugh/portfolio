@@ -4,6 +4,8 @@ require 'RFC2822'
 class User < ActiveRecord::Base
 	attr_reader :password
 
+	has_paper_trail
+
 	has_many :sessions, :dependent => :destroy
 
 	validates_uniqueness_of :name
