@@ -1,9 +1,11 @@
 class Admin::AdminController < ApplicationController
 	layout 'admin'
 
+	helper :all
+
 	skip_before_filter :maintain_session_and_current_user
 
-	before_filter :maintain_session_and_current_user #, :is_admin?
+	before_filter :maintain_session_and_current_user, :is_admin?
 
 	before_filter :is_sysop?, :only => :reboot
 

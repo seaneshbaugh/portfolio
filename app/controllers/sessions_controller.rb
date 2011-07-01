@@ -1,8 +1,8 @@
 require 'digest/sha2'
 
 class SessionsController < ApplicationController
-	#before_filter :ensure_login, :only => :destroy
-	#before_filter :ensure_logout, :only => [:new, :create, :recovery]
+	before_filter :ensure_login, :only => :destroy
+	before_filter :ensure_logout, :only => [:new, :create, :recovery]
 
 	def new
 		@session = Session.new
@@ -24,9 +24,13 @@ class SessionsController < ApplicationController
 						user.generate_cookie_code
 					end
 
-					cookies[:remember_me_id] = { :value => user.id.to_s, :expires => 365.days.from_now }
+					#cookies[:remember_me_id] = { :value => user.id.to_s, :expires => 365.days.from_now }
 
-					cookies[:remember_me_code] = { :value => Digest::SHA256.hexdigest(user.cookie_code), :expires => 365.days.from_now }
+					#cookies[:remember_me_code] = { :value => Digest::SHA256.hexdigest(user.cookie_code), :expires => 365.days.from_now }
+
+					cookies.permanent[:remember_me_id] =  user.id.to_s
+
+					cookies.permanent[:remember_me_code] = Digest::SHA256.hexdigest(user.cookie_code)
 				end
 
 				user.last_login = Time.now
@@ -35,28 +39,26 @@ class SessionsController < ApplicationController
 					user.login_count = 0
 				end
 
-				user.login_count += 1
+				user.login_count.to_i += 1
 
 				user.save
 
 				flash[:type] = "success"
 
-				flash[:notice] = "Welcome back " + @session.user.name + ", thank you for logging in!"
+				flash[:notice] = t "flash.session.success.login", :user_name => user.name
 
 				redirect_to root_url and return
 			else
 				flash[:type] = "error"
 
-				flash[:notice] = "The user name and password you provided is not valid."
+				flash[:notice] = t "flash.session.error.login"
 
-				flash[:debug] = @session
-
-				redirect_to new_session_url and return
+				render :action => "new" and return
 			end
 		else
 			flash[:type] = "error"
 
-			flash[:notice] = error_message_could_not_create("session")
+			flash[:notice] = t "flash.session.error.could_not_create"
 
 			redirect_to new_session_url and return
 		end
@@ -77,7 +79,7 @@ class SessionsController < ApplicationController
 
 		flash[:type] = "information"
 
-		flash[:notice] = "You are now logged out."
+		flash[:notice] = t "flash.session.success.logout"
 
 		redirect_to root_url and return
 	end

@@ -6,17 +6,17 @@ class User < ActiveRecord::Base
 
 	has_many :sessions, :dependent => :destroy
 
-	validates_uniqueness_of :name, :message => "is already in use by another person"
+	validates_uniqueness_of :name
 
-	validates_uniqueness_of :email_address, :message => "is already in use by another person"
+	validates_uniqueness_of :email_address
 
-	validates_format_of :name, :with => /^([a-z0-9_]{4,16})$/i, :message => "must be 4 to 16 letters, numbers or underscores and have no spaces"
+	validates_format_of :email_address, :with => RFC2822::EmailAddress
 
-	validates_format_of :password, :with => /^([\x20-\x7E]){6,32}$/, :message => "must be 6 to 32 characters", :unless => :password_is_not_being_updated?
+	validates_format_of :name, :with => /^([a-z0-9_]{4,16})$/i
 
-	validates_format_of :email_address, :with => RFC2822::EmailAddress, :message => "must be a valid e-mail address"
+	validates_format_of :password, :with => /^([\x20-\x7E]){6,32}$/, :unless => :password_is_not_being_updated?
 
-	validates_format_of :phone_number, :with => /^\d{3}-\d{3}-\d{4}$/, :message => "must be a valid phone number"
+	validates_format_of :phone_number, :with => /^(?:\+?1[-. ]?)?\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/
 
 	validates_confirmation_of :password, :email_address
 

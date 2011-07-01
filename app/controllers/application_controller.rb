@@ -1,15 +1,13 @@
-require 'messages'
+require 'possessive'
 
 class ApplicationController < ActionController::Base
-	include Messages
-
 	protect_from_forgery
 
 	before_filter :maintain_session_and_current_user
 
 	def maintain_session_and_current_user
 		if session[:id]
-			if @application_session = Session.find(session[:id])
+			if @application_session = Session.find_by_id(session[:id])
 				@application_session.update_attributes(:ip_address => request.remote_addr, :path => request.path_info)
 
 				@current_user = @application_session.user
@@ -20,17 +18,15 @@ class ApplicationController < ActionController::Base
 			end
 		else
 			unless cookies[:remember_me_id].nil?
-				@current_user = User.find(cookies[:remember_me_id])
+				@current_user = User.find_by_id(cookies[:remember_me_id])
 
 				unless @current_user.nil?
-					if cookies[:remember_me_code] == Digest::SHA256.hexdigest(@current_user.cookie_code)
+					if cookies.permanent[:remember_me_code] == Digest::SHA256.hexdigest(@current_user.cookie_code)
 						@session = @current_user.sessions.create
-
-						#LoggerEvent.new(:person => @session.person, :event_type => LoggerEvent::EventTypeLogin, :description => "#{@session.person.name} has logged in from #{request.remote_ip}.", :visible => true).save
 
 						session[:id] = @session.id
 
-						if @application_session = Session.find(session[:id])
+						if @application_session = Session.find_by_id(session[:id])
 							@application_session.update_attributes(:ip_address => request.remote_addr, :path => request.path_info)
 
 							@current_user = @application_session.person
@@ -90,7 +86,7 @@ class ApplicationController < ActionController::Base
 			redirect_to root_url and return
 		end
 
-		unless @current_user.is_moderator?
+		if @current_user.privilege_level < User::PrivilegeLevelModerator
 			flash[:type] = "attention"
 
 			flash[:notice] = "You are not authorized to view this page."
@@ -108,7 +104,7 @@ class ApplicationController < ActionController::Base
 			redirect_to root_url and return
 		end
 
-		unless @current_user.is_admin?
+		if @current_user.privilege_level < User::PrivilegeLevelAdmin
 			flash[:type] = "attention"
 
 			flash[:notice] = "You are not authorized to view this page."
@@ -126,12 +122,16 @@ class ApplicationController < ActionController::Base
 			redirect_to root_url and return
 		end
 
-		if @current_user.is_sysop?
+		if @current_user.privilege_level < User::PrivilegeLevelSysOp
 			flash[:type] = "attention"
 
 			flash[:notice] = "You are not authorized to view this page."
 
 			redirect_to :back and return
 		end
+	end
+
+	def validation_errors_for(object)
+		"<ul>" + object.errors.map {|attribute, message| "<li>Error: #{object.class.human_attribute_name("#{attribute.to_s}")} #{message}.</li>"}.to_s + "</ul>"
 	end
 end
