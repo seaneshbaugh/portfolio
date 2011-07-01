@@ -1,10 +1,6 @@
 class Admin::UsersController < Admin::AdminController
 	def index
 		@users = User.all
-
-		if params[:survey] == "1"
-			render :action => "survey"
-		end
 	end
 
 	def show
