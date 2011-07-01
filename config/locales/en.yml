@@ -55,3 +55,7 @@ en:
               invalid: "must be 6 to 32 characters"
             phone_number:
               invalid:  "must be a valid US phone number"
+  views:
+    pagination:
+      previous: "&lt; Previous"
+      next: "Next &gt;"
