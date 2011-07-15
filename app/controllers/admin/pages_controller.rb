@@ -25,7 +25,7 @@ class Admin::PagesController < Admin::AdminController
 		@page = Page.new(params[:page])
 
 		unless @page.nil?
-			if @user.save
+			if @page.save
 				flash[:type] = "success"
 
 				flash[:notice] = t "flash.page.success.created", :page_title => @page.title, :undo_link => undo_link
