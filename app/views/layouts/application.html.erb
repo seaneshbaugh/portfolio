@@ -30,6 +30,13 @@
 			<div><%= raw debug flash[:debug] %></div>
 		</div>
 	<% end %>
+	<% unless @top_level_pages.empty? %>
+		<ul>
+			<% @top_level_pages.each do |page| %>
+				<li><%= link_to page.title, page %></li>
+			<% end %>
+		</ul>
+	<% end %>
 	<%= yield %>
 </body>
 </html>

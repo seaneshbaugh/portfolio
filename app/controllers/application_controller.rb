@@ -3,7 +3,7 @@ require 'possessive'
 class ApplicationController < ActionController::Base
 	protect_from_forgery
 
-	before_filter :maintain_session_and_current_user
+	before_filter :maintain_session_and_current_user, :top_level_pages
 
 	def maintain_session_and_current_user
 		if session[:id]
@@ -133,5 +133,9 @@ class ApplicationController < ActionController::Base
 
 	def validation_errors_for(object)
 		"<ul>" + object.errors.map {|attribute, message| "<li>Error: #{object.class.human_attribute_name("#{attribute.to_s}")} #{message}.</li>"}.to_s + "</ul>"
+	end
+
+	def top_level_pages
+		@top_level_pages = Page.where(:parent_id => nil).order("display_order")
 	end
 end

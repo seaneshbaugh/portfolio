@@ -114,12 +114,12 @@ class Admin::PagesController < Admin::AdminController
 			redirect_to admin_pages_url and return
 		end
 
-		@page = Page.find(params[:pages_ids])
+		@pages = Page.find_all_by_id(params[:pages_ids])
 
 		if @pages.nil?
 			flash[:type] = "error"
 
-			flash[:notice] = t "flash.page.error.could_not_find_multiple"
+			flash[:notice] = params[:pages_ids] #t "flash.page.error.could_not_find_multiple"
 
 			redirect_to admin_pages_url and return
 		end
@@ -134,7 +134,7 @@ class Admin::PagesController < Admin::AdminController
 			redirect_to admin_pages_url and return
 		end
 
-		@page = Page.find_all_by_slug(params[:pages_ids])
+		@page = Page.find_all_by_id(params[:pages_ids])
 
 		unless @page.nil?
 			flash[:type] = "success"
@@ -180,7 +180,7 @@ class Admin::PagesController < Admin::AdminController
 			redirect_to admin_pages_url and return
 		end
 
-		@pages = Page.find_all_by_slug(params[:pages_ids])
+		@pages = Page.find_all_by_id(params[:pages_ids])
 
 		unless @pages.nil?
 			flash[:type] = "success"
