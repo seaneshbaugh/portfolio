@@ -1,0 +1,25 @@
+@charset "utf-8";
+
+/* Begin Object Tables */
+
+table {
+	width: 100%;
+}
+
+th {
+	text-align: left;
+}
+
+tr.even {
+	background: #eeeeee;
+}
+
+tbody tr:hover {
+	background: #cccccc;
+}
+
+tr:hover td:hover {
+	background: #bbbbbb;
+}
+
+/* End Object Tables */

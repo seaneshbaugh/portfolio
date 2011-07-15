@@ -10,7 +10,22 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110701074145) do
+ActiveRecord::Schema.define(:version => 20110714230113) do
+
+  create_table "pages", :force => true do |t|
+    t.text     "title"
+    t.text     "body"
+    t.text     "style"
+    t.text     "meta_description"
+    t.text     "meta_keywords"
+    t.text     "slug"
+    t.integer  "parent_id"
+    t.integer  "display_order"
+    t.integer  "status"
+    t.boolean  "private"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "sessions", :force => true do |t|
     t.integer  "user_id"

@@ -1,0 +1,8 @@
+<% unless @current_user %>
+	<%= link_to "Login", new_session_path %>
+<% else %>
+	<%= link_to "Logout", @application_session, :method => :delete %>
+	<% if @current_user.privilege_level >= User::PrivilegeLevelAdmin %>
+		| <%= link_to "Admin Panel", admin_root_path %>
+	<% end %>
+<% end %>

@@ -1,42 +1,41 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<meta charset="utf-8">
-	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
 	<title>seaneshbaugh.com</title>
-	<meta name="description" content="">
-	<meta name="author" content="Sean Eshbaugh">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="description" content="" />
+	<meta name="author" content="Sean Eshbaugh" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 	<%= stylesheet_link_tag "reset.css" %>
+	<%= stylesheet_link_tag "application.css" %>
 	<%= stylesheet_link_tag "admin.css" %>
 	<%= javascript_include_tag "jquery-1.6.2.min.js" %>
 	<%= javascript_include_tag "jquery-ujs.js" %>
+	<%= javascript_include_tag "application.js" %>
 	<%= javascript_include_tag "admin.js" %>
 	<!--[if IE]>
 		<script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
 	<![endif]-->
+	<link rel="shortcut icon" href="images/favicon.ico" />
 	<link rel="apple-touch-icon" href="images/apple-touch-icon.png" />
-	<script type="text/javascript">
-		if (top.location != self.location) {
-			top.location = self.location.href
-		}
-	</script>
 	<%= csrf_meta_tag %>
 </head>
 <body>
 	<% if flash[:notice] %>
-		<div id="flash_notice" class="notification <%= flash[:type] %> click_to_close">
+		<div id="flash-notice" class="notification <%= flash[:type] %> click-to-close">
 			<div><%= raw flash[:notice] %></div>
 		</div>
 	<% end %>
 	<% if flash[:debug] %>
-		<div id="flash_debug" class="notification information click_to_close">
+		<div id="flash-debug" class="notification information click-to-close">
 			<div><%= raw debug flash[:debug] %></div>
 		</div>
 	<% end %>
-	<li>
-		<ul><%= link_to User.model_name.human.pluralize, admin_users_url %></ul>
-	</li>
+	<ul>
+		<li><%= link_to User.model_name.human.pluralize, admin_users_url %></li>
+		<li><%= link_to Page.model_name.human.pluralize, admin_pages_url %></li>
+	</ul>
 	<%= yield %>
 </body>
 </html>

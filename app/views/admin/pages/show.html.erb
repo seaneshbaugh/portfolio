@@ -1,0 +1,31 @@
+<h2>Showing User: <%= @page.title %></h2>
+<h5>Title: <%= @page.title %></h5>
+<h5>Body:</h5>
+<%= @page.body %>
+<h5>Style:</h5>
+<%= @page.style %>
+<h5>Meta Description:</h5>
+<%= @page.meta_description %>
+<h5>Meta Keywords:</h5>
+<%= @page.meta_description %>
+<h5>Slug: <%= @page.slug %></h5>
+<h5>Parent Page: <% if @page.parent.nil? %><%= @page.parent.title %><% end %></h5>
+<h5>Status:
+<%= case @page.status
+		when 0
+			"Draft"
+		when 1
+			"Published"
+		when 2
+			"Awaiting Review"
+		else
+			"Unknown"
+		end
+%></h5>
+<h5>Private: <% if @page.private %>Yes<% else %>No<% end %></h5>
+<h5>Created at: <%= @page.created_at.strftime("%Y-%m-%d %H:%M:%S") %></h5>
+<h5>Last Updated at: <%= @page.updated_at.strftime("%Y-%m-%d %H:%M:%S") %></h5>
+<p>
+	<%= link_to "Edit Page", edit_admin_page_path(@page) %> |
+	<%= link_to "Delete Page", admin_pages_path(@page), :method => :delete %>
+</p>

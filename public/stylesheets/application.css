@@ -1,0 +1,13 @@
+@charset "utf-8";
+
+/* Begin font-size Adjustment */
+
+html {
+	font-size: 62.5%;
+}
+
+body {
+	font-size: 1.3rem;
+}
+
+/* End font-size Adjustment */

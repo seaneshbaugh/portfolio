@@ -1,5 +1,7 @@
 SeaneshbPortfolio::Application.routes.draw do
-  post "versions/:id/revert" => "versions#revert", :as => "revert_version"
+  post 'versions/:id/revert' => 'versions#revert', :as => 'revert_version'
+
+  resources :pages, :only => [:index, :show]
 
   resources :sessions, :only => [:new, :create, :destroy] do
     member do
@@ -21,9 +23,17 @@ SeaneshbPortfolio::Application.routes.draw do
   namespace :admin do
     root :to => 'admin#index'
 
+    resources :pages do
+	  collection do
+	    get :edit_multiple
+	    put :update_multiple
+	    post :destroy_multiple
+	  end
+	end
+
     resources :users do
       collection do
-        post :edit_multiple
+        get :edit_multiple
         put :update_multiple
         post :destroy_multiple
       end
@@ -33,7 +43,7 @@ SeaneshbPortfolio::Application.routes.draw do
   get 'login' => 'sessions#new', :as => 'login'
   get 'logout' => 'sessions#destroy', :as => 'logout'
 
-  root :to => 'sessions#new'
+  root :to => 'pages#index'
 
   # The priority is based upon order of creation:
   # first created -> highest priority.

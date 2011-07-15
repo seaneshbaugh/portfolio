@@ -1,24 +1,24 @@
 <h2>Showing User: <%= @user.name %></h2>
 <h5>First Name: <%= @user.first_name %></h5>
 <h5>Last Name: <%= @user.last_name %></h5>
-<h5>E-mail Address: <%= link_to(@user.email_address,"mailto:#{@user.email_address}") %></h5>
+<h5>E-mail Address: <%= link_to @user.email_address, "mailto:#{@user.email_address}" %></h5>
 <h5>Phone Number: <%= @user.phone_number %></h5>
 <h5>Privilege Level: <%= @user.privilege_level %></h5>
 <h5>Latest IP Addresses:</h5>
-<ul>
-	<% if !@user.ip_addresses.blank?
-		ips = @user.ip_addresses.split(";")
+<% if !@user.ip_addresses.blank? %>
+	<ul>
+		<% ips = @user.ip_addresses.split(";")
 
-		for ip in ips %>
+		ips.each do |ip| %>
 			<li><%= ip %></li>
-		<% end
-	end %>
-</ul>
+		<% end %>
+	</ul>
+<% end %>
 <h5>Created at: <%= @user.created_at.strftime("%Y-%m-%d %H:%M:%S") %></h5>
 <h5>Last Updated at: <%= @user.updated_at.strftime("%Y-%m-%d %H:%M:%S") %></h5>
-<% if @current_user == @user or @current_user.privilege_level > @user.privilege_level %>
-	<p class="show">
-		<%= link_to("Edit User", edit_admin_user_path(@user)) %> |
-		<%= link_to("Delete User", admin_users_path(@user), :method => :delete, :confirm => "Are you sure you want to delete this user? This action cannot be undone!") %>
+<% if @user == @current_user or @user.privilege_level <= @current_user.privilege_level %>
+	<p>
+		<%= link_to "Edit User", edit_admin_user_path(@user) %> |
+		<%= link_to "Delete User", admin_users_path(@user), :method => :delete %>
 	</p>
 <% end %>

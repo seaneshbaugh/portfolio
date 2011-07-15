@@ -1,6 +1,6 @@
 @charset "utf-8";
 
-/*	HTML5 ✰ Boilerplate	*/
+/* HTML5 ✰ Boilerplate */
 
 html, body, div, span, object, iframe,
 h1, h2, h3, h4, h5, h6, p, blockquote, pre,
@@ -102,18 +102,6 @@ input[type="file"] > intput[type="button"]:focus {
 
 /* End Link/Button Outline Reset */
 
-
-
-
-
-
-
-
-
-
-
-
-
 .ir { display: block; text-indent: -999em; overflow: hidden; background-repeat: no-repeat; text-align: left; direction: ltr; }
 .hidden { display: none; visibility: hidden; }
 .visuallyhidden { border: 0; clip: rect(0 0 0 0); height: 1px; margin: -1px; overflow: hidden; padding: 0; position: absolute; width: 1px; }
@@ -123,7 +111,6 @@ input[type="file"] > intput[type="button"]:focus {
 .clearfix:before, .clearfix:after { content: "\0020"; display: block; height: 0; overflow: hidden; }
 .clearfix:after { clear: both; }
 .clearfix { zoom: 1; }
-
 
 @media all and (orientation:portrait) {
 
@@ -137,7 +124,6 @@ input[type="file"] > intput[type="button"]:focus {
 
 	/* html { -webkit-text-size-adjust:none; -ms-text-size-adjust:none; } */
 }
-
 
 @media print {
 	* { background: transparent !important; color: black !important; text-shadow: none !important; filter:none !important;
