@@ -6,7 +6,7 @@ class Admin::PagesController < Admin::AdminController
 	end
 
 	def show
-		@page = Page.find_by_id(params[:id])
+		@page = Page.find_by_slug(params[:id])
 
 		if @page.nil?
 			flash[:type] = "error"
@@ -48,7 +48,7 @@ class Admin::PagesController < Admin::AdminController
 	end
 
 	def edit
-		@page = Page.find_by_id(params[:id])
+		@page = Page.find_by_slug(params[:id])
 
 		if @page.nil?
 			flash[:type] = "error"
@@ -60,10 +60,10 @@ class Admin::PagesController < Admin::AdminController
 	end
 
 	def update
-		@page = Page.find_by_id(params[:id])
+		@page = Page.find_by_slug(params[:id])
 
 		unless @page.nil?
-			if @page.update_attributes(params[:person])
+			if @page.update_attributes(params[:page])
 				flash[:type] = "success"
 
 				flash[:notice] = t "flash.page.success.updated", :page_title => @page.title, :undo_link => undo_link
@@ -86,7 +86,7 @@ class Admin::PagesController < Admin::AdminController
 	end
 
 	def destroy
-		@page = Page.find_by_id(params[:id])
+		@page = Page.find_by_slug(params[:id])
 
 		unless @page.nil?
 			Page.destroy(@page)
@@ -134,7 +134,7 @@ class Admin::PagesController < Admin::AdminController
 			redirect_to admin_pages_url and return
 		end
 
-		@page = Page.find(params[:pages_ids])
+		@page = Page.find_all_by_slug(params[:pages_ids])
 
 		unless @page.nil?
 			flash[:type] = "success"
@@ -180,7 +180,7 @@ class Admin::PagesController < Admin::AdminController
 			redirect_to admin_pages_url and return
 		end
 
-		@pages = Page.find(params[:pages_ids])
+		@pages = Page.find_all_by_slug(params[:pages_ids])
 
 		unless @pages.nil?
 			flash[:type] = "success"

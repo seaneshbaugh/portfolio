@@ -24,7 +24,7 @@ en:
         could_not_update_multiple: "The following errors occured when updating page \"%{page_title}\":<br />"
       success:
         created: "Page \"%{page_title}\" has been created! %{undo_link}."
-        updated: "%Page \"{page_title}\" has been updated! %{undo_link}."
+        updated: "Page \"%{page_title}\" has been updated! %{undo_link}."
         destroyed: "Page \"%{page_title}\" has been deleted! %{undo_link}."
     user:
       error:

@@ -9,7 +9,7 @@
 <h5>Meta Keywords:</h5>
 <%= @page.meta_description %>
 <h5>Slug: <%= @page.slug %></h5>
-<h5>Parent Page: <% if @page.parent.nil? %><%= @page.parent.title %><% end %></h5>
+<h5>Parent Page: <% unless @page.parent.nil? %><%= @page.parent.title %><% else %>-<% end %></h5>
 <h5>Status:
 <%= case @page.status
 		when 0

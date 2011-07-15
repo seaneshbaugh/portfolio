@@ -1,4 +1,6 @@
 class Page < ActiveRecord::Base
+	has_paper_trail
+
 	has_many :subpages, :class_name => "Page", :foreign_key => "parent_id", :dependent => :destroy, :order => "display_order"
 
 	belongs_to :parent, :class_name => "Page"

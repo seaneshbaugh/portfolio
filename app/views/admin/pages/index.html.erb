@@ -70,7 +70,7 @@
 	</thead>
 	<tbody>
 		<% even_row = false %>
-		<% @pages.each do |user| %>
+		<% @pages.each do |page| %>
 			<tr class="<% if even_row %>even<% else %>odd<% end %><% even_row = !even_row %>">
 				<td><%= check_box_tag "pages_ids[]", page.id %></td>
 				<td><%= link_to page.id, admin_page_path(page) %></td>
