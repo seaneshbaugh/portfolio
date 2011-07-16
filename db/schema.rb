@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110714230113) do
+ActiveRecord::Schema.define(:version => 20110716092513) do
 
   create_table "pages", :force => true do |t|
     t.text     "title"
@@ -20,7 +20,21 @@ ActiveRecord::Schema.define(:version => 20110714230113) do
     t.text     "meta_keywords"
     t.text     "slug"
     t.integer  "parent_id"
-    t.integer  "display_order"
+    t.integer  "display_order",    :default => 0
+    t.integer  "status",           :default => 1
+    t.boolean  "private",          :default => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "posts", :force => true do |t|
+    t.text     "title"
+    t.text     "body"
+    t.text     "style"
+    t.text     "meta_description"
+    t.text     "meta_keywords"
+    t.text     "slug"
+    t.integer  "user_id"
     t.integer  "status"
     t.boolean  "private"
     t.datetime "created_at"

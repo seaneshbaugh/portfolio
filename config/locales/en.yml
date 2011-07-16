@@ -31,6 +31,19 @@ en:
         created: "Page \"%{page_title}\" has been created! %{undo_link}."
         updated: "Page \"%{page_title}\" has been updated! %{undo_link}."
         destroyed: "Page \"%{page_title}\" has been deleted! %{undo_link}."
+    post:
+      error:
+        could_not_find: "Error: Unable to find the specified blog post!"
+        could_not_create: "Error: Unable to create the blog post!"
+        could_not_save: "Error: Unable to save the blog post to database!"
+        could_not_update: "Error: Unable to save changes to the blog post!"
+        could_not_destroy: "Error: Unable to delete the specified blog post!"
+        could_not_find_multiple: "Error: Unable to find one or more of the specified blog post!"
+        could_not_update_multiple: "The following errors occured when updating blog post \"%{post_title}\":<br />"
+      success:
+        created: "Blog post \"%{post_title}\" has been created! %{undo_link}."
+        updated: "Blog post \"%{post_title}\" has been updated! %{undo_link}."
+        destroyed: "Blog post \"%{post_title}\" has been deleted! %{undo_link}."
     user:
       error:
         could_not_find: "Error: Unable to find the specified user!"
@@ -67,6 +80,8 @@ en:
         blank:
           "cannot be blank"
       models:
+        page:
+          taken: "is already in use by another page"
         user:
           confirmation: "does not match the confirmation"
           taken: "is already in use by another user"

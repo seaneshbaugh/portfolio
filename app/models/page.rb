@@ -5,6 +5,8 @@ class Page < ActiveRecord::Base
 
 	belongs_to :parent, :class_name => "Page"
 
+	validates_uniqueness_of :title
+
 	validates_presence_of :title, :body, :display_order
 
 	before_save :create_slug

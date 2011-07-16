@@ -3,6 +3,8 @@ SeaneshbPortfolio::Application.routes.draw do
 
   resources :pages, :only => [:index, :show]
 
+  resources :posts, :only => [:index, :show]
+
   resources :sessions, :only => [:new, :create, :destroy] do
     member do
       get :recovery
@@ -24,6 +26,14 @@ SeaneshbPortfolio::Application.routes.draw do
     root :to => 'admin#index'
 
     resources :pages do
+	  collection do
+	    get :edit_multiple
+	    put :update_multiple
+	    post :destroy_multiple
+	  end
+	end
+
+	resources :posts do
 	  collection do
 	    get :edit_multiple
 	    put :update_multiple

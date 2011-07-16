@@ -121,7 +121,7 @@ class Admin::PagesController < Admin::AdminController
 		if @pages.nil?
 			flash[:type] = "error"
 
-			flash[:notice] = params[:pages_ids] #t "flash.page.error.could_not_find_multiple"
+			flash[:notice] = "flash.page.error.could_not_find_multiple"
 
 			redirect_to admin_pages_url and return
 		end

@@ -1,0 +1,30 @@
+<h2>Showing Blog Post: <%= @post.title %></h2>
+<h5>Title: <%= @post.title %></h5>
+<h5>Body:</h5>
+<%= @post.body %>
+<h5>Style:</h5>
+<%= @post.style %>
+<h5>Meta Description:</h5>
+<%= @post.meta_description %>
+<h5>Meta Keywords:</h5>
+<%= @post.meta_description %>
+<h5>Slug: <%= @post.slug %></h5>
+<h5>Status:
+<%= case @post.status
+		when 0
+			"Draft"
+		when 1
+			"Published"
+		when 2
+			"Awaiting Review"
+		else
+			"Unknown"
+		end
+%></h5>
+<h5>Private: <% if @post.private %>Yes<% else %>No<% end %></h5>
+<h5>Created at: <%= @post.created_at.strftime("%Y-%m-%d %H:%M:%S") %></h5>
+<h5>Last Updated at: <%= @post.updated_at.strftime("%Y-%m-%d %H:%M:%S") %></h5>
+<p>
+	<%= link_to "Edit Post", edit_admin_post_path(@post) %> |
+	<%= link_to "Delete Post", admin_posts_path(@post), :method => :delete %>
+</p>

@@ -38,8 +38,6 @@ class User < ActiveRecord::Base
 		user = self.find_by_name(name)
 
 		if user and user.encrypted_password == Digest::SHA256.hexdigest(password + user.salt)
-			logger.info "user found!"
-
 			return user
 		end
 	end

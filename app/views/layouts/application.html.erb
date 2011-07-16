@@ -37,9 +37,10 @@
 		<nav>
 			<ul>
 				<li><%= link_to "About", root_path %></li>
-				<% @top_level_pages.each do |page| %>
+				<% Page.top_level.order("display_order").each do |page| %>
 					<li><%= link_to page.title, page %></li>
 				<% end %>
+				<li><%= link_to "Blog", posts_path %></li>
 				<li><a href="https://github.com/seaneshbaugh">github</a></li>
 			</ul>
 		</nav>
