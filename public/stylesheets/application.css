@@ -12,6 +12,47 @@ body {
 
 /* End font-size Adjustment */
 
+/* Begin Sticky Footer */
+
+html, body {
+	height: 100%;
+}
+
+#container {
+	min-height: 100%;
+}
+
+#content {
+	overflow: auto;
+	padding-bottom: 100px;
+}
+
+footer {
+	clear: both;
+	height: 100px;
+	margin-top: -100px;
+	position: relative;
+}
+
+body:before {
+	content: "";
+	float: left;
+	height: 100%;
+	margin-top: -32767px;
+	width: 0;
+}
+
+/* End Sticky Footer */
+
+/* Begin Footer */
+
+footer {
+	background: #000000;
+	color: #444444;
+}
+
+/* End Footer */
+
 /* Begin Field With Errors */
 
 .field_with_errors input,
@@ -25,3 +66,4 @@ body {
 }
 
 /* End Field With Errors */
+

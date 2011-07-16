@@ -1,8 +1,10 @@
 require 'hierarchy'
 
 class Admin::PagesController < Admin::AdminController
+	helper_method :sort_column, :sort_order
+
 	def index
-		@pages = Page.page(params[:page]).order("id")
+		@pages = Page.page(params[:page]).order(sort_column + " " + sort_order)
 	end
 
 	def show
@@ -206,6 +208,14 @@ class Admin::PagesController < Admin::AdminController
 	end
 
 	private
+
+	def sort_column
+		Page.column_names.include?(params[:sort]) ? params[:sort] : "id"
+	end
+
+	def sort_order
+		["asc", "desc"].include?(params[:order]) ? params[:order] : "asc"
+	end
 
 	def undo_link
 		view_context.link_to(t("flash.versions.undo"), revert_version_path(@page.versions.scoped.last), :method => :post)

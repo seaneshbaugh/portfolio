@@ -9,6 +9,8 @@ class Page < ActiveRecord::Base
 
 	before_save :create_slug
 
+	scope :top_level, lambda { where(:parent_id => nil) }
+
 	def to_param
 		self.slug
 	end

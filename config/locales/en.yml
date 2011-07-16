@@ -3,6 +3,11 @@
 
 en:
   flash:
+    access:
+      must_be_logged_in: "You must be logged in to view this page."
+      already_logged_in: "You are already logged in."
+      not_authorized: "You are not authorized to view this page."
+    error: "Error: "
     reboot: "Rebooting Rails. You may need to refresh this page in order to see the changes take effect."
     session:
       error:

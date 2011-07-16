@@ -1,6 +1,6 @@
 class Admin::UsersController < Admin::AdminController
 	def index
-		@users = User.page(params[:page]).order("id")
+		@users = User.page(params[:page]).order(sort_column + " " + sort_order)
 	end
 
 	def show
@@ -340,6 +340,14 @@ class Admin::UsersController < Admin::AdminController
 	end
 
 	private
+
+	def sort_column
+		User.column_names.include?(params[:sort]) ? params[:sort] : "id"
+	end
+
+	def sort_order
+		["asc", "desc"].include?(params[:order]) ? params[:order] : "asc"
+	end
 
 	def undo_link
 		view_context.link_to(t("flash.versions.undo"), revert_version_path(@user.versions.scoped.last), :method => :post)

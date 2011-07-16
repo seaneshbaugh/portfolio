@@ -5,67 +5,17 @@
 <table>
 	<thead>
 		<tr>
-			<th scope="col">
-				<input class="check-all" type="checkbox">
-			</th>
-			<th scope="col">
-				<% if params[:sort] == "id" and params[:order] == "ASC" %>
-					<%= link_to "ID", admin_pages_path(:order => "DESC", :sort => :id) %>
-				<% else %>
-					<%= link_to "ID", admin_pages_path(:order => "ASC", :sort => :id) %>
-				<% end %>
-			</th>
-			<th scope="col">
-				<% if params[:sort] == "title" and params[:order] == "ASC" %>
-					<%= link_to "Title", admin_pages_path(:order => "DESC", :sort => :title) %>
-				<% else %>
-					<%= link_to "Title", admin_pages_path(:order => "ASC", :sort => :title) %>
-				<% end %>
-			</th>
-			<th scope="col">
-				Body
-			</th>
-			<th scope="col">
-				Style
-			</th>
-			<th scope="col">
-				<% if params[:sort] == "parent_id" and params[:order] == "ASC" %>
-					<%= link_to "Parent Page", admin_pages_path(:order => "DESC", :sort => :parent_id) %>
-				<% else %>
-					<%= link_to "Parent Page", admin_pages_path(:order => "ASC", :sort => :parent_id) %>
-				<% end %>
-			</th>
-			<th scope="col">
-				<% if params[:sort] == "status" and params[:order] == "ASC" %>
-					<%= link_to "Status", admin_pages_path(:order => "DESC", :sort => :status) %>
-				<% else %>
-					<%= link_to "Status", admin_pages_path(:order => "ASC", :sort => :status) %>
-				<% end %>
-			</th>
-			<th scope="col">
-				<% if params[:sort] == "private" and params[:order] == "ASC" %>
-					<%= link_to "Private", admin_pages_path(:order => "DESC", :sort => :private) %>
-				<% else %>
-					<%= link_to "Private", admin_pages_path(:order => "ASC", :sort => :private) %>
-				<% end %>
-			</th>
-			<th scope="col">
-				<% if params[:sort] == "created_at" and params[:order] == "ASC" %>
-					<%= link_to "Created At", admin_pages_path(:order => "DESC", :sort => :created_at) %>
-				<% else %>
-					<%= link_to "Created At", admin_pages_path(:order => "ASC", :sort => :created_at) %>
-				<% end %>
-			</th>
-			<th scope="col">
-				<% if params[:sort] == "updated_at" and params[:order] == "ASC" %>
-					<%= link_to "Updated At", admin_pages_path(:order => "DESC", :sort => :updated_at) %>
-				<% else %>
-					<%= link_to "Updated At", admin_pages_path(:order => "ASC", :sort => :updated_at) %>
-				<% end %>
-			</th>
-			<th scope="col">
-				Actions
-			</th>
+			<th scope="col"><input class="check-all" type="checkbox"></th>
+			<th scope="col"><%= sortable "id", "ID" %></th>
+			<th scope="col"><%= sortable "title" %></th>
+			<th scope="col">Body</th>
+			<th scope="col">Style</th>
+			<th scope="col"><%= sortable "parent_id", "Parent Page" %></th>
+			<th scope="col"><%= sortable "status" %></th>
+			<th scope="col"><%= sortable "private" %></th>
+			<th scope="col"><%= sortable "created_at" %></th>
+			<th scope="col"><%= sortable "updated_at" %></th>
+			<th scope="col">Actions</th>
 		</tr>
 	</thead>
 	<tbody>

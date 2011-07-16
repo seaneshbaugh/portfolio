@@ -20,23 +20,44 @@
 	<%= csrf_meta_tag %>
 </head>
 <body>
-	<% if flash[:notice] %>
-		<div id="flash-notice" class="notification <%= flash[:type] %> click-to-close">
-			<div><%= raw flash[:notice] %></div>
+	<div id="container">
+		<header>
+			<h1>Sean Eshbaugh</h1>
+		</header>
+		<% if flash[:notice] %>
+			<div id="flash-notice" class="notification <%= flash[:type] %> click-to-close">
+				<div><%= raw flash[:notice] %></div>
+			</div>
+		<% end %>
+		<% if flash[:debug] %>
+			<div id="flash-debug" class="notification information click-to-close">
+				<div><%= raw debug flash[:debug] %></div>
+			</div>
+		<% end %>
+		<nav>
+			<ul>
+				<li><%= link_to "About", root_path %></li>
+				<% @top_level_pages.each do |page| %>
+					<li><%= link_to page.title, page %></li>
+				<% end %>
+				<li><a href="https://github.com/seaneshbaugh">github</a></li>
+			</ul>
+		</nav>
+		<div id="content">
+			<%= yield %>
 		</div>
-	<% end %>
-	<% if flash[:debug] %>
-		<div id="flash-debug" class="notification information click-to-close">
-			<div><%= raw debug flash[:debug] %></div>
-		</div>
-	<% end %>
-	<% unless @top_level_pages.empty? %>
-		<ul>
-			<% @top_level_pages.each do |page| %>
-				<li><%= link_to page.title, page %></li>
+	</div>
+	<footer>
+		Content copyright &copy; <%= Time.now.year %> Sean Eshbaugh. All Rights Reserved.<br />
+		Created with <a href="http://rubyonrails.org/">Ruby on Rails</a> by <a href="http://seaneshbaugh.com/">Sean Eshbaugh</a>.<br />
+		<% unless @current_user %>
+			<%= link_to "Login", new_session_path %>
+		<% else %>
+			<%= link_to "Logout", @application_session, :method => :delete %>
+			<% if @current_user.privilege_level >= User::PrivilegeLevelAdmin %>
+				| <%= link_to "Admin Panel", admin_root_path %>
 			<% end %>
-		</ul>
-	<% end %>
-	<%= yield %>
+		<% end %>
+	</footer>
 </body>
 </html>

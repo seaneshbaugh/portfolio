@@ -61,7 +61,7 @@ class ApplicationController < ActionController::Base
 		if @current_user.nil?
 			flash[:type] = "attention"
 
-			flash[:notice] = "You must be logged in to view this page."
+			flash[:notice] = t "flash.access.must_be_logged_in"
 
 			redirect_to root_url and return
 		end
@@ -71,7 +71,7 @@ class ApplicationController < ActionController::Base
 		unless @current_user.nil?
 			flash[:type] = "attention"
 
-			flash[:notice] = "You are already logged in."
+			flash[:notice] = t "flash.access.already_logged_in"
 
 			redirect_to root_url and return
 		end
@@ -81,7 +81,7 @@ class ApplicationController < ActionController::Base
 		if @current_user.nil?
 			flash[:type] = "attention"
 
-			flash[:notice] = "You must be logged in to view this page."
+			flash[:notice] = t "flash.access.must_be_logged_in"
 
 			redirect_to root_url and return
 		end
@@ -89,7 +89,7 @@ class ApplicationController < ActionController::Base
 		if @current_user.privilege_level < User::PrivilegeLevelModerator
 			flash[:type] = "attention"
 
-			flash[:notice] = "You are not authorized to view this page."
+			flash[:notice] = t "flash.access.not_authorized"
 
 			redirect_to :back and return
 		end
@@ -99,7 +99,7 @@ class ApplicationController < ActionController::Base
 		if @current_user.nil?
 			flash[:type] = "attention"
 
-			flash[:notice] = "You must be logged in to view this page."
+			flash[:notice] = t "flash.access.must_be_logged_in"
 
 			redirect_to root_url and return
 		end
@@ -107,7 +107,7 @@ class ApplicationController < ActionController::Base
 		if @current_user.privilege_level < User::PrivilegeLevelAdmin
 			flash[:type] = "attention"
 
-			flash[:notice] = "You are not authorized to view this page."
+			flash[:notice] = t "flash.access.not_authorized"
 
 			redirect_to :back and return
 		end
@@ -117,7 +117,7 @@ class ApplicationController < ActionController::Base
 		if @current_user.nil?
 			flash[:type] = "attention"
 
-			flash[:notice] = "You must be logged in to view this page."
+			flash[:notice] = t "flash.access.must_be_logged_in"
 
 			redirect_to root_url and return
 		end
@@ -125,17 +125,17 @@ class ApplicationController < ActionController::Base
 		if @current_user.privilege_level < User::PrivilegeLevelSysOp
 			flash[:type] = "attention"
 
-			flash[:notice] = "You are not authorized to view this page."
+			flash[:notice] = t "flash.access.not_authorized"
 
 			redirect_to :back and return
 		end
 	end
 
 	def validation_errors_for(object)
-		"<ul>" + object.errors.map {|attribute, message| "<li>Error: #{object.class.human_attribute_name("#{attribute.to_s}")} #{message}.</li>"}.to_s + "</ul>"
+		"<ul>" + object.errors.map {|attribute, message| "<li>#{t("flash.error") + object.class.human_attribute_name("#{attribute.to_s}")} #{message}.</li>"}.to_s + "</ul>"
 	end
 
 	def top_level_pages
-		@top_level_pages = Page.where(:parent_id => nil).order("display_order")
+		@top_level_pages = Page.top_level.order("display_order")
 	end
 end
