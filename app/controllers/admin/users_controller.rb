@@ -1,355 +1,355 @@
 class Admin::UsersController < Admin::AdminController
-	def index
-		@users = User.page(params[:page]).order(sort_column + " " + sort_order)
-	end
+  def index
+    @users = User.page(params[:page]).order(sort_column + " " + sort_order)
+  end
 
-	def show
-		@user = User.find_by_id(params[:id])
+  def show
+    @user = User.find_by_id(params[:id])
 
-		if @user.nil?
-			flash[:type] = "error"
+    if @user.nil?
+      flash[:type] = "error"
 
-			flash[:notice] = t "flash.user.error.could_not_find"
+      flash[:notice] = t "flash.user.error.could_not_find"
 
-			redirect_to admin_users_url and return
-		end
-	end
+      redirect_to admin_users_url and return
+    end
+  end
 
-	def new
-		@user = User.new
-	end
+  def new
+    @user = User.new
+  end
 
-	def create
-		@user = User.new(params[:user])
+  def create
+    @user = User.new(params[:user])
 
-		unless @user.nil?
-			if @user.privilege_level > @current_user.privilege_level
-				flash[:type] = "attention"
+    unless @user.nil?
+      if @user.privilege_level > @current_user.privilege_level
+        flash[:type] = "attention"
 
-				flash[:notice] = t "flash.user.error.privilege_level_create"
+        flash[:notice] = t "flash.user.error.privilege_level_create"
 
-				render :action => :new and return
-			end
+        render :action => :new and return
+      end
 
-			@user.generate_cookie_code
+      @user.generate_cookie_code
 
-			if @user.save
-				flash[:type] = "success"
+      if @user.save
+        flash[:type] = "success"
 
-				flash[:notice] = t "flash.user.success.created", :user_name => @user.name, :undo_link => undo_link
+        flash[:notice] = t "flash.user.success.created", :user_name => @user.name, :undo_link => undo_link
 
-				redirect_to admin_users_url and return
-			else
-				flash[:type] = "error"
+        redirect_to admin_users_url and return
+      else
+        flash[:type] = "error"
 
-				flash[:notice] = validation_errors_for(@user)
+        flash[:notice] = validation_errors_for(@user)
 
-				render :action => :new and return
-			end
-		else
-			flash[:type] = "error"
+        render :action => :new and return
+      end
+    else
+      flash[:type] = "error"
 
-			flash[:notice] = t "flash.user.error.could_not_create"
+      flash[:notice] = t "flash.user.error.could_not_create"
 
-			redirect_to new_admin_user_url and return
-		end
-	end
+      redirect_to new_admin_user_url and return
+    end
+  end
 
-	def edit
-		@user = User.find_by_id(params[:id])
+  def edit
+    @user = User.find_by_id(params[:id])
 
-		unless @user.nil?
-			if @user.privilege_level >= @current_user.privilege_level and @user != @current_user
-				flash[:type] = "attention"
+    unless @user.nil?
+      if @user.privilege_level >= @current_user.privilege_level and @user != @current_user
+        flash[:type] = "attention"
 
-				flash[:notice] = t "flash.user.error.privilege_level_edit"
+        flash[:notice] = t "flash.user.error.privilege_level_edit"
 
-				redirect_to admin_users_url and return
-			end
-		else
-			flash[:type] = "error"
+        redirect_to admin_users_url and return
+      end
+    else
+      flash[:type] = "error"
 
-			flash[:notice] = t "flash.user.error.could_not_find"
+      flash[:notice] = t "flash.user.error.could_not_find"
 
-			redirect_to admin_users_url and return
-		end
-	end
+      redirect_to admin_users_url and return
+    end
+  end
 
-	def update
-		@user = User.find_by_id(params[:id])
+  def update
+    @user = User.find_by_id(params[:id])
 
-		unless @user.nil?
-			if  @user.privilege_level >= @current_user.privilege_level and @user != @current_user
-				flash[:type] = "attention"
+    unless @user.nil?
+      if  @user.privilege_level >= @current_user.privilege_level and @user != @current_user
+        flash[:type] = "attention"
 
-				flash[:notice] = t "flash.user.error.privilege_level_edit"
+        flash[:notice] = t "flash.user.error.privilege_level_edit"
 
-				redirect_to admin_users_url and return
-			end
+        redirect_to admin_users_url and return
+      end
 
-			if params[:user][:privilege_level].to_i > @current_user.privilege_level
-				flash[:type] = "attention"
+      if params[:user][:privilege_level].to_i > @current_user.privilege_level
+        flash[:type] = "attention"
 
-				flash[:notice] = t "flash.user.error.privilege_level_update"
+        flash[:notice] = t "flash.user.error.privilege_level_update"
 
-				render :action => :edit and return
-			end
+        render :action => :edit and return
+      end
 
-			if @user.update_attributes(params[:person])
-				flash[:type] = "success"
+      if @user.update_attributes(params[:person])
+        flash[:type] = "success"
 
-				flash[:notice] = t "flash.user.success.updated", :user_name => @user.name.possessive, :undo_link => undo_link
+        flash[:notice] = t "flash.user.success.updated", :user_name => @user.name.possessive, :undo_link => undo_link
 
-				redirect_to admin_user_url(@user) and return
-			else
-				flash[:type] = "error"
+        redirect_to admin_user_url(@user) and return
+      else
+        flash[:type] = "error"
 
-				flash[:notice] = validation_errors_for(@user)
+        flash[:notice] = validation_errors_for(@user)
 
-				render :action => :edit and return
-			end
-		else
-			flash[:type] = "error"
+        render :action => :edit and return
+      end
+    else
+      flash[:type] = "error"
 
-			flash[:notice] = t "flash.user.error.could_not_find"
+      flash[:notice] = t "flash.user.error.could_not_find"
 
-			redirect_to admin_users_url and return
-		end
-	end
+      redirect_to admin_users_url and return
+    end
+  end
 
-	def destroy
-		@user = User.find_by_id(params[:id])
+  def destroy
+    @user = User.find_by_id(params[:id])
 
-		unless @user.nil?
-			if @user == @current_user
-				User.destroy(@user)
+    unless @user.nil?
+      if @user == @current_user
+        User.destroy(@user)
 
-				session[:id] = @current_user = nil
+        session[:id] = @current_user = nil
 
-				flash[:type] = "success"
+        flash[:type] = "success"
 
-				flash[:notice] = t "flash.user.success.destroyed", :user_name => "Your", :undo_link => ""
+        flash[:notice] = t "flash.user.success.destroyed", :user_name => "Your", :undo_link => ""
 
-				redirect_to root_url and return
-			else
-				if @user.privilege_level < @current_user.privilege_level
-					User.destroy(@user)
+        redirect_to root_url and return
+      else
+        if @user.privilege_level < @current_user.privilege_level
+          User.destroy(@user)
 
-					flash[:type] = "success"
+          flash[:type] = "success"
 
-					flash[:notice] = t "flash.user.success.destroyed", :user_name => @user.name.possessive, :undo_link => undo_link
+          flash[:notice] = t "flash.user.success.destroyed", :user_name => @user.name.possessive, :undo_link => undo_link
 
-					redirect_to admin_users_url and return
-				else
-					flash[:type] = "attention"
+          redirect_to admin_users_url and return
+        else
+          flash[:type] = "attention"
 
-					flash[:notice] = t "flash.user.error.privilege_level_destroy"
+          flash[:notice] = t "flash.user.error.privilege_level_destroy"
 
-					redirect_to admin_users_url and return
-				end
-			end
-		else
-			flash[:type] = "error"
+          redirect_to admin_users_url and return
+        end
+      end
+    else
+      flash[:type] = "error"
 
-			flash[:notice] = t "flash.user.error.could_not_find"
+      flash[:notice] = t "flash.user.error.could_not_find"
 
-			redirect_to admin_users_url and return
-		end
-	end
+      redirect_to admin_users_url and return
+    end
+  end
 
-	def edit_multiple
-		if params[:users_ids].nil?
-			flash[:type] = "error"
+  def edit_multiple
+    if params[:users_ids].nil?
+      flash[:type] = "error"
 
-			flash[:notice] = t "flash.user.error.could_not_find_multiple"
+      flash[:notice] = t "flash.user.error.could_not_find_multiple"
 
-			redirect_to admin_users_url and return
-		end
+      redirect_to admin_users_url and return
+    end
 
-		@users = User.find(params[:users_ids])
+    @users = User.find(params[:users_ids])
 
-		unless @users.nil?
-			unauthorized = false
+    unless @users.nil?
+      unauthorized = false
 
-			@users.each do |user|
-				if user.privilege_level >= @current_user.privilege_level and user != @current_user
-					unauthorized = true
+      @users.each do |user|
+        if user.privilege_level >= @current_user.privilege_level and user != @current_user
+          unauthorized = true
 
-					flash[:notice] ||= t("flash.user.error.privilege_level_edit_multiple") + "<ul>"
+          flash[:notice] ||= t("flash.user.error.privilege_level_edit_multiple") + "<ul>"
 
-					flash[:notice] += "<li>#{user.name}</li>"
-				end
-			end
+          flash[:notice] += "<li>#{user.name}</li>"
+        end
+      end
 
-			if unauthorized
-				flash[:type] = "attention"
+      if unauthorized
+        flash[:type] = "attention"
 
-				flash[:notice] += "</ul>"
+        flash[:notice] += "</ul>"
 
-				redirect_to admin_users_url and return
-			end
-		else
-			flash[:type] = "error"
+        redirect_to admin_users_url and return
+      end
+    else
+      flash[:type] = "error"
 
-			flash[:notice] = t "flash.user.error.could_not_find_multiple"
+      flash[:notice] = t "flash.user.error.could_not_find_multiple"
 
-			redirect_to admin_users_url and return
-		end
-	end
+      redirect_to admin_users_url and return
+    end
+  end
 
-	def update_multiple
-		if params[:users_ids].nil?
-			flash[:type] = "error"
+  def update_multiple
+    if params[:users_ids].nil?
+      flash[:type] = "error"
 
-			flash[:notice] = t "flash.user.error.could_not_find_multiple"
+      flash[:notice] = t "flash.user.error.could_not_find_multiple"
 
-			redirect_to admin_users_url and return
-		end
+      redirect_to admin_users_url and return
+    end
 
-		@users = User.find(params[:users_ids])
+    @users = User.find(params[:users_ids])
 
-		unless @users.nil?
-			unauthorized = false
+    unless @users.nil?
+      unauthorized = false
 
-			@users.each do |user|
-				if user.privilege_level >= @current_user.privilege_level and user != @current_user
-					unauthorized = true
+      @users.each do |user|
+        if user.privilege_level >= @current_user.privilege_level and user != @current_user
+          unauthorized = true
 
-					flash[:notice] ||= t("flash.user.error.privilege_level_edit_multiple") + "<ul>"
+          flash[:notice] ||= t("flash.user.error.privilege_level_edit_multiple") + "<ul>"
 
-					flash[:notice] += "<li>#{user.name}</li>"
-				end
-			end
+          flash[:notice] += "<li>#{user.name}</li>"
+        end
+      end
 
-			if unauthorized
-				flash[:type] = "attention"
+      if unauthorized
+        flash[:type] = "attention"
 
-				flash[:notice] += "</ul>"
+        flash[:notice] += "</ul>"
 
-				redirect_to admin_users_url and return
-			end
+        redirect_to admin_users_url and return
+      end
 
-			if params[:user][:privilege_level].to_i > @current_user.privilege_level
-				flash[:type] = "attention"
+      if params[:user][:privilege_level].to_i > @current_user.privilege_level
+        flash[:type] = "attention"
 
-				flash[:notice] = t "flash.user.error.privilege_level_update"
+        flash[:notice] = t "flash.user.error.privilege_level_update"
 
-				render :action => :edit_multiple and return
-			end
+        render :action => :edit_multiple and return
+      end
 
-			flash[:type] = "success"
+      flash[:type] = "success"
 
-			flash[:notice] = ""
+      flash[:notice] = ""
 
-			@users.each do |user|
-				if user.update_attributes(params[:user].reject { |k, v| v.blank? })
-					unless flash[:notice].blank?
-						flash[:notice] += "<br />"
-					end
+      @users.each do |user|
+        if user.update_attributes(params[:user].reject { |k, v| v.blank? })
+          unless flash[:notice].blank?
+            flash[:notice] += "<br />"
+          end
 
-					flash[:notice] += t "flash.user.success.updated", :user_name => user.name.possessive, :undo_link => ""
-				else
-					flash[:type] = "error"
+          flash[:notice] += t "flash.user.success.updated", :user_name => user.name.possessive, :undo_link => ""
+        else
+          flash[:type] = "error"
 
-					unless flash[:notice].blank?
-						flash[:notice] += "<br />"
-					end
+          unless flash[:notice].blank?
+            flash[:notice] += "<br />"
+          end
 
-					flash[:notice] += t "flash.user.error.could_not_update_multiple", :user_name => user.name.possessive
+          flash[:notice] += t "flash.user.error.could_not_update_multiple", :user_name => user.name.possessive
 
-					flash[:notice] += validation_errors_for(user)
-				end
-			end
+          flash[:notice] += validation_errors_for(user)
+        end
+      end
 
-			if flash[:type] == "success"
-				redirect_to admin_users_url and return
-			else
-				render :action => :edit_multiple and return
-			end
-		else
-			flash[:type] = "error"
+      if flash[:type] == "success"
+        redirect_to admin_users_url and return
+      else
+        render :action => :edit_multiple and return
+      end
+    else
+      flash[:type] = "error"
 
-			flash[:notice] = t "flash.user.error.could_not_find_multiple"
+      flash[:notice] = t "flash.user.error.could_not_find_multiple"
 
-			redirect_to admin_users_url and return
-		end
-	end
+      redirect_to admin_users_url and return
+    end
+  end
 
-	def destroy_multiple
-		if params[:users_ids].nil?
-			flash[:type] = "error"
+  def destroy_multiple
+    if params[:users_ids].nil?
+      flash[:type] = "error"
 
-			flash[:notice] = t "flash.user.error.could_not_find_multiple"
+      flash[:notice] = t "flash.user.error.could_not_find_multiple"
 
-			redirect_to admin_users_url and return
-		end
+      redirect_to admin_users_url and return
+    end
 
-		@users = User.find(params[:users_ids])
+    @users = User.find(params[:users_ids])
 
-		unless @users.nil?
-			unless @users.index(@current_user).nil?
-				flash[:type] = "error"
+    unless @users.nil?
+      unless @users.index(@current_user).nil?
+        flash[:type] = "error"
 
-				flash[:notice] = t "flash.user.error.cannot_destroy_self_via_multiple"
+        flash[:notice] = t "flash.user.error.cannot_destroy_self_via_multiple"
 
-				redirect_to admin_users_url and return
-			end
+        redirect_to admin_users_url and return
+      end
 
-			unauthorized = false
+      unauthorized = false
 
-			@users.each do |user|
-				if user.privilege_level >= @current_user.privilege_level
-					unauthorized = true
+      @users.each do |user|
+        if user.privilege_level >= @current_user.privilege_level
+          unauthorized = true
 
-					flash[:notice] ||= t("flash.user.error.privilege_level_destroy_multiple") + "<ul>"
+          flash[:notice] ||= t("flash.user.error.privilege_level_destroy_multiple") + "<ul>"
 
-					flash[:notice] += "<li>#{user.name}</li>"
-				end
-			end
+          flash[:notice] += "<li>#{user.name}</li>"
+        end
+      end
 
-			if unauthorized
-				flash[:type] = "attention"
+      if unauthorized
+        flash[:type] = "attention"
 
-				flash[:notice] += "</ul>"
+        flash[:notice] += "</ul>"
 
-				redirect_to admin_users_url and return
-			end
+        redirect_to admin_users_url and return
+      end
 
-			flash[:type] = "success"
+      flash[:type] = "success"
 
-			flash[:notice] = ""
+      flash[:notice] = ""
 
-			@users.each do |user|
-				User.destroy(user)
+      @users.each do |user|
+        User.destroy(user)
 
-				unless flash[:notice].blank?
-					flash[:notice] += "<br />"
-				end
+        unless flash[:notice].blank?
+          flash[:notice] += "<br />"
+        end
 
-				flash[:notice] += t "flash.user.success.destroyed", :user_name => user.name.possessive, :undo_link => ""
-			end
+        flash[:notice] += t "flash.user.success.destroyed", :user_name => user.name.possessive, :undo_link => ""
+      end
 
-			redirect_to admin_users_url and return
-		else
-			flash[:type] = "error"
+      redirect_to admin_users_url and return
+    else
+      flash[:type] = "error"
 
-			flash[:notice] = t "flash.user.error.could_not_find_multiple"
+      flash[:notice] = t "flash.user.error.could_not_find_multiple"
 
-			redirect_to admin_users_url and return
-		end
-	end
+      redirect_to admin_users_url and return
+    end
+  end
 
-	private
+  private
 
-	def sort_column
-		User.column_names.include?(params[:sort]) ? params[:sort] : "id"
-	end
+  def sort_column
+    User.column_names.include?(params[:sort]) ? params[:sort] : "id"
+  end
 
-	def sort_order
-		["asc", "desc"].include?(params[:order]) ? params[:order] : "asc"
-	end
+  def sort_order
+    ["asc", "desc"].include?(params[:order]) ? params[:order] : "asc"
+  end
 
-	def undo_link
-		view_context.link_to(t("flash.versions.undo"), revert_version_path(@user.versions.scoped.last), :method => :post)
-	end
+  def undo_link
+    view_context.link_to(t("flash.versions.undo"), revert_version_path(@user.versions.scoped.last), :method => :post)
+  end
 end

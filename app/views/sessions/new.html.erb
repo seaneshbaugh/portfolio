@@ -1,24 +1,24 @@
 <h2>Login</h2>
 <%= form_for @session do |f| %>
-	<fieldset>
-		<p>
-			<%= f.label :name, "Name:" %>
-			<%= f.text_field :name, :class => "text small" %>
-		</p>
-		<p>
-			<%= f.label :name, "Password:" %>
-			<%= f.password_field :password, :class => "text small" %>
-		</p>
-		<p>
-			<label for="remember_me">Remember Me: <%= check_box_tag "remember_me", "1", true, :title => "This will set a cookie in your browser allowing this site to remember your login information. Only your user ID and a hash that is unique to you is stored in the cookie. No other personally identifying information is stored. Do not select this option if you are on a shared or public computer." %></label>
-		</p>
-		<p>
-			<label for="limit_session">Limit Session to this Computer: <%= check_box_tag "limit_session", "1", false, :title => "By default you can have multiple computers remember your login information. Select this option if you wish to limit remembered sessions to this computer (and to your current browser). You will have to manually log in if you use another computer or browser." %></label>
-		</p>
-		<%= token_tag %>
-		<%= submit_tag "Login", :class => "submit" %>
-	</fieldset>
+  <fieldset>
+    <p>
+      <%= f.label :name, "Name:" %>
+      <%= f.text_field :name, :class => "text small" %>
+    </p>
+    <p>
+      <%= f.label :name, "Password:" %>
+      <%= f.password_field :password, :class => "text small" %>
+    </p>
+    <p>
+      <label for="remember_me">Remember Me: <%= check_box_tag "remember_me", "1", true, :title => "This will set a cookie in your browser allowing this site to remember your login information. Only your user ID and a hash that is unique to you is stored in the cookie. No other personally identifying information is stored. Do not select this option if you are on a shared or public computer." %></label>
+    </p>
+    <p>
+      <label for="limit_session">Limit Session to this Computer: <%= check_box_tag "limit_session", "1", false, :title => "By default you can have multiple computers remember your login information. Select this option if you wish to limit remembered sessions to this computer (and to your current browser). You will have to manually log in if you use another computer or browser." %></label>
+    </p>
+    <%= token_tag %>
+    <%= submit_tag "Login", :class => "submit" %>
+  </fieldset>
 <% end %>
 <div id="account-recovery-link">
-	<%= link_to "Account Recovery", help_users_path %>
+  <%= link_to "Account Recovery", help_users_path %>
 </div>

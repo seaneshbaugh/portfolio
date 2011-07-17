@@ -1,24 +1,24 @@
 class Admin::AdminController < ApplicationController
-	layout 'admin'
+  layout 'admin'
 
-	helper :all
+  helper :all
 
-	skip_before_filter :maintain_session_and_current_user
+  skip_before_filter :maintain_session_and_current_user
 
-	before_filter :maintain_session_and_current_user, :is_admin?
+  before_filter :maintain_session_and_current_user, :is_admin?
 
-	before_filter :is_sysop?, :only => :reboot
+  before_filter :is_sysop?, :only => :reboot
 
-	def index
-	end
+  def index
+  end
 
-	def reboot
-		%x[touch "#{File.join(Rails.root, "tmp", "restart.txt")}"]
+  def reboot
+    %x[touch "#{File.join(Rails.root, "tmp", "restart.txt")}"]
 
-		flash[:type] = "information"
+    flash[:type] = "information"
 
-		flash[:notice] = t "flash.reboot"
+    flash[:notice] = t "flash.reboot"
 
-		redirect_to admin_root_url and return
-	end
+    redirect_to admin_root_url and return
+  end
 end

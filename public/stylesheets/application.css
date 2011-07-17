@@ -12,6 +12,18 @@ body {
 
 /* End font-size Adjustment */
 
+/* Begin Header */
+
+header h1 {
+	font-family: Coolvetica, Arial, "DejaVu Sans", sans-serif;
+	font-size: 96px;
+	font-weight: bold;
+	letter-spacing: -7px;
+	text-shadow: 3px 3px 2px #999999;
+}
+
+/* End Header */
+
 /* Begin Sticky Footer */
 
 html, body {

@@ -1,47 +1,47 @@
 class Page < ActiveRecord::Base
-	has_paper_trail
+  has_paper_trail
 
-	has_many :subpages, :class_name => "Page", :foreign_key => "parent_id", :dependent => :destroy, :order => "display_order"
+  has_many :subpages, :class_name => "Page", :foreign_key => "parent_id", :dependent => :destroy, :order => "display_order"
 
-	belongs_to :parent, :class_name => "Page"
+  belongs_to :parent, :class_name => "Page"
 
-	validates_uniqueness_of :title
+  validates_uniqueness_of :title
 
-	validates_presence_of :title, :body, :display_order
+  validates_presence_of :title, :body, :display_order
 
-	before_save :create_slug
+  before_save :create_slug
 
-	scope :top_level, lambda { where(:parent_id => nil) }
+  scope :top_level, lambda { where(:parent_id => nil) }
 
-	def to_param
-		self.slug
-	end
+  def to_param
+    self.slug
+  end
 
-	def create_slug
-		if self.title.blank?
-			self.slug = self.id
-		else
-			self.slug = self.title.parameterize
-		end
-	end
+  def create_slug
+    if self.title.blank?
+      self.slug = self.id
+    else
+      self.slug = self.title.parameterize
+    end
+  end
 
-	def get_dropdown_title
-		dropdown_title = ""
+  def get_dropdown_title
+    dropdown_title = ""
 
-		current = self
+    current = self
 
-		while !current.nil? and !current.parent.nil?
-			dropdown_title += "-"
+    while !current.nil? and !current.parent.nil?
+      dropdown_title += "-"
 
-			current = current.parent
-		end
+      current = current.parent
+    end
 
-		if dropdown_title == ""
-			dropdown_title = self.title
-		else
-			dropdown_title += " " + self.title
-		end
+    if dropdown_title == ""
+      dropdown_title = self.title
+    else
+      dropdown_title += " " + self.title
+    end
 
-		return dropdown_title
-	end
+    return dropdown_title
+  end
 end

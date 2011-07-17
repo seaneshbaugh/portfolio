@@ -12,20 +12,20 @@
 <h5>Parent Page: <% unless @page.parent.nil? %><%= @page.parent.title %><% else %>-<% end %></h5>
 <h5>Status:
 <%= case @page.status
-		when 0
-			"Draft"
-		when 1
-			"Published"
-		when 2
-			"Awaiting Review"
-		else
-			"Unknown"
-		end
+    when 0
+      "Draft"
+    when 1
+      "Published"
+    when 2
+      "Awaiting Review"
+    else
+      "Unknown"
+    end
 %></h5>
 <h5>Private: <% if @page.private %>Yes<% else %>No<% end %></h5>
 <h5>Created at: <%= @page.created_at.strftime("%Y-%m-%d %H:%M:%S") %></h5>
 <h5>Last Updated at: <%= @page.updated_at.strftime("%Y-%m-%d %H:%M:%S") %></h5>
 <p>
-	<%= link_to "Edit Page", edit_admin_page_path(@page) %> |
-	<%= link_to "Delete Page", admin_pages_path(@page), :method => :delete %>
+  <%= link_to "Edit Page", edit_admin_page_path(@page) %> |
+  <%= link_to "Delete Page", admin_pages_path(@page), :method => :delete %>
 </p>

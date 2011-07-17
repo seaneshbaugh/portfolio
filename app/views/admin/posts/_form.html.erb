@@ -1,34 +1,34 @@
 <h2><%= legend %></h2>
 <%= form_for [:admin, @post] do |f| %>
-	<fieldset>
-		<p>
-			<%= f.label :title, "Title:" %><br />
-			<%= f.text_field :title, :class => "text small" %>
-		</p>
-		<p>
-			<%= f.label :body, "Body:" %><br />
-			<%= f.text_area :body, :class => "text large" %>
-		</p>
-		<p>
-			<%= f.label :style, "Style:" %><br />
-			<%= f.text_area :style, :class => "text large" %>
-		</p>
-		<p>
-			<%= f.label :meta_description, "Meta Description:" %><br />
-			<%= f.text_area :meta_description, :class => "text large" %>
-		</p>
-		<p>
-			<%= f.label :meta_keywords, "Meta Keywords:" %><br />
-			<%= f.text_area :meta_keywords, :class => "text large" %>
-		</p>
-		<p>
-			<%= f.label :status, "Status:" %><br />
-			<%= f.select :status, [['Published', 1], ['Draft', 0], ['Awaiting Review', 2]], :class => "select small" %>
-		</p>
-		<p>
-			<label for="page_private"><%= f.check_box :private, {}, 1, 0 %> Post is private.</label>
-		</p>
-		<br />
-		<%= submit_tag "Submit", :class => "submit" %>
-	</fieldset>
+  <fieldset>
+    <p>
+      <%= f.label :title, "Title:" %><br />
+      <%= f.text_field :title, :class => "text small" %>
+    </p>
+    <p>
+      <%= f.label :body, "Body:" %><br />
+      <%= f.text_area :body, :class => "text large" %>
+    </p>
+    <p>
+      <%= f.label :style, "Style:" %><br />
+      <%= f.text_area :style, :class => "text large" %>
+    </p>
+    <p>
+      <%= f.label :meta_description, "Meta Description:" %><br />
+      <%= f.text_area :meta_description, :class => "text large" %>
+    </p>
+    <p>
+      <%= f.label :meta_keywords, "Meta Keywords:" %><br />
+      <%= f.text_area :meta_keywords, :class => "text large" %>
+    </p>
+    <p>
+      <%= f.label :status, "Status:" %><br />
+      <%= f.select :status, [['Published', 1], ['Draft', 0], ['Awaiting Review', 2]], :class => "select small" %>
+    </p>
+    <p>
+      <label for="page_private"><%= f.check_box :private, {}, 1, 0 %> Post is private.</label>
+    </p>
+    <br />
+    <%= submit_tag "Submit", :class => "submit" %>
+  </fieldset>
 <% end %>
