@@ -1,2 +1,17 @@
-// Place your application-specific JavaScript functions and classes here
-// This file is automatically included by javascript_include_tag :defaults
+$(function() {
+	$("nav ul li a").click(function() {
+		loadPage($(this).attr("href"));
+	});
+});
+
+function loadPage(pageURI) {
+	var content = $("#content");
+
+	content.fadeOut(100, function() {
+		content.load(pageURI, function() {
+			content.fadeIn();
+		});
+	});
+
+	return false;
+}

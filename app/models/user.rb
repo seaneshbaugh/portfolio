@@ -93,4 +93,13 @@ class User < ActiveRecord::Base
   def password_is_not_being_updated?
     self.id and self.password.blank?
   end
+  
+  def self.search(search)
+    if search
+      #where("name LIKE ?", "%#{search}%")
+      where("name LIKE :search OR first_name LIKE :search OR last_name LIKE :search OR email_address LIKE :search OR phone_number LIKE :search", {:search => "%#{search}%"})
+    else
+      scoped
+    end
+  end
 end

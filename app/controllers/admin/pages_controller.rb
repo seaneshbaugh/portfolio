@@ -4,7 +4,7 @@ class Admin::PagesController < Admin::AdminController
   helper_method :sort_column, :sort_order
 
   def index
-    @pages = Page.page(params[:page]).order(sort_column + " " + sort_order)
+    @pages = Page.search(params[:search]).page(params[:page]).order(sort_column + " " + sort_order)
   end
 
   def show

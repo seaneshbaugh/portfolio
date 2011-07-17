@@ -1,6 +1,8 @@
 class Admin::UsersController < Admin::AdminController
+helper_method :sort_column, :sort_order
+  
   def index
-    @users = User.page(params[:page]).order(sort_column + " " + sort_order)
+    @users = User.search(params[:search]).page(params[:page]).order(sort_column + " " + sort_order)
   end
 
   def show

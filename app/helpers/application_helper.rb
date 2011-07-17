@@ -4,6 +4,6 @@ module ApplicationHelper
 
     order = column == sort_column && sort_order == "asc" ? "desc" : "asc"
 
-    link_to title, :sort => column, :order => order
+    link_to title, params.merge(:sort => column, :order => order, :page => nil)
   end
 end

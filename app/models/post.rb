@@ -20,4 +20,13 @@ class Post < ActiveRecord::Base
       self.slug = self.title.parameterize
     end
   end
+  
+  def self.search(search)
+    if search
+      #where("title LIKE ?", "%#{search}%")
+      where("title LIKE :search OR body LIKE :search OR style LIKE :search", {:search => "%#{search}%"})
+    else
+      scoped
+    end
+  end
 end
