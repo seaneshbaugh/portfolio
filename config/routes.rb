@@ -1,26 +1,19 @@
 SeaneshbPortfolio::Application.routes.draw do
+  get 'login' => 'sessions#new', :as => 'login'
+
+  get 'logout' => 'sessions#destroy', :as => 'logout'
+
   post 'versions/:id/revert' => 'versions#revert', :as => 'revert_version'
 
   resources :pages, :only => [:index, :show]
 
+  resources :password_resets, :only => [:new, :create, :edit, :update]
+
   resources :posts, :only => [:index, :show]
 
-  resources :sessions, :only => [:new, :create, :destroy] do
-    member do
-      get :recovery
-    end
-  end
+  resources :sessions, :only => [:new, :create, :destroy]
 
-  resources :users, :except => [:index, :show, :new, :create, :edit, :update, :destroy] do
-    member do
-      get :send_message
-    end
-
-    collection do
-      get :help
-      post :recover
-    end
-  end
+  resources :users, :except => [:index, :show, :new, :create, :edit, :update, :destroy]
 
   namespace :admin do
     root :to => 'admin#index'
@@ -49,9 +42,6 @@ SeaneshbPortfolio::Application.routes.draw do
       end
     end
   end
-
-  get 'login' => 'sessions#new', :as => 'login'
-  get 'logout' => 'sessions#destroy', :as => 'logout'
 
   root :to => 'pages#index'
 

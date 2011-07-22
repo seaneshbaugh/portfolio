@@ -2,102 +2,97 @@ require 'digest/sha2'
 require 'RFC2822'
 
 class User < ActiveRecord::Base
-  attr_reader :password
+  attr_accessor :password
 
+  has_many :posts, :dependent => :destroy
   has_paper_trail
 
-  has_many :sessions, :dependent => :destroy
+  before_create { generate_token(:remember_me_token) }
+  before_save :encrypt_password, :scrub
 
-  validates_uniqueness_of :name
+  validates :email_address,
+    :presence => true,
+    :uniqueness => true,
+    :length => { :minimum => 3, :maximum => 254 },
+    :format => { :with => RFC2822::EmailAddress },
+    :confirmation => true
 
-  validates_uniqueness_of :email_address
+  validates :password,
+    :presence => true,
+    :length => { :minimum => 6, :maximum => 32 },
+    :format => { :with => /^([\x20-\x7E]){6,32}$/ },
+    :confirmation => true,
+    :on => :create
 
-  validates_format_of :email_address, :with => RFC2822::EmailAddress
+  validates :first_name,
+    :presence => true
 
-  validates_format_of :name, :with => /^([a-z0-9_]{4,16})$/i
+  validates :last_name,
+    :presence => true
 
-  validates_format_of :password, :with => /^([\x20-\x7E]){6,32}$/, :unless => :password_is_not_being_updated?
+  validates :phone_number,
+    :format => { :with => /^(?:\+?1[-. ]?)?\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/ }
 
-  validates_format_of :phone_number, :with => /^(?:\+?1[-. ]?)?\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/
+  validates :privilege_level,
+    :presence => true,
+    :numericality => true
 
-  validates_confirmation_of :password, :email_address
+  validates :login_count,
+    :presence => true,
+    :numericality => true
 
-  validates_presence_of :name, :email_address, :first_name, :last_name
+  validates :post_count,
+    :presence => true,
+    :numericality => true
 
-  before_save :scrub_name
-
-  after_save :flush_passwords
-
-  PrivilegeLevelGuest   = 0
-  PrivilegeLevelUser    = 1
+  PrivilegeLevelGuest     = 0
+  PrivilegeLevelUser      = 1
   PrivilegeLevelModerator = 2
-  PrivilegeLevelAdmin   = 3
-  PrivilegeLevelSysOp   = 4
+  PrivilegeLevelAdmin     = 3
+  PrivilegeLevelSysOp     = 4
 
-  def self.find_by_name_and_password(name, password)
-    user = self.find_by_name(name)
+  def generate_token(column)
+    begin
+      self[column] = SecureRandom.base64(9)
+    end while User.exists?(column => self[column])
+  end
 
-    if user and user.encrypted_password == Digest::SHA256.hexdigest(password + user.salt)
-      return user
+  def encrypt_password
+    if password.present?
+      self.password_salt = SecureRandom.base64(9)
+
+      self.password_hash = Digest::SHA256.hexdigest(password + self.password_salt)
     end
   end
 
-  def password=(password)
-    @password = password
-
-    unless password_is_not_being_updated?
-      self.salt = [Array.new(9){rand(256).chr}.join].pack('m').chomp
-
-      self.encrypted_password = Digest::SHA256.hexdigest(password + self.salt)
-    end
+  def scrub
+    self.email_address.downcase!
   end
 
-  def update_ip_log(remote_ip)
-    unless self.ip_addresses.blank?
-      ips = self.ip_addresses.split(";")
+  def send_password_reset
+    generate_token(:password_reset_token)
 
-      if ips.index(remote_ip).nil?
-        ips << remote_ip
-      end
+    self.password_reset_sent_at = Time.zone.now
 
-      ips = ips.last(15)
+    save!
 
-      self.ip_addresses = ips.join(";") + ";"
+    UserMailer.password_reset(self).deliver
+  end
+
+  def self.authenticate(email_address, password)
+    user = find_by_email_address(email_address)
+
+    if user && user.password_hash == Digest::SHA256.hexdigest(password + user.password_salt)
+      user
     else
-      self.ip_addresses = remote_ip + ";"
+      nil
     end
   end
 
-  def generate_cookie_code
-    self.cookie_code = ""
-
-    chars = ("0".."9").to_a + ("a".."z").to_a + ("A".."Z").to_a
-
-    128.times do
-      self.cookie_code << chars[rand(chars.length - 1)]
-    end
-
-    return self.cookie_code
-  end
-
-  private
-
-  def scrub_name
-    self.name.downcase!
-  end
-
-  def flush_passwords
-    @password = @password_confirmation = nil
-  end
-
-  def password_is_not_being_updated?
-    self.id and self.password.blank?
-  end
-  
   def self.search(search)
     if search
       #where("name LIKE ?", "%#{search}%")
-      where("name LIKE :search OR first_name LIKE :search OR last_name LIKE :search OR email_address LIKE :search OR phone_number LIKE :search", {:search => "%#{search}%"})
+      where("first_name LIKE :search OR last_name LIKE :search OR email_address LIKE :search OR phone_number LIKE :search", { :search => "%#{search}%" })
     else
       scoped
     end

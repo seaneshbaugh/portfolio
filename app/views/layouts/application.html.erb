@@ -56,9 +56,9 @@
     Content copyright &copy; <%= Time.now.year %> Sean Eshbaugh. All Rights Reserved.<br />
     Created with <a href="http://rubyonrails.org/">Ruby on Rails</a> by <a href="http://seaneshbaugh.com/">Sean Eshbaugh</a>.<br />
     <% unless @current_user %>
-      <%= link_to "Login", new_session_path %>
+      <%= link_to "Login", login_path %>
     <% else %>
-      <%= link_to "Logout", @application_session, :method => :delete %>
+      <%= link_to "Logout", logout_path %>
       <% if @current_user.privilege_level >= User::PrivilegeLevelAdmin %>
         | <%= link_to "Admin Panel", admin_root_path %>
       <% end %>

@@ -3,17 +3,27 @@ $(document).ready(function(){
 		$("#search").focus();
 	}
 
-	$("#index-search").submit(function() {
-		$.get(this.action, $(this).serialize(), null, "script");
+	if (history && history.pushState) {
+		$("#index-search").submit(function() {
+			$.get(this.action, $(this).serialize(), null, "script");
 
-		return false;
-	});
+			history.pushState(null, document.title, this.action + "?" + $(this).serialize());
 
-	$("th a, .pagination a").live("click", function() {
-		$.getScript(this.href);
+			return false;
+		});
 
-		return false;
-	});
+		$("th a, .pagination a").live("click", function() {
+			$.getScript(this.href);
+
+			history.pushState(null, "", this.href);
+
+			return false;
+		});
+
+		$(window).bind("popstate", function() {
+			$.getScript(location.href);
+		});
+	}
 
 	$(".check-all").click(function() {
 		$(this).parent().parent().parent().parent().find("input[type='checkbox']").attr("checked", $(this).is(":checked"));

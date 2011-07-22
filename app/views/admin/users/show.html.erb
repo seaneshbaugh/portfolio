@@ -1,7 +1,7 @@
-<h2>Showing User: <%= @user.name %></h2>
+<h2>Showing User: <%= @user.id %></h2>
+<h5>E-mail Address: <%= link_to @user.email_address, "mailto:#{@user.email_address}" %></h5>
 <h5>First Name: <%= @user.first_name %></h5>
 <h5>Last Name: <%= @user.last_name %></h5>
-<h5>E-mail Address: <%= link_to @user.email_address, "mailto:#{@user.email_address}" %></h5>
 <h5>Phone Number: <%= @user.phone_number %></h5>
 <h5>Privilege Level: <%= @user.privilege_level %></h5>
 <h5>Latest IP Addresses:</h5>

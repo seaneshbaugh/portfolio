@@ -3,6 +3,9 @@ require 'possessive'
 class ApplicationController < ActionController::Base
   protect_from_forgery
 
+  before_filter :get_current_user
+
+=begin
   before_filter :maintain_session_and_current_user
 
   def maintain_session_and_current_user
@@ -56,6 +59,7 @@ class ApplicationController < ActionController::Base
       end
     end
   end
+=end
 
   def ensure_login
     if @current_user.nil?
@@ -133,5 +137,11 @@ class ApplicationController < ActionController::Base
 
   def validation_errors_for(object)
     "<ul>" + object.errors.map {|attribute, message| "<li>#{t("flash.error") + object.class.human_attribute_name("#{attribute.to_s}")} #{message}.</li>"}.to_s + "</ul>"
+  end
+
+  private
+
+  def get_current_user
+    @current_user ||= User.find_by_remember_me_token(cookies[:remember_me_token]) if cookies[:remember_me_token]
   end
 end

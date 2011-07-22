@@ -1,19 +1,31 @@
 class Post < ActiveRecord::Base
+  belongs_to :user, :validate => true
   has_paper_trail
 
-  belongs_to :user
+  before_validation :generate_slug
 
-  validates_uniqueness_of :title
+  validates :title,
+    :presence => true,
+    :uniqueness => true
 
-  validates_presence_of :title, :body
+  validates :slug,
+    :presence => true,
+    :uniqueness => true
 
-  before_save :create_slug
+  validates :status,
+    :numericality => true
+
+  validate :user_must_exist
+
+  def user_must_exist
+    errors.add(:user_id, t("activerecord.errors.models.post.user_must_exist")) if user_id && user.nil?
+  end
 
   def to_param
     self.slug
   end
 
-  def create_slug
+  def generate_slug
     if self.title.blank?
       self.slug = self.id
     else

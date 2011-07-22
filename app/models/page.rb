@@ -1,23 +1,37 @@
 class Page < ActiveRecord::Base
+  belongs_to :parent, :class_name => "Page"
+  has_many :subpages, :class_name => "Page", :foreign_key => "parent_id", :dependent => :destroy, :order => "display_order"
   has_paper_trail
 
-  has_many :subpages, :class_name => "Page", :foreign_key => "parent_id", :dependent => :destroy, :order => "display_order"
+  before_validation :generate_slug
 
-  belongs_to :parent, :class_name => "Page"
+  validates :title,
+    :presence => true,
+    :uniqueness => true
 
-  validates_uniqueness_of :title
+  validates :slug,
+    :presence => true,
+    :uniqueness => true
 
-  validates_presence_of :title, :body, :display_order
+  validates :display_order,
+    :presence => true
 
-  before_save :create_slug
+  validates :status,
+    :numericality => true
+
+  validate :parent_must_exist
 
   scope :top_level, lambda { where(:parent_id => nil) }
+
+  def parent_must_exist
+    errors.add(:parent_id, t("activerecord.errors.models.page.parent_must_exist")) if parent_id && parent.nil?
+  end
 
   def to_param
     self.slug
   end
 
-  def create_slug
+  def generate_slug
     if self.title.blank?
       self.slug = self.id
     else
@@ -42,7 +56,7 @@ class Page < ActiveRecord::Base
       dropdown_title += " " + self.title
     end
 
-    return dropdown_title
+    dropdown_title
   end
   
   def self.search(search)

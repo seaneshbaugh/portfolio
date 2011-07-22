@@ -13,55 +13,48 @@
 ActiveRecord::Schema.define(:version => 20110716092513) do
 
   create_table "pages", :force => true do |t|
-    t.text     "title"
+    t.text     "title",                               :null => false
     t.text     "body"
     t.text     "style"
     t.text     "meta_description"
     t.text     "meta_keywords"
-    t.text     "slug"
+    t.string   "slug",                                :null => false
     t.integer  "parent_id"
-    t.integer  "display_order",    :default => 0
-    t.integer  "status",           :default => 1
-    t.boolean  "private",          :default => false
+    t.integer  "display_order",    :default => 0,     :null => false
+    t.integer  "status",           :default => 1,     :null => false
+    t.boolean  "private",          :default => false, :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
   create_table "posts", :force => true do |t|
-    t.text     "title"
+    t.text     "title",                               :null => false
     t.text     "body"
     t.text     "style"
     t.text     "meta_description"
     t.text     "meta_keywords"
-    t.text     "slug"
-    t.integer  "user_id"
-    t.integer  "status"
-    t.boolean  "private"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  create_table "sessions", :force => true do |t|
-    t.integer  "user_id"
-    t.string   "ip_address"
-    t.string   "path"
+    t.string   "slug",                                :null => false
+    t.integer  "user_id",                             :null => false
+    t.integer  "status",           :default => 1,     :null => false
+    t.boolean  "private",          :default => false, :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
   create_table "users", :force => true do |t|
-    t.string   "name"
-    t.string   "salt"
-    t.string   "encrypted_password"
-    t.string   "cookie_code"
-    t.string   "email_address"
+    t.string   "email_address",                         :null => false
+    t.string   "password_hash",                         :null => false
+    t.string   "password_salt",                         :null => false
+    t.string   "remember_me_token"
+    t.string   "password_reset_token"
     t.string   "first_name"
     t.string   "last_name"
     t.string   "phone_number"
     t.string   "ip_addresses"
-    t.integer  "privilege_level"
-    t.integer  "login_count",        :default => 0
-    t.integer  "post_count"
+    t.integer  "privilege_level",        :default => 1, :null => false
+    t.integer  "login_count",            :default => 0, :null => false
+    t.integer  "post_count",             :default => 0, :null => false
+    t.datetime "password_reset_sent_at"
     t.datetime "last_login"
     t.datetime "created_at"
     t.datetime "updated_at"

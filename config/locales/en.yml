@@ -81,7 +81,10 @@ en:
           "cannot be blank"
       models:
         page:
+          parent_must_exist: "must reference an existing page"
           taken: "is already in use by another page"
+        post:
+          user_must_exist: "must reference an existing user"
         user:
           confirmation: "does not match the confirmation"
           taken: "is already in use by another user"

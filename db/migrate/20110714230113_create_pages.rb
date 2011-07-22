@@ -1,10 +1,16 @@
 class CreatePages < ActiveRecord::Migration
   def self.up
     create_table :pages do |t|
-      t.text :title, :body, :style, :meta_description, :meta_keywords, :slug
+      t.text :title, :null => false
+      t.text :body
+      t.text :style
+      t.text :meta_description
+      t.text :meta_keywords
+      t.string :slug, :null => false
       t.belongs_to :parent
-      t.integer :display_order, :status
-      t.boolean :private
+      t.integer :display_order, :null => false, :default => 0
+      t.integer :status, :null => false, :default => 1
+      t.boolean :private, :null => false, :default => false
       t.timestamps
     end
   end

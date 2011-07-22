@@ -4,10 +4,9 @@
     <tr>
       <th scope="col"><input class="check-all" type="checkbox"></th>
       <th scope="col"><%= sortable "id", "ID" %></th>
-      <th scope="col"><%= sortable "name", "User Name" %></th>
+      <th scope="col"><%= sortable "email_address", "E-mail" %></th>
       <th scope="col"><%= sortable "first_name" %></th>
       <th scope="col"><%= sortable "last_name" %></th>
-      <th scope="col"><%= sortable "email_address", "E-mail" %></th>
       <th scope="col"><%= sortable "phone_number" %></th>
       <th scope="col"><%= sortable "privilege_level" %></th>
       <th scope="col"><%= sortable "ip_addresses" %></th>
@@ -29,10 +28,9 @@
           <% end %>
         </td>
         <td><%= link_to user.id, admin_user_path(user) %></td>
-        <td><%= link_to user.name, admin_user_path(user) %></td>
+        <td><%= link_to user.email_address, admin_user_path(user) %></td>
         <td><%= user.first_name %></td>
         <td><%= user.last_name %></td>
-        <td><%= link_to user.email_address, "mailto:#{user.email_address}" %></td>
         <td><%= user.phone_number %></td>
         <td><%= user.privilege_level %></td>
         <td>
