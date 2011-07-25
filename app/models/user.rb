@@ -7,6 +7,7 @@ class User < ActiveRecord::Base
   has_many :posts, :dependent => :destroy
   has_paper_trail
 
+  after_initialize :initialize_defaults
   before_create { generate_token(:remember_me_token) }
   before_save :encrypt_password, :scrub
 
@@ -51,6 +52,12 @@ class User < ActiveRecord::Base
   PrivilegeLevelAdmin     = 3
   PrivilegeLevelSysOp     = 4
 
+  def initialize_defaults
+    self.privilege_level ||= 1
+    self.login_count ||= 0
+    self.post_count ||= 0
+  end
+
   def generate_token(column)
     begin
       self[column] = SecureRandom.base64(9)
@@ -79,10 +86,16 @@ class User < ActiveRecord::Base
     UserMailer.password_reset(self).deliver
   end
 
-  def self.authenticate(email_address, password)
+  def self.authenticate(email_address, password, limit_session = false)
     user = find_by_email_address(email_address)
 
     if user && user.password_hash == Digest::SHA256.hexdigest(password + user.password_salt)
+      if limit_session
+        user.generate_token(:remember_me_token)
+
+        user.save
+      end
+
       user
     else
       nil

@@ -13,9 +13,18 @@ class Post < ActiveRecord::Base
     :uniqueness => true
 
   validates :status,
+    :presence => true,
     :numericality => true
 
+  validates :private,
+    :presence => true
+
   validate :user_must_exist
+
+  def initialize_defaults
+    self.status ||= 0
+    self.private ||= false
+  end
 
   def user_must_exist
     errors.add(:user_id, t("activerecord.errors.models.post.user_must_exist")) if user_id && user.nil?
@@ -32,7 +41,7 @@ class Post < ActiveRecord::Base
       self.slug = self.title.parameterize
     end
   end
-  
+
   def self.search(search)
     if search
       #where("title LIKE ?", "%#{search}%")

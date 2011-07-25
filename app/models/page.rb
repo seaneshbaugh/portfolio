@@ -3,6 +3,7 @@ class Page < ActiveRecord::Base
   has_many :subpages, :class_name => "Page", :foreign_key => "parent_id", :dependent => :destroy, :order => "display_order"
   has_paper_trail
 
+  after_initialize :initialize_defaults
   before_validation :generate_slug
 
   validates :title,
@@ -14,14 +15,25 @@ class Page < ActiveRecord::Base
     :uniqueness => true
 
   validates :display_order,
-    :presence => true
+    :presence => true,
+    :numericality => true
 
   validates :status,
+    :presence => true,
     :numericality => true
+
+  validates :private,
+    :presence => true
 
   validate :parent_must_exist
 
   scope :top_level, lambda { where(:parent_id => nil) }
+
+  def initialize_defaults
+    self.display_order ||= 0
+    self.status ||= 0
+    self.private ||= false
+  end
 
   def parent_must_exist
     errors.add(:parent_id, t("activerecord.errors.models.page.parent_must_exist")) if parent_id && parent.nil?
@@ -58,7 +70,7 @@ class Page < ActiveRecord::Base
 
     dropdown_title
   end
-  
+
   def self.search(search)
     if search
       #where("title LIKE ?", "%#{search}%")

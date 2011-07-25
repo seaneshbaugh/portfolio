@@ -6,11 +6,11 @@ class SessionsController < ApplicationController
   end
 
   def create
-    user = User.authenticate(params[:email_address], params[:password])
+    user = User.authenticate(params[:email_address], params[:password], params[:limit_session])
 
     if user
       if params[:remember_me]
-         cookies.permanent[:remember_me_token] = user.remember_me_token
+        cookies.permanent[:remember_me_token] = user.remember_me_token
       else
          cookies[:remember_me_token] = user.remember_me_token
       end
