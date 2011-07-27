@@ -1,6 +1,15 @@
 $(document).ready(function(){
-	if ($("#search").val().length > 0) {
-		$("#search").focus();
+    $(".click-to-close").click(function() {
+		$(this).fadeTo(400, 0, function () {
+			$(this).slideUp(400);
+		});
+		return false;
+	});
+
+	if ($("#search").length) {
+		if ($("#search").val().length > 0) {
+			$("#search").focus();
+		}
 	}
 
 	if (history && history.pushState) {
@@ -39,5 +48,11 @@ $(document).ready(function(){
 			$("#edit-selected-button").attr("disabled", "disabled");
 			$("#delete-selected-button").attr("disabled", "disabled");
 		}
+	});
+
+	$("#toggle-debug").click(function() {
+		$("#debug-info").slideToggle();
+
+		$(".toggle-debug-text").toggle();
 	});
 });

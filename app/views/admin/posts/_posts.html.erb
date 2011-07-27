@@ -24,7 +24,7 @@
         <td><%= link_to post.title, admin_post_path(post) %></td>
         <td><%= truncate(post.body) %></td>
         <td><%= truncate(post.style) %></td>
-        <td><% if post.user %><%= link_to post.user.name, admin_user_path(post.user) %><% else %>-<% end %></td>
+        <td><% if post.user %><%= link_to "#{post.user.first_name} #{post.user.last_name}", admin_user_path(post.user) %><% else %>-<% end %></td>
         <td>
           <%= case post.status
             when 0

@@ -19,20 +19,20 @@ SeaneshbPortfolio::Application.routes.draw do
     root :to => 'admin#index'
 
     resources :pages do
-	  collection do
-	    get :edit_multiple
-	    put :update_multiple
-	    post :destroy_multiple
-	  end
-	end
+      collection do
+        get :edit_multiple
+        put :update_multiple
+        post :destroy_multiple
+      end
+    end
 
-	resources :posts do
-	  collection do
-	    get :edit_multiple
-	    put :update_multiple
-	    post :destroy_multiple
-	  end
-	end
+    resources :posts do
+      collection do
+        get :edit_multiple
+        put :update_multiple
+        post :destroy_multiple
+      end
+    end
 
     resources :users do
       collection do

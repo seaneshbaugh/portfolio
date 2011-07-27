@@ -16,9 +16,6 @@ class Post < ActiveRecord::Base
     :presence => true,
     :numericality => true
 
-  validates :private,
-    :presence => true
-
   validate :user_must_exist
 
   def initialize_defaults

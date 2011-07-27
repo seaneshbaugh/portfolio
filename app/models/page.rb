@@ -22,9 +22,6 @@ class Page < ActiveRecord::Base
     :presence => true,
     :numericality => true
 
-  validates :private,
-    :presence => true
-
   validate :parent_must_exist
 
   scope :top_level, lambda { where(:parent_id => nil) }
