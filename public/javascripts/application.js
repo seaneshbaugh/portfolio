@@ -4,27 +4,15 @@ $(document).ready(function() {
 			var link = this.href;
 
 			$("#content").fadeOut(500, function() {
-				$.getScript(link);
+				$.getScript(link, function() {
+					$("#content").fadeIn(500);
+				});
 			});
-
-
-			//alert(this.href);
-			//$.get(this.href, null, null, "script");
-
-			$("#content").delay(500).fadeIn(500);
 
 			history.pushState(null, document.title, this.href);
 
 			return false;
 		});
-
-		//$("th a, .pagination a").live("click", function() {
-			//$.getScript(this.href);
-
-			//history.pushState(null, "", this.href);
-
-			//return false;
-		//});
 
 		$(window).bind("popstate", function() {
 			$.getScript(location.href);
