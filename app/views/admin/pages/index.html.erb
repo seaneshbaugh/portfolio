@@ -1,15 +1,18 @@
-<h2>Pages</h2>
+<div id="page-info" class="in">
+  <h2>Pages</h2>
+  <p>This is a list of all the site's pages. From here you can view, modify, or delete any page on the site.</p>
+</div>
 <div class="line"></div>
-<p>This is a list of all the site's pages. From here you can view, modify, or delete any page on the site.</p>
-<%= link_to "New Page", new_admin_page_path %>
-<%= form_tag admin_pages_path, :method => :get, :id => "index-search" do %>
-  <%= hidden_field_tag :sort, params[:sort] %>
-  <%= hidden_field_tag :order, params[:order]%>
-  <p>
-    <%= text_field_tag :search, params[:search] %>
-    <%= submit_tag "Search", :name => nil %>
-  </p>
-<% end %>
-<div id="pages">
+<div id="page-actions" class="in">
+  <%= link_to "New Page", new_admin_page_path %>
+  <%= form_tag admin_pages_path, :method => :get, :id => "index-search", :class => "object-search" do %>
+    <%= hidden_field_tag :sort, params[:sort] %>
+    <%= hidden_field_tag :order, params[:order]%>
+    <p>
+      <%= text_field_tag :search, params[:search] %><%= submit_tag "Search", :name => nil %>
+    </p>
+  <% end %>
+</div>
+<div id="users" class="in">
   <%= render "pages" %>
 </div>

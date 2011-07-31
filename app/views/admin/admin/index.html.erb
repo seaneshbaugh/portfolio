@@ -1,1 +1,27 @@
-<p>This is the Admin Panel Index.</p>
+<div id="page-info" class="in">
+  <h2>Admin Panel Home</h2>
+</div>
+<div class="line"></div>
+<div id="quick-links" class="in">
+This is where links to shortcuts will go!
+</div>
+<div id="quick-post" class="in">
+  <h3>Quick Post</h3>
+  <%= form_for [:admin, @post] do |f| %>
+    <fieldset>
+      <%= f.hidden_field :status, :value => 1 %>
+      <%= f.hidden_field :private, :value => 0 %>
+      <p>
+        <%= f.label :title, "Title:" %><br />
+        <%= f.text_field :title, :class => "small" %>
+      </p>
+      <p>
+        <%= f.label :body, "Body:" %><br />
+        <%= f.text_area :body, :class => "large" %>
+      </p>
+      <p>
+        <%= submit_tag "Submit", :class => "submit" %>
+      </p>
+    </fieldset>
+  <% end %>
+</div>

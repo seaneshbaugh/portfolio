@@ -1,6 +1,6 @@
 class Admin::UsersController < Admin::AdminController
 helper_method :sort_column, :sort_order
-  
+
   def index
     @users = User.search(params[:search]).page(params[:page]).order(sort_column + " " + sort_order)
   end
@@ -32,8 +32,6 @@ helper_method :sort_column, :sort_order
 
         render :action => :new and return
       end
-
-      @user.generate_cookie_code
 
       if @user.save
         flash[:type] = "success"

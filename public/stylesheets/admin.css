@@ -229,16 +229,25 @@ th, td {
 
 /* Begin Forms */
 
-input[type="text"], input[type="password"], input[type="file"], select {
+input[type="file"],
+input[type="password"],
+input[type="text"],
+select {
 	border: 1px solid #bab9b9;
+	box-sizing: content-box;
+	-moz-box-sizing: content-box;
+	-ms-box-sizing: content-box;
+	-webkit-box-sizing: content-box;
 	color: #707070;
 	font-size: 1.4rem;
 	margin-top: 5px;
 	padding: 10px;
 }
 
+input[type="button"],
+input[type="reset"],
 input[type="submit"] {
-	border:  0;
+	border: 0;
 	background: #f7941d;
 	color: #ffffff;
 	font-size: 1.4rem;
@@ -246,20 +255,65 @@ input[type="submit"] {
 	padding: 10px 20px;
 }
 
-input.small {
+textarea {
+	border: 1px solid #bab9b9;
+	color: #707070;
+	font-size: 1.4rem;
+	height: 140px;
+	margin-top: 5px;
+	padding: 10px;
+	width: 830px;
+}
+
+input.small, select.small {
 	width: 300px;
 }
 
-input.medium {
+input.medium, select.medium {
 	width: 600px;
 }
 
-input.large, textarea {
-	width: 850px;
+input.large, select.large {
+	width: 830px;
 }
 
 form p {
 	margin-bottom: 15px;
+}
+
+.field_with_errors input, .field_with_errors select, .field_with_errors textarea {
+	border: #ff3443 1px solid;
+	box-shadow: 0 0 5px rgba(255, 52, 67, 1);
+	-moz-box-shadow: 0 0 5px rgba(255, 52, 67, 1);
+	-webkit-box-shadow: 0 0 5px rgba(255, 52, 67, 1);
+}
+
+input[type="file"],
+input[type="password"],
+input[type="text"],
+select,
+textarea {
+	outline: none;
+	transition: box-shadow 0.30s ease-in-out,
+				-moz-box-shadow 0.30s ease-in-out,
+				-webkit-box-shadow 0.30s ease-in-out;
+	-moz-transition: box-shadow 0.30s ease-in-out,
+					 -moz-box-shadow 0.30s ease-in-out,
+					 -webkit-box-shadow 0.30s ease-in-out;
+	-webkit-transition: box-shadow 0.30s ease-in-out,
+						-moz-box-shadow 0.30s ease-in-out,
+						-webkit-box-shadow 0.30s ease-in-out;
+}
+
+input[type="file"]:focus,
+input[type="password"]:focus,
+input[type="text"]:focus,
+select:focus,
+textarea:focus {
+	border: 1px solid #bab9b9;
+	box-shadow: 0 0 5px rgba(81, 203, 238, 1);
+	-webkit-box-shadow: 0 0 5px rgba(81, 203, 238, 1);
+	-moz-box-shadow: 0 0 5px rgba(81, 203, 238, 1);
 }
 
 /* End Forms */

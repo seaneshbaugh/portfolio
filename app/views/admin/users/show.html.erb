@@ -25,6 +25,7 @@
   </p>
   <p><strong>Created at:</strong> <%= @user.created_at.strftime("%Y-%m-%d %H:%M:%S") %></p>
   <p><strong>Last Updated at:</strong> <%= @user.updated_at.strftime("%Y-%m-%d %H:%M:%S") %></p>
+  <p><strong>Last Login:</strong> <% if @user.last_login %><%= @user.last_login.strftime("%Y-%m-%d %H:%M:%S") %><% else %>Never<% end %></p>
 </div>
 <div id="toggle-debug" class="in">
   <span class="toggle-debug-text">Show Debug Info</span><span class="toggle-debug-text" style="display: none;">Hide Debug Info</span>

@@ -10,6 +10,7 @@ class Admin::AdminController < ApplicationController
   before_filter :is_sysop?, :only => :reboot
 
   def index
+    @post = Post.new
   end
 
   def reboot

@@ -1,6 +1,5 @@
 <div id="page-info" class="in">
   <h2><%= legend %></h2>
-  <p>Add new users here.</p>
 </div>
 <div class="line"></div>
 <div class="in">
@@ -36,10 +35,11 @@
       </p>
       <p>
         <%= f.label :privilege_level, "Privilege Level:" %><br />
-        <%= f.select :privilege_level, get_valid_privilege_levels %>
+        <%= f.select :privilege_level, get_valid_privilege_levels, {}, :class => "small" %>
       </p>
-      <br />
-      <%= submit_tag "Submit", :class => "submit" %>
+      <p>
+        <%= submit_tag "Submit", :class => "submit" %>
+      </p>
     </fieldset>
   <% end %>
 </div>

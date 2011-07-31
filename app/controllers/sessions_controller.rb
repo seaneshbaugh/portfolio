@@ -17,7 +17,7 @@ class SessionsController < ApplicationController
 
       flash[:type] = "success"
 
-      flash[:notice] = t "flash.session.success.login"
+      flash[:notice] = t "flash.session.success.login", :user_name => user.first_name
 
       redirect_to root_url and return
     else
