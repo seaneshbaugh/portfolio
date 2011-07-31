@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110716092513) do
+ActiveRecord::Schema.define(:version => 20110731073120) do
 
   create_table "pages", :force => true do |t|
     t.text     "title",                               :null => false
@@ -23,6 +23,15 @@ ActiveRecord::Schema.define(:version => 20110716092513) do
     t.integer  "display_order",    :default => 0,     :null => false
     t.integer  "status",           :default => 1,     :null => false
     t.boolean  "private",          :default => false, :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "pictures", :force => true do |t|
+    t.text     "title"
+    t.text     "alt_text"
+    t.text     "caption"
+    t.string   "image"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

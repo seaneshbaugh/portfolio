@@ -26,6 +26,8 @@ SeaneshbPortfolio::Application.routes.draw do
       end
     end
 
+    resources :pictures
+
     resources :posts do
       collection do
         get :edit_multiple

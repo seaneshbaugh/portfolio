@@ -42,7 +42,7 @@ class Post < ActiveRecord::Base
   def self.search(search)
     if search
       #where("title LIKE ?", "%#{search}%")
-      where("title LIKE :search OR body LIKE :search OR style LIKE :search", {:search => "%#{search}%"})
+      where("title LIKE :search OR body LIKE :search OR style LIKE :search", { :search => "%#{search}%" })
     else
       scoped
     end
