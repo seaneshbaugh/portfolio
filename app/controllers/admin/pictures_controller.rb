@@ -22,13 +22,19 @@ class Admin::PicturesController < Admin::AdminController
   end
 
   def create
+    if params[:picture] and params[:picture][:image]
+      params[:picture][:image].original_filename = "#{(Time.now.to_i.to_s + Time.now.usec.to_s).ljust(16, '0')}#{File.extname(params[:picture][:image].original_filename)}"
+    end
+
     @picture = Picture.new(params[:picture])
 
     unless @picture.nil?
       if @picture.save
         flash[:type] = "success"
 
-        flash[:notice] = t "flash.picture.success.created", :picture_title => @picture.title, :undo_link => undo_link
+        flash[:notice] = t "flash.picture.success.created", :picture_title => @picture.title , :undo_link => "" #undo_link
+
+        flash[:debug] = params[:picture][:title]
 
         redirect_to admin_pictures_url and return
       else
@@ -60,13 +66,17 @@ class Admin::PicturesController < Admin::AdminController
   end
 
   def update
+    if params[:picture] and params[:picture][:image]
+      params[:picture][:image].original_filename = "#{(Time.now.to_i.to_s + Time.now.usec.to_s).ljust(16, '0')}#{File.extname(params[:picture][:image].original_filename)}"
+    end
+
     @picture = Picture.find_by_id(params[:id])
 
     unless @picture.nil?
       if @picture.update_attributes(params[:picture])
         flash[:type] = "success"
 
-        flash[:notice] = t "flash.picture.success.updated", :picture_title => @picture.title, :undo_link => undo_link
+        flash[:notice] = t "flash.picture.success.updated", :picture_title => @picture.title, :undo_link => "" #undo_link
 
         redirect_to admin_picture_url(@picture) and return
       else
@@ -93,7 +103,7 @@ class Admin::PicturesController < Admin::AdminController
 
       flash[:type] = "success"
 
-      flash[:notice] = t "flash.picture.success.destroyed", :picture_title => @picture.title, :undo_link => undo_link
+      flash[:notice] = t "flash.picture.success.destroyed", :picture_title => @picture.title , :undo_link => "" #undo_link
 
       redirect_to admin_pictures_url and return
     else
@@ -115,7 +125,7 @@ class Admin::PicturesController < Admin::AdminController
     ["asc", "desc"].include?(params[:order]) ? params[:order] : "asc"
   end
 
-  def undo_link
-    view_context.link_to(t("flash.versions.undo"), revert_version_path(@picture.versions.scoped.last), :method => :post)
-  end
+  #def undo_link
+    #view_context.link_to(t("flash.versions.undo"), revert_version_path(@picture.versions.scoped.last), :method => :post)
+  #end
 end

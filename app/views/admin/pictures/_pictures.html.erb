@@ -19,7 +19,7 @@
       <tr class="<% if even_row %>even<% else %>odd<% end %><% even_row = !even_row %>">
         <!--<td><%= check_box_tag "pictures_ids[]", picture.id %></td>-->
         <td><%= link_to picture.id, admin_picture_path(picture) %></td>
-        <td>X</td>
+        <td><%= link_to image_tag(picture.image_url(:thumb).to_s), admin_picture_path(picture) %></td>
         <td><%= link_to truncate(picture.title), admin_picture_path(picture) %></td>
         <td><%= truncate(picture.alt_text) %></td>
         <td><%= truncate(picture.caption) %></td>
