@@ -22,10 +22,6 @@ class Admin::PicturesController < Admin::AdminController
   end
 
   def create
-    if params[:picture] and params[:picture][:image]
-      params[:picture][:image].original_filename = "#{(Time.now.to_i.to_s + Time.now.usec.to_s).ljust(16, '0')}#{File.extname(params[:picture][:image].original_filename)}"
-    end
-
     @picture = Picture.new(params[:picture])
 
     unless @picture.nil?

@@ -1,58 +1,80 @@
 @charset "utf-8";
+
 /* Begin font-size Adjustment */
+
 html {
-  font-size: 62.5%; }
+  font-size: 62.5%;
+}
 
 body {
-  font-size: 1.3rem; }
+  font-size: 1.3rem;
+}
 
 /* End font-size Adjustment */
+
 /* Begin Header */
+
 header h1 {
   font-family: Coolvetica, Arial, "DejaVu Sans", sans-serif;
   font-size: 96px;
   font-weight: bold;
   letter-spacing: -7px;
-  text-shadow: 3px 3px 2px #999999; }
+  text-shadow: 3px 3px 2px #999999;
+}
 
 /* End Header */
+
 /* Begin Sticky Footer */
+
 html, body {
-  height: 100%; }
+  height: 100%;
+}
 
 #container {
-  min-height: 100%; }
+  min-height: 100%;
+}
 
 #content {
   overflow: auto;
-  padding-bottom: 100px; }
+  padding-bottom: 100px;
+}
 
 footer {
   clear: both;
   height: 100px;
   margin-top: -100px;
-  position: relative; }
+  position: relative;
+}
 
 body:before {
   content: "";
   float: left;
   height: 100%;
   margin-top: -32767px;
-  width: 0; }
+  width: 0;
+}
 
 /* End Sticky Footer */
+
 /* Begin Footer */
+
 footer {
   background: #000000;
-  color: #444444; }
+  color: #444444;
+}
 
 /* End Footer */
+
 /* Begin Field With Errors */
-.field_with_errors input, .field_with_errors textarea, .field_with_errors select {
-  border: 1px solid #ff0000;
-  border: 1px solid rgba(255, 0, 0, 0.8);
-  box-shadow: 0 0 5px red;
-  -moz-box-shadow: 0 0 5px red;
-  -webkit-box-shadow: 0 0 5px red; }
+
+.field_with_errors {
+  input, textarea, select {
+    border: 1px solid #ff0000;
+    border: 1px solid rgba(255, 0, 0, 0.8);
+    box-shadow: 0 0 5px rgba(255, 0, 0, 1);
+    -moz-box-shadow: 0 0 5px rgba(255, 0, 0, 1);
+    -webkit-box-shadow: 0 0 5px rgba(255, 0, 0, 1);
+  }
+}
 
 /* End Field With Errors */

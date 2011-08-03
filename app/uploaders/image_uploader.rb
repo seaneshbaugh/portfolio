@@ -37,18 +37,20 @@ class ImageUploader < CarrierWave::Uploader::Base
   # Add a white list of extensions which are allowed to be uploaded.
   # For images you might use something like this:
   def extension_white_list
-    %w(jpg jpeg gif png)
+    %w(jpg jpeg gif png tiff tif svg)
   end
 
   # Override the filename of the uploaded files:
   # Avoid using model.id or version_name here, see uploader/store.rb for details.
   def filename
-    #"something.jpg" if original_filename
-    #if original_filename
-      #timestamp = Time.now.to_i.to_s + Time.now.usec.to_s
+    timestamp = (Time.now.to_i.to_s + Time.now.usec.to_s).ljust(16, '0')
 
-      #@name ||= "#{timestamp.ljust(16, '0')}#{File.extname(original_filename)}"
-    #end
-    @name ||= "#{(Time.now.to_i.to_s + Time.now.usec.to_s).ljust(16, '0')}#{File.extname(original_filename)}" if original_filename
+    ivar = "@#{mounted_as}_timestamp"
+
+    token = model.instance_variable_get(ivar)
+
+    token ||= model.instance_variable_set(ivar, timestamp)
+
+    "#{token}#{File.extname(original_filename)}" if original_filename
   end
 end
