@@ -33,7 +33,7 @@ end
 
 gem 'rake', '0.8.7'
 
-gem 'haml'
+gem 'sass'
 
 gem 'kaminari'
 

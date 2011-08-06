@@ -18,6 +18,8 @@ SeaneshbPortfolio::Application.routes.draw do
   namespace :admin do
     root :to => 'admin#index'
 
+    get 'reboot' => 'admin#reboot', :as => 'reboot'
+
     resources :pages do
       collection do
         get :edit_multiple
