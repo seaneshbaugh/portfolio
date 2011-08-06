@@ -5,3 +5,4 @@ tmp/
 .redcar/
 .idea/
 public/uploads/*
+public/images/icons/*

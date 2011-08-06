@@ -259,3 +259,29 @@ footer {
   text-align: right; }
 
 /* End Footer */
+/* Begin Home Page Quick Links */
+#quick-links ul {
+  list-style-type: none;
+  margin: 0;
+  overflow: hidden;
+  padding: 10px;
+  text-align: center; }
+  #quick-links ul li {
+    display: inline-block;
+    margin: 0 10px 15px; }
+    #quick-links ul li a {
+      background: #ededed;
+      box-shadow: 3px 3px 5px #cccccc;
+      -moz-box-shadow: 3px 3px 5px #cccccc;
+      -webkit-box-shadow: 3px 3px 5px #cccccc;
+      display: inline-block;
+      padding: 30px;
+      height: 50px;
+      width: 50px; }
+      #quick-links ul li a:hover {
+        background: #fdfdfd;
+        box-shadow: 5px 5px 5px #cccccc;
+        -moz-box-shadow: 5px 5px 5px #cccccc;
+        -webkit-box-shadow: 5px 5px 5px #cccccc; }
+
+/* End Home Page Quick Links */
