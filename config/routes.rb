@@ -19,6 +19,7 @@ SeaneshbPortfolio::Application.routes.draw do
     root :to => 'admin#index'
 
     get 'reboot' => 'admin#reboot', :as => 'reboot'
+    get 'sql_dump' => 'admin#sql_dump', :as => 'sql_dump'
 
     resources :pages do
       collection do
