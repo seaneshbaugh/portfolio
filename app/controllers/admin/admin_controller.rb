@@ -22,26 +22,4 @@ class Admin::AdminController < ApplicationController
 
     redirect_to admin_root_url and return
   end
-
-  def sql_dump
-    database = ActiveRecord::Base.connection
-
-    sql = ""
-
-    database.tables.each do |table|
-      #columns = database.columns(table).map(&:name)
-
-      database.select_rows("SELECT * FROM %s" % table).each do |row|
-        sql << "INSERT INTO #{table} VALUES(#{row.join(', ')})"
-      end
-
-      #sql << "INSERT INTO #{table} (#{columns.join(', ')}) VALUES(go here)"
-    end
-
-    flash[:debug] = sql
-
-    redirect_to admin_root_url and return
-
-    #send_file(File.join("private/uploads", @agent_resource.resource_filename))
-  end
 end

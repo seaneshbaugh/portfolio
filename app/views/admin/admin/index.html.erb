@@ -31,23 +31,3 @@
     </fieldset>
   <% end %>
 </div>
-<% database = ActiveRecord::Base.connection
-
-    sql = ""
-
-    database.tables.each do |table|
-      #columns = database.columns(table).map(&:name)
-      if table != "versions" and table != "schema_migrations"
-        database.select_rows("SELECT * FROM %s" % table).each do |row|
-          sql << "INSERT INTO #{table} VALUES("
-
-          %><%= row.each do |r|
-puts r
-end%>
-      <%
-
-          #"#{row.join(', ')});\n"
-        end
-      end
-    end %>
-<%= sql %>
