@@ -327,6 +327,10 @@ select:focus, textarea:focus {
 
 /* Begin Debug Info */
 
+#toggle-debug {
+  cursor: pointer;
+}
+
 #debug-info {
   display: none;
 }

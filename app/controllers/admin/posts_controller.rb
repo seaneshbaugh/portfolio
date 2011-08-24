@@ -214,7 +214,7 @@ class Admin::PostsController < Admin::AdminController
   end
 
   def sort_order
-    ["asc", "desc"].include?(params[:order]) ? params[:order] : "asc"
+    ["asc", "desc"].include?(params[:order]) ? params[:order] : "desc"
   end
 
   def undo_link

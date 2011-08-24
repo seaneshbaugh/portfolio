@@ -4,7 +4,7 @@
   <% for user in @users %>
     <li>
       <%= hidden_field_tag "user_ids[]", user.id %>
-      <%= user.id %> - <%= user.name %>
+      <%= user.id %> - <%= user.first_name %> <%= user.last_name %>
     </li>
   <% end %>
 </ul>
