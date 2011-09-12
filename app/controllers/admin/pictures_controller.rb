@@ -24,28 +24,42 @@ class Admin::PicturesController < Admin::AdminController
   def create
     @picture = Picture.new(params[:picture])
 
-    unless @picture.nil?
-      if @picture.save
-        flash[:type] = "success"
+    if params[:picture] and params[:picture][:image].blank?
+      flash[:type] = "error"
 
-        flash[:notice] = t "flash.picture.success.created", :picture_title => @picture.title , :undo_link => "" #undo_link
+      flash[:notice] = t "flash.picture.error.no_image_selected"
 
-        flash[:debug] = params[:picture][:title]
+      render :action => :new and return
+    end
 
-        redirect_to admin_pictures_url and return
+    flash[:type] = "success"
+
+    flash[:notice] = ""
+
+    params[:picture][:image].length.times do |i|
+      picture = Picture.new
+
+      picture.title = params[:picture][:title]
+
+      picture.alt_text = params[:picture][:alt_text]
+
+      picture.caption = params[:picture][:caption]
+
+      picture.image = params[:picture][:image][i]
+
+      if picture.save
+        flash[:notice] << t("flash.picture.success.created", :picture_title => picture.title) # , :undo_link => "" #undo_link
       else
         flash[:type] = "error"
 
-        flash[:notice] = validation_errors_for(@picture)
-
-        render :action => :new and return
+        flash[:notice] << validation_errors_for(picture)
       end
+    end
+
+    if flash[:type] == "error"
+      render :action => :new and return
     else
-      flash[:type] = "error"
-
-      flash[:notice] = t "flash.page.error.could_not_create"
-
-      redirect_to new_admin_picture_url and return
+      redirect_to admin_pictures_url and return
     end
   end
 
@@ -62,17 +76,13 @@ class Admin::PicturesController < Admin::AdminController
   end
 
   def update
-    if params[:picture] and params[:picture][:image]
-      params[:picture][:image].original_filename = "#{(Time.now.to_i.to_s + Time.now.usec.to_s).ljust(16, '0')}#{File.extname(params[:picture][:image].original_filename)}"
-    end
-
     @picture = Picture.find_by_id(params[:id])
 
     unless @picture.nil?
       if @picture.update_attributes(params[:picture])
         flash[:type] = "success"
 
-        flash[:notice] = t "flash.picture.success.updated", :picture_title => @picture.title, :undo_link => "" #undo_link
+        flash[:notice] = t "flash.picture.success.updated", :picture_title => @picture.title
 
         redirect_to admin_picture_url(@picture) and return
       else
@@ -99,7 +109,7 @@ class Admin::PicturesController < Admin::AdminController
 
       flash[:type] = "success"
 
-      flash[:notice] = t "flash.picture.success.destroyed", :picture_title => @picture.title , :undo_link => "" #undo_link
+      flash[:notice] = t "flash.picture.success.destroyed", :picture_title => @picture.title
 
       redirect_to admin_pictures_url and return
     else

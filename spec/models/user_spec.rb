@@ -22,7 +22,8 @@ describe User do
       it "must have a #{attr}" do
         user = User.new
         user.should_not be_valid
-        user.errors[attr].should include(I18n.t("activerecord.errors.messages.blank"))
+        #user.errors[attr].should include(I18n.t("activerecord.errors.messages.blank"))
+        user.errors[attr].should_not be_nil
       end
     end
 

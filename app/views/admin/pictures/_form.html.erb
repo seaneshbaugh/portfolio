@@ -18,7 +18,11 @@
         <%= f.text_field :caption, :class => "small" %>
       </p>
       <p>
-        <%= f.file_field :image %>
+        <% if @picture.new_record? %>
+          <%= f.file_field :image, :multiple => true, :accept => "image/jpeg,image/gif,image/png,image/tiff,image/svg+xml" %>
+        <% else %>
+          <%= f.file_field :image, :accept => "image/jpeg,image/gif,image/png,image/tiff,image/svg+xml" %>
+        <% end %>
       </p>
       <p>
         <%= submit_tag "Submit" %>

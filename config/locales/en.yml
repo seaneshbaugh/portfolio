@@ -34,6 +34,7 @@ en:
     picture:
       error:
         could_not_find: "Error: Unable to find the specified picture!"
+        no_image_selected: "Error: No image selected!"
         could_not_create: "Error: Unable to create the picture!"
         could_not_save: "Error: Unable to save the picture to database!"
         could_not_update: "Error: Unable to save changes to the picture!"
@@ -41,9 +42,9 @@ en:
         could_not_find_multiple: "Error: Unable to find one or more of the specified picture!"
         could_not_update_multiple: "The following errors occurred when updating picture \"%{picture_title}\":<br />"
       success:
-        created: "Picture \"%{picture_title}\" has been created! %{undo_link}."
-        updated: "Picture \"%{picture_title}\" has been updated! %{undo_link}."
-        destroyed: "Picture \"%{picture_title}\" has been deleted! %{undo_link}."
+        created: "Picture \"%{picture_title}\" has been created!"
+        updated: "Picture \"%{picture_title}\" has been updated!"
+        destroyed: "Picture \"%{picture_title}\" has been deleted!"
     post:
       error:
         could_not_find: "Error: Unable to find the specified blog post!"

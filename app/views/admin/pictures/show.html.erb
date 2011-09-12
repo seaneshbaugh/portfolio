@@ -6,7 +6,7 @@
   <%= link_to "Edit Picture", edit_admin_picture_path(@picture) %><%= link_to "Delete Picture", admin_picture_path(@picture), :method => :delete %>
 </div>
 <div class="in">
-  <p><%= image_tag @picture.image_url(:thumb).to_s %></p>
+  <p><%= link_to image_tag(@picture.image_url(:thumb).to_s), @picture.image_url.to_s %></p>
   <p><strong>Title:</strong> <%= @picture.title %></p>
   <p><strong>Alt Text:</strong> <%= @picture.alt_text %></p>
   <p><strong>Caption:</strong> <%= @picture.caption %></p>

@@ -1,25 +1,46 @@
 @charset "utf-8";
 
-/* Begin font-size Adjustment */
-
-html {
-  font-size: 62.5%;
-}
+/* Begin Main Page Styles */
 
 body {
-  font-size: 1.3rem;
+  font-size: 13px;
 }
 
-/* End font-size Adjustment */
+a {
+  text-decoration: none;
+}
+
+/* End Main Page Styles */
 
 /* Begin Header */
 
-header h1 {
-  font-family: Coolvetica, Arial, "DejaVu Sans", sans-serif;
-  font-size: 96px;
-  font-weight: bold;
-  letter-spacing: -7px;
-  text-shadow: 3px 3px 2px #999999;
+header#main {
+  padding: 72px;
+  h1 {
+    font-family: Coolvetica, Arial, "DejaVu Sans", sans-serif;
+    font-size: 96px;
+    font-weight: bold;
+    letter-spacing: -7px;
+    text-shadow: 3px 3px 2px #999999;
+  }
+  #job-description {
+    color: #989898;
+    font-size: 18px;
+    left: 5px;
+    letter-spacing: -1px;
+    line-height: 18px;
+    position: relative;
+    top: -20px;
+  }
+  #valid {
+    color: #323232;
+    float: right;
+    font-size: 18px;
+    //right: 1000px;
+    letter-spacing: -1px;
+    position: relative;
+    top: -90px;
+  }
 }
 
 /* End Header */
@@ -35,6 +56,7 @@ html, body {
 }
 
 #content {
+  background: red;
   overflow: auto;
   padding-bottom: 100px;
 }

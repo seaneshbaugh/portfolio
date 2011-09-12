@@ -1,4 +1,5 @@
 require 'spec_helper'
+require 'truncate_html'
 
 describe Post do
   it "should save when associated with a valid user" do
@@ -17,5 +18,10 @@ describe Post do
       p.user.valid?.should be(false)
       p.valid?.should be(false)
     }
+  end
+
+  it "should truncate the html" do
+    truncate_html("A long time ago in a galaxy <b>far far away</b>", 8).should eql("<p>A long time ago in a galaxy <b>far...</b></p>")
+
   end
 end

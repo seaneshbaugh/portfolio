@@ -1,23 +1,15 @@
 @charset "utf-8";
 
-/* Begin font-size Adjustment */
-
-html {
-  font-size: 62.5%;
-}
+/* Begin Main Page Styles */
 
 body {
   background: #ebebeb;
   color: #464646;
   font-family: "Lucida Grande", "Lucida Sans", Arial, sans-serif;
-  font-size: 1.3rem;
+  font-size: 13px;
   margin: 0;
   padding: 0;
 }
-
-/* End font-size Adjustment */
-
-/* Begin Main Page Styles */
 
 h1, h2, h3 {
   margin: 0;
@@ -25,12 +17,12 @@ h1, h2, h3 {
 }
 
 h1 {
-  font-size: 3.2rem;
+  font-size: 32px;
 }
 
 h2 {
   font-family: Georgia, serif;
-  font-size: 2.4rem;
+  font-size: 24px;
   font-style: italic;
 }
 
@@ -110,7 +102,7 @@ nav#main {
       a {
         color: #ffffff;
         float: left;
-        font-size: 1.4rem;
+        font-size: 14px;
         margin: 0;
         padding: 20px 30px;
         text-decoration: none;
@@ -201,7 +193,7 @@ table {
 
 thead tr {
   background: #d9d8d8;
-  font-size: 1.4rem;
+  font-size: 14px;
 }
 
 tr {
@@ -227,7 +219,7 @@ input {
     -ms-box-sizing: content-box;
     -webkit-box-sizing: content-box;
     color: #707070;
-    font-size: 1.4rem;
+    font-size: 14px;
     margin-top: 5px;
     padding: 10px;
   }
@@ -240,7 +232,7 @@ select {
   -ms-box-sizing: content-box;
   -webkit-box-sizing: content-box;
   color: #707070;
-  font-size: 1.4rem;
+  font-size: 14px;
   margin-top: 5px;
   padding: 10px;
 }
@@ -250,7 +242,7 @@ input {
     border: 0;
     background: #f7941d;
     color: #ffffff;
-    font-size: 1.4rem;
+    font-size: 14px;
     margin: 0;
     padding: 10px 20px;
   }
@@ -259,7 +251,7 @@ input {
 textarea {
   border: 1px solid #bab9b9;
   color: #707070;
-  font-size: 1.4rem;
+  font-size: 14px;
   height: 140px;
   margin-top: 5px;
   padding: 10px;

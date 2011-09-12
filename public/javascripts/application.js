@@ -3,9 +3,9 @@ $(document).ready(function() {
 		$("nav ul li a").click(function() {
 			var link = this.href;
 
-			$("#content").fadeOut(500, function() {
+			$("#content").slideUp(500, function() {
 				$.getScript(link, function() {
-					$("#content").fadeIn(500);
+					$("#content").slideDown(500);
 				});
 			});
 
