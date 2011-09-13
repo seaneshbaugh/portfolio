@@ -1,0 +1,107 @@
+/*
+*= require reset
+*= require_self
+*/
+
+@charset "utf-8";
+/* TESTING */
+/* Begin Main Page Styles */
+
+body {
+  font-size: 13px;
+}
+
+a {
+  text-decoration: none;
+}
+
+/* End Main Page Styles */
+
+/* Begin Header */
+
+header#main {
+  padding: 72px;
+  h1 {
+    font-family: Coolvetica, Arial, "DejaVu Sans", sans-serif;
+    font-size: 96px;
+    font-weight: bold;
+    letter-spacing: -7px;
+    text-shadow: 3px 3px 2px #999999;
+  }
+  #job-description {
+    color: #989898;
+    font-size: 18px;
+    left: 5px;
+    letter-spacing: -1px;
+    line-height: 18px;
+    position: relative;
+    top: -20px;
+  }
+  #valid {
+    color: #323232;
+    float: right;
+    font-size: 18px;
+    //right: 1000px;
+    letter-spacing: -1px;
+    position: relative;
+    top: -90px;
+  }
+}
+
+/* End Header */
+
+/* Begin Sticky Footer */
+
+html, body {
+  height: 100%;
+}
+
+#container {
+  min-height: 100%;
+}
+
+#content {
+  background: red;
+  overflow: auto;
+  padding-bottom: 100px;
+}
+
+footer {
+  clear: both;
+  height: 100px;
+  margin-top: -100px;
+  position: relative;
+}
+
+body:before {
+  content: "";
+  float: left;
+  height: 100%;
+  margin-top: -32767px;
+  width: 0;
+}
+
+/* End Sticky Footer */
+
+/* Begin Footer */
+
+footer {
+  background: #000000;
+  color: #444444;
+}
+
+/* End Footer */
+
+/* Begin Field With Errors */
+
+.field_with_errors {
+  input, textarea, select {
+    border: 1px solid #ff0000;
+    border: 1px solid rgba(255, 0, 0, 0.8);
+    box-shadow: 0 0 5px rgba(255, 0, 0, 1);
+    -moz-box-shadow: 0 0 5px rgba(255, 0, 0, 1);
+    -webkit-box-shadow: 0 0 5px rgba(255, 0, 0, 1);
+  }
+}
+
+/* End Field With Errors */
