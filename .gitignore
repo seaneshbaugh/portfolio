@@ -4,5 +4,9 @@ log/*.log
 tmp/
 .redcar/
 .idea/
-public/uploads/*
-public/images/icons/*
+public/uploads/
+public/images/icons/
+public/images/notifications/
+app/assets/images/icons/
+app/assets/images/notifications/
+.sass-cache/
