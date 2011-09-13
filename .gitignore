@@ -4,7 +4,7 @@ log/*.log
 tmp/
 .redcar/
 .idea/
-/uploads/*
+public/uploads/*
 public/images/icons/*
 public/images/notifications/*
 app/assets/images/icons/*
