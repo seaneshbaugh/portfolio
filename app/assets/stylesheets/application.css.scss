@@ -5,6 +5,8 @@
 
 @charset "utf-8";
 
+@font-face { font-family: ProximaNovaRegular; src: url("/fonts/ProximaNova-Regular.otf"); }
+
 /* Begin Main Page Styles */
 
 body {
@@ -19,7 +21,7 @@ a {
 
 /* Begin Header */
 
-header#main {
+#main-header {
   padding: 72px;
   h1 {
     font-family: Coolvetica, Arial, "DejaVu Sans", sans-serif;
@@ -61,12 +63,11 @@ html, body {
 }
 
 #content {
-  background: red;
   overflow: auto;
   padding-bottom: 100px;
 }
 
-footer {
+#main-footer {
   clear: both;
   height: 100px;
   margin-top: -100px;
@@ -85,7 +86,7 @@ body:before {
 
 /* Begin Footer */
 
-footer {
+#main-footer {
   background: #000000;
   color: #444444;
 }
@@ -105,3 +106,62 @@ footer {
 }
 
 /* End Field With Errors */
+
+/* Begin Blog Post */
+
+/*.post:nth-child(even) {
+  background: #ffff00;
+}*/
+
+.post {
+  margin: 0 auto 50px;
+  width: 900px;
+  header {
+    font-family: ProximaNovaRegular, Arial, serif;
+    overflow: hidden;
+    h1 {
+      border-bottom: 1px solid #e7e7e7;
+      float: left;
+      font-size: 34px;
+      font-weight: lighter;
+      padding-bottom: 10px;
+      width: 100%;
+      a {
+        color: #2e2e2e;
+      }
+    }
+    .date {
+      background: #f1f1f1;
+      border-radius: 15px;
+      float: right;
+      height: 60px;
+      line-height: 30px;
+      position: relative;
+      right: 80px;
+      top: -30px;
+      text-align: center;
+      width: 60px;
+      z-index: -1;
+      .day {
+        color: #2e2e2e;
+        float: left;
+        font-size: 24px;
+        height: 30px;
+        width: 60px;
+      }
+      .month {
+        color: #939191;
+        float: right;
+        font-size: 16px;
+        height: 30px;
+        text-transform: uppercase;
+        width: 60px;
+      }
+    }
+  }
+  .post-content {
+    margin-bottom: 25px;
+  }
+}
+
+/* End Blog Post */

@@ -18,7 +18,7 @@
 </head>
 <body>
   <div id="container">
-    <header id="main">
+    <header id="main-header">
       <h1>Sean Eshbaugh</h1>
       <div id="job-description">Ruby on Rails Developer + Programmer</div>
       <div id="valid">
@@ -49,7 +49,7 @@
       <%= yield %>
     </div>
   </div>
-  <footer>
+  <footer id="main-footer">
     Content copyright &copy; <%= Time.now.year %> Sean Eshbaugh. All Rights Reserved.<br />
     Created with <a href="http://rubyonrails.org/">Ruby on Rails</a> by <a href="http://seaneshbaugh.com/">Sean Eshbaugh</a>.<br />
     <% unless @current_user %>

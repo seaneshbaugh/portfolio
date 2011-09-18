@@ -1,3 +1,5 @@
+require 'truncate_html'
+
 class PostsController < ApplicationController
   def index
     @posts = Post.page(params[:page]).order("created_at desc")

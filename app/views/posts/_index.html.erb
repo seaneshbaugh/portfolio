@@ -1,15 +1,28 @@
-<% @posts.each do |post| %>
-  <article id="post-<%= post.id %>" class="post">
-    <header>
-
-    </header>
-    <div class="post-content">
-      <%= post
-    </div>
-    <footer>
-
-    </footer>
-  </article>
-
-<%= debug @posts %>
-
+<div id="blog">
+  <% @posts.each do |post| %>
+    <article id="post-<%= post.id %>" class="post">
+      <header>
+        <h1><%= link_to(post.title, post, :title => "\"#{post.title}\" posted on #{post.created_at.strftime("%Y-%m-%d %H:%M:%S")}") %></h1>
+        <div class="date">
+          <div class="day">
+            <%= post.created_at.strftime("%d") %>
+          </div>
+          <div class="month">
+            <%= post.created_at.strftime("%b") %>
+          </div>
+        </div>
+      </header>
+      <div class="post-content">
+        <% if !post.style.blank? %>
+          <style scoped="scoped" type="text/css">
+            <%= raw post.style %>
+          </style>
+        <% end %>
+        <%= raw truncate_html(post.body) %>
+      </div>
+      <footer>
+        <%= link_to "Read More...", post %>
+      </footer>
+    </article>
+  <% end  %>
+</div>
