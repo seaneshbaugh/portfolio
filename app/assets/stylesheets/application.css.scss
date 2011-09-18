@@ -162,6 +162,25 @@ body:before {
   .post-content {
     margin-bottom: 25px;
   }
+  footer {
+    .read-more {
+      a {
+        background: #f1f1f1;
+        border-radius: 10px;
+        color: #939191;
+        padding: 5px;
+        text-decoration: none;
+      }
+      a:hover {
+        color: #3e3e3e;
+      }
+    }
+  }
+}
+
+nav.pagination {
+  margin: 0 auto 50px;
+  width: 900px;
 }
 
 /* End Blog Post */

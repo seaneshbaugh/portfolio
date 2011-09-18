@@ -21,8 +21,11 @@
         <%= raw truncate_html(post.body) %>
       </div>
       <footer>
-        <%= link_to "Read More...", post %>
+        <div class="read-more">
+          <%= link_to "Read More...", post %>
+        </div>
       </footer>
     </article>
   <% end  %>
 </div>
+<%= paginate @posts %>

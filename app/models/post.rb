@@ -1,6 +1,7 @@
 class Post < ActiveRecord::Base
   belongs_to :user, :validate => true
   has_paper_trail
+  paginates_per 1
 
   before_validation :generate_slug
 
