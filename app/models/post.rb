@@ -1,7 +1,10 @@
+require "nokogiri"
+require "truncate_html"
+
 class Post < ActiveRecord::Base
   belongs_to :user, :validate => true
   has_paper_trail
-  paginates_per 1
+  paginates_per 10
 
   before_validation :generate_slug
 
@@ -18,6 +21,8 @@ class Post < ActiveRecord::Base
     :numericality => true
 
   validate :user_must_exist
+
+  scope :published, lambda { where(:status => 1) }
 
   def initialize_defaults
     self.status ||= 0
@@ -40,9 +45,32 @@ class Post < ActiveRecord::Base
     end
   end
 
+  def more
+    if self.body.include?("<!--more-->")
+      self.body[0..self.body.index("<!--more-->") - 1]
+    else
+      self.body
+    end
+  end
+
+  def truncated?
+    self.body.length > truncate_html(self.more).length
+  end
+
+  def first_image
+    body_doc = Nokogiri::HTML(self.body)
+
+    images = body_doc.xpath("//img")
+
+    if images.length > 0
+      images[0]["src"]
+    else
+      nil
+    end
+  end
+
   def self.search(search)
     if search
-      #where("title LIKE ?", "%#{search}%")
       where("title LIKE :search OR body LIKE :search OR style LIKE :search", { :search => "%#{search}%" })
     else
       scoped

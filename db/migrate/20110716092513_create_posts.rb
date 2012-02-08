@@ -1,5 +1,5 @@
 class CreatePosts < ActiveRecord::Migration
-  def self.up
+  def change
     create_table :posts do |t|
       t.text :title, :null => false
       t.text :body
@@ -12,9 +12,5 @@ class CreatePosts < ActiveRecord::Migration
       t.boolean :private, :null => false, :default => false
       t.timestamps
     end
-  end
-
-  def self.down
-    drop_table :posts
   end
 end

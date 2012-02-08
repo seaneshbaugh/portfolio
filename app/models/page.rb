@@ -33,7 +33,7 @@ class Page < ActiveRecord::Base
   end
 
   def parent_must_exist
-    errors.add(:parent_id, t("activerecord.errors.models.page.parent_must_exist")) if parent_id && parent.nil?
+    errors.add(:parent_id, I18n.t("activerecord.errors.models.page.parent_must_exist")) if parent_id && parent.nil?
   end
 
   def to_param
@@ -70,7 +70,6 @@ class Page < ActiveRecord::Base
 
   def self.search(search)
     if search
-      #where("title LIKE ?", "%#{search}%")
       where("title LIKE :search OR body LIKE :search OR style LIKE :search", { :search => "%#{search}%" })
     else
       scoped

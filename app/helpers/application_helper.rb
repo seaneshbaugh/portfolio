@@ -1,4 +1,9 @@
 module ApplicationHelper
+  def image_url(source)
+    root = root_url
+    root[0, root.length - 1] + image_path(source)
+  end
+
   def sortable(column, title = nil)
     title ||= column.titleize
 

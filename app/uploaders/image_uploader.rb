@@ -51,6 +51,6 @@ class ImageUploader < CarrierWave::Uploader::Base
 
     token ||= model.instance_variable_set(ivar, timestamp)
 
-    "#{token}#{File.extname(original_filename)}" if original_filename
+    "#{token}#{File.extname(original_filename.downcase)}" if original_filename
   end
 end

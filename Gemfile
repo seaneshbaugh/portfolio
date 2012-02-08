@@ -1,6 +1,6 @@
 source 'http://rubygems.org'
 
-gem 'rails', '3.1.0'
+gem 'rails', '3.1.3'
 
 # Bundle edge Rails instead:
 # gem 'rails', :git => 'git://github.com/rails/rails.git'
@@ -26,8 +26,8 @@ gem 'sqlite3'
 # Gems used only for assets and not required
 # in production environments by default.
 group :assets do
-  gem 'sass-rails' #, '~> 3.1.0'
-  gem 'coffee-rails' #, '~> 3.1.0'
+  gem 'sass-rails' #, '~> 3.1.5'
+  gem 'coffee-rails' #, '~> 3.1.1'
   gem 'uglifier'
 end
 
@@ -41,18 +41,18 @@ group :development, :test do
   gem 'rspec-rails'
 end
 
-gem 'rake' #, '0.8.7'
+#gem 'rake' #, '0.8.7'
 
-#gem 'sass'
-
-gem 'kaminari'
+gem 'highline'
 
 gem 'nokogiri'
 
-gem 'rmagick', '2.12.0'
+gem 'kaminari'
 
 gem 'paper_trail'
 
+gem 'rmagick', '2.12.0'
+
 gem 'carrierwave'
 
-#gem 'exception_notification'
+gem 'yaml_db'

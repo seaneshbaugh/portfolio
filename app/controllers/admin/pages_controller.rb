@@ -1,4 +1,4 @@
-require 'hierarchy'
+require "hierarchy"
 
 class Admin::PagesController < Admin::AdminController
   helper_method :sort_column, :sort_order

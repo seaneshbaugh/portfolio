@@ -1,5 +1,5 @@
 class CreatePages < ActiveRecord::Migration
-  def self.up
+  def change
     create_table :pages do |t|
       t.text :title, :null => false
       t.text :body
@@ -13,9 +13,5 @@ class CreatePages < ActiveRecord::Migration
       t.boolean :private, :null => false, :default => false
       t.timestamps
     end
-  end
-
-  def self.down
-    drop_table :pages
   end
 end

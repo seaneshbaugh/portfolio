@@ -2,9 +2,8 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
-  <title>seaneshbaugh.com</title>
-  <meta name="description" content="" />
+  <title>seaneshbaugh.com Admin Panel</title>
+  <meta name="description" content="seaneshbaugh.com Admin Panel" />
   <meta name="author" content="Sean Eshbaugh" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <%= stylesheet_link_tag "admin" %>
@@ -14,6 +13,7 @@
   <![endif]-->
   <link rel="shortcut icon" href="favicon.ico" />
   <link rel="apple-touch-icon" href="images/apple-touch-icon.png" />
+  <link rel="author" href="humans.txt" />
   <%= csrf_meta_tag %>
 </head>
 <body>
@@ -28,6 +28,7 @@
           <li><%= link_to Page.model_name.human.pluralize, admin_pages_path, :class => is_current_controller?("admin/pages") %></li>
           <li><%= link_to Post.model_name.human.pluralize, admin_posts_path, :class => is_current_controller?("admin/posts") %></li>
           <li><%= link_to Picture.model_name.human.pluralize, admin_pictures_path, :class => is_current_controller?("admin/pictures") %></li>
+          <li><%= link_to "Site Home", root_path %></li>
         </ul>
       </nav>
     </header>

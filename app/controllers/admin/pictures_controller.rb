@@ -121,6 +121,12 @@ class Admin::PicturesController < Admin::AdminController
     end
   end
 
+  def selector
+    @pictures = Picture.all
+
+    render :layout => false
+  end
+
   private
 
   def sort_column

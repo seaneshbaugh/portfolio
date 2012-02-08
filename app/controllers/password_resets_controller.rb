@@ -8,7 +8,7 @@ class PasswordResetsController < ApplicationController
     user.send_password_reset if user
       flash[:type] = "success"
 
-      flash[:notice] = "CHANGE THIS TO BE i18nized! Sent email with password reset instructions."
+      flash[:notice] = t "flash.session.password_resets.sent_email"
 
       redirect_to root_url and return
   end
@@ -23,14 +23,14 @@ class PasswordResetsController < ApplicationController
     if @user.password_reset_sent_at < 2.hours.ago
       flash[:type] = "success"
 
-      flash[:notice] = "CHANGE THIS TO BE i18nized! Password reset has expired."
+      flash[:notice] = t "flash.session.password_resets.expired"
 
       redirect_to new_password_reset_path and return
     else
       if @user.update_attributes(params[:user])
         flash[:type] = "success"
 
-        flash[:notice] = "CHANGE THIS TO BE i18nized! Ypur password has been reset."
+        flash[:notice] = t "flash.session.password_resets.reset"
 
         redirect_to root_url and return
       else

@@ -5,28 +5,28 @@
 <div class="in">
   <%= form_for [:admin, @picture], :html => { :multipart => true } do |f| %>
     <fieldset>
-      <p>
+      <div>
         <%= f.label :title, "Title:" %><br />
         <%= f.text_field :title, :class => "small" %>
-      </p>
-      <p>
+      </div>
+      <div>
         <%= f.label :alt_text, "Alt Text:" %><br />
         <%= f.text_field :alt_text, :class => "small" %>
-      </p>
-      <p>
+      </div>
+      <div>
         <%= f.label :caption, "Caption:" %><br />
         <%= f.text_field :caption, :class => "small" %>
-      </p>
-      <p>
+      </div>
+      <div>
         <% if @picture.new_record? %>
           <%= f.file_field :image, :multiple => true, :accept => "image/jpeg,image/gif,image/png,image/tiff,image/svg+xml" %>
         <% else %>
           <%= f.file_field :image, :accept => "image/jpeg,image/gif,image/png,image/tiff,image/svg+xml" %>
         <% end %>
-      </p>
-      <p>
+      </div>
+      <div>
         <%= submit_tag "Submit" %>
-      </p>
+      </div>
     </fieldset>
   <% end %>
 </div>

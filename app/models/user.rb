@@ -1,5 +1,5 @@
-require 'digest/sha2'
-require 'RFC2822'
+require "digest/sha2"
+require "RFC2822"
 
 class User < ActiveRecord::Base
   attr_accessor :password
@@ -20,8 +20,8 @@ class User < ActiveRecord::Base
 
   validates :password,
     :presence => true,
-    :length => { :minimum => 6, :maximum => 32 },
-    :format => { :with => /^([\x20-\x7E]){6,32}$/ },
+    :length => { :minimum => 6, :maximum => 255 },
+    :format => { :with => /^([\x20-\x7E]){6,255}$/ },
     :confirmation => true,
     :on => :create
 
@@ -45,6 +45,10 @@ class User < ActiveRecord::Base
   validates :post_count,
     :presence => true,
     :numericality => true
+
+  scope :admins, lambda { where("users.privilege_level >= ?", 3) }
+  scope :regular_users, lambda { where("users.privilege_level <= ?", 1) }
+
 
   PrivilegeLevelGuest     = 0
   PrivilegeLevelUser      = 1
@@ -86,8 +90,12 @@ class User < ActiveRecord::Base
     UserMailer.password_reset(self).deliver
   end
 
+  def full_name
+    self.first_name + " " + self.last_name
+  end
+
   def self.authenticate(email_address, password, limit_session = false)
-    user = find_by_email_address(email_address)
+    user = find_by_email_address(email_address.downcase)
 
     if user && user.password_hash == Digest::SHA256.hexdigest(password + user.password_salt)
       if limit_session
@@ -104,7 +112,6 @@ class User < ActiveRecord::Base
 
   def self.search(search)
     if search
-      #where("name LIKE ?", "%#{search}%")
       where("first_name LIKE :search OR last_name LIKE :search OR email_address LIKE :search OR phone_number LIKE :search", { :search => "%#{search}%" })
     else
       scoped

@@ -18,6 +18,10 @@ en:
         login: "Welcome back %{user_name}, thank you for logging in!"
         logout: "You are now logged out."
         change_password: "Please change your password."
+      password_resets:
+        sent_email: "Sent email with password reset instructions."
+        expired: "Password reset has expired."
+        reset: "Your password has been reset."
     page:
       error:
         could_not_find: "Error: Unable to find the specified page!"
@@ -97,6 +101,8 @@ en:
         page:
           parent_must_exist: "must reference an existing page"
           taken: "is already in use by another page"
+        picture:
+          md5_must_be_unique: "You cannot upload the same file twice"
         post:
           user_must_exist: "must reference an existing user"
         user:
