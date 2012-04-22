@@ -6,6 +6,7 @@ class CreatePages < ActiveRecord::Migration
       t.text :style
       t.text :meta_description
       t.text :meta_keywords
+      t.string :color
       t.string :slug, :null => false
       t.belongs_to :parent
       t.integer :display_order, :null => false, :default => 0

@@ -1,10 +1,13 @@
 class Page < ActiveRecord::Base
+  attr_accessible :title, :body, :style, :meta_description, :meta_keywords, :color, :parent_id, :display_order, :status, :private
+
   belongs_to :parent, :class_name => "Page"
   has_many :subpages, :class_name => "Page", :foreign_key => "parent_id", :dependent => :destroy, :order => "display_order"
   has_paper_trail
 
   after_initialize :initialize_defaults
   before_validation :generate_slug
+  before_save :scrub
 
   validates :title,
     :presence => true,
@@ -24,6 +27,8 @@ class Page < ActiveRecord::Base
 
   validate :parent_must_exist
 
+  validate :color_must_be_hex_code
+
   scope :top_level, lambda { where(:parent_id => nil) }
 
   def initialize_defaults
@@ -36,6 +41,10 @@ class Page < ActiveRecord::Base
     errors.add(:parent_id, I18n.t("activerecord.errors.models.page.parent_must_exist")) if parent_id && parent.nil?
   end
 
+  def color_must_be_hex_code
+    errors.add(:color, I18n.t("activerecord.errors.models.page.color_must_be_hex_code")) if color && color.match(/^#(([a-fA-F0-9]){3}){1,2}$/).nil?
+  end
+
   def to_param
     self.slug
   end
@@ -46,6 +55,10 @@ class Page < ActiveRecord::Base
     else
       self.slug = self.title.parameterize
     end
+  end
+
+  def scrub
+    self.color.downcase!
   end
 
   def get_dropdown_title

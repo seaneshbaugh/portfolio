@@ -2,6 +2,8 @@ require "nokogiri"
 require "truncate_html"
 
 class Post < ActiveRecord::Base
+  attr_accessible :title, :body, :style, :meta_description, :meta_keywords, :status, :private
+
   belongs_to :user, :validate => true
   has_paper_trail
   paginates_per 10
@@ -54,7 +56,41 @@ class Post < ActiveRecord::Base
   end
 
   def truncated?
-    self.body.length > truncate_html(self.more).length
+    if self.body.include?("<!--more-->")
+      return true
+    else
+      doc = Nokogiri::HTML(self.body)
+
+      current = doc.children.first
+      count = 0
+
+      while true
+        if current.is_a?(Nokogiri::XML::Text)
+          count += current.text.split.length
+          break if count > 200
+          previous = current
+        end
+
+        if current.children.length > 0
+          current = current.children.first
+        elsif !current.next.nil?
+          current = current.next
+        else
+          n = current
+          while !n.is_a?(Nokogiri::HTML::Document) and n.parent.next.nil?
+            n = n.parent
+          end
+
+          if n.is_a?(Nokogiri::HTML::Document)
+            break;
+          else
+            current = n.parent.next
+          end
+        end
+      end
+
+      return count > 200
+    end
   end
 
   def first_image

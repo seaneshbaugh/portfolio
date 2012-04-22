@@ -1,8 +1,10 @@
-<% unless @page.style.blank? %>
-  <style>
-    <%= raw @page.style %>
-  </style>
-<% end %>
-<% unless @page.body.blank? %>
-  <%= raw @page.body %>
-<% end %>
+<div id="page-<%= @page.id %>" class="page">
+  <% unless @page.style.blank? %>
+    <style scoped="scoped">
+      <%= raw @page.style %>
+    </style>
+  <% end %>
+  <% unless @page.body.blank? %>
+    <%= raw @page.body %>
+  <% end %>
+</div>

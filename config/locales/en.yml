@@ -100,6 +100,7 @@ en:
       models:
         page:
           parent_must_exist: "must reference an existing page"
+          color_must_be_hex_code: "must be a valid hex code color"
           taken: "is already in use by another page"
         picture:
           md5_must_be_unique: "You cannot upload the same file twice"

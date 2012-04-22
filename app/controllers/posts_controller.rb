@@ -7,6 +7,10 @@ class PostsController < ApplicationController
         @posts = Post.published.page(params[:page]).order("created_at desc")
       end
 
+      format.js do
+        @posts = Post.published.page(params[:page]).order("created_at desc")
+      end
+
       format.rss do
         @posts = Post.published.order("created_at desc")
         render :layout => false

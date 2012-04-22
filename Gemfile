@@ -1,6 +1,6 @@
 source 'http://rubygems.org'
 
-gem 'rails', '3.1.3'
+gem 'rails', '3.2.3'
 
 # Bundle edge Rails instead:
 # gem 'rails', :git => 'git://github.com/rails/rails.git'
@@ -53,6 +53,6 @@ gem 'paper_trail'
 
 gem 'rmagick', '2.12.0'
 
-gem 'carrierwave'
+gem 'carrierwave', '0.6.1'
 
 gem 'yaml_db'

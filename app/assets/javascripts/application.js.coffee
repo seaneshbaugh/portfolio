@@ -5,24 +5,25 @@
 
 $(document).ready ->
   if history and history.pushState
-    $("#nav ul li a").click ->
+    $(document).on "click", ".ajax-link", (event) ->
       link = @href
-      $("#content").slideUp 500, ->
+      $("#content").fadeOut 500, ->
         $.getScript link, ->
-          $("#content").slideDown 500
-
+          $("#content").fadeIn 500
       history.pushState null, document.title, @href
       false
 
     $(window).bind "popstate", ->
       $.getScript location.href
 
+  $(".click-to-close").on "click", (event) ->
+    event.preventDefault()
+    $(this).fadeTo 400, 0, ->
+      $(this).slideUp 400
 
-
-
-  #$("#main-nav ul li a").fadingLinks("#ffffff")
-
-  return
+  $("#main-nav ul li a").each ->
+    if $(this).data("hover-color") isnt `undefined`
+      $(this).fadingLinks($(this).data("hover-color"))
 
 $.fn.fadingLinks = (color, duration = 500) ->
   @each ->
@@ -32,4 +33,3 @@ $.fn.fadingLinks = (color, duration = 500) ->
 
     $(this).mouseout ->
       $(this).stop().animate color: original, duration
-
