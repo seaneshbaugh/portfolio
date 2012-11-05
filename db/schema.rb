@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20121031164012) do
+ActiveRecord::Schema.define(:version => 20121105124639) do
 
   create_table "pages", :force => true do |t|
     t.string   "title",      :default => "",   :null => false
@@ -116,5 +116,16 @@ ActiveRecord::Schema.define(:version => 20121031164012) do
   add_index "users", ["role"], :name => "index_users_on_role"
   add_index "users", ["sign_in_count"], :name => "index_users_on_sign_in_count"
   add_index "users", ["updated_at"], :name => "index_users_on_updated_at"
+
+  create_table "versions", :force => true do |t|
+    t.string   "item_type",  :null => false
+    t.integer  "item_id",    :null => false
+    t.string   "event",      :null => false
+    t.string   "whodunnit"
+    t.text     "object"
+    t.datetime "created_at"
+  end
+
+  add_index "versions", ["item_type", "item_id"], :name => "index_versions_on_item_type_and_item_id"
 
 end

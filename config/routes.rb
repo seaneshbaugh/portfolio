@@ -15,6 +15,8 @@ Portfolio::Application.routes.draw do
     namespace :admin do
       root :to => 'admin#index'
 
+      resource :account, :only => [:show, :edit, :update]
+
       resources :pages
 
       resources :pictures

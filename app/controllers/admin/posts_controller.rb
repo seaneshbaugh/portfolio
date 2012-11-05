@@ -10,7 +10,7 @@ class Admin::PostsController < Admin::AdminController
       @search = Post.search(params[:q])
     end
 
-    @posts = @search.result.post(params[:post]).per(25)
+    @posts = @search.result.page(params[:page]).per(25)
   end
 
   def show

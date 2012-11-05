@@ -5,6 +5,8 @@ class User < ActiveRecord::Base
 
   has_paper_trail :only => [:email, :role, :first_name, :last_name]
 
+  has_many :posts
+
   validates_format_of     :email, :with => Devise.email_regexp, :allow_blank => true
   validates_presence_of   :email
   validates_uniqueness_of :email, :case_sensitive => false, :allow_blank => true

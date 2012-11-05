@@ -1,0 +1,24 @@
+en:
+  activerecord:
+    models:
+      page: "Page"
+    attributes:
+      page:
+        title: "Title"
+        slug: "Slug"
+        body: "Body"
+        style: "Style"
+        visible: "Visible"
+        created_at: "Created At"
+        updated_at: "Updated At"
+    errors:
+      models:
+        page:
+          attributes:
+            title: "Title"
+            slug: "Slug"
+            body: "Body"
+            style: "Style"
+            visible: "Visible"
+            created_at: "Created At"
+            updated_at: "Updated At"
