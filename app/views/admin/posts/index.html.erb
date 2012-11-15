@@ -1,4 +1,4 @@
-<div id="posts">
+<div id="posts" class="admin-content">
   <h2><%= t('activerecord.models.post').pluralize %></h2>
   <%= search_form_for @search, :url => admin_posts_path, :html => { :method => :get, :class => 'form-search well' } do |f| %>
     <%= f.text_field :title_cont, :placeholder => t('activerecord.attributes.post.title') %>

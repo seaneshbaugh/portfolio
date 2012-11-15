@@ -28,20 +28,27 @@ class Admin::PicturesController < Admin::AdminController
   end
 
   def create
-    @picture = Picture.new(params[:picture])
+    respond_to do |format|
+      format.html {
+        @picture = Picture.new(params[:picture])
 
-    if @picture.save
-      flash[:success] = t('messages.pictures.created')
+        if @picture.save
+          flash[:success] = t('messages.pictures.created')
 
-      if params[:redirect_to_new].present?
-        redirect_to new_admin_picture_url
-      else
-        redirect_to admin_pictures_url
-      end
-    else
-      flash[:error] = @picture.errors.full_messages.uniq.join('. ') + '.'
+          if params[:redirect_to_new].present?
+            redirect_to new_admin_picture_url
+          else
+            redirect_to admin_pictures_url
+          end
+        else
+          flash[:error] = @picture.errors.full_messages.uniq.join('. ') + '.'
 
-      render 'new'
+          render 'new'
+        end
+      }
+      format.js {
+        @picture = Picture.create(params[:picture])
+      }
     end
   end
 
@@ -89,5 +96,11 @@ class Admin::PicturesController < Admin::AdminController
     flash[:success] = t('messages.pictures.deleted')
 
     redirect_to admin_pictures_url
+  end
+
+  def selector
+    @pictures = Picture.order('created_at DESC')
+
+    render :layout => false
   end
 end

@@ -71,6 +71,88 @@ textarea {
   border: none;
 }
 
+.admin-content {
+  background: #ffffff;
+  border: 1px solid #bab9b9;
+  margin: 0 auto;
+  padding: 25px;
+
+  h2 {
+    font-family: Georgia, serif;
+    font-size: 24px;
+    font-style: italic;
+    margin: 0;
+    padding: 0;
+
+    small {
+      font-family: "Lucida Grande", "Lucida Sans", Arial, sans-serif;
+    }
+  }
+}
+
+#quick-links {
+  ul {
+    list-style-type: none;
+    margin: 0;
+    overflow: hidden;
+    padding: 10px;
+    text-align: center;
+
+    li {
+      display: inline-block;
+      margin: 0 10px 15px;
+
+      a {
+        background: #ededed;
+        box-shadow: 3px 3px 5px #cccccc;
+        -moz-box-shadow: 3px 3px 5px #cccccc;
+        -webkit-box-shadow: 3px 3px 5px #cccccc;
+        display: inline-block;
+        padding: 30px;
+        height: 50px;
+        width: 50px;
+
+        &:hover {
+          background: #fdfdfd;
+          box-shadow: 5px 5px 5px #cccccc;
+          -moz-box-shadow: 5px 5px 5px #cccccc;
+          -webkit-box-shadow: 5px 5px 5px #cccccc;
+          color: #f7941d;
+          text-decoration: none;
+        }
+      }
+    }
+  }
+}
+
+#routes {
+  pre {
+    line-height: 0px;
+  }
+}
+
+.picture-selector-button {
+  margin-left: 20px;
+}
+
+.picture-selector-preview {
+  margin: 10px 0 10px 180px;
+  width: 200px;
+}
+
+.picture-selector-picture{
+  float: left;
+  height: 200px;
+  margin: 10px;
+  text-align: center;
+  width: 20%;
+
+  img {
+    cursor: pointer;
+    max-height: 180px;
+  }
+}
+
 @media (max-width: 979px) {
   body {
     .navbar {
@@ -85,3 +167,5 @@ textarea {
   }
 }
 
+@media (max-width: 767px) {
+}

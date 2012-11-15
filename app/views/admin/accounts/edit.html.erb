@@ -1,15 +1,14 @@
-<div id="edit-account">
-  <h1><%= t('accounts.edit.title') %> <small>(<%= @account.username %>)</small></h1>
+<div id="edit-account" class="admin-content">
+  <h2><%= t('accounts.edit.title') %> <small>(<%= @account.email %>)</small></h2>
   <%= simple_form_for @account, :as => :accounts, :url => admin_account_path, :html => { :class => 'form-horizontal' } do |f| %>
     <fieldset>
       <legend><%= t('users.sections.contact_information') %></legend>
       <%= f.input :first_name %>
       <%= f.input :last_name %>
-      <%= f.input :email %>
     </fieldset>
     <fieldset>
       <legend><%= t('users.sections.account_information') %></legend>
-      <%= f.input :username %>
+      <%= f.input :email %>
       <%= f.input :password %>
       <%= f.input :password_confirmation %>
     </fieldset>

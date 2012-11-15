@@ -19,7 +19,11 @@ Portfolio::Application.routes.draw do
 
       resources :pages
 
-      resources :pictures
+      resources :pictures do
+        collection do
+          get :selector
+        end
+      end
 
       resources :posts
 

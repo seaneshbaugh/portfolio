@@ -1,6 +1,6 @@
-<div id="show-account">
-  <h1><%= t('accounts.show.title') %> <small><%= @account.username %></small></h1>
-  <h2><%= t('users.sections.contact_information') %></h2>
+<div id="show-account" class="admin-content">
+  <h2><%= t('accounts.show.title') %> <small><%= @account.email %></small></h2>
+  <h3><%= t('users.sections.contact_information') %></h3>
   <table class="table table-condensed table-striped">
     <tbody>
       <tr>
@@ -11,18 +11,14 @@
         <th class="span3"><%= t('activerecord.attributes.user.last_name') %></th>
         <td><%= @account.last_name %></td>
       </tr>
-      <tr>
-        <th class="span3"><%= t('activerecord.attributes.user.email') %></th>
-        <td><%= @account.email %></td>
-      </tr>
     </tbody>
   </table>
-  <h2><%= t('users.sections.account_information') %></h2>
+  <h3><%= t('users.sections.account_information') %></h3>
   <table class="table table-condensed table-striped">
     <tbody>
       <tr>
-        <th class="span3"><%= t('activerecord.attributes.user.username') %></th>
-        <td><%= @account.username %></td>
+        <th class="span3"><%= t('activerecord.attributes.user.email') %></th>
+        <td><%= @account.email %></td>
       </tr>
       <tr>
         <th class="span3"><%= t('activerecord.attributes.user.created_at') %></th>

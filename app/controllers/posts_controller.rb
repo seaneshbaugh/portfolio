@@ -7,7 +7,7 @@ class PostsController < ApplicationController
     @post = Post.where(:slug => params[:id]).first
 
     if @post.nil?
-      flash[:error] = t('messages.post.could_not_find')
+      flash[:error] = t('messages.posts.could_not_find')
 
       redirect_to root_url
     end

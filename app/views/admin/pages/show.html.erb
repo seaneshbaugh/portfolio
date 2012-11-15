@@ -1,11 +1,10 @@
-<div id="page">
-  <h1><%= t('pages.show.title') %> <small><%= @page.title.html_safe %></small></h1>
-  <h2><%= t('pages.sections.information') %></h2>
+<div id="page" class="admin-content">
+  <h2><%= t('pages.show.title') %> <small><%= @page.title.html_safe %></small></h2>
   <table class="table table-condensed table-striped">
     <tbody>
       <tr>
         <th class="span3"><%= t('activerecord.attributes.page.slug') %></th>
-        <td><%= @page.slug %> <%= link_to '<i class="icon-share"></i>'.html_safe, page_path(@page), :target => '_blank' %></td>
+        <td><%= @page.slug %> <%= link_to '<i class="icon-share"></i>'.html_safe, "/#{@page.slug}", :target => '_blank' %></td>
       </tr>
       <tr>
         <th class="span3"><%= t('activerecord.attributes.page.title') %></th>
