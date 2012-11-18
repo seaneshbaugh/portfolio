@@ -1,5 +1,5 @@
 class Page < ActiveRecord::Base
-  attr_accessible :title, :body, :style, :visible
+  attr_accessible :title, :body, :style, :meta_description, :meta_keywords, :order, :color, :show_in_menu, :visible
 
   has_paper_trail
 
@@ -10,8 +10,6 @@ class Page < ActiveRecord::Base
   validates_uniqueness_of :slug
 
   before_validation :generate_slug
-
-  default_scope :order => 'created_at DESC'
 
   def published?
     visible

@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <title><%= t('application.title') %></title>
-  <meta name="description" content="<%= t('application.description') %>">
+  <meta name="description" content="<% if content_for?(:meta_description) %><%= yield(:meta_description) %><% else %><%= t('application.description') %><% end %>">
   <meta name="author" content="<%= t('application.author') %>">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <%= stylesheet_link_tag 'application', :media => 'all' %>
@@ -19,8 +19,34 @@
   <%= csrf_meta_tags %>
 </head>
 <body>
-  <div class="container main">
-    <%= yield %>
+  <div id="wrap">
+    <div class="container">
+      <header>
+        <h1>Sean Eshbaugh</h1>
+        <h2 class="lead">Web Developer + Programmer</h2>
+        <ul class="nav" role="navigation">
+          <li><%= link_to 'Home', root_path, :data => { 'hover-color' => '#686868' } %></li>
+          <% @pages.each do |page| %>
+            <li><%= link_to page.title, "/#{page.slug}", :style => "color: #{page.color};", :data => { 'hover-color' => color_luminance(page.color, -0.3) } %></li>
+          <% end %>
+        </ul>
+      </header>
+      <%= yield %>
+    </div>
+    <div id="push"></div>
   </div>
+  <footer>
+    <div class="container">
+      <p>Created with <%= link_to 'Ruby on Rails', 'http://rubyonrails.org/' %> by <%= link_to 'Sean Eshbaugh', 'http://seaneshbaugh.com/about' %>.</p>
+      <ul class="nav" role="navigation">
+        <li><%= link_to image_tag(image_path('icons/social/google-plus.png'), :alt => 'Google+', :title => 'Google+'), 'https://plus.google.com/100029677466665308601' %></li>
+        <li><%= link_to image_tag(image_path('icons/social/linkedin.png'), :alt => 'LinkedIn', :title => 'LinkedIn'), 'http://www.linkedin.com/pub/sean-eshbaugh/34/534/441' %></li>
+        <li><%= link_to image_tag(image_path('icons/social/twitter.png'), :alt => 'Twitter', :title => 'Twitter'), 'https://twitter.com/#!/bungoman' %></li>
+        <li><%= link_to image_tag(image_path('icons/social/facebook.png'), :alt => 'Facebook', :title => 'Facebook'), 'http://www.facebook.com/seaneshbaugh' %></li>
+        <li><%= link_to image_tag(image_path('icons/social/pinterest.png'), :alt => 'Pinterest', :title => 'Pinterest'), "http://pinterest.com/seaneshbaugh/" %></li>
+        <li><%= link_to image_tag(image_path('icons/social/github.png'), :alt => 'Git Hub', :title => 'Git Hub'), 'https://github.com/seaneshbaugh/' %></li>
+      </ul>
+    </div>
+  </footer>
 </body>
 </html>

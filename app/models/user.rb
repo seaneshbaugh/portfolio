@@ -19,8 +19,6 @@ class User < ActiveRecord::Base
 
   validates_presence_of :last_name
 
-  default_scope :order => 'last_name ASC'
-
   def full_name
     "#{self.first_name} #{self.last_name}"
   end

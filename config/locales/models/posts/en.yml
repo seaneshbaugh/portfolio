@@ -5,11 +5,11 @@ en:
     attributes:
       post:
         title: "Title"
+        slug: "Slug"
         body: "Body"
         style: "Style"
         meta_description: "Meta Description"
         meta_keywords: "Meta Keywords"
-        slug: "Slug"
         user_id: "User"
         visible: "Visible"
         created_at: "Created At"
@@ -19,11 +19,11 @@ en:
         post:
           attributes:
             title: "Title"
+            slug: "Slug"
             body: "Body"
             style: "Style"
             meta_description: "Meta Description"
             meta_keywords: "Meta Keywords"
-            slug: "Slug"
             user_id: "User"
             visible: "Visible"
             created_at: "Created At"

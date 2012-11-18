@@ -13,8 +13,6 @@ class Post < ActiveRecord::Base
 
   before_validation :generate_slug
 
-  default_scope :order => 'created_at DESC'
-
   def published?
     visible
   end

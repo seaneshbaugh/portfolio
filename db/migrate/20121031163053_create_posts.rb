@@ -2,11 +2,11 @@ class CreatePosts < ActiveRecord::Migration
   def change
     create_table :posts do |t|
       t.string :title,          :null => false, :default => ''
+      t.string :slug,           :null => false, :default => ''
       t.text :body,             :null => false, :default => ''
       t.text :style,            :null => false, :default => ''
       t.text :meta_description, :null => false, :default => ''
       t.text :meta_keywords,    :null => false, :default => ''
-      t.string :slug,           :null => false, :default => ''
       t.belongs_to :user,       :null => false
       t.boolean :visible,       :null => false, :default => true
       t.timestamps

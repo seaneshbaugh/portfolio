@@ -13,16 +13,24 @@
 ActiveRecord::Schema.define(:version => 20121105124639) do
 
   create_table "pages", :force => true do |t|
-    t.string   "title",      :default => "",   :null => false
-    t.string   "slug",                         :null => false
-    t.text     "body",                         :null => false
-    t.text     "style",                        :null => false
-    t.boolean  "visible",    :default => true, :null => false
-    t.datetime "created_at",                   :null => false
-    t.datetime "updated_at",                   :null => false
+    t.string   "title",            :default => "",        :null => false
+    t.string   "slug",             :default => "",        :null => false
+    t.text     "body",                                    :null => false
+    t.text     "style",                                   :null => false
+    t.text     "meta_description",                        :null => false
+    t.text     "meta_keywords",                           :null => false
+    t.integer  "order",            :default => 0,         :null => false
+    t.string   "color",            :default => "#000000", :null => false
+    t.boolean  "show_in_menu",     :default => true,      :null => false
+    t.boolean  "visible",          :default => true,      :null => false
+    t.datetime "created_at",                              :null => false
+    t.datetime "updated_at",                              :null => false
   end
 
+  add_index "pages", ["color"], :name => "index_pages_on_color"
   add_index "pages", ["created_at"], :name => "index_pages_on_created_at"
+  add_index "pages", ["order"], :name => "index_pages_on_order"
+  add_index "pages", ["show_in_menu"], :name => "index_pages_on_show_in_menu"
   add_index "pages", ["slug"], :name => "index_pages_on_slug"
   add_index "pages", ["title"], :name => "index_pages_on_title"
   add_index "pages", ["updated_at"], :name => "index_pages_on_updated_at"
@@ -63,11 +71,11 @@ ActiveRecord::Schema.define(:version => 20121105124639) do
 
   create_table "posts", :force => true do |t|
     t.string   "title",            :default => "",   :null => false
+    t.string   "slug",             :default => "",   :null => false
     t.text     "body",                               :null => false
     t.text     "style",                              :null => false
     t.text     "meta_description",                   :null => false
     t.text     "meta_keywords",                      :null => false
-    t.string   "slug",             :default => "",   :null => false
     t.integer  "user_id",                            :null => false
     t.boolean  "visible",          :default => true, :null => false
     t.datetime "created_at",                         :null => false
