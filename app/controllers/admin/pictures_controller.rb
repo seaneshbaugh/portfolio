@@ -10,7 +10,7 @@ class Admin::PicturesController < Admin::AdminController
       @search = Picture.search(params[:q])
     end
 
-    @pictures = @search.result.page(params[:page]).per(25)
+    @pictures = @search.result.page(params[:page]).per(25).order('created_at DESC')
   end
 
   def show

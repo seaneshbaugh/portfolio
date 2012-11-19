@@ -10,7 +10,7 @@ class Admin::UsersController < Admin::AdminController
       @search = User.search(params[:q])
     end
 
-    @users = @search.result.page(params[:page]).per(25)
+    @users = @search.result.page(params[:page]).per(25).order('last_name ASC')
   end
 
   def show
