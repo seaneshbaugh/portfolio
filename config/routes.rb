@@ -11,6 +11,8 @@ Portfolio::Application.routes.draw do
 
   resources :posts, :only => [:index, :show]
 
+  get '/sitemap' => 'sitemap#index', :as => 'sitemap'
+
   authenticate :user do
     namespace :admin do
       root :to => 'admin#index'
