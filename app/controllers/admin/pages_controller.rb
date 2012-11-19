@@ -10,7 +10,7 @@ class Admin::PagesController < Admin::AdminController
       @search = Page.search(params[:q])
     end
 
-    @pages = @search.result.page(params[:page]).per(25).order('order ASC')
+    @pages = @search.result.page(params[:page]).per(25).order('pages.order ASC')
   end
 
   def show
