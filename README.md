@@ -14,7 +14,7 @@ This application uses Rails 3.2.8
 
 The following gems are required to run this application:
 
-* rails (3.2.8)
+* rails (3.2.9)
 * mysql2
 * cancan
 * devise
