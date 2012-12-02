@@ -10,6 +10,7 @@
 <% end %>
 <div id="page-<%= @page.slug %>" class="page row">
   <div class="page-body span12">
+    <h1<% if @page.color.present? %> style="color: <%= @page.color %>"<% end %>><%= @page.title %></h1>
     <% if @page.style.present? %>
       <style scoped>
         <%= @page.style.html_safe %>
