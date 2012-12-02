@@ -1,5 +1,5 @@
 set_default(:smtp_user_name) { Capistrano::CLI.ui.ask('SMTP User Name (your email address): ') }
-set_default(:smtp_password) { Capistrano::CLI.ui.ask('SMTP Password (your email password): ') }
+set_default(:smtp_password) { Capistrano::CLI.password_prompt('SMTP Password (your email password): ') }
 
 namespace :smtp do
   desc 'Generate the smtp.yml configuration file.'
