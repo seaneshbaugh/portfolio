@@ -7,6 +7,10 @@ Portfolio::Application.routes.draw do
     get '/reset-password' => 'devise/passwords#new', :as => 'reset_password'
   end
 
+  get '/contact' => 'contact#new', :as => 'contact'
+
+  post '/contact' => 'contact#create'
+
   resources :pages, :only => [:show]
 
   resources :posts, :only => [:index, :show]

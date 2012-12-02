@@ -42,6 +42,7 @@
           <% @pages.each do |page| %>
             <li><%= link_to page.title, "/#{page.slug}", :style => "color: #{page.color};", :data => { 'hover-color' => color_luminance(page.color, -0.3) } %></li>
           <% end %>
+          <li><%= link_to 'Contact', contact_path, :style => 'color: #5ea33a;', :data => { 'hover-color' => '#427229' } %></li>
         </ul>
       </header>
       <%= yield %>

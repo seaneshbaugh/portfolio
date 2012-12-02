@@ -11,3 +11,4 @@
 /public/coverage
 /vendor/bundle
 /public/uploads
+/config/smtp.yml

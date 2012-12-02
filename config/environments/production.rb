@@ -66,4 +66,21 @@ Portfolio::Application.configure do
   # Log the query plan for queries taking more than this (works
   # with SQLite, MySQL, and PostgreSQL)
   # config.active_record.auto_explain_threshold_in_seconds = 0.5
+
+  config.action_mailer.delivery_method = :smtp
+  config.action_mailer.smtp_settings = {
+    :address              => 'smtp.gmail.com',
+    :port                 => 587,
+    :domain               => 'seaneshbaugh.com',
+    :user_name            => SMTP_SETTINGS['user_name'],
+    :password             => SMTP_SETTINGS['password'],
+    :authentication       => 'plain',
+    :enable_starttls_auto => true
+  }
+  config.action_mailer.raise_delivery_errors = true
+
+  # Set mailer host to seaneshbaugh.com for in email links
+  config.action_mailer.default_url_options = { :host => 'seaneshbaugh.com' }
+
+  config.middleware.use ExceptionNotifier, :sender_address => 'seaneshbaugh@gmail.com', :exception_recipients => 'seaneshbaugh@gmail.com'
 end
