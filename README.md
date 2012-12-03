@@ -8,7 +8,7 @@ This application is intended to be run on Ruby 1.8.7-p173. Due to limitations of
 
 ## Rails Version
 
-This application uses Rails 3.2.8
+This application uses Rails 3.2.9
 
 ## Required Gems
 
@@ -18,7 +18,9 @@ The following gems are required to run this application:
 * mysql2
 * cancan
 * devise
+* exception_notification
 * highline
+* honeypot-captcha
 * kaminari
 * paper_trail
 * paperclip (~2.7)
