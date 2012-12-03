@@ -21,6 +21,8 @@ Portfolio::Application.routes.draw do
     namespace :admin do
       root :to => 'admin#index'
 
+      get 'export' => 'admin#export', :as => 'export'
+
       resource :account, :only => [:show, :edit, :update]
 
       resources :pages
@@ -35,6 +37,8 @@ Portfolio::Application.routes.draw do
 
       resources :users
     end
+
+    post 'versions/:id/revert' => 'versions#revert', :as => 'revert_version'
   end
 
   root :to => 'posts#index'
