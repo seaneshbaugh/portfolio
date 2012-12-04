@@ -1,6 +1,14 @@
 class PostsController < ApplicationController
   def index
-    @posts = Post.where(:visible => true).page(params[:page]).per(25).order('created_at DESC')
+    respond_to do |format|
+      format.html do
+        @posts = Post.where(:visible => true).page(params[:page]).per(25).order('created_at DESC')
+      end
+
+      format.rss do
+        @posts = Post.where(:visible => true).order('created_at DESC')
+      end
+    end
   end
 
   def show
