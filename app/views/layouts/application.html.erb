@@ -2,7 +2,7 @@
 <html dir="ltr" lang="en-US">
 <head>
   <meta charset="utf-8">
-  <title><%= t('application.title') %></title>
+  <title><% if content_for?(:page_title) %><%= yield(:page_title) %><% else %><%= t('application.title') %><% end %></title>
   <meta name="description" content="<% if content_for?(:meta_description) %><%= yield(:meta_description) %><% else %><%= t('application.description') %><% end %>">
   <meta name="author" content="<%= t('application.author') %>">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -29,6 +29,7 @@
   <link href="<%= image_path('apple-touch-icon-ipad.png') %>" rel="apple-touch-icon" sizes="72x72">
   <link href="<%= image_path('apple-touch-icon-iphone-retina.png') %>" rel="apple-touch-icon" sizes="114x114">
   <link href="<%= image_path('apple-touch-icon-ipad-retina.png') %>" rel="apple-touch-icon" sizes="144x144">
+  <link href="/humans.txt" rel="author">
   <%= csrf_meta_tags %>
 </head>
 <body>

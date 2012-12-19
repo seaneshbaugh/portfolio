@@ -19,6 +19,12 @@ class User < ActiveRecord::Base
 
   validates_presence_of :last_name
 
+  before_save :define_role
+
+  Ability::ROLES.each do |k, v|
+    class_eval %Q"scope :#{k.to_s.pluralize}, where(:role => Ability::ROLES[:#{k.to_s}].downcase)"
+  end
+
   def full_name
     "#{self.first_name} #{self.last_name}"
   end
@@ -27,9 +33,27 @@ class User < ActiveRecord::Base
     "#{self.first_name.first.upcase}. #{self.last_name}"
   end
 
+  Ability::ROLES.each do |k, v|
+    define_method("#{k.to_s}?") do
+      self.role == k.to_s
+    end
+
+    define_method("#{k.to_s}!") do
+      self.role = k.to_s
+    end
+  end
+
+  def ability
+    @ability ||= Ability.new(self)
+  end
+
   protected
 
   def password_required?
     !self.persisted? || !self.password.blank? || !self.password_confirmation.blank?
+  end
+
+  def define_role
+    self.role = Ability::ROLES.include?(role.downcase.to_sym) ? role.downcase : Ability::ROLES[:read_only]
   end
 end
