@@ -106,7 +106,7 @@ $(function() {
             file = data.files[0];
 
             if (types.test(file.type) || types.test(file.name)) {
-                data.context = $(tmpl("template-upload", file));
+                data.context = $($.trim(tmpl("template-upload", file)));
 
                 $(this).append(data.context);
 
