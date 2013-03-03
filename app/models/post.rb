@@ -21,6 +21,28 @@ class Post < ActiveRecord::Base
     self.slug
   end
 
+  def more
+    if self.body.include?('<!--more-->')
+      self.body[0..self.body.index('<!--more-->') - 1]
+    else
+      self.body
+    end
+  end
+
+  def truncated?
+    self.body.length > self.more.length
+  end
+
+  def first_image
+    images = Nokogiri::HTML(self.body).xpath('//img')
+
+    if images.length > 0
+      images[0]['src']
+    else
+      nil
+    end
+  end
+
   protected
 
   def generate_slug

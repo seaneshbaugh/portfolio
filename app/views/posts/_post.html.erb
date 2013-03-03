@@ -7,6 +7,15 @@
         <%= post.style.html_safe %>
       </style>
     <% end %>
-    <%= post.body.html_safe %>
+    <% if params[:action] == 'index' %>
+      <%= post.more.html_safe %>
+      <% if post.truncated? %>
+        <div class="read-more">
+          <%= link_to 'Read More...', post %>
+        </div>
+      <% end %>
+    <% else %>
+      <%= post.body.html_safe %>
+    <% end %>
   </div>
 </article>
