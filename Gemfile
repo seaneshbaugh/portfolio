@@ -21,7 +21,6 @@ group :assets do
   gem 'jquery-fileupload-rails'
   gem 'jquery-rails'
   gem 'less-rails'
-  gem 'sass-rails'
   gem 'therubyracer'
   gem 'twitter-bootstrap-rails'
   gem 'uglifier'
