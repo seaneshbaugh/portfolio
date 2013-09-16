@@ -4,13 +4,9 @@ class Admin::PostsController < Admin::AdminController
   authorize_resource
 
   def index
-    if params[:q].present? && params[:q][:s].present?
-      @search = Post.unscoped.search(params[:q])
-    else
-      @search = Post.search(params[:q])
-    end
+    @search = Post.search(params[:q])
 
-    @posts = @search.result.page(params[:page]).per(25).order('created_at DESC')
+    @posts = @search.result.page(params[:page]).per(25).order('`posts`.`created_at` DESC')
   end
 
   def show

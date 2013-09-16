@@ -12,7 +12,7 @@ class Picture < ActiveRecord::Base
 
   validates_attachment_presence :image
   validates_attachment_size :image, :less_than => 1024.megabytes
-  validates_attachment_content_type :image, :content_type => ['image/gif', 'image/jpeg', 'image/jpg', 'image/pjpeg', 'image/png', 'image/svg+xml', 'image/tiff', 'image/x-png']
+  validates_attachment_content_type :image, :content_type => %w(image/gif image/jpeg image/jpg image/pjpeg image/png image/svg+xml image/tiff image/x-png)
 
   before_validation :modify_image_file_name
   before_validation :set_default_title
@@ -45,11 +45,11 @@ class Picture < ActiveRecord::Base
   end
 
   def set_default_title
-    self.title = File.basename(self.image_file_name, ".*").to_s if self.title.blank? && !self.image_file_name.blank?
+    self.title = File.basename(self.image_file_name, '.*').to_s if self.title.blank? && !self.image_file_name.blank?
   end
 
   def image?
-    #TODO: Add error message here. Currently this causes the save to fail no reason at all is indicated.
+    #TODO: Add error message here. Currently this causes the save to fail and no reason is indicated.
     !(image_content_type =~ /^image.*/).nil?
   end
 

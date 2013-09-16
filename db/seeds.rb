@@ -5,7 +5,7 @@ load 'user.rb'
 users = User.all
 
 users.each do |user|
-  user.password = "changeme"
+  user.password = 'changeme'
   user.save!
 end
 

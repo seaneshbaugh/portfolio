@@ -4,7 +4,7 @@ module Paperclip
   module Task
     def self.obtain_class
       class_name = ENV['CLASS'] || ENV['class']
-      raise "Must specify CLASS" unless class_name
+      raise 'Must specify CLASS' unless class_name
       class_name
     end
 
@@ -22,11 +22,11 @@ module Paperclip
 end
 
 namespace :paperclip do
-  desc "Refreshes both metadata and thumbnails."
-  task :refresh => ["paperclip:refresh:metadata", "paperclip:refresh:thumbnails"]
+  desc 'Refreshes both metadata and thumbnails.'
+  task :refresh => %w(paperclip:refresh:metadata paperclip:refresh:thumbnails)
 
   namespace :refresh do
-    desc "Regenerates thumbnails for a given CLASS (and optional ATTACHMENT and STYLES splitted by comma)."
+    desc 'Regenerates thumbnails for a given CLASS (and optional ATTACHMENT and STYLES splitted by comma).'
     task :thumbnails => :environment do
       errors = []
       klass = Paperclip::Task.obtain_class
@@ -41,7 +41,7 @@ namespace :paperclip do
       errors.each{|e| puts "#{e.first}: #{e.last.full_messages.inspect}" }
     end
 
-    desc "Regenerates content_type/size metadata for a given CLASS (and optional ATTACHMENT)."
+    desc 'Regenerates content_type/size metadata for a given CLASS (and optional ATTACHMENT).'
     task :metadata => :environment do
       klass = Paperclip::Task.obtain_class
       names = Paperclip::Task.obtain_attachments(klass)
@@ -51,7 +51,7 @@ namespace :paperclip do
             instance.send("#{name}_file_name=", instance.send("#{name}_file_name").strip)
             instance.send("#{name}_content_type=", file.content_type.to_s.strip)
             instance.send("#{name}_file_size=", file.size) if instance.respond_to?("#{name}_file_size")
-            if Rails.version >= "3.0.0"
+            if Rails.version >= '3.0.0'
               instance.save(:validate => false)
             else
               instance.save(false)
@@ -63,7 +63,7 @@ namespace :paperclip do
       end
     end
 
-    desc "Regenerates missing thumbnail styles for all classes using Paperclip."
+    desc 'Regenerates missing thumbnail styles for all classes using Paperclip.'
     task :missing_styles => :environment do
       # Force loading all model classes to never miss any has_attached_file declaration:
       Dir[Rails.root + 'app/models/**/*.rb'].each { |path| load path }
@@ -153,7 +153,7 @@ namespace :paperclip do
           attributes = %w(file_size file_name content_type).map{ |suffix| "#{name}_#{suffix}".to_sym }
           if attributes.any?{ |attribute| instance.errors[attribute].present? }
             instance.send("#{name}=", nil)
-            if Rails.version >= "3.0.0"
+            if Rails.version >= '3.0.0'
               instance.save(:validate => false)
             else
               instance.save(false)

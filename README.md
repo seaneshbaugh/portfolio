@@ -8,13 +8,13 @@ This application is intended to be run on Ruby 1.8.7-p173. Due to limitations of
 
 ## Rails Version
 
-This application uses Rails 3.2.9
+This application uses Rails 3.2.13
 
 ## Required Gems
 
 The following gems are required to run this application:
 
-* rails (3.2.9)
+* rails (3.2.13)
 * mysql2
 * cancan
 * devise
@@ -49,7 +49,7 @@ Clone the repository.
 
     $ git clone git@github.com:seaneshbaugh/portfolio.git portfolio
 
-cd into the project directory. If you are using RVM you will be asked to trust the rvmrc. If you don't have ruby-1.8.7-p173 already you will want to install it before doing this.
+cd into the project directory. If you don't have Ruby 1.8.7-p173 already you will want to install it before doing this.
 
     $ cd portfolio
 

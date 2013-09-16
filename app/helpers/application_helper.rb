@@ -46,7 +46,7 @@ module ApplicationHelper
       g = [[0, g + (g * luminance)].max, 255].min.round
       b = [[0, b + (b * luminance)].max, 255].min.round
 
-      "#" + "%02x" % r + "%02x" % g + "%02x" % b
+      '#%02x%02x%02x' % [r, g, b]
     else
       nil
     end

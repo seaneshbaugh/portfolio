@@ -12,7 +12,9 @@ $.fn.fadingLinks = function(color, duration) {
     }
 
     return this.each(function() {
-        var original = $(this).css("color");
+        var original;
+
+        original = $(this).css("color");
 
         $(this).mouseover(function() {
             return $(this).stop().animate({
