@@ -12,19 +12,19 @@ Portfolio::Application.routes.draw do
     put 'update-password' => 'devise/passwords#update'
   end
 
-  get '/contact' => 'contact#new', :as => 'contact'
+  get '/contact' => 'contact#new', :as => :contact
 
   post '/contact' => 'contact#create'
 
   resources :posts, :only => [:show]
 
-  get '/sitemap' => 'sitemap#index', :as => 'sitemap'
+  get '/posts.rss' => 'posts#index', :format => :rss
+
+  get '/sitemap.xml' => 'sitemap#index', :as => :sitemap, :format => :xml
 
   authenticate :user do
     namespace :admin do
       root :to => 'admin#index'
-
-      get 'export' => 'admin#export', :as => 'export'
 
       resource :account, :only => [:show, :edit, :update]
 
@@ -41,7 +41,7 @@ Portfolio::Application.routes.draw do
       resources :users
     end
 
-    post 'versions/:id/revert' => 'versions#revert', :as => 'revert_version'
+    post 'versions/:id/revert' => 'versions#revert', :as => :revert_version
   end
 
   root :to => 'posts#index'
