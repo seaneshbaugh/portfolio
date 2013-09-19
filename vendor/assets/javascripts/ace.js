@@ -1,12 +1,1 @@
-//= require ./ace-builds/src-min-noconflict/ace
-//= require ./ace-builds/src-min-noconflict/mode-coffee
-//= require ./ace-builds/src-min-noconflict/mode-css
-//= require ./ace-builds/src-min-noconflict/mode-html
-//= require ./ace-builds/src-min-noconflict/mode-html_ruby
-//= require ./ace-builds/src-min-noconflict/mode-javascript
-//= require ./ace-builds/src-min-noconflict/mode-json
-//= require ./ace-builds/src-min-noconflict/mode-ruby
-//= require ./ace-builds/src-min-noconflict/theme-pastel_on_dark
-//= require ./ace-builds/src-min-noconflict/worker-css
-//= require ./ace-builds/src-min-noconflict/worker-javascript
-//= require ./ace-builds/src-min-noconflict/worker-json
+//= require_tree ./ace
