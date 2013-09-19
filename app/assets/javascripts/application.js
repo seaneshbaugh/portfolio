@@ -7,23 +7,25 @@
 //= require_self
 
 $.fn.fadingLinks = function(color, duration) {
-    if (duration == null) {
+    if (!duration) {
         duration = 500;
     }
 
     return this.each(function() {
-        var original;
+        var link, original;
 
-        original = $(this).css("color");
+        link = $(this);
 
-        $(this).mouseover(function() {
-            return $(this).stop().animate({
+        original = link.css("color");
+
+        link.mouseover(function() {
+            return link.stop().animate({
                 color: color
             }, duration);
         });
 
-        return $(this).mouseout(function() {
-            return $(this).stop().animate({
+        return link.mouseout(function() {
+            return link.stop().animate({
                 color: original
             }, duration);
         });
@@ -32,10 +34,14 @@ $.fn.fadingLinks = function(color, duration) {
 
 $(function() {
     $("a").each(function() {
-        if ($(this).data("hover-color") !== undefined) {
-            $(this).fadingLinks($(this).data("hover-color"));
+        var link;
+
+        link = $(this);
+
+        if (link.data("hover-color")) {
+            link.fadingLinks(link.data("hover-color"));
         } else {
-            $(this).fadingLinks("#005580");
+            link.fadingLinks("#005580");
         }
     });
 });

@@ -4,12 +4,13 @@
 //= require jquery-fileupload/vendor/tmpl
 //= require twitter/bootstrap
 //= require vendor_assets
+//= require ace
 //= require shared
 //= require_self
 
 $.fn.extend({
     insertAtCaret: function(myValue) {
-        this.each(function(index) {
+        this.each(function() {
             if (document.selection) {
                 this.focus();
 
@@ -59,13 +60,65 @@ $.fn.extend({
 });
 
 $(function() {
+    var lastTextArea;
+
     $("[rel*=tooltip]").tooltip({placement: "top"});
+
     $("[rel*=popover]").popover({trigger: "hover"});
 
-    var lastTextArea = $("textarea").first();
+    lastTextArea = $("textarea").first();
 
     $("textarea").on("focus", function() {
         lastTextArea = this;
+    });
+
+    $(".ace-editor").each(function() {
+        var editorContainer, editorID, editorName, textarea, mode, theme, editor;
+
+        editorContainer = $(this);
+
+        editorID = editorContainer.attr("id");
+
+        // This expects the editor ID to be in the form of "model_name_attribute-editor"
+        editorName = "#" + editorID.split("-")[0];
+
+        textarea = $(editorName);
+
+        mode = editorContainer.data("mode").toLowerCase();
+
+        if (mode === "erb") {
+            mode = "rhtml";
+        }
+
+        if (textarea.length === 1 && ["coffee", "css", "html", "javascript", "json", "less", "rhtml", "ruby", "text"].indexOf(mode) !== -1) {
+            $(textarea).hide();
+
+            editor = ace.edit(editorID);
+
+            $("#" + editorID).data("editor", editor);
+
+            theme = editorContainer.data("theme");
+
+            if (theme) {
+                theme = theme.toLowerCase();
+            } else {
+                theme = "pastel_on_dark";
+            }
+
+            editor.setTheme("ace/theme/" + theme);
+
+            editor.getSession().setMode("ace/mode/" + mode);
+
+            editor.getSession().setValue($(textarea).val());
+
+            editor.getSession().setTabSize(2);
+
+            editor.getSession().setUseSoftTabs(true);
+
+            editor.getSession().on("change", function() {
+                $(textarea).val(editor.getSession().getValue());
+            });
+        }
     });
 
     $("body").on("click", ".picture-selector-button", function(event) {

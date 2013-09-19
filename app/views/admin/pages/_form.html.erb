@@ -7,8 +7,14 @@
       <label class="string optional control-label"></label>
       <a href="javascript:void(0);" class="picture-selector-button btn">Insert Picture</a>
     </div>
-    <%= f.input :body %>
-    <%= f.input :style %>
+    <%= f.input :body do %>
+      <%= f.text_area :body, :style => 'display: none;' %>
+      <div id="page_body-editor" class="ace-editor" data-mode="html"></div>
+    <% end %>
+    <%= f.input :style do %>
+      <%= f.text_area :style, :style => 'display: none;' %>
+      <div id="page_style-editor" class="ace-editor" data-mode="css"></div>
+    <% end %>
     <%= f.input :meta_description %>
     <%= f.input :meta_keywords %>
     <%= f.input :order %>

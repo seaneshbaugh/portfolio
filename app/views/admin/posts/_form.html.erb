@@ -3,8 +3,14 @@
   <fieldset>
     <legend><%= t('posts.sections.information') %></legend>
     <%= f.input :title %>
-    <%= f.input :body %>
-    <%= f.input :style %>
+    <%= f.input :body do %>
+      <%= f.text_area :body, :style => 'display: none;' %>
+      <div id="post_body-editor" class="ace-editor" data-mode="html"></div>
+    <% end %>
+    <%= f.input :style do %>
+      <%= f.text_area :style, :style => 'display: none;' %>
+      <div id="post_style-editor" class="ace-editor" data-mode="css"></div>
+    <% end %>
     <%= f.input :visible %>
     <%= f.input :user_id, :as => :hidden, :input_html => { :value => current_user.id } %>
   </fieldset>
