@@ -34,11 +34,11 @@
         </tr>
         <tr>
           <th class="col-xs-4 col-sm-2"><%= t('activerecord.attributes.user.created_at') %></th>
-          <td class="col-xs-8 col-sm-10"><%= @user.created_at.to_s(:normal) %></td>
+          <td class="col-xs-8 col-sm-10"><%= @user.created_at.strftime('%Y-%m-%d %H:%M:%S') %></td>
         </tr>
         <tr>
           <th class="col-xs-4 col-sm-2"><%= t('activerecord.attributes.user.updated_at') %></th>
-          <td class="col-xs-8 col-sm-10"><%= @user.updated_at.to_s(:normal) %></td>
+          <td class="col-xs-8 col-sm-10"><%= @user.updated_at.strftime('%Y-%m-%d %H:%M:%S') %></td>
         </tr>
       </tbody>
     </table>
