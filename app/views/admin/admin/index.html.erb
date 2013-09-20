@@ -29,3 +29,19 @@
     </div>
   <% end %>
 </section>
+<section id="rails-info" class="row hidden-xs hidden-sm">
+  <h2 class="col-xs-12"><%= t('admin.sections.rails_info') %></h2>
+  <div class="col-xs-12">
+    <%= Rails::Info.to_html.html_safe %>
+  </div>
+</section>
+<section id="routes" class="row hidden-xs hidden-sm">
+  <h2 class="col-xs-12"><%= t('admin.sections.routes') %></h2>
+  <%
+     routes = Rails.application.routes.routes
+     inspector = Rails::Application::RouteInspector.new
+  %>
+  <div class="col-xs-12">
+    <pre class="col-xs-12"><%= inspector.format(routes, ENV['CONTROLLER']).join("\n") %></pre>
+  </div>
+</section>
