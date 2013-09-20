@@ -1,7 +1,7 @@
 require 'active_support/configurable'
 
 module Kaminari
-  class Configuration #:nodoc:
+  class Configuration
     config_accessor :route
   end
 
@@ -20,7 +20,7 @@ module Kaminari
 
   module Helpers
     class Tag
-      def initialize(template, options = {}) #:nodoc:
+      def initialize(template, options = {})
         @template, @options = template, options.dup
         @param_name = @options.delete(:param_name)
         @route = @options.delete(:route)
@@ -29,7 +29,11 @@ module Kaminari
       end
 
       def page_url_for(page)
-        @template.send(@route, @params.merge(@param_name => (page <= 1 ? nil : page)))
+        if @route && @route.respond_to(:to_sym)
+          @template.send(@route.to_sym, @params.merge(@param_name => (page <= 1 ? nil : page)))
+        else
+          @template.url_for @params.merge(@param_name => (page <= 1 ? nil : page))
+        end
       end
     end
   end
