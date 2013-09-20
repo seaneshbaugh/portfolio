@@ -52,4 +52,28 @@ module ApplicationHelper
       nil
     end
   end
+
+  def contrast_color(hex_code)
+    unless hex_code.match(/^#(([a-fA-F0-9]){3}){1,2}$/).nil?
+      hex_code = hex_code[1..hex_code.length - 1]
+
+      if hex_code.length < 6
+        hex_code = hex_code[0] + hex_code[0] + hex_code[1] + hex_code[1] + hex_code[2] + hex_code[2]
+      end
+
+      r = hex_code[0, 2].to_i(16)
+      g = hex_code[2, 2].to_i(16)
+      b = hex_code[4, 2].to_i(16)
+
+      a = 1 - (0.299 * r.to_f + 0.587 * g.to_f + 0.114 * b.to_f) / 255.0
+
+      if a < 0.5
+        '#000000'
+      else
+        '#ffffff'
+      end
+    else
+      nil
+    end
+  end
 end
