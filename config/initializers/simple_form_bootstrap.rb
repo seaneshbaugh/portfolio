@@ -51,11 +51,11 @@ SimpleForm.setup do |config|
     b.optional :readonly
 
     b.use :label
-    b.wrapper :right_column, :tag => :div, :class => 'col-lg-10' do |component|
+    b.wrapper :right_column, :tag => :div, :class => 'col-lg-8' do |component|
       component.use :input
     end
     b.use :hint,  :wrap_with => { :tag => 'span', :class => 'help-block' }
-    b.use :error, :wrap_with => { :tag => 'span', :class => 'help-block has-error' }
+    b.use :error, :wrap_with => { :tag => 'div', :class => 'help-block has-error col-lg-2' }
   end
 
   config.wrappers :group, :tag => 'div', :class => 'form-group', :error_class => 'has-error',

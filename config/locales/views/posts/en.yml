@@ -6,6 +6,7 @@ en:
       post:
         create: "Add Post"
         update: "Update Post"
+        redirect_to_new: "Create and Add Another"
     button:
       post:
   messages:
