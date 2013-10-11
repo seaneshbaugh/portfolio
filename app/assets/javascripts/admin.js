@@ -143,21 +143,21 @@ $(function() {
             if (data.context) {
                 progress = parseInt(data.loaded / data.total * 100, 10);
 
-                data.context.find(".bar").css("width", progress + "%");
+                data.context.find(".progress-bar").css("width", progress + "%").attr("aria-valuenow", progress.toString());
             }
         },
         done: function(event, data) {
             if (data.context) {
-                data.context.find(".bar").css("width", "100%");
+                data.context.find(".progress-bar").css("width", "100%").attr("aria-valuenow", "100");
 
                 setTimeout(function(){
-                    data.context.find(".progress").removeClass("progress-info active").delay(500).addClass("progress-success").parent().fadeOut(4000);
+                    data.context.find(".progress").removeClass("active").find(".progress-bar").removeClass("progress-bar-info").delay(500).addClass("progress-bar-success").closest(".upload").fadeOut(4000);
                 }, 500);
             }
         },
         fail: function(event, data) {
             if (data.context) {
-                data.context.find(".progress").removeClass("progress-info active").delay(500).addClass("progress-danger");
+                data.context.find(".progress").removeClass("active").find(".progress-bar").removeClass("progress-bar-info").delay(500).addClass("progress-bar-danger");
             }
         }
     });
