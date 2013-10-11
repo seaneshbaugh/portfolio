@@ -1,6 +1,7 @@
 <h2><%= t("posts.#{@post.persisted? ? 'edit' : 'new'}.title") %></h2>
 <%= simple_form_for [:admin, @post], :html => { :class => 'form-horizontal' } do |f| %>
   <%= f.input :title %>
+  <%= picture_inserter '#post_body-editor' %>
   <%= f.input :body do %>
     <%= f.text_area :body, :style => 'display: none;' %>
     <div id="post_body-editor" class="ace-editor" data-mode="html"></div>
