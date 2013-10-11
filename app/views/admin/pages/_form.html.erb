@@ -1,6 +1,7 @@
 <h2><%= t("pages.#{@page.persisted? ? 'edit' : 'new'}.title") %></h2>
 <%= simple_form_for [:admin, @page], :html => { :class => 'form-horizontal' } do |f| %>
   <%= f.input :title %>
+  <%= picture_inserter '#page_body-editor' %>
   <%= f.input :body do %>
     <%= f.text_area :body, :style => 'display: none;' %>
     <div id="page_body-editor" class="ace-editor" data-mode="html"></div>

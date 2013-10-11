@@ -8,68 +8,15 @@
 //= require shared
 //= require_self
 
-$.fn.extend({
-    insertAtCaret: function(myValue) {
-        this.each(function() {
-            if (document.selection) {
-                this.focus();
-
-                var selection = document.selection.createRange();
-
-                selection.text = myValue;
-
-                this.focus();
-            } else {
-                if (this.selectionStart || this.selectionStart === "0") {
-                    var startPosition = this.selectionStart;
-                    var endPosition = this.selectionEnd;
-                    var scrollTop = this.scrollTop;
-
-                    this.value = this.value.substring(0, startPosition) + myValue + this.value.substring(endPosition, this.value.length);
-
-                    this.focus();
-
-                    this.selectionStart = startPosition + myValue.length;
-
-                    this.selectionEnd = startPosition + myValue.length;
-
-                    this.scrollTop = scrollTop;
-                } else {
-                    this.value += myValue;
-
-                    this.selectionStart = myValue.length;
-
-                    this.selectionEnd = myValue.length;
-
-                    this.focus();
-                }
-            }
-        });
-    },
-    insertImageTagAtCaret: function(url, altText, title, isLink) {
-        this.each(function(index) {
-            var imageTag = "<img src=\"" + url.substr(0, url.indexOf("?")).trim() + "\" alt=\"" + altText.trim() + "\" title=\"" + title.trim() + "\">";
-
-            if (isLink) {
-                imageTag = "<a href=\"" + url.trim() + "\">" + imageTag.trim() + "</a>";
-            }
-
-            $(this).insertAtCaret(imageTag);
-        });
-    }
-});
-
 $(function() {
-    var lastTextArea;
+    $("body").tooltip({
+        placement: "top",
+        selector: "[rel*=tooltip]"
+    });
 
-    $("[rel*=tooltip]").tooltip({placement: "top"});
-
-    $("[rel*=popover]").popover({trigger: "hover"});
-
-    lastTextArea = $("textarea").first();
-
-    $("textarea").on("focus", function() {
-        lastTextArea = this;
+    $("body").popover({
+        selector: "[rel*=popover]",
+        trigger: "hover"
     });
 
     $(".ace-editor").each(function() {
@@ -121,33 +68,55 @@ $(function() {
         }
     });
 
-    $("body").on("click", ".picture-selector-button", function(event) {
+//    $("#picture-selector-modal").on("show.bs.modal", function () {
+//        console.log(this);
+//    });
+
+    $("body").on("submit", "#picture-selector-search-form", function(event) {
+        event.preventDefault();
+    });
+
+    $("body").on("keyup", "#filter-by-title", function() {
+        var filterTextBox, filterText;
+
+        filterTextBox = $(this);
+
+        filterText = filterTextBox.val();
+
+        if (filterText.length > 0) {
+            $(".picture-selector-picture").each(function() {
+                var picture;
+
+                picture = $(this);
+
+                if (picture.data("picture-title") && picture.data("picture-title").toString().toLowerCase().match(filterText.toLowerCase())) {
+                    picture.show();
+                } else {
+                    picture.hide();
+                }
+            });
+        } else {
+            $(".picture-selector-picture").show();
+        }
+    });
+
+    $("body").on("click", ".picture-selector-picture", function(event) {
+        var picture, target, img;
+
         event.preventDefault();
 
-        if ($("#picture-selector").length === 0) {
-            $.get("/admin/pictures/selector", null, function(data, textStatus, jqXHR) {
-                $("body").append('<div id="picture-selector-container" class="hidden"></div>');
+        picture = $(this);
 
-                $("#picture-selector-container").append('<a href="#picture-selector" id="picture-selector-activator" class="btn">Show Picture Selector</a>');
+        target = $(picture.closest(".modal").data("target"));
 
-                $("#picture-selector-container").append($(data));
+        if (target.length > 0 && target.data("editor")) {
+            img = "<img src=\"" + picture.data("picture-url") + "\" alt=\"" + picture.data("picture-alt-text") + "\">";
 
-                $("#picture-selector-activator").colorbox({height: "75%", inline: true, open: true, width: "75%"});
-
-            }, "html");
-        } else {
-            $("#picture-selector-activator").colorbox({height: "75%", inline: true, open: true, width: "75%"});
-        }
-    });
-
-    $("body").on("click", ".picture-selector-picture img", function() {
-        if (lastTextArea !== undefined) {
-            $(lastTextArea).insertImageTagAtCaret($(this).data("url"), $(this).attr("alt"), $(this).attr("title"), false);
+            target.data("editor").insert(img);
         }
 
-        $.colorbox.close();
+        $("#picture-selector-modal").modal("hide");
     });
-
 
     $("#pictures #new_picture").fileupload({
         dataType: "script",
