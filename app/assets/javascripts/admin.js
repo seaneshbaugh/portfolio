@@ -5,6 +5,7 @@
 //= require twitter/bootstrap
 //= require vendor_assets
 //= require ace
+//= require bootstrap-colorpicker/bootstrap-colorpicker
 //= require shared
 //= require_self
 
@@ -18,6 +19,8 @@ $(function() {
         selector: "[rel*=popover]",
         trigger: "hover"
     });
+
+    $('.colorpicker-control').colorpicker();
 
     $(".ace-editor").each(function() {
         var editorContainer, editorID, editorName, textarea, mode, theme, editor;
