@@ -29,7 +29,7 @@ module Kaminari
       end
 
       def page_url_for(page)
-        if @route && @route.respond_to(:to_sym)
+        if @route && @route.respond_to?(:to_sym)
           @template.send(@route.to_sym, @params.merge(@param_name => (page <= 1 ? nil : page)))
         else
           @template.url_for @params.merge(@param_name => (page <= 1 ? nil : page))

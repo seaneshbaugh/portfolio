@@ -6,13 +6,32 @@ class Picture < ActiveRecord::Base
                               :styles => { :thumb => '100x100', :medium => '300x300' },
                               :url => "/uploads/:class_singular/:attachment/#{Rails.env.test? ? 'test/' : ''}:style_prefix:basename.:extension" }
 
+  validates_length_of   :title, :maximum => 65535
   validates_presence_of :title
 
-  validates_uniqueness_of :image_fingerprint
+  validates_length_of :alt_text, :maximum => 65535
+
+  validates_length_of :caption, :maximum => 65535
+
+  validates_uniqueness_of :image_fingerprint, :if => Proc.new { !Rails.env.test? }
 
   validates_attachment_presence :image
   validates_attachment_size :image, :less_than => 1024.megabytes
   validates_attachment_content_type :image, :content_type => %w(image/gif image/jpeg image/jpg image/pjpeg image/png image/svg+xml image/tiff image/x-png)
+
+  after_initialize do
+    if self.new_record?
+      self.title ||= ''
+      self.alt_text ||= ''
+      self.caption ||= ''
+      self.image_original_width ||= 1
+      self.image_original_height ||= 1
+      self.image_medium_width ||= 1
+      self.image_medium_height ||= 1
+      self.image_thumb_width ||= 1
+      self.image_thumb_height ||= 1
+    end
+  end
 
   before_validation :modify_image_file_name
   before_validation :set_default_title
@@ -27,7 +46,7 @@ class Picture < ActiveRecord::Base
       if image.dirty?
         current_time = Time.now
 
-        basename = (current_time.to_i.to_s + current_time.usec.to_s).ljust(16, '0')
+        basename = "#{current_time.to_i}#{current_time.usec}".ljust(16, '0')
 
         extension = File.extname(self.image_file_name).downcase
 
@@ -49,7 +68,8 @@ class Picture < ActiveRecord::Base
   end
 
   def image?
-    #TODO: Add error message here. Currently this causes the save to fail and no reason is indicated.
+    self.errors.add :image, 'is not an image'
+
     !(image_content_type =~ /^image.*/).nil?
   end
 
