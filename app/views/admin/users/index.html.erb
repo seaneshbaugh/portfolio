@@ -40,7 +40,7 @@
             <tr>
               <td><%= link_to user.full_name, admin_user_path(user) %></td>
               <td><%= user.email %> <%= link_to '<span class="glyphicon glyphicon-envelope">'.html_safe, "mailto:#{user.email}", :rel => 'tooltip', :title => 'Send Email' %></td>
-              <td><%= user.role.capitalize %></td>
+              <td><%= user.role.titleize %></td>
               <td><%= user.created_at.strftime('%Y-%m-%d %H:%M:%S') %></td>
               <% if can? :edit, user %><td class="icon"><%= icon_edit_link edit_admin_user_path(user) %></td><% elsif can? :update, User %><td>&nbsp;</td><% end %>
               <% if can? :destroy, user %><td class="icon"><%= icon_delete_link admin_user_path(user) %></td><% elsif can? :destroy, User %><td>&nbsp;</td><% end %>

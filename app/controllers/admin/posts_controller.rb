@@ -26,6 +26,10 @@ class Admin::PostsController < Admin::AdminController
   def create
     @post = Post.new(params[:post])
 
+    if !(current_user.sysadmin? || current_user.admin?) || @post.user.nil?
+      @post.user = current_user
+    end
+
     if @post.save
       flash[:success] = t('messages.posts.created')
 
@@ -60,6 +64,12 @@ class Admin::PostsController < Admin::AdminController
       redirect_to admin_posts_url and return
     end
 
+    if !current_user.sysadmin? && !current_user.admin? && @post.user != current_user
+      flash[:error] = t('messages.posts.not_your_post')
+
+      redirect_to admin_posts_url and return
+    end
+
     if @post.update_attributes(params[:post])
       flash[:success] = t('messages.posts.updated')
 
@@ -76,6 +86,12 @@ class Admin::PostsController < Admin::AdminController
 
     if @post.nil?
       flash[:error] = t('messages.posts.could_not_find')
+
+      redirect_to admin_posts_url and return
+    end
+
+    if !current_user.sysadmin? && !current_user.admin? && @post.user != current_user
+      flash[:error] = t('messages.posts.not_your_post')
 
       redirect_to admin_posts_url and return
     end

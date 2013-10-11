@@ -13,25 +13,27 @@
     <% end %>
   <% end %>
 </section>
-<section id="quick-post" class="row">
-  <h2 class="col-xs-12"><%= t('admin.sections.quick_post') %></h2>
-  <%= simple_form_for [:admin, Post.new], :html => { :class => 'form-horizontal' } do |f| %>
-    <%= f.input :title %>
-    <%= picture_inserter '#post_body-editor' %>
-    <%= f.input :body do %>
-      <%= f.text_area :body, :style => 'display: none;' %>
-      <div id="post_body-editor" class="ace-editor" data-mode="html"></div>
-    <% end %>
-    <%= f.input :user_id, :as => :hidden, :input_html => { :value => current_user.id } %>
-    <div class="form-group">
-      <div class="col-lg-offset-2 col-lg-10">
-        <%= f.button :submit, 'Submit', :class => 'btn btn-primary' %>
+<% if can? :create, Post %>
+  <section id="quick-post" class="row">
+    <h2 class="col-xs-12"><%= t('admin.sections.quick_post') %></h2>
+    <%= simple_form_for [:admin, Post.new], :html => { :class => 'form-horizontal' } do |f| %>
+      <%= f.input :title %>
+      <%= picture_inserter '#post_body-editor' %>
+      <%= f.input :body do %>
+        <%= f.text_area :body, :style => 'display: none;' %>
+        <div id="post_body-editor" class="ace-editor" data-mode="html"></div>
+      <% end %>
+      <%= f.input :user_id, :as => :hidden, :input_html => { :value => current_user.id } %>
+      <div class="form-group">
+        <div class="col-lg-offset-2 col-lg-10">
+          <%= f.button :submit, 'Submit', :class => 'btn btn-primary' %>
+        </div>
       </div>
-    </div>
-  <% end %>
-</section>
+    <% end %>
+  </section>
+<% end %>
 <section id="rails-info" class="row hidden-xs hidden-sm">
-  <h2 class="col-xs-12"><%= t('admin.sections.rails_info') %></h2>
+  <h2 class="col-xs-12"><%= t('admin.sections.rails_info') %><% if Rails.env.production? %> <small>Deployed On: <%= Time.parse(Rails.root.to_s.split('/').last).strftime('%m-%d-%Y %H:%M:%S') %></small><% end %></h2>
   <div class="col-xs-12">
     <%= Rails::Info.to_html.html_safe %>
   </div>
@@ -45,4 +47,21 @@
   <div class="col-xs-12">
     <pre class="col-xs-12"><%= inspector.format(routes, ENV['CONTROLLER']).join("\n") %></pre>
   </div>
+</section>
+<section id="gems" class="row hidden-xs hidden-sm">
+  <h2 class="col-xs-12"><%= t('admin.sections.gems') %></h2>
+  <ul>
+    <% get_gem_dependencies.each do |gem| %>
+      <li>
+        <%= gem[:name] %> (<%= gem[:version] %>)
+        <% if gem[:dependencies].present? %>
+          <ul>
+            <% gem[:dependencies].each do |dependency| %>
+              <li><%= dependency[:name] %> (<%= dependency[:requirement] %>)</li>
+            <% end %>
+          </ul>
+        <% end %>
+      </li>
+    <% end %>
+  </ul>
 </section>

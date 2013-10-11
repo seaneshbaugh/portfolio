@@ -20,7 +20,7 @@ $(function() {
         trigger: "hover"
     });
 
-    $('.colorpicker-control').colorpicker();
+    $(".colorpicker-control").colorpicker();
 
     $(".ace-editor").each(function() {
         var editorContainer, editorID, editorName, textarea, mode, theme, editor;
@@ -70,10 +70,6 @@ $(function() {
             });
         }
     });
-
-//    $("#picture-selector-modal").on("show.bs.modal", function () {
-//        console.log(this);
-//    });
 
     $("body").on("submit", "#picture-selector-search-form", function(event) {
         event.preventDefault();
