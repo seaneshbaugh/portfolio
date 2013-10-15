@@ -6,7 +6,7 @@ class Admin::PostsController < Admin::AdminController
   def index
     @search = Post.search(params[:q])
 
-    @posts = @search.result.page(params[:page]).per(25).order('`posts`.`created_at` DESC')
+    @posts = @search.result.page(params[:page]).per(25).order('`posts`.`created_at` DESC').uniq
   end
 
   def show

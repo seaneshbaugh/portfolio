@@ -10,6 +10,9 @@
       <div class="form-group">
         <%= f.text_field :body_or_style_cont, :class => 'form-control', :placeholder => "#{t('activerecord.attributes.page.body')} #{t('or')} #{t('activerecord.attributes.page.style')}" %>
       </div>
+      <div class="form-group">
+        <%= f.select :tags_name_eq, ActsAsTaggableOn::Tag.all.map { |tag| [tag, tag] }, { :include_blank => "Select #{t('activerecord.attributes.post.tag_list').singularize}" }, { :class => 'form-control' } %>
+      </div>
       <%= f.button '<span class="glyphicon glyphicon-search"></span> Search'.html_safe, :type => :submit, :class => 'btn btn-primary' %>
       <%= link_to '<span class="glyphicon glyphicon-remove"></span>'.html_safe, admin_posts_path, :class => 'btn btn-default', :rel => 'tooltip', :title => t('clear_search') %>
     <% end %>

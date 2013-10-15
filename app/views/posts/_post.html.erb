@@ -22,4 +22,11 @@
       <%= post.body.html_safe %>
     <% end %>
   </div>
+  <footer class="post-footer col-xs-12">
+    <% if post.tag_list.present? %>
+      <div class="post-tags well well-sm">
+        <strong>Tags:</strong> <%= post.tag_list.map { |tag| link_to tag, root_path(:tag => tag) }.join(', ').html_safe %>
+      </div>
+    <% end %>
+  </footer>
 </article>

@@ -14,6 +14,7 @@ en:
         visible: "Visible"
         created_at: "Created At"
         updated_at: "Updated At"
+        tag_list: "Tags"
     errors:
       models:
         post:
@@ -28,3 +29,4 @@ en:
             visible: "Visible"
             created_at: "Created At"
             updated_at: "Updated At"
+            tag_list: "Tags"

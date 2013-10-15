@@ -2,6 +2,7 @@ source 'https://rubygems.org'
 
 gem 'rails', '3.2.13'
 gem 'mysql2'
+gem 'acts-as-taggable-on'
 gem 'cancan'
 gem 'devise'
 gem 'exception_notification'

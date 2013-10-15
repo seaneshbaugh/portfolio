@@ -39,6 +39,8 @@ Portfolio::Application.routes.draw do
       resources :posts
 
       resources :users
+
+      get '/tags.json' => 'tags#index'
     end
 
     post 'versions/:id/revert' => 'versions#revert', :as => :revert_version

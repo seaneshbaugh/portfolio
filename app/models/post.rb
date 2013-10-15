@@ -1,5 +1,7 @@
 class Post < ActiveRecord::Base
-  attr_accessible :title, :body, :style, :meta_description, :meta_keywords, :user_id, :visible
+  attr_accessible :title, :body, :style, :meta_description, :meta_keywords, :user_id, :visible, :tag_list
+
+  acts_as_taggable
 
   has_paper_trail
 

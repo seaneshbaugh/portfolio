@@ -10,6 +10,7 @@
     <%= f.text_area :style, :style => 'display: none;' %>
     <div id="post_style-editor" class="ace-editor" data-mode="css"></div>
   <% end %>
+  <%= f.input :tag_list, :as => :string, :input_html => { :class => 'tokenfield' } %>
   <%= f.input :meta_description, :input_html => { :rows => 2 } %>
   <%= f.input :meta_keywords, :input_html => { :rows => 2 } %>
   <%= f.input :visible %>

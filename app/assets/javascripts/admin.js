@@ -6,6 +6,8 @@
 //= require vendor_assets
 //= require ace
 //= require bootstrap-colorpicker/bootstrap-colorpicker
+//= require typeahead/typeahead
+//= require bootstrap-tokenfield/bootstrap-tokenfield
 //= require shared
 //= require_self
 
@@ -69,6 +71,18 @@ $(function() {
                 $(textarea).val(editor.getSession().getValue());
             });
         }
+    });
+
+    $(".tokenfield").tokenfield({
+        typeahead: {
+            name: "tags",
+            remote: {
+                url: "/admin/tags.json?q[name_cont]=%QUERY",
+                cache: false
+            }
+        },
+        allowDuplicates: false,
+        createTokensOnBlur: true
     });
 
     $("body").on("submit", "#picture-selector-search-form", function(event) {
