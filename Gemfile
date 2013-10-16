@@ -1,19 +1,19 @@
 source 'https://rubygems.org'
 
-gem 'rails', '3.2.13'
+gem 'rails', '3.2.14'
 gem 'mysql2'
 gem 'acts-as-taggable-on'
 gem 'cancan'
 gem 'devise'
-gem 'exception_notification'
+gem 'exception_notification', '~> 3.0.1'
 gem 'highline'
 gem 'honeypot-captcha'
 gem 'kaminari'
-gem 'nokogiri'
+gem 'nokogiri', '~> 1.5.10'
 gem 'paper_trail'
 gem 'paperclip', '~> 2.7'
 gem 'ransack'
-gem 'sanitize'
+gem 'sanitize', '2.0.3'
 gem 'simple_form'
 gem 'yaml_db'
 
@@ -34,10 +34,10 @@ group :development do
 end
 
 group :test do
-  gem 'capybara'
+  gem 'capybara', '~> 2.0.3'
   gem 'database_cleaner'
   gem 'factory_girl', '~> 2.0'
   gem 'rspec-rails'
-  gem 'shoulda-matchers'
+  gem 'shoulda-matchers', '~> 1.5.6'
   gem 'simplecov', :require => false
 end
