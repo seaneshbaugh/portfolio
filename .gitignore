@@ -12,3 +12,4 @@
 /vendor/bundle
 /public/uploads
 /config/smtp.yml
+/config/devise.yml
