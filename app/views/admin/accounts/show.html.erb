@@ -44,11 +44,11 @@
         </tr>
         <tr>
           <th class="col-xs-4 col-sm-2"><%= t('activerecord.attributes.user.current_sign_in_at') %></th>
-          <td class="col-xs-8 col-sm-10"><%= @account.current_sign_in_at.blank? ? t('na') : @account.current_sign_in_at.to_s(:normal) %></td>
+          <td class="col-xs-8 col-sm-10"><%= @account.current_sign_in_at.blank? ? t('na') : @account.current_sign_in_at.strftime('%Y-%m-%d %H:%M:%S') %></td>
         </tr>
         <tr>
           <th class="col-xs-4 col-sm-2"><%= t('activerecord.attributes.user.last_sign_in_at') %></th>
-          <td class="col-xs-8 col-sm-10"><%= @account.last_sign_in_at.blank? ? t('na') : @account.last_sign_in_at.to_s(:normal) %></td>
+          <td class="col-xs-8 col-sm-10"><%= @account.last_sign_in_at.blank? ? t('na') : @account.last_sign_in_at.strftime('%Y-%m-%d %H:%M:%S') %></td>
         </tr>
         <tr>
           <th class="col-xs-4 col-sm-2"><%= t('activerecord.attributes.user.current_sign_in_ip') %></th>
