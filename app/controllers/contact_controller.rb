@@ -7,7 +7,7 @@ class ContactController < ApplicationController
     @contact = Contact.new(params[:contact])
 
     if @contact.valid?
-      ContactMailer.contact_form_message(@contact).deliver
+      ContactMailer.contact_form_message(@contact.sanitize!).deliver
 
       render 'thanks'
     else

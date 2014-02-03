@@ -26,7 +26,7 @@ class Contact
   validates_presence_of :body
   validates_length_of   :body, :minimum => 8, :maximum => 2048
 
-  def initialize args = nil
+  def initialize(args = nil)
     @errors = ActiveModel::Errors.new(self)
 
     if args
@@ -51,5 +51,15 @@ class Contact
 
   def persisted?
     false
+  end
+
+  def sanitize!
+    self.email = self.email.downcase.strip
+
+    self.subject = Sanitize.clean(self.subject).gsub(/\n|\r|\t/, '').strip
+
+    self.body = Sanitize.clean(self.body).gsub(/\r|\t/, '').strip
+
+    self
   end
 end
