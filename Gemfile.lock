@@ -98,6 +98,8 @@ GEM
     jquery-rails (3.0.4)
       railties (>= 3.0, < 5.0)
       thor (>= 0.14, < 2.0)
+    jquery-ui-rails (4.1.1)
+      railties (>= 3.1.0)
     json (1.8.1)
     kaminari (0.14.1)
       actionpack (>= 3.0.0)
@@ -263,6 +265,7 @@ DEPENDENCIES
   honeypot-captcha
   jquery-fileupload-rails
   jquery-rails
+  jquery-ui-rails
   kaminari
   less-rails
   less-rails-bootstrap

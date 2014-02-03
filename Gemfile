@@ -21,6 +21,7 @@ gem 'yaml_db'
 group :assets do
   gem 'jquery-fileupload-rails'
   gem 'jquery-rails'
+  gem 'jquery-ui-rails'
   gem 'less-rails'
   gem 'less-rails-bootstrap'
   gem 'therubyracer'
