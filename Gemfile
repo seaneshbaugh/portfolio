@@ -9,6 +9,7 @@ gem 'exception_notification', '~> 3.0.1'
 gem 'highline'
 gem 'honeypot-captcha'
 gem 'kaminari'
+gem 'mail', '= 2.5.4', :github => 'sofatutor/mail', :branch => '2.5.4-with-fix-548' # see https://github.com/mikel/mail/issues/548
 gem 'nokogiri', '~> 1.5.10'
 gem 'paper_trail'
 gem 'paperclip', '~> 2.7'

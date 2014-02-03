@@ -1,3 +1,12 @@
+GIT
+  remote: git://github.com/sofatutor/mail.git
+  revision: d0bc79c974f1a8c51f800607716b81246471cda1
+  branch: 2.5.4-with-fix-548
+  specs:
+    mail (2.5.4)
+      mime-types (~> 1.16)
+      treetop (~> 1.4.8)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -101,9 +110,6 @@ GEM
     less-rails-bootstrap (3.0.3)
       less-rails (~> 2.4.2)
     libv8 (3.16.14.3)
-    mail (2.5.4)
-      mime-types (~> 1.16)
-      treetop (~> 1.4.8)
     mailcatcher (0.5.12)
       activesupport (~> 3.0)
       eventmachine (~> 1.0.0)
@@ -260,6 +266,7 @@ DEPENDENCIES
   kaminari
   less-rails
   less-rails-bootstrap
+  mail (= 2.5.4)!
   mailcatcher
   mysql2
   nokogiri (~> 1.5.10)
