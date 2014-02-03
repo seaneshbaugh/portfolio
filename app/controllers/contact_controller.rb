@@ -9,9 +9,7 @@ class ContactController < ApplicationController
     if @contact.valid?
       ContactMailer.contact_form_message(@contact).deliver
 
-      flash[:success] = t('contacts.thanks')
-
-      redirect_to root_url
+      render 'thanks'
     else
       render 'new'
     end
