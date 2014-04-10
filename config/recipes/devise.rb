@@ -1,3 +1,5 @@
+require 'securerandom'
+
 namespace :devise do
   desc 'Generate the devise.yml configuration file.'
   task :setup, :roles => :app do

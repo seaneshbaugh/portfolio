@@ -13,3 +13,4 @@
 /public/uploads
 /config/smtp.yml
 /config/devise.yml
+/config/secret.yml
