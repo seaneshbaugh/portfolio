@@ -11,10 +11,10 @@
 
 /* SITE */
   Created On: 2011/06/19
-  Last Updated: 2013/10/11
+  Last Updated: 2014/04/10
   Language: English
   Doctype: HTML5
   Lovingly Made In: RubyMine 5.4.3.2.1
-  Lovingly Made On: OSX 10.8.4 Mountain Lion
+  Lovingly Made On: OSX 10.9.2 Mountain Lion
   Lovingly Made With: Ruby, Ruby on Rails, ERB, HTML5, CSS3, LESS, JavaScript, jQuery
   View the source at: https://github.com/seaneshbaugh/portfolio
