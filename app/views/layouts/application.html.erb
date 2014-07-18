@@ -45,7 +45,7 @@
         <% @pages.each do |page| %>
           <li><strong><%= link_to page.title, "/#{page.slug}", :style => "color: #{page.color};", :data => { 'hover-color' => color_luminance(page.color, -0.3) } %></strong></li>
         <% end %>
-        <li><strong><%= link_to 'Contact', contact_path, :style => 'color: #5ea33a;', :data => { 'hover-color' => '#427229' } %></strong></li>
+        <li><strong><%= link_to 'Contact', contact_path, :style => 'color: #1b55c0;', :data => { 'hover-color' => '#133c86' } %></strong></li>
       </ul>
     </header>
     <main id="content" class="container">
