@@ -1,5 +1,10 @@
 require 'simplecov'
 
+SimpleCov.start 'rails' do
+  add_group 'Presenters', 'app/presenters'
+  add_group 'Validators', 'app/validators'
+end
+
 ENV['RAILS_ENV'] ||= 'test'
 
 require File.expand_path('../../config/environment', __FILE__)
