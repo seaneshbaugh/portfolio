@@ -33,7 +33,9 @@ group :development do
   gem 'better_errors'
   gem 'binding_of_caller'
   gem 'capistrano'
-  gem 'capistrano-ext'
+  gem 'capistrano-bundler'
+  gem 'capistrano-rails'
+  gem 'capistrano-rvm'
   gem 'mailcatcher'
   gem 'quiet_assets'
   gem 'rails-erd', require: false
