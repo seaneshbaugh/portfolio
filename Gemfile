@@ -1,20 +1,21 @@
 source 'https://rubygems.org'
 
-gem 'rails', '3.2.17'
-gem 'mysql2'
+ruby '2.2.0'
+
+gem 'rails', '4.2.0'
+gem 'pg'
 gem 'acts-as-taggable-on'
 gem 'cancan'
 gem 'devise'
-gem 'exception_notification', '~> 3.0.1'
+gem 'exception_notification'
 gem 'highline'
 gem 'honeypot-captcha'
 gem 'kaminari'
-gem 'mail', '= 2.5.4', :github => 'sofatutor/mail', :branch => '2.5.4-with-fix-548' # see https://github.com/mikel/mail/issues/548
-gem 'nokogiri', '~> 1.5.10'
+gem 'nokogiri'
 gem 'paper_trail'
-gem 'paperclip', '~> 2.7'
+gem 'paperclip'
 gem 'ransack'
-gem 'sanitize', '2.0.3'
+gem 'sanitize'
 gem 'simple_form'
 gem 'yaml_db'
 
@@ -29,17 +30,22 @@ group :assets do
 end
 
 group :development do
-  gem 'capistrano', '~> 2.15.5'
+  gem 'better_errors'
+  gem 'binding_of_caller'
+  gem 'capistrano'
   gem 'capistrano-ext'
   gem 'mailcatcher'
   gem 'quiet_assets'
+  gem 'rails-erd', require: false
+  gem 'rubocop', require: false
+  gem 'thin'
 end
 
 group :test do
-  gem 'capybara', '~> 2.0.3'
   gem 'database_cleaner'
-  gem 'factory_girl', '~> 2.0'
-  gem 'rspec-rails'
-  gem 'shoulda-matchers', '~> 1.5.6'
-  gem 'simplecov', :require => false
+  gem 'minitest'
+  gem 'guard-minitest'
+  gem 'mini_backtrace'
+  gem 'minitest-reporters'
+  gem 'simplecov', require: false
 end
