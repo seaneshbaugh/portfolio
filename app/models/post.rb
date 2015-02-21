@@ -1,53 +1,71 @@
 class Post < ActiveRecord::Base
-  attr_accessible :title, :body, :style, :meta_description, :meta_keywords, :user_id, :visible, :tag_list
+  include OptionsForSelect
+  include Slugable
+
+  # Scopes
+  scope :alphabetical, -> { order(:title) }
+
+  scope :chronological, -> { order(:created_at) }
+
+  scope :published, -> { where(visible: true) }
+
+  scope :reverse_alphabetical, -> { order('posts.title DESC') }
+
+  scope :reverse_chronological, -> { order('posts.created_at DESC') }
+
+  # Associations
+  belongs_to :user
+
+  # Validations
+  validates_presence_of :user_id
+
+  validates_length_of :title, maximum: 255
+  validates_presence_of :title
+  validates_uniqueness_of :title
+
+  validates_length_of :body, maximum: 16777215
+
+  validates_length_of :style, maximum: 4194303
+
+  validates_length_of :script, maximum: 4194303
+
+  validates_length_of :meta_description, maximum: 65535
+
+  validates_length_of :meta_keywords, maximum: 65535
+
+  validates_inclusion_of :visible, in: [true, false], message: 'must be true or false'
+
+  validates_associated :user
+
+  # Default Values
+  default_value_for :title, ''
+
+  default_value_for :slug, ''
+
+  default_value_for :body, ''
+
+  default_value_for :style, ''
+
+  default_value_for :script, ''
+
+  default_value_for :meta_description, ''
+
+  default_value_for :meta_keywords, ''
+
+  default_value_for :visible, true
 
   acts_as_taggable
 
   has_paper_trail
 
-  belongs_to :user, :validate => true
+  def first_image
+    images = Nokogiri::HTML(body).xpath('//img')
 
-  validates_length_of     :title, :maximum => 255
-  validates_presence_of   :title
-  validates_uniqueness_of :title
-
-  validates_length_of     :slug, :maximum => 255
-  validates_presence_of   :slug
-  validates_uniqueness_of :slug
-
-  validates_length_of :body, :maximum => 65535
-
-  validates_length_of :style, :maximum => 65535
-
-  validates_length_of :meta_description, :maximum => 65535
-
-  validates_length_of :meta_keywords, :maximum => 65535
-
-  validates_associated  :user
-  validates_presence_of :user_id
-
-  after_initialize do
-    if self.new_record?
-      self.title ||= ''
-      self.body ||= ''
-      self.style ||= ''
-      self.meta_description ||= ''
-      self.meta_keywords ||= ''
-
-      if self.visible.nil?
-        self.visible = true
-      end
+    if images.length > 0
+      images[0]['src']
+    else
+      nil
     end
-  end
-
-  before_validation :generate_slug
-
-  def published?
-    visible
-  end
-
-  def to_param
-    self.slug
   end
 
   def more
@@ -58,27 +76,11 @@ class Post < ActiveRecord::Base
     end
   end
 
+  def published?
+    visible
+  end
+
   def truncated?
-    self.body.length > self.more.length
-  end
-
-  def first_image
-    images = Nokogiri::HTML(self.body).xpath('//img')
-
-    if images.length > 0
-      images[0]['src']
-    else
-      nil
-    end
-  end
-
-  protected
-
-  def generate_slug
-    if self.title.blank?
-      self.slug = self.id.to_s
-    else
-      self.slug = self.title.gsub(/'/, '').parameterize
-    end
+    body.length > more.length
   end
 end
