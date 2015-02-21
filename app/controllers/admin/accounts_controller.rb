@@ -15,7 +15,7 @@ class Admin::AccountsController < Admin::AdminController
     params[:account].delete(:role) if params[:account]
 
     if @account.update_attributes(params[:account])
-      sign_in(@account, :bypass => true)
+      sign_in(@account, bypass: true)
 
       flash[:success] = t('messages.accounts.updated')
 

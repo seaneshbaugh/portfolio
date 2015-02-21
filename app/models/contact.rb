@@ -24,7 +24,7 @@ class Contact
   validates_length_of :subject, minimum: 4, maximum: 128
   validates_presence_of :subject
 
-  validates_length_of :body, :minimum: 8, maximum: 2048
+  validates_length_of :body, minimum: 8, maximum: 2048
   validates_presence_of :body
 
   def self._reflect_on_association(_attribute)

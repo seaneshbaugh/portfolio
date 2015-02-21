@@ -10,7 +10,7 @@ class Admin::PagesController < Admin::AdminController
   end
 
   def show
-    @page = Page.where(:slug => params[:id]).first
+    @page = Page.where(slug: params[:id]).first
 
     if @page.nil?
       flash[:error] = t('messages.pages.could_not_find')
@@ -42,7 +42,7 @@ class Admin::PagesController < Admin::AdminController
   end
 
   def edit
-    @page = Page.where(:slug => params[:id]).first
+    @page = Page.where(slug: params[:id]).first
 
     if @page.nil?
       flash[:error] = t('messages.pages.could_not_find')
@@ -52,7 +52,7 @@ class Admin::PagesController < Admin::AdminController
   end
 
   def update
-    @page = Page.where(:slug => params[:id]).first
+    @page = Page.where(slug: params[:id]).first
 
     if @page.nil?
       flash[:error] = t('messages.pages.could_not_find')
@@ -72,7 +72,7 @@ class Admin::PagesController < Admin::AdminController
   end
 
   def destroy
-    @page = Page.where(:slug => params[:id]).first
+    @page = Page.where(slug: params[:id]).first
 
     if @page.nil?
       flash[:error] = t('messages.pages.could_not_find')

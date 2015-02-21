@@ -13,7 +13,7 @@ module Paperclip
       name = ENV['ATTACHMENT'] || ENV['attachment']
       raise "Class #{klass.name} has no attachments specified" unless klass.respond_to?(:attachment_definitions)
       if !name.blank? && klass.attachment_definitions.keys.map(&:to_s).include?(name.to_s)
-        [ name ]
+        [name]
       else
         klass.attachment_definitions.keys
       end
@@ -23,11 +23,11 @@ end
 
 namespace :paperclip do
   desc 'Refreshes both metadata and thumbnails.'
-  task :refresh => %w(paperclip:refresh:metadata paperclip:refresh:thumbnails)
+  task refresh: %w(paperclip:refresh:metadata paperclip:refresh:thumbnails)
 
   namespace :refresh do
     desc 'Regenerates thumbnails for a given CLASS (and optional ATTACHMENT and STYLES splitted by comma).'
-    task :thumbnails => :environment do
+    task thumbnails: :environment do
       errors = []
       klass = Paperclip::Task.obtain_class
       names = Paperclip::Task.obtain_attachments(klass)
@@ -38,11 +38,11 @@ namespace :paperclip do
           errors << [instance.id, instance.errors] unless instance.errors.blank?
         end
       end
-      errors.each{|e| puts "#{e.first}: #{e.last.full_messages.inspect}" }
+      errors.each{ |e| puts "#{e.first}: #{e.last.full_messages.inspect}" }
     end
 
     desc 'Regenerates content_type/size metadata for a given CLASS (and optional ATTACHMENT).'
-    task :metadata => :environment do
+    task metadata: :environment do
       klass = Paperclip::Task.obtain_class
       names = Paperclip::Task.obtain_attachments(klass)
       names.each do |name|
@@ -52,7 +52,7 @@ namespace :paperclip do
             instance.send("#{name}_content_type=", file.content_type.to_s.strip)
             instance.send("#{name}_file_size=", file.size) if instance.respond_to?("#{name}_file_size")
             if Rails.version >= '3.0.0'
-              instance.save(:validate => false)
+              instance.save(validate: false)
             else
               instance.save(false)
             end
@@ -64,7 +64,7 @@ namespace :paperclip do
     end
 
     desc 'Regenerates missing thumbnail styles for all classes using Paperclip.'
-    task :missing_styles => :environment do
+    task missing_styles: :environment do
       # Force loading all model classes to never miss any has_attached_file declaration:
       Dir[Rails.root + 'app/models/**/*.rb'].each { |path| load path }
       Paperclip.missing_attachments_styles.each do |klass, attachment_definitions|
@@ -80,7 +80,7 @@ namespace :paperclip do
     end
 
     desc 'Regenerates width/height metadata for a given CLASS (and optional ATTACHMENT).'
-    task :dimensions => :environment do
+    task dimensions: :environment do
       klass = Paperclip::Task.obtain_class
       names = Paperclip::Task.obtain_attachments(klass)
       styles = ENV['STYLE'] || ENV['style']
@@ -118,7 +118,7 @@ namespace :paperclip do
             end
 
             if updated
-              instance.save(:validate => false)
+              instance.save(validate: false)
             end
           end
         end
@@ -126,7 +126,7 @@ namespace :paperclip do
     end
 
     desc 'Regenerates MD5 fingerprint for a given CLASS (and optional ATTACHMENT).'
-    task :fingerprint => :environment do
+    task fingerprint: :environment do
       klass = Paperclip::Task.obtain_class
       names = Paperclip::Task.obtain_attachments(klass)
 
@@ -136,7 +136,7 @@ namespace :paperclip do
           if file = instance.send(name).to_file(:original)
             instance.send("#{name}_fingerprint=", Digest::MD5.hexdigest(file.read))
 
-            instance.save(:validate => false)
+            instance.save(validate: false)
           end
         end
       end
@@ -144,7 +144,7 @@ namespace :paperclip do
   end
 
   desc "Cleans out invalid attachments. Useful after you've added new validations."
-  task :clean => :environment do
+  task clean: :environment do
     klass = Paperclip::Task.obtain_class
     names = Paperclip::Task.obtain_attachments(klass)
     names.each do |name|
@@ -154,7 +154,7 @@ namespace :paperclip do
           if attributes.any?{ |attribute| instance.errors[attribute].present? }
             instance.send("#{name}=", nil)
             if Rails.version >= '3.0.0'
-              instance.save(:validate => false)
+              instance.save(validate: false)
             else
               instance.save(false)
             end

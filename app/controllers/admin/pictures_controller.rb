@@ -10,7 +10,7 @@ class Admin::PicturesController < Admin::AdminController
   end
 
   def show
-    @picture = Picture.where(:id => params[:id]).first
+    @picture = Picture.where(id: params[:id]).first
 
     if @picture.nil?
       flash[:error] = t('messages.pictures.could_not_find')
@@ -49,7 +49,7 @@ class Admin::PicturesController < Admin::AdminController
   end
 
   def edit
-    @picture = Picture.where(:id => params[:id]).first
+    @picture = Picture.where(id: params[:id]).first
 
     if @picture.nil?
       flash[:error] = t('messages.pictures.could_not_find')
@@ -59,7 +59,7 @@ class Admin::PicturesController < Admin::AdminController
   end
 
   def update
-    @picture = Picture.where(:id => params[:id]).first
+    @picture = Picture.where(id: params[:id]).first
 
     if @picture.nil?
       flash[:error] = t('messages.pictures.could_not_find')
@@ -79,7 +79,7 @@ class Admin::PicturesController < Admin::AdminController
   end
 
   def destroy
-    @picture = Picture.where(:id => params[:id]).first
+    @picture = Picture.where(id: params[:id]).first
 
     if @picture.nil?
       flash[:error] = t('messages.pictures.could_not_find')
@@ -97,6 +97,6 @@ class Admin::PicturesController < Admin::AdminController
   def selector
     @pictures = Picture.order('`pictures`.`created_at` DESC')
 
-    render :layout => false
+    render layout: false
   end
 end

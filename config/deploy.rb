@@ -23,7 +23,7 @@ set :deploy_to, '/home/deployer/sites/seaneshbaugh'
 set :pty, true
 
 # Default value for :linked_files is []
-set :linked_files, fetch(:linked_files, []).push('config/application.yml', 'config/database.yml', 'config/secrets.yml')
+set :linked_files, fetch(:linked_files, []).push('config/application.yml', 'config/database.yml')
 
 # Default value for linked_dirs is []
 set :linked_dirs, fetch(:linked_dirs, []).push('bin', 'log', 'tmp/pids', 'tmp/cache', 'tmp/sockets', 'vendor/bundle', 'public/system', 'public/uploads')
@@ -33,6 +33,8 @@ set :linked_dirs, fetch(:linked_dirs, []).push('bin', 'log', 'tmp/pids', 'tmp/ca
 
 # Default value for keep_releases is 5
 # set :keep_releases, 5
+
+set :bundle_flags, '--deployment'
 
 namespace :deploy do
 
