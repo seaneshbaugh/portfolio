@@ -6,7 +6,7 @@ class User < ActiveRecord::Base
     class_eval %Q"scope :#{role_name.to_s.pluralize}, -> { where(role: Ability::ROLES[:#{role_name.to_s}].downcase) }"
   end
 
-  scope :alphabetical -> { order(:last_name, :first_name) }
+  scope :alphabetical, -> { order(:last_name, :first_name) }
 
   scope :reverse_alphabetical, -> { order('users.last_name DESC, users.first_name DESC') }
 
