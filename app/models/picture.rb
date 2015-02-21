@@ -1,4 +1,10 @@
 class Picture < ActiveRecord::Base
+  has_attached_file :image, { convert_options: { thumb: '-quality 75 -strip', medium: '-quality 85 -strip' },
+    path: ":rails_root/public/uploads/#{Rails.env.test? ? 'test/' : ''}:class_singular/:attachment/:style_prefix:basename.:extension",
+    styles: { thumb: '100x100', medium: '300x300' },
+    url: "/uploads/:class_singular/:attachment/#{Rails.env.test? ? 'test/' : ''}:style_prefix:basename.:extension" }
+
+
   # Validations
   validates_length_of :title, maximum: 65535
   validates_presence_of :title
@@ -40,11 +46,6 @@ class Picture < ActiveRecord::Base
   default_value_for :image_thumb_width, 1
 
   default_value_for :image_thumb_height, 1
-
-  has_attached_file :image, { convert_options: { thumb: '-quality 75 -strip', medium: '-quality 85 -strip' },
-    path: ":rails_root/public/uploads/#{Rails.env.test? ? 'test/' : ''}:class_singular/:attachment/:style_prefix:basename.:extension",
-    styles: { thumb: '100x100', medium: '300x300' },
-    url: "/uploads/:class_singular/:attachment/#{Rails.env.test? ? 'test/' : ''}:style_prefix:basename.:extension" }
 
   protected
 
