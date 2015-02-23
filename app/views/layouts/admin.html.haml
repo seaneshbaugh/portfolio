@@ -1,0 +1,50 @@
+!!!
+%html{ dir: 'ltr', lang: 'en-US' }
+  %head
+    %meta{ charset: 'utf-8'}
+    %title seaneshbaugh.com Admin Panel
+    %meta{ content: 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no', name: 'viewport' }
+    %meta{ content: t('application.description'), name: 'description' }
+    %meta{ content: t('application.author'), name: 'author' }
+    = stylesheet_link_tag 'admin', media: 'all'
+    -# = javascript_include_tag 'admin'
+    %link{ href: '/favicon.ico', rel: 'shortcut icon' }
+    %link{ href: image_path('apple-touch-icon-iphone.png'), rel: 'apple-touch-icon', sizes: '57x57' }
+    %link{ href: image_path('apple-touch-icon-ipad.png'), rel: 'apple-touch-icon', sizes: '72x72' }
+    %link{ href: image_path('apple-touch-icon-iphone-retina.png'), rel: 'apple-touch-icon', sizes: '114x114' }
+    %link{ href: image_path('apple-touch-icon-ipad-retina.png'), rel: 'apple-touch-icon', sizes: '144x144' }
+    %link{ href: '/humans.txt', rel: 'author' }
+    = csrf_meta_tags
+  %body
+    %header#main-header.container
+      .row
+        %h1#title.col-xs-12 seaneshbaugh.com Admin Panel
+      .navbar.navbar-default
+        .navbar-header
+          %button.navbar-toggle{ 'data-target' => '.navbar-collapse', 'data-toggle' => 'collapse', type: 'button' }
+            %span.icon-bar
+            %span.icon-bar
+            %span.icon-bar
+          = link_to t('navigation.admin_home'), admin_root_path, class: 'navbar-brand'
+        .navbar-collapse.collapse
+          %ul.nav.navbar-nav
+            - if can? :read, Post
+              %li{ class: is_active_controller?('admin/posts') ? 'active' : '' }
+                = link_to t('navigation.posts').html_safe, admin_posts_path
+            - if can? :read, Page
+              %li{ class: is_active_controller?('admin/pages') ? 'active' : '' }
+                = link_to t('navigation.pages').html_safe, admin_pages_path
+            - if can? :read, Picture
+              %li{ class: is_active_controller?('admin/pictures') ? 'active' : '' }
+                = link_to t('navigation.pictures').html_safe, admin_pictures_path
+            - if can? :read, User
+              %li{ class: is_active_controller?('admin/users') ? 'active' : '' }
+                = link_to t('navigation.users').html_safe, admin_users_path
+          %ul.nav.navbar-nav.navbar-right
+            %li= link_to t('navigation.site_home').html_safe, root_path
+            %li{ class: is_active_controller?('admin/accounts') ? 'active' : '' }
+              = link_to t('accounts.edit.title'), edit_admin_account_path
+            %li= link_to t('navigation.sign_out'), destroy_user_session_path, method: :delete
+    %main#content.container
+      = flash_messages
+      = yield

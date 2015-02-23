@@ -5,6 +5,8 @@ class Page < ActiveRecord::Base
   # Scopes
   scope :alphabetical, -> { order(:title) }
 
+  scope :by_order, -> { order(:order) }
+
   scope :in_menu, -> { where(show_in_menu: true) }
 
   scope :published, -> { where(visible: true) }

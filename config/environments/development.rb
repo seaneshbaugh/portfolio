@@ -45,6 +45,4 @@ Rails.application.configure do
 
   # Use http://localhost:3000 as the base for links in emails.
   config.action_mailer.default_url_options = { host: 'localhost', port: 3000 }
-
-  config.react.variant = :development
 end

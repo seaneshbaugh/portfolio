@@ -1,0 +1,11 @@
+#login.page.row
+  %header.page-header.col-xs-12
+    %h1 Sign In
+  .page-body.col-xs-12
+    = bootstrap_form_for resource, as: resource_name, url: session_path(resource_name), layout: :horizontal do |f|
+      = f.email_field :email, autofocus: true
+      = f.password_field :password
+      - if devise_mapping.rememberable?
+        = f.check_box :remember_me
+      = f.submit 'Sign In'
+    = render 'devise/shared/links'

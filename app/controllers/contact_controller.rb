@@ -4,7 +4,7 @@ class ContactController < ApplicationController
   end
 
   def create
-    @contact = Contact.new(params[:contact])
+    @contact = Contact.new(contact_params)
 
     if @contact.valid?
       ContactMailer.contact_form_message(@contact.sanitize!).deliver
@@ -13,5 +13,11 @@ class ContactController < ApplicationController
     else
       render 'new'
     end
+  end
+
+  private
+
+  def contact_params
+    params.require(:contact).permit(:name, :email, :phone_number, :subject, :body)
   end
 end

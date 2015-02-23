@@ -4,10 +4,12 @@ ruby '2.2.0'
 
 gem 'rails', '4.2.0'
 gem 'pg'
-gem 'ace-rails-ap'
+gem 'ace-rails-ap' # js
 gem 'acts-as-taggable-on'
 gem 'autoprefixer-rails'
+gem 'bootstrap-colorpicker-rails' # css / js
 gem 'bootstrap_form'
+gem 'bootstrap_tokenfield_rails' # css* / js
 gem 'cancan'
 gem 'coffee-rails'
 gem 'default_value_for'
@@ -17,13 +19,13 @@ gem 'figaro'
 gem 'haml-rails'
 gem 'honeypot-captcha'
 gem 'jbuilder'
-gem 'jquery-fileupload-rails'
-gem 'jquery-rails'
-gem 'jquery-ui-rails'
-gem 'jquery-turbolinks'
+gem 'jquery-fileupload-rails' # js
+gem 'jquery-rails' # js
+gem 'jquery-ui-rails' # css / js
+gem 'jquery-turbolinks' # js
 gem 'kaminari'
 gem 'less-rails'
-gem 'less-rails-bootstrap'
+gem 'less-rails-bootstrap' # css* / js
 gem 'nokogiri'
 gem 'paper_trail'
 gem 'paperclip'
@@ -32,9 +34,9 @@ gem 'rails_script'
 gem 'ransack'
 gem 'sanitize'
 gem 'seed-fu'
-gem 'turbolinks'
+gem 'turbolinks' # js
 gem 'therubyracer'
-gem 'twitter-typeahead-rails'
+gem 'twitter-typeahead-rails' # js
 gem 'uglifier'
 gem 'unicorn'
 gem 'virtus'

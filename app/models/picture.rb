@@ -4,6 +4,10 @@ class Picture < ActiveRecord::Base
     styles: { thumb: '100x100', medium: '300x300' },
     url: "/uploads/:class_singular/:attachment/#{Rails.env.test? ? 'test/' : ''}:style_prefix:basename.:extension" }
 
+  # Scopes
+  scope :chronological, -> { order(:created_at) }
+
+  scope :reverse_chronological, -> { order('pictures.created_at DESC') }
 
   # Validations
   validates_length_of :title, maximum: 65535
