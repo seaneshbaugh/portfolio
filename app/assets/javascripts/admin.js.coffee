@@ -120,7 +120,7 @@ $ ->
     target = $(picture.closest(".modal").data("target"))
 
     if target.length > 0 and target.data("editor")
-      img = "<img src="" + picture.data("picture-url") + "" alt="" + picture.data("picture-alt-text") + "">"
+      img = "<img src=\"" + picture.data("picture-url") + "\" alt=\"" + picture.data("picture-alt-text") + "\">"
 
       target.data("editor").insert img
 
