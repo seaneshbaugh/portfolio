@@ -4,12 +4,12 @@ ruby '2.2.0'
 
 gem 'rails', '4.2.0'
 gem 'pg'
-gem 'ace-rails-ap' # js
+gem 'ace-rails-ap'
 gem 'acts-as-taggable-on'
 gem 'autoprefixer-rails'
-gem 'bootstrap-colorpicker-rails' # css / js
+gem 'bootstrap-colorpicker-rails'
 gem 'bootstrap_form'
-gem 'bootstrap_tokenfield_rails' # css* / js
+gem 'bootstrap_tokenfield_rails'
 gem 'cancan'
 gem 'coffee-rails'
 gem 'default_value_for'
@@ -19,13 +19,13 @@ gem 'figaro'
 gem 'haml-rails'
 gem 'honeypot-captcha'
 gem 'jbuilder'
-gem 'jquery-fileupload-rails' # js
-gem 'jquery-rails' # js
-gem 'jquery-ui-rails' # css / js
-gem 'jquery-turbolinks' # js
+gem 'jquery-fileupload-rails'
+gem 'jquery-rails'
+gem 'jquery-ui-rails'
+gem 'jquery-turbolinks'
 gem 'kaminari'
 gem 'less-rails'
-gem 'less-rails-bootstrap' # css* / js
+gem 'less-rails-bootstrap'
 gem 'nokogiri'
 gem 'paper_trail'
 gem 'paperclip'
@@ -34,9 +34,9 @@ gem 'rails_script'
 gem 'ransack'
 gem 'sanitize'
 gem 'seed-fu'
-gem 'turbolinks' # js
+gem 'turbolinks'
 gem 'therubyracer'
-gem 'twitter-typeahead-rails' # js
+gem 'twitter-typeahead-rails'
 gem 'uglifier'
 gem 'unicorn'
 gem 'virtus'
@@ -62,7 +62,6 @@ end
 group :test do
   gem 'database_cleaner'
   gem 'minitest'
-  gem 'guard-minitest'
   gem 'mini_backtrace'
   gem 'minitest-reporters'
   gem 'simplecov', require: false

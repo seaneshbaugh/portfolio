@@ -6,6 +6,7 @@
 #= require jquery-fileupload/vendor/tmpl
 #= require twitter/bootstrap
 #= require twitter/typeahead
+#= require bootstrap-tokenfield
 #= require bootstrap-colorpicker
 #= require ace/ace
 #= require ace/mode-coffee
@@ -46,6 +47,7 @@ $ ->
 
     if mode == "erb"
       mode = "rhtml"
+
     if textarea.length == 1 and [
         "coffee"
         "css"

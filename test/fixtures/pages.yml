@@ -1,0 +1,53 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+about:
+  title: "About"
+  slug: "about"
+  body: "<p>About me.</p>"
+  style: ""
+  script: ""
+  meta_description: ""
+  meta_keywords: ""
+  order: 0
+  color: "#97080e"
+  show_in_menu: true
+  visible: true
+
+resume:
+  title: "Resume"
+  slug: "resume"
+  body: "<p>My resume.</p>"
+  style: ""
+  script: ""
+  meta_description: ""
+  meta_keywords: ""
+  order: 0
+  color: "#da4b0f"
+  show_in_menu: true
+  visible: true
+
+gems:
+  title: "Gems"
+  slug: "gems"
+  body: "<p>My gems.</p>"
+  style: ""
+  script: ""
+  meta_description: ""
+  meta_keywords: ""
+  order: 0
+  color: "#e9b104"
+  show_in_menu: true
+  visible: true
+
+fun:
+  title: "Fun"
+  slug: "fun"
+  body: "<p>Fun stuff.</p>"
+  style: ""
+  script: ""
+  meta_description: ""
+  meta_keywords: ""
+  order: 0
+  color: "#488c13"
+  show_in_menu: true
+  visible: true

@@ -1,17 +1,114 @@
 module ApplicationHelper
+  def error_messages_for(object)
+    object.errors.full_messages.uniq.join('. ') + '.'
+  end
+
   def icon_edit_link(url_or_path)
-    render :partial => 'shared/icon_edit_link', :locals => { :url_or_path => build_url_or_path_for(url_or_path) }
+    link_to('<span class="glyphicon glyphicon-edit"></span>'.html_safe, url_or_path, class: 'btn btn-mini', rel: 'tooltip', edit: 'Edit').html_safe
   end
 
   def icon_delete_link(url_or_path)
-    render :partial => 'shared/icon_delete_link', :locals => { :url_or_path => build_url_or_path_for(url_or_path) }
+    link_to('<span class="glyphicon glyphicon-remove"></span>'.html_safe, url_or_path, method: :delete, data: { confirm: 'Are you sure?' }, class: 'btn btn-mini', rel: 'tooltip', title: 'Delete').html_safe
   end
 
-  def build_url_or_path_for(url_or_path = '')
-    url_or_path = eval(url_or_path) if url_or_path =~ /_path|_url|@/
+  def nav_link_to(*args, &block)
+    body = block_given? ? capture(&block) : args.shift
 
-    url_or_path
+    path = args[0]
+
+    html_options = args[1] || {}
+
+    options = args[2] || {}
+
+    NavLinkGenerator.new(request, body, path, html_options, options).to_html
   end
+
+  def present(object, klass = nil)
+    klass ||= "#{object.class}Presenter".constantize
+
+    presenter = klass.new(object, self)
+
+    yield presenter if block_given?
+
+    presenter
+  end
+
+  class NavLinkGenerator
+    include ActionView::Helpers::UrlHelper
+
+    def initialize(request, body, path, html_options, options)
+      @request = request
+
+      @body = body
+
+      @path = path
+
+      @html_options = html_options
+
+      @options = options
+    end
+
+    def to_html
+      html = link
+
+      if @options[:wrapper]
+        html = content_tag(@options[:wrapper], html, class: wrapper_classes)
+      end
+
+      html.html_safe
+    end
+
+    private
+
+    def link
+      link_to(@body, @path, html_options)
+    end
+
+    def html_options
+      active? ? @html_options.merge(class: link_classes) : @html_options
+    end
+
+    def active?
+      segments = @options[:segments] || 1
+
+      @request.path.split('/').reject(&:blank?).first(segments) == @path.split('/').reject(&:blank?).first(segments)
+    end
+
+    def link_classes
+      if @html_options[:class]
+        @html_options[:class].split(' ').push(active_class).join(' ')
+      elsif !@options[:wrapper]
+        active_class
+      end
+    end
+
+    def active_class
+      @options[:active_class] || 'active'
+    end
+
+    def wrapper_classes
+      if active?
+        if @options[:wrapper_class].blank?
+          active_class
+        else
+          @options[:wrapper_class].split(' ').push(active_class).join(' ')
+        end
+      else
+        @options[:wrapper_class]
+      end
+    end
+  end
+
+
+
+
+
+
+
+
+
+
+
 
   def flash_messages
     render :partial => 'shared/flash_messages'
@@ -23,53 +120,5 @@ module ApplicationHelper
 
   def is_active_action?(action_name)
     params[:action] == action_name
-  end
-
-  def color_luminance(hex_code, luminance)
-    unless hex_code.match(/^#(([a-fA-F0-9]){3}){1,2}$/).nil?
-      hex_code = hex_code[1..hex_code.length - 1]
-
-      if hex_code.length < 6
-        hex_code = hex_code[0] + hex_code[0] + hex_code[1] + hex_code[1] + hex_code[2] + hex_code[2]
-      end
-
-      luminance ||= 0
-
-      r = hex_code[0, 2].to_i(16)
-      g = hex_code[2, 2].to_i(16)
-      b = hex_code[4, 2].to_i(16)
-
-      r = [[0, r + (r * luminance)].max, 255].min.round
-      g = [[0, g + (g * luminance)].max, 255].min.round
-      b = [[0, b + (b * luminance)].max, 255].min.round
-
-      '#%02x%02x%02x' % [r, g, b]
-    else
-      nil
-    end
-  end
-
-  def contrast_color(hex_code)
-    unless hex_code.match(/^#(([a-fA-F0-9]){3}){1,2}$/).nil?
-      hex_code = hex_code[1..hex_code.length - 1]
-
-      if hex_code.length < 6
-        hex_code = hex_code[0] + hex_code[0] + hex_code[1] + hex_code[1] + hex_code[2] + hex_code[2]
-      end
-
-      r = hex_code[0, 2].to_i(16)
-      g = hex_code[2, 2].to_i(16)
-      b = hex_code[4, 2].to_i(16)
-
-      a = 1 - (0.299 * r.to_f + 0.587 * g.to_f + 0.114 * b.to_f) / 255.0
-
-      if a < 0.5
-        '#000000'
-      else
-        '#ffffff'
-      end
-    else
-      nil
-    end
   end
 end

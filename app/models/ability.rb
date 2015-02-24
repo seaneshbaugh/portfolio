@@ -2,12 +2,12 @@ class Ability
   include CanCan::Ability
 
   ROLES = {
-    :read_only => 'read_only',
-    :admin => 'admin',
-    :sysadmin => 'sysadmin'
+    read_only: 'read_only',
+    admin: 'admin',
+    sysadmin: 'sysadmin'
   }
 
-  def initialize user
+  def initialize(user)
     user ||= User.new
 
     cannot :manage, :all
@@ -15,6 +15,10 @@ class Ability
     case user.role
       when ROLES[:sysadmin] then
         can :manage, :all
+
+        cannot [:destroy], User do |u|
+          u.id == user.id
+        end
       when ROLES[:admin] then
         can :manage, :all
 
@@ -28,7 +32,7 @@ class Ability
     end
   end
 
-  def self.valid_roles user
+  def self.valid_roles(user)
     roles = {}
 
     if user.role == ROLES[:admin]

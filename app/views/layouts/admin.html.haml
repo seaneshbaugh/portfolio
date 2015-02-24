@@ -17,34 +17,28 @@
     = csrf_meta_tags
   %body
     %header#main-header.container
-      .row
-        %h1#title.col-xs-12 seaneshbaugh.com Admin Panel
+      %h1#title seaneshbaugh.com Admin Panel
       .navbar.navbar-default
         .navbar-header
           %button.navbar-toggle{ 'data-target' => '.navbar-collapse', 'data-toggle' => 'collapse', type: 'button' }
             %span.icon-bar
             %span.icon-bar
             %span.icon-bar
-          = link_to t('navigation.admin_home'), admin_root_path, class: 'navbar-brand'
+          = link_to 'Admin Home', admin_root_path, class: 'navbar-brand'
         .navbar-collapse.collapse
           %ul.nav.navbar-nav
             - if can? :read, Post
-              %li{ class: is_active_controller?('admin/posts') ? 'active' : '' }
-                = link_to t('navigation.posts').html_safe, admin_posts_path
+              = nav_link_to 'Posts', admin_posts_path, {}, { segments: 2, wrapper: 'li' }
             - if can? :read, Page
-              %li{ class: is_active_controller?('admin/pages') ? 'active' : '' }
-                = link_to t('navigation.pages').html_safe, admin_pages_path
+              = nav_link_to 'Pages', admin_pages_path, {}, { segments: 2, wrapper: 'li' }
             - if can? :read, Picture
-              %li{ class: is_active_controller?('admin/pictures') ? 'active' : '' }
-                = link_to t('navigation.pictures').html_safe, admin_pictures_path
+              = nav_link_to 'Pictures', admin_pictures_path, {}, { segments: 2, wrapper: 'li' }
             - if can? :read, User
-              %li{ class: is_active_controller?('admin/users') ? 'active' : '' }
-                = link_to t('navigation.users').html_safe, admin_users_path
+              = nav_link_to 'Users', admin_users_path, {}, { segments: 2, wrapper: 'li' }
           %ul.nav.navbar-nav.navbar-right
-            %li= link_to t('navigation.site_home').html_safe, root_path
-            %li{ class: is_active_controller?('admin/accounts') ? 'active' : '' }
-              = link_to t('accounts.edit.title'), edit_admin_account_path
-            %li= link_to t('navigation.sign_out'), destroy_user_session_path, method: :delete
+            %li= link_to 'Site Home', root_path
+            = nav_link_to 'Users', edit_admin_account_path, {}, { segments: 2, wrapper: 'li' }
+            %li= link_to 'Sign Out', destroy_user_session_path, method: :delete
     %main#content.container
       = flash_messages
       = yield

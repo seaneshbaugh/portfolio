@@ -27,7 +27,7 @@ class Admin::PagesController < Admin::AdminController
 
       redirect_to admin_page_url(@page)
     else
-      flash[:error] = @page.errors.full_messages.uniq.join('. ') + '.'
+      flash[:error] = error_messages_for(@page)
 
       render 'new'
     end
@@ -39,7 +39,7 @@ class Admin::PagesController < Admin::AdminController
 
       redirect_to edit_admin_page_url(@page)
     else
-      flash[:error] = @page.errors.full_messages.uniq.join('. ') + '.'
+      flash[:error] = error_messages_for(@page)
 
       render 'edit'
     end
