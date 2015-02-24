@@ -1,8 +1,9 @@
 class Picture < ActiveRecord::Base
-  has_attached_file :image, { convert_options: { thumb: '-quality 75 -strip', medium: '-quality 85 -strip' },
-    path: ":rails_root/public/uploads/#{Rails.env.test? ? 'test/' : ''}:class_singular/:attachment/:style_prefix:basename.:extension",
-    styles: { thumb: '100x100', medium: '300x300' },
-    url: "/uploads/:class_singular/:attachment/#{Rails.env.test? ? 'test/' : ''}:style_prefix:basename.:extension" }
+  has_attached_file :image,
+    # convert_options: -> (_) { attachment_convert_options },
+    path: :attachment_path,
+    styles: -> (_) { attachment_styles },
+    url: :attachment_url
 
   # Scopes
   scope :chronological, -> { order(:created_at) }
@@ -20,15 +21,13 @@ class Picture < ActiveRecord::Base
   validates_uniqueness_of :image_fingerprint, if: -> { !Rails.env.test? }
 
   validates_attachment_presence :image
-  validates_attachment_size :image, :less_than => 1024.megabytes
-  validates_attachment_content_type :image, :content_type => %w(image/gif image/jpeg image/jpg image/pjpeg image/png image/svg+xml image/tiff image/x-png)
+  validates_attachment_size :image, less_than: 1024.megabytes
+  validates_attachment_content_type :image, content_type: %w(image/gif image/jpeg image/jpg image/pjpeg image/png image/svg+xml image/tiff image/x-png)
 
   # Callbacks
   before_validation :modify_image_file_name
 
   before_validation :set_default_title
-
-  before_post_process :image?
 
   after_post_process :save_image_dimensions
 
@@ -51,13 +50,30 @@ class Picture < ActiveRecord::Base
 
   default_value_for :image_thumb_height, 1
 
-  protected
-
-  def image?
-    self.errors.add :image, 'is not an image'
-
-    !(image_content_type =~ /^image.*/).nil?
+  def self.attachment_convert_options
+    {}
+    # {
+    #   thumb: '-quality 75 -strip',
+    #   medium: '-quality 85 -strip'
+    # }
   end
+
+  def self.attachment_styles
+    {
+      thumb: '100x100',
+      medium: '300x300'
+    }
+  end
+
+  def attachment_path
+    ":rails_root/public/uploads/#{Rails.env.test? ? 'test/' : ''}:class_singular/:attachment/:style_prefix:basename.:extension"
+  end
+
+  def attachment_url
+    "/uploads/:class_singular/:attachment/#{Rails.env.test? ? 'test/' : ''}:style_prefix:basename.:extension"
+  end
+
+  protected
 
   def modify_image_file_name
     if image.file?

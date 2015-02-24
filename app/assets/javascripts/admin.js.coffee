@@ -128,7 +128,7 @@ $ ->
 
     $("#picture-selector-modal").modal "hide"
 
-  $("#pictures #new_picture").fileupload
+  $("#new_picture-fileupload").fileupload
     dataType: "script"
     add: (event, data) ->
       types = new RegExp("(\\.|\\/)(" + $(this).data("accept") + ")$", "i")

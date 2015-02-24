@@ -27,7 +27,7 @@ class Admin::PicturesController < Admin::AdminController
         if @picture.save
           flash[:success] = 'Picture was successfully created.'
 
-          admin_picture_url(@picture)
+          redirect_to admin_picture_url(@picture)
         else
           flash[:error] = @picture.errors.full_messages.uniq.join('. ') + '.'
 
