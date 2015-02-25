@@ -17,11 +17,11 @@ class Page < ActiveRecord::Base
   validates_presence_of :title
   validates_uniqueness_of :title
 
-  validates_length_of :body, maximum: 16777215
+  validates_length_of :body, maximum: 16_777_215
 
-  validates_length_of :style, maximum: 4194303
+  validates_length_of :style, maximum: 4_194_303
 
-  validates_length_of :script, maximum: 4194303
+  validates_length_of :script, maximum: 4_194_303
 
   validates_length_of :meta_description, maximum: 65535
 

@@ -18,13 +18,11 @@ class AceBuilder < BootstrapForm::FormBuilder
   end
 
   def picture_inserter(method, options = {}, &block)
-    # render partial: 'shared/admin/picture_inserter', locals { target: ace_editor_id_for(method) }
-
     link_body = block_given? ? capture(&block) : 'Insert Picture'
 
     link_class = options.delete(:class) || 'btn btn-default'
 
-    modal_id = "#{self.object_name}_#{method.to_s}-picture-selector-modal"
+    modal_id = "#{object_name}_#{method}-picture-selector-modal"
 
     form_group_builder(method, options.merge(skip_label: true)) do
       link = link_to(link_body, '/admin/pictures/selector', class: link_class, data: { toggle: 'modal', target: "\##{modal_id}" })
@@ -33,17 +31,9 @@ class AceBuilder < BootstrapForm::FormBuilder
 
       link + modal
     end
-
-    # <div class="form-group" style="margin-bottom: 0; margin-top: 0;">
-    #   <div class="col-lg-offset-2 col-lg-10">
-    #     <a href="/admin/pictures/selector" class="btn btn-default" data-toggle="modal" data-target="#picture-selector-modal">Insert Picture</a>
-    #     <div id="picture-selector-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="pictureSelectorModal" aria-hidden="true" data-target="<%= target %>"></div>
-    #   </div>
-    # </div>
-
   end
 
   def ace_editor_id_for(method)
-    "#{self.object_name}_#{method.to_s}-editor"
+    "#{object_name}_#{method}-editor"
   end
 end

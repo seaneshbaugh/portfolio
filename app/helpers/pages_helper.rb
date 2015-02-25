@@ -11,9 +11,7 @@ module PagesHelper
 
       b = [[0, b + (b * luminance)].max, 255].min.round
 
-      '#%02x%02x%02x' % [r, g, b]
-    else
-      nil
+      format('#%02x%02x%02x', r, g, b)
     end
   end
 
@@ -28,8 +26,6 @@ module PagesHelper
       else
         '#ffffff'
       end
-    else
-      nil
     end
   end
 

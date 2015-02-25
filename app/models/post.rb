@@ -23,11 +23,11 @@ class Post < ActiveRecord::Base
   validates_presence_of :title
   validates_uniqueness_of :title
 
-  validates_length_of :body, maximum: 16777215
+  validates_length_of :body, maximum: 16_777_215
 
-  validates_length_of :style, maximum: 4194303
+  validates_length_of :style, maximum: 4_194_303
 
-  validates_length_of :script, maximum: 4194303
+  validates_length_of :script, maximum: 4_194_303
 
   validates_length_of :meta_description, maximum: 65535
 
@@ -61,18 +61,14 @@ class Post < ActiveRecord::Base
   def first_image
     images = Nokogiri::HTML(body).xpath('//img')
 
-    if images.length > 0
-      images[0]['src']
-    else
-      nil
-    end
+    images[0]['src'] if images.length > 0
   end
 
   def more
-    if self.body.include?('<!--more-->')
-      self.body[0..self.body.index('<!--more-->') - 1]
+    if body.include?('<!--more-->')
+      body[0..body.index('<!--more-->') - 1]
     else
-      self.body
+      body
     end
   end
 

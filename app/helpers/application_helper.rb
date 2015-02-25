@@ -99,26 +99,7 @@ module ApplicationHelper
     end
   end
 
-
-
-
-
-
-
-
-
-
-
-
   def flash_messages
-    render :partial => 'shared/flash_messages'
-  end
-
-  def is_active_controller?(controller_name)
-    params[:controller] == controller_name
-  end
-
-  def is_active_action?(action_name)
-    params[:action] == action_name
+    render partial: 'shared/flash_messages'
   end
 end

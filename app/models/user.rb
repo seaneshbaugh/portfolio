@@ -3,7 +3,7 @@ class User < ActiveRecord::Base
 
   # Scopes
   Ability::ROLES.each do |role_name, _|
-    class_eval %Q"scope :#{role_name.to_s.pluralize}, -> { where(role: Ability::ROLES[:#{role_name.to_s}].downcase) }"
+    scope role_name.to_s.pluralize.to_sym, -> { where(role: Ability::ROLES[role_name].downcase) }
   end
 
   scope :alphabetical, -> { order(:last_name, :first_name) }
@@ -50,11 +50,11 @@ class User < ActiveRecord::Base
   has_paper_trail only: [:email, :role, :first_name, :last_name]
 
   Ability::ROLES.each do |role_name, _|
-    define_method("#{role_name.to_s}?") do
-      self.role == role_name.to_s
+    define_method("#{role_name}?") do
+      role == role_name.to_s
     end
 
-    define_method("#{role_name.to_s}!") do
+    define_method("#{role_name}!") do
       self.role = role_name.to_s
     end
   end

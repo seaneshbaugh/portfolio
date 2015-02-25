@@ -26,7 +26,7 @@
 %section#gems.row.hidden-xs.hidden-sm
   %h2.col-xs-12 Gems
   %ul
-    - get_gem_dependencies.each do |gem|
+    - gem_dependencies.each do |gem|
       %li
         = gem[:name]
         (#{gem[:version]})

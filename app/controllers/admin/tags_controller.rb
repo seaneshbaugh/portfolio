@@ -4,6 +4,6 @@ class Admin::TagsController < Admin::AdminController
 
     @tags = @search.result
 
-    render json: @tags.map { |tag| tag.name }.to_json
+    render json: @tags.map(:name).to_json
   end
 end

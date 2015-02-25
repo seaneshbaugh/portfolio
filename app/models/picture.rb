@@ -1,9 +1,9 @@
 class Picture < ActiveRecord::Base
   has_attached_file :image,
-    # convert_options: -> (_) { attachment_convert_options },
-    path: :attachment_path,
-    styles: -> (_) { attachment_styles },
-    url: :attachment_url
+                    # convert_options: -> (_) { attachment_convert_options },
+                    path: :attachment_path,
+                    styles: -> (_) { attachment_styles },
+                    url: :attachment_url
 
   # Scopes
   scope :chronological, -> { order(:created_at) }
@@ -76,25 +76,19 @@ class Picture < ActiveRecord::Base
   protected
 
   def modify_image_file_name
-    if image.file?
-      if image.dirty?
-        current_time = Time.now
+    return unless image.file? && image.dirty?
 
-        basename = "#{current_time.to_i}#{current_time.usec}".ljust(16, '0')
+    current_time = Time.now
 
-        extension = File.extname(self.image_file_name).downcase
+    basename = "#{current_time.to_i}#{current_time.usec}".ljust(16, '0')
 
-        if extension == '.jpeg'
-          extension = '.jpg'
-        end
+    extension = File.extname(image_file_name).downcase
 
-        if extension == '.tif'
-          extension = '.tiff'
-        end
+    extension = '.jpg' if extension == '.jpeg'
 
-        self.image.instance_write :file_name, "#{basename}#{extension}"
-      end
-    end
+    extension = '.tiff' if extension == '.tif'
+
+    image.instance_write :file_name, "#{basename}#{extension}"
   end
 
   def save_image_dimensions
@@ -112,6 +106,6 @@ class Picture < ActiveRecord::Base
   end
 
   def set_default_title
-    self.title = File.basename(self.image_file_name, '.*').to_s if self.title.blank? && !self.image_file_name.blank?
+    self.title = File.basename(image_file_name, '.*').to_s if title.blank? && !image_file_name.blank?
   end
 end
