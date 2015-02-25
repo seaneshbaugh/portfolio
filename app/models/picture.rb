@@ -1,6 +1,5 @@
 class Picture < ActiveRecord::Base
   has_attached_file :image,
-                    # convert_options: -> (_) { attachment_convert_options },
                     path: :attachment_path,
                     styles: -> (_) { attachment_styles },
                     url: :attachment_url
@@ -50,18 +49,18 @@ class Picture < ActiveRecord::Base
 
   default_value_for :image_thumb_height, 1
 
-  def self.attachment_convert_options
-    {}
-    # {
-    #   thumb: '-quality 75 -strip',
-    #   medium: '-quality 85 -strip'
-    # }
-  end
-
   def self.attachment_styles
     {
-      thumb: '100x100',
-      medium: '300x300'
+      thumb: {
+        geometry: '100x100',
+        format: :jpg,
+        convert_options: '-quality 75 -strip'
+      },
+      medium: {
+        geometry: '300x300',
+        format: :jpg,
+        convert_options: '-quality 85 -strip'
+      }
     }
   end
 
