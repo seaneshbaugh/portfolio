@@ -1,6 +1,8 @@
 class PagePresenter < BasePresenter
+  include FrontEnd
   include Linkable
 
+  delegate :content_tag, to: :@template
   delegate :contrast_color, to: :@template
 
   def initialize(page, template)
@@ -15,6 +17,10 @@ class PagePresenter < BasePresenter
     else
       ''
     end
+  end
+
+  def header_style
+    "color: #{@page.color}" if @page.color.present?
   end
 
   def show_in_menu

@@ -23,6 +23,22 @@ module ApplicationHelper
     NavLinkGenerator.new(request, body, path, html_options, options).to_html
   end
 
+  def page_title(title)
+    if title.present?
+      title.strip
+    else
+      'seaneshbaugh.com'
+    end
+  end
+
+  def page_meta_description(meta_description)
+    if meta_description.present?
+      meta_description.strip
+    else
+      'Sean Eshbaugh\'s personal website.'
+    end
+  end
+
   def present(object, klass = nil)
     klass ||= "#{object.class}Presenter".constantize
 

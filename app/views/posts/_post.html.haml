@@ -1,21 +1,15 @@
-%article.post.row{:id => "post-#{post.id}"}
-  %h1.post-title.col-xs-12
-    = link_to post.title, post
-  .post-date.col-xs-12
-    = post.created_at.strftime('%B %d, %Y %l:%M:%S %p')
-  .post-body.col-xs-12
-    - if post.style.present?
-      :css
-        #{post.style.html_safe}
-    - if params[:action] == 'index'
-      = post.more.html_safe
-      - if post.truncated?
-        .read-more
-          = link_to t('read_more'), post
-    - else
-      = post.body.html_safe
-  %footer.post-footer.col-xs-12
-    - if post.tag_list.present?
-      .post-tags.well.well-sm
-        %strong Tags:
-        = post.tag_list.map { |tag| link_to tag, root_path(:tag => tag) }.join(', ').html_safe
+- present post do |post_presenter|
+  %article.post.row{ id: "post-#{post.slug}" }
+    %h1.post-title.col-xs-12
+      = link_to post_presenter.title, post
+    .post-date.col-xs-12
+      = post_presenter.created_at('%B %d, %Y %l:%M:%S %p')
+    .post-body.col-xs-12
+      = post_presenter.style_tag
+      = post_presenter.more
+      = post_presenter.script_tag
+    %footer.post-footer.col-xs-12
+      - if post_presenter.tag_list.present?
+        .post-tags.well.well-sm
+          %strong Tags:
+          = post_presenter.tag_links

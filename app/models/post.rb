@@ -58,25 +58,7 @@ class Post < ActiveRecord::Base
 
   has_paper_trail
 
-  def first_image
-    images = Nokogiri::HTML(body).xpath('//img')
-
-    images[0]['src'] if images.length > 0
-  end
-
-  def more
-    if body.include?('<!--more-->')
-      body[0..body.index('<!--more-->') - 1]
-    else
-      body
-    end
-  end
-
   def published?
     visible
-  end
-
-  def truncated?
-    body.length > more.length
   end
 end
