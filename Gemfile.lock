@@ -371,6 +371,7 @@ DEPENDENCIES
   capistrano-rails
   capistrano-rvm
   coffee-rails
+  daemons
   database_cleaner
   default_value_for
   devise
