@@ -39,6 +39,7 @@ GEM
       tzinfo (~> 1.1)
     acts-as-taggable-on (3.4.4)
       activerecord (>= 3.2, < 5)
+    amq-protocol (1.9.2)
     ansi (1.5.0)
     arel (6.0.0)
     ast (2.0.0)
@@ -63,6 +64,8 @@ GEM
     bootstrap_form (2.3.0)
     bootstrap_tokenfield_rails (0.0.7)
     builder (3.2.2)
+    bunny (1.7.0)
+      amq-protocol (>= 1.9.2)
     cancan (1.6.10)
     capistrano (3.3.5)
       capistrano-stats (~> 1.1.0)
@@ -361,6 +364,7 @@ DEPENDENCIES
   bootstrap-colorpicker-rails
   bootstrap_form
   bootstrap_tokenfield_rails
+  bunny
   cancan
   capistrano
   capistrano-bundler
