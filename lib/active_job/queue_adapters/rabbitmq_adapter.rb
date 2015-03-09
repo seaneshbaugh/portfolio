@@ -9,11 +9,11 @@ module ActiveJob
 
           channel = connection.create_channel
 
-          queue = channel.queue(job.queue_name, auto_delete: true, durable: true)
+          exchange = channel.fanout("#{job.queue_name}.exchange")
 
-          exchange = channel.default_exchange
+          queue = channel.queue(job.queue_name, auto_delete: true, durable: true).bind(exchange)
 
-          exchange.publish(job.serialize.to_json, routing_key: queue.name)
+          exchange.publish(job.serialize.tap { |serialized_job| serialized_job['tries'] = 0 }.to_json)
         end
 
         def enqueue_at(job)
