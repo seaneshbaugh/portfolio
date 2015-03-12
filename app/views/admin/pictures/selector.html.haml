@@ -1,0 +1,18 @@
+.modal-dialog
+  .modal-content
+    .modal-header
+      %button.close{"aria-hidden" => "true", "data-dismiss" => "modal", :type => "button"} ×
+      %h4.modal-title Select a picture
+    .modal-body
+      %form#picture-selector-search-form.form-inline
+        .form-group
+          %label{:for => "filter-by-title"} Search:
+          %input#filter-by-title.form-control{:name => "filter-by-text", :type => "text"}/
+      #picture-selector-pictures.row
+        - @pictures.each do |picture|
+          .picture-selector-picture.col-xs-6{"data-picture-alt-text" => "#{picture.alt_text}", "data-picture-caption" => "#{picture.caption}", "data-picture-height" => "#{picture.image_original_height}", "data-picture-title" => "#{picture.title}", "data-picture-url" => "#{picture.image.url}", "data-picture-width" => "#{picture.image_original_width}"}
+            .thumbnail
+              .image-wrap
+                = image_tag picture.image.url(:medium), :alt => picture.alt_text, :title => picture.title, :data => { 'url' => picture.image.url, 'picture-id' => picture.id.to_s }
+              .caption
+                %h5= picture.title

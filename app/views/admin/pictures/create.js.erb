@@ -1,9 +1,0 @@
-<% if @picture.new_record? %>
-  alert("Failed to upload picture: <%= j @picture.errors.full_messages.join(', ').html_safe %>.");
-<% else %>
-  $("table").removeClass("hidden");
-
-  $(".lead").remove();
-
-  $("table tbody").prepend("<%= j render(@picture) %>");
-<% end %>
