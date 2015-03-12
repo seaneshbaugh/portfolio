@@ -69,11 +69,7 @@ module RabbitmqJobProcessor
 
           queue = @channel.queue(queue_name, auto_delete: true, durable: true).bind(exchange)
 
-          # queue = @channel.queue(queue_name, auto_delete: true, durable: true, arguments: { "x-dead-letter-exchange" => retry_exchange.name })
-
-          # retry_queue = @channel.queue("#{queue_name}_retry", auto_delete: true, durable: true)
-
-          queue.subscribe do |delivery_info, metadata, payload|
+          queue.subscribe do |_delivery_info, _metadata, payload|
             begin
               parsed_payload = JSON.parse(payload)
 
@@ -94,7 +90,7 @@ module RabbitmqJobProcessor
 
                 retry_exchange.publish(parsed_payload.to_json)
               else
-                say "Maximum number of retries reached. Deleting job."
+                say 'Maximum number of retries reached. Deleting job.'
               end
             end
           end

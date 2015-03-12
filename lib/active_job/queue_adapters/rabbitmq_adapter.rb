@@ -11,12 +11,12 @@ module ActiveJob
 
           exchange = channel.fanout("#{job.queue_name}.exchange")
 
-          queue = channel.queue(job.queue_name, auto_delete: true, durable: true).bind(exchange)
+          channel.queue(job.queue_name, auto_delete: true, durable: true).bind(exchange)
 
           exchange.publish(job.serialize.tap { |serialized_job| serialized_job['tries'] = 0 }.to_json)
         end
 
-        def enqueue_at(job)
+        def enqueue_at(_job)
           fail NotImplementedError
         end
       end

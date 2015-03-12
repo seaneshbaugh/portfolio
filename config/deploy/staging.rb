@@ -43,3 +43,5 @@ server '127.0.0.1', user: 'deployer', roles: %w{web app db}
 #   }
 
 set :branch, 'update'
+
+set :rails_env, 'staging'

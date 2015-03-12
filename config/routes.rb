@@ -1,4 +1,4 @@
-Portfolio::Application.routes.draw do
+Rails.application.routes.draw do
   devise_for :users, :skip => [:sessions, :passwords, :registrations, :confirmations, :unlocks]
 
   devise_scope :user do

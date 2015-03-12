@@ -2,7 +2,7 @@ unless ENV['RAILS_ENV'] == 'test'
   begin
     require 'daemons'
   rescue LoadError
-    fail 'The "daemons" gem is required to run this command.'
+    raise 'The "daemons" gem is required to run this command.'
   end
 end
 
@@ -63,9 +63,9 @@ module RabbitmqJobProcessor
     end
 
     def daemonize
-      FileUtils.mkdir_p(@options[:pid_dir]) unless File.exists?(@options[:pid_dir])
+      FileUtils.mkdir_p(@options[:pid_dir]) unless File.exist?(@options[:pid_dir])
 
-      FileUtils.mkdir_p(@options[:log_dir]) unless File.exists?(@options[:log_dir])
+      FileUtils.mkdir_p(@options[:log_dir]) unless File.exist?(@options[:log_dir])
 
       @options[:worker_count].times do |worker_index|
         process_name = @options[:worker_count] == 1 ? 'rabbitmq_job_processor_worker' : "rabbitmq_job_processor_worker_#{worker_index}"

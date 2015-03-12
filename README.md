@@ -8,7 +8,7 @@ This application is intended to be run on Ruby 2.2.0.
 
 ## Rails Version
 
-This application uses Rails 4.2.0
+This application uses Rails 4.2.0.
 
 ## Local Development Installation
 
@@ -26,7 +26,7 @@ Install the necessary gems.
 
 Create the databases.
 
-    $ rake db:create:all
+    $ rake db:create
 
 Add the database tables.
 
