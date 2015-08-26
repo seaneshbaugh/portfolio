@@ -10,9 +10,9 @@
 - if can? :create, Post
   %section#quick-post.row
     %h2.col-xs-12 Quick Post
-    = bootstrap_form_for [:admin, Post.new], layout: :horizontal do |f|
+    = bootstrap_form_for [:admin, Post.new], builder: AceBuilder, layout: :horizontal do |f|
       = f.text_field :title
-      = picture_inserter '#post_body-editor'
+      = f.picture_inserter :body
       = f.text_area :body, style: 'display: none;'
       #post_body-editor.ace-editor{ 'data-mode' => 'rhtml' }
       = f.submit 'Submit'

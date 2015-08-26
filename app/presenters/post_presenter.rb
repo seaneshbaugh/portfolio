@@ -17,7 +17,7 @@ class PostPresenter < BasePresenter
     if format
       @post.created_at.strftime(format)
     else
-      super
+      super()
     end
   end
 
@@ -61,7 +61,7 @@ class PostPresenter < BasePresenter
     if format
       @post.updated_at.strftime(format)
     else
-      super
+      super()
     end
   end
 
