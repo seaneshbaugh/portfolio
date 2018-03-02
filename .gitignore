@@ -4,31 +4,21 @@
 # or operating system, you probably want to add a global ignore instead:
 #   git config --global core.excludesfile '~/.gitignore_global'
 
-# Ignore generic files
-*.DS_Store
-*.swp
-._*
-
 # Ignore bundler config.
 /.bundle
 
-# Ignore the default SQLite database.
-/db/*.sqlite3
-/db/*.sqlite3-journal
-
 # Ignore all logfiles and tempfiles.
-/log/*.log
-/tmp
+/log/*
+/tmp/*
+!/log/.keep
+!/tmp/.keep
 
-# Ignore Spring files
-/spring/*.pid
+/node_modules
+/yarn-error.log
 
-# Ignore simplecov output.
-/coverage
-
-# Ignore config files.
-/config/application.yml
-
-# Ignore application created files.
-/public/system
-/public/uploads
+.byebug_history
+/public/packs
+/public/packs-test
+/node_modules
+yarn-debug.log*
+.yarn-integrity
