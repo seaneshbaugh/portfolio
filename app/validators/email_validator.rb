@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Taken from https://github.com/gitlabhq/gitlabhq/blob/master/lib/email_validator.rb
 # Based on https://github.com/balexand/email_validator
 #
@@ -13,12 +15,8 @@ class EmailValidator < ActiveModel::EachValidator
     attr_accessor :default_options
   end
 
-  def self.default_options
-    @default_options
-  end
-
   def validate_each(record, attribute, value)
-    return if value =~ /\A\s*([-a-z0-9+._']{1,64})@((?:[-a-z0-9]+\.)+[a-z]{2,})\s*\z/i
+    return if value.match?(/\A\s*([-a-z0-9+._']{1,64})@((?:[-a-z0-9]+\.)+[a-z]{2,})\s*\z/i)
 
     options = @default_options.merge(self.options)
 
