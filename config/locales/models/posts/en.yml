@@ -19,14 +19,5 @@ en:
       models:
         post:
           attributes:
-            title: "Title"
-            slug: "Slug"
-            body: "Body"
-            style: "Style"
-            meta_description: "Meta Description"
-            meta_keywords: "Meta Keywords"
-            user_id: "User"
-            visible: "Visible"
-            created_at: "Created At"
-            updated_at: "Updated At"
-            tag_list: "Tags"
+            visible:
+              inclusion: "must be true or false"
