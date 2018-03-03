@@ -19,6 +19,7 @@ gem 'kaminari', '~> 1.1'
 gem 'paper_trail', '~> 8.1'
 gem 'paperclip', '~> 5.2.1'
 gem 'pundit', '~> 1.1'
+gem 'seed-fu', '~> 2.3.7'
 gem 'webpacker', '~> 3.2'
 
 group :development, :test do
@@ -26,8 +27,9 @@ group :development, :test do
 end
 
 group :development do
+  gem 'haml_lint', '~> 0.27', require: false
   gem 'listen', '~> 3.1.5'
-  gem 'rubocop', '~> 0.52'
+  gem 'rubocop', '~> 0.52', require: false
   gem 'web-console', '>= 3.5.1'
 end
 

@@ -1,12 +1,10 @@
-id = 1
+# frozen_string_literal: true
 
-User.seed do |s|
-  s.id = id
+User.seed(:id) do |s|
+  s.id = 1
   s.email = 'sean@seaneshbaugh.com'
   s.password = 'changeme'
   s.role = 'sysadmin'
   s.first_name = 'Sean'
   s.last_name = 'Eshbaugh'
-
-  id += 1
 end

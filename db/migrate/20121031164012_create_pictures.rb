@@ -1,4 +1,6 @@
-class CreatePictures < ActiveRecord::Migration
+# frozen_string_literal: true
+
+class CreatePictures < ActiveRecord::Migration[4.2]
   def change
     create_table :pictures do |t|
       t.text :title,                    null: false, default: ''

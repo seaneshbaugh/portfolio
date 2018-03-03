@@ -1,12 +1,15 @@
-class DeviseCreateUsers < ActiveRecord::Migration
+# frozen_string_literal: true
+
+class DeviseCreateUsers < ActiveRecord::Migration[4.2]
   def change
     create_table :users do |t|
       ## Database authenticatable
-      t.string :email,              :null => false, :default => ''
-      t.string :encrypted_password, :null => false, :default => ''
-      t.string :role,               :null => false, :default => ''
-      t.string :first_name,         :null => false, :default => ''
-      t.string :last_name,          :null => false, :default => ''
+      t.string :email,              null: false, default: ''
+      t.string :encrypted_password, null: false, default: ''
+
+      t.string :role,               null: false, default: ''
+      t.string :first_name,         null: false, default: ''
+      t.string :last_name,          null: false, default: ''
 
       ## Recoverable
       t.string   :reset_password_token
@@ -16,7 +19,7 @@ class DeviseCreateUsers < ActiveRecord::Migration
       t.datetime :remember_created_at
 
       ## Trackable
-      t.integer  :sign_in_count, :null => false, :default => 0
+      t.integer  :sign_in_count, default: 0, null: false
       t.datetime :current_sign_in_at
       t.datetime :last_sign_in_at
       t.string   :current_sign_in_ip
@@ -40,12 +43,12 @@ class DeviseCreateUsers < ActiveRecord::Migration
     end
 
     change_table :users do |t|
-      t.index :email,                 :unique => true
+      t.index :email, unique: true
       t.index :encrypted_password
       t.index :role
       t.index :first_name
       t.index :last_name
-      t.index :reset_password_token,  :unique => true
+      t.index :reset_password_token, unique: true
       t.index :reset_password_sent_at
       t.index :remember_created_at
       t.index :sign_in_count
@@ -53,7 +56,7 @@ class DeviseCreateUsers < ActiveRecord::Migration
       t.index :last_sign_in_at
       t.index :current_sign_in_ip
       t.index :last_sign_in_ip
-      t.index :authentication_token,  :unique => true
+      t.index :authentication_token, unique: true
       t.index :created_at
       t.index :updated_at
     end

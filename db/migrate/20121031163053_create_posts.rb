@@ -1,4 +1,6 @@
-class CreatePosts < ActiveRecord::Migration
+# frozen_string_literal: true
+
+class CreatePosts < ActiveRecord::Migration[4.2]
   def change
     create_table :posts do |t|
       t.belongs_to :user,       null: false
@@ -15,8 +17,8 @@ class CreatePosts < ActiveRecord::Migration
 
     change_table :posts do |t|
       t.index :user_id
-      t.index :title,     unique: true
-      t.index :slug,      unique: true
+      t.index :title, unique: true
+      t.index :slug, unique: true
       t.index :visible
       t.index :created_at
       t.index :updated_at
