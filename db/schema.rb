@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180303045131) do
+ActiveRecord::Schema.define(version: 20180303072355) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -24,7 +24,7 @@ ActiveRecord::Schema.define(version: 20180303045131) do
     t.text "meta_description", default: "", null: false
     t.text "meta_keywords", default: "", null: false
     t.integer "order", default: 0, null: false
-    t.string "color", default: "", null: false
+    t.string "color", default: "#000000", null: false
     t.boolean "show_in_menu", default: true, null: false
     t.boolean "visible", default: true, null: false
     t.datetime "created_at"
