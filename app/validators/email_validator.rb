@@ -1,25 +1,10 @@
 # frozen_string_literal: true
 
-# Taken from https://github.com/gitlabhq/gitlabhq/blob/master/lib/email_validator.rb
-# Based on https://github.com/balexand/email_validator
-#
-# Extended to use only strict mode with following allowed characters:
-# ' - apostrophe
-#
-# See http://www.remote.org/jochen/mail/info/chars.html
-#
+# Taken from https://github.com/gitlabhq/gitlabhq/blob/master/app/validators/email_validator.rb
 class EmailValidator < ActiveModel::EachValidator
-  @default_options = {}
-
-  class << self
-    attr_accessor :default_options
-  end
-
   def validate_each(record, attribute, value)
-    return if value.match?(/\A\s*([-a-z0-9+._']{1,64})@((?:[-a-z0-9]+\.)+[a-z]{2,})\s*\z/i)
+    return if options[:allow_blank] && value.blank?
 
-    options = @default_options.merge(self.options)
-
-    record.errors.add(attribute, options[:message] || :invalid)
+    record.errors.add(attribute, options[:message] || :invalid) unless value.match?(Devise.email_regexp)
   end
 end
