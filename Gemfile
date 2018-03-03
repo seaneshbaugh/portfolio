@@ -19,6 +19,7 @@ gem 'kaminari', '~> 1.1'
 gem 'paper_trail', '~> 8.1'
 gem 'paperclip', '~> 5.2.1'
 gem 'pundit', '~> 1.1'
+gem 'sanitize', '~> 4.6'
 gem 'seed-fu', '~> 2.3.7'
 gem 'webpacker', '~> 3.2'
 
