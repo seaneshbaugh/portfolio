@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class UserPresenter < BasePresenter
   def initialize(user, template)
     super
@@ -17,6 +19,10 @@ class UserPresenter < BasePresenter
     link_to '<span class="glyphicon glyphicon-envelope">'.html_safe, "mailto:#{@user.email}", rel: 'tooltip', title: 'Send Email'
   end
 
+  def full_name
+    "#{first_name} #{last_name}"
+  end
+
   def last_sign_in_at
     if @user.last_sign_in_at.present?
       @user.last_sign_in_at.strftime(time_format)
@@ -27,5 +33,9 @@ class UserPresenter < BasePresenter
 
   def role
     @user.role.titleize
+  end
+
+  def short_name
+    "#{first_name.first.upcase}. #{last_name}"
   end
 end
