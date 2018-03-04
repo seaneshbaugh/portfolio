@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 class Page < ApplicationRecord
+  extend FriendlyId
   include OptionsForSelect
-  include Slugable
 
   scope :alphabetical, -> { order(:title) }
   scope :by_order, -> { order(:order) }
@@ -20,6 +20,8 @@ class Page < ApplicationRecord
   validates :color, presence: true, css_color: true
   validates :show_in_menu, inclusion: { in: [true, false] }
   validates :visible, inclusion: { in: [true, false] }
+
+  friendly_id :title, use: :slugged
 
   has_paper_trail
 

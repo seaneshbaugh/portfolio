@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 class Post < ApplicationRecord
+  include FriendlyId
   include OptionsForSelect
-  include Slugable
 
   scope :alphabetical, -> { order(:title) }
   scope :chronological, -> { order(:created_at) }
@@ -22,9 +22,10 @@ class Post < ApplicationRecord
   validates :meta_description, presence: true, length: { maximum: 65535 }
   validates :meta_keywords, presence: true, length: { maximum: 65535 }
   validates :visible, inclusion: { in: [true, false] }
-  default_value_for :visible, true
 
   acts_as_taggable
+
+  friendly_id :title, use: :slugged
 
   has_paper_trail
 
