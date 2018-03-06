@@ -1,0 +1,10 @@
+en:
+  layouts:
+    application:
+      author: "Sean Eshbaugh"
+      title: "Sean Eshbaugh"
+      subtitle: "Web Developer + Programmer"
+      header_nav:
+        home: "Home"
+        contact: "Contact"
+      credit_html: 'Created with <a href="http://rubyonrails.org/">Ruby on Rails</a> by <a href="/about">Sean Eshbaugh</a>.'

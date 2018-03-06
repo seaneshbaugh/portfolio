@@ -1,11 +1,9 @@
+# frozen_string_literal: true
+
 class PagesController < ApplicationController
   def show
     @page = Page.published.where(slug: params[:id]).first
 
-    if @page.nil?
-      flash[:error] = t('messages.pages.could_not_find')
-
-      redirect_to root_url
-    end
+    raise ActiveRecord::RecordNotFound if @page.nil?
   end
 end

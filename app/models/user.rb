@@ -12,13 +12,13 @@ class User < ApplicationRecord
   validates :first_name, presence: true, length: { maximum: 255 }
   validates :last_name, presence: true, length: { maximum: 255 }
 
-  after_create :assign_default_role
+  after_commit :assign_default_role, on: :create
 
   devise :database_authenticatable, :recoverable, :rememberable, :trackable, :validatable
 
-  rolify
-
   has_paper_trail only: %i[email first_name last_name]
+
+  rolify
 
   private
 
