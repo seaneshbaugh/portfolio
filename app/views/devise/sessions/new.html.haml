@@ -1,11 +1,15 @@
-#login.page.row
-  %header.page-header.col-xs-12
-    %h1 Sign In
-  .page-body.col-xs-12
-    = bootstrap_form_for resource, as: resource_name, url: session_path(resource_name), layout: :horizontal do |f|
-      = f.email_field :email, autofocus: true
+.page
+  %h3.page-title= t('.title')
+  = form_for resource, as: resource_name, url: session_path(resource_name) do |f|
+    .input-field
+      = f.email_field :email
+      = f.label :email
+    .input-field
       = f.password_field :password
-      - if devise_mapping.rememberable?
+      = f.label :password
+    - if devise_mapping.rememberable?
+      %p
         = f.check_box :remember_me
-      = f.submit 'Sign In'
-    = render 'devise/shared/links'
+        = f.label :remember_me
+    = f.submit t('.submit')
+  = render 'devise/shared/links'

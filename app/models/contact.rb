@@ -1,9 +1,10 @@
+# frozen_string_literal: true
+
 class Contact
   include Virtus.model
   include ActiveModel::Conversion
   include ActiveRecord::Validations
 
-  # Attributes
   attribute :name, String
   attribute :email, String
   attribute :phone_number, String
@@ -12,7 +13,6 @@ class Contact
 
   attr_reader :errors
 
-  # Validations
   validates_length_of :name, maximum: 128
   validates_presence_of :name
 
@@ -37,18 +37,15 @@ class Contact
     super
   end
 
-  def save
-  end
+  def save; end
 
-  def save!
-  end
+  def save!; end
 
   def new_record?
     false
   end
 
-  def update_attribute(_name, _value)
-  end
+  def update_attribute(_name, _value); end
 
   def persisted?
     false

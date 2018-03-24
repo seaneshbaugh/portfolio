@@ -1,9 +1,11 @@
+@charset "UTF-8";
+
 @import "~normalize.css";
 
-body {
-    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-}
-
-@import "application/layout/footer.scss";
-@import "application/layout/header.scss";
-@import "application/layout/main.scss";
+@import "application/variables";
+@import "shared/variables";
+@import "shared/forms";
+@import "application/typography";
+@import "application/layout";
+@import "application/pages";
+@import "application/posts";

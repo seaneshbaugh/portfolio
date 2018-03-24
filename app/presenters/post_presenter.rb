@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class PostPresenter < BasePresenter
   include FrontEnd
   include Linkable
@@ -24,7 +26,7 @@ class PostPresenter < BasePresenter
   def first_image
     images = Nokogiri::HTML(@post.body).xpath('//img')
 
-    images[0]['src'] if images.length > 0
+    images[0]['src'] unless images.empty?
   end
 
   def more

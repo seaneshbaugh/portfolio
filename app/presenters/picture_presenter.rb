@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class PicturePresenter < BasePresenter
   delegate :image_tag, to: :@template
 

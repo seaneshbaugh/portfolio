@@ -8,7 +8,7 @@
     %meta{ content: t('.author'), name: 'author' }
     %meta{ content: 'telephone=no', name: 'format-detection' }
     = stylesheet_pack_tag 'application', media: 'all'
-    = javascript_include_tag 'application'
+    = javascript_pack_tag 'application'
     - if Rails.env.production? && current_user.nil?
       :javascript
         (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
@@ -27,9 +27,9 @@
   %body
     .content-wrap
       %header.main-header{ role: 'banner' }
-        %h1.main-header_title= t('.title')
-        %h2.main-header_subtitle= t('.subtitle')
-        %nav.main-header_nav
+        %h1.main-header-title= t('.title')
+        %h2.main-header-subtitle= t('.subtitle')
+        %nav.main-header-nav
           - # Consider making some sort of Nav and NavItem model. Each NavItem could point to a page (with the path determined by the slug)
           - # or to a fixed path or URL. In the admin panel there could be a section for creating and editing Navs where they can be
           - # assigned a name. A helper method for views could then take the name (e.g. 'main-header') and then create the list with some
@@ -37,19 +37,19 @@
           - # idea most likely. For now I'm going to leave this as is since it changes so infrequently. This would allow for optional style
           - # attributes to be attached to the Nav and NavItem meaning the color attribute for the Page model could be moved. The color
           - # attribute was always a cheap hack. The ability to restrict visibility will be necessary too.
-          %ul.main-header_nav_list
-            %li.main-header_nav_list_item= link_to(t('.header_nav.home'), root_path, rel: 'home', class: 'main-header_nav_list_item_link', style: 'color: #000000;')
+          %ul.main-header-nav-list
+            %li.main-header-nav-list-item= link_to(t('.header_nav.home'), root_path, rel: 'home', class: 'main-header-nav-list-item-link', style: 'color: #000000;')
             - @pages.each do |page|
-              %li.main-header_nav_list_item= link_to(page.title, "/#{page.slug}", class: 'main-header_nav_list_item_link', style: "color: #{page.color};")
-            %li.main-header_nav_list_item= link_to(t('.header_nav.contact'), contact_path, class: 'main-header_nav_list_item_link', style: 'color: #1b55c0;')
+              %li.main-header-nav-list-item= link_to(page.title, "/#{page.slug}", class: 'main-header-nav-list-item-link', style: "color: #{page.color};")
+            %li.main-header-nav-list-item= link_to(t('.header_nav.contact'), contact_path, class: 'main-header-nav-list-item-link', style: 'color: #1b55c0;')
             - if current_user
-              %li.main-header_nav_list_item= link_to(t('.header_nav.admin'), admin_path, class: 'main-header_nav_list_item_link', style: 'color: #4B0082;')
-              %li.main-header_nav_list_item= link_to(t('.header_nav.logout'), destroy_user_session_path, method: :delete, class: 'main-header_nav_list_item_link', style: 'color: #800080;')
+              %li.main-header-nav-list-item= link_to(t('.header_nav.admin'), admin_path, class: 'main-header-nav-list-item-link', style: 'color: #4b0082;')
+              %li.main-header-nav-list-item= link_to(t('.header_nav.logout'), destroy_user_session_path, method: :delete, class: 'main-header-nav-list-item-link', style: 'color: #800080;')
       %main.main-content{ role: 'main' }
         = yield
     %footer.main-footer{ role: 'contentinfo' }
-      %div.main-footer_credit= t('.credit_html')
-      %nav.main-footer_nav
-        %ul.main-footer_nav_list
-          %li.main-footer_nav_list_item= link_to(image_tag(asset_pack_path('images/icons/social/github.png', alt_text: 'GitHub')), 'https://github.com/seaneshbaugh', class: 'main-footer_nav_list_item_link')
-          %li.main-footer_nav_list_item= link_to(image_tag(asset_pack_path('images/icons/social/linkedin.png', alt_text: 'LinkedIn')), 'https://www.linkedin.com/in/sean-eshbaugh-44153434', class: 'main-footer_nav_list_item_link')
+      %div.main-footer-credit= t('.credit_html')
+      %nav.main-footer-nav
+        %ul.main-footer-nav-list
+          %li.main-footer-nav-list-item= link_to(image_tag(asset_pack_path('images/icons/social/github.png', alt_text: 'GitHub')), 'https://github.com/seaneshbaugh', class: 'main-footer-nav-list-item-link')
+          %li.main-footer-nav-list-item= link_to(image_tag(asset_pack_path('images/icons/social/linkedin.png', alt_text: 'LinkedIn')), 'https://www.linkedin.com/in/sean-eshbaugh-44153434', class: 'main-footer-nav-list-item-link')

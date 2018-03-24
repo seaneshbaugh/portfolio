@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module PagesHelper
   def color_luminance(hex_code, luminance)
     r, g, b = extract_color_values(hex_code)

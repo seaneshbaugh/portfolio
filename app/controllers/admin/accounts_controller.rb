@@ -1,11 +1,11 @@
+# frozen_string_literal: true
+
 class Admin::AccountsController < Admin::AdminController
-  before_action :set_account, only: [:show, :edit, :update]
+  before_action :set_account, only: %i[show edit update]
 
-  def show
-  end
+  def show; end
 
-  def edit
-  end
+  def edit; end
 
   def update
     if @account.update(account_params)

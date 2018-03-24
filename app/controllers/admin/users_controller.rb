@@ -1,7 +1,9 @@
+# frozen_string_literal: true
+
 class Admin::UsersController < Admin::AdminController
   authorize_resource
 
-  before_action :set_user, only: [:show, :edit, :update, :destroy]
+  before_action :set_user, only: %i[show edit update destroy]
 
   def index
     @search = User.search(params[:q])
@@ -9,15 +11,13 @@ class Admin::UsersController < Admin::AdminController
     @users = @search.result.page(params[:page]).per(25).alphabetical
   end
 
-  def show
-  end
+  def show; end
 
   def new
     @user = User.new
   end
 
-  def edit
-  end
+  def edit; end
 
   def create
     @user = User.new(user_params)
@@ -58,7 +58,7 @@ class Admin::UsersController < Admin::AdminController
   def set_user
     @user = User.where(id: params[:id]).first
 
-    fail ActiveRecord::RecordNotFound if @user.nil?
+    raise ActiveRecord::RecordNotFound if @user.nil?
   end
 
   def user_params

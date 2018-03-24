@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ContactMailer < ActionMailer::Base
   default from: 'seaneshbaugh@gmail.com'
 

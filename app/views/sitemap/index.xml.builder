@@ -1,11 +1,13 @@
+# frozen_string_literal: true
+
 xml.instruct!
 xml.urlset xmlns: 'http://www.sitemaps.org/schemas/sitemap/0.9' do
   xml.url do
-    if @posts.present?
-      lastmod = @posts.first.updated_at.xmlschema
-    else
-      lastmod = Time.now.beginning_of_month.xmlschema
-    end
+    lastmod = if @posts.present?
+                @posts.first.updated_at.xmlschema
+              else
+                Time.now.beginning_of_month.xmlschema
+              end
 
     xml.loc root_url
     xml.lastmod lastmod

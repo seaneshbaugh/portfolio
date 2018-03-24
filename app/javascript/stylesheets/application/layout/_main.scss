@@ -4,10 +4,12 @@ html, body {
 
 .content-wrap {
     height: auto !important;
-    margin: 0 auto -5rem auto;
+    margin: 0rem auto -5rem auto;
     min-height: 100%;
 }
 
 .main-content {
-
+    margin: 0rem auto;
+    max-width: 75rem;
+    width: 90%;
 }

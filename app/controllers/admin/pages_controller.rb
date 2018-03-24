@@ -1,7 +1,9 @@
+# frozen_string_literal: true
+
 class Admin::PagesController < Admin::AdminController
   authorize_resource
 
-  before_action :set_page, only: [:show, :edit, :update, :destroy]
+  before_action :set_page, only: %i[show edit update destroy]
 
   def index
     @search = Page.search(params[:q])
@@ -9,15 +11,13 @@ class Admin::PagesController < Admin::AdminController
     @pages = @search.result.page(params[:page]).per(25).by_order
   end
 
-  def show
-  end
+  def show; end
 
   def new
     @page = Page.new
   end
 
-  def edit
-  end
+  def edit; end
 
   def create
     @page = Page.new(page_params)
@@ -58,7 +58,7 @@ class Admin::PagesController < Admin::AdminController
   def set_page
     @page = Page.where(slug: params[:id]).first
 
-    fail ActiveRecord::RecordNotFound if @page.nil?
+    raise ActiveRecord::RecordNotFound if @page.nil?
   end
 
   def page_params

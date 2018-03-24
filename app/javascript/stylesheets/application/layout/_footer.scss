@@ -1,13 +1,15 @@
+@import "../variables";
+
 .main-footer {
-    background: #000000;
-    height: 5rem;
+    background: $main-footer-background-color;
+    height: $main-footer-height;
 }
 
-.main-footer_credit {
-    color: #e9e9e9;
+.main-footer-credit {
+    color: $main-footer-color;
     margin: 0rem auto;
     max-width: 75rem;
-    padding: 0.5rem 0;
+    padding: 0.5rem 0rem;
     width: 90%;
 
     a {
@@ -16,13 +18,13 @@
     }
 }
 
-.main-footer_nav {
-    margin: auto;
+.main-footer-nav {
+    margin: 0rem auto;
     max-width: 75rem;
     width: 90%;
 }
 
-.main-footer_nav_list {
+.main-footer-nav-list {
     display: flex;
     flex-wrap: wrap;
     justify-content: flex-start;
@@ -31,8 +33,8 @@
     padding: 0rem;
 }
 
-.main-footer_nav_list_item {
-    .main-footer_nav_list_item_link {
+.main-footer-nav-list-item {
+    .main-footer-nav-list-item-link {
         display: block;
         max-width: 2rem;
         padding: 0rem 0.625rem 0rem 0rem;

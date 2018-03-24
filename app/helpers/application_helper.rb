@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module ApplicationHelper
   def error_messages_for(object)
     object.errors.full_messages.uniq.join('. ') + '.'

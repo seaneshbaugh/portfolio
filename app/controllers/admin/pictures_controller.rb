@@ -1,7 +1,9 @@
+# frozen_string_literal: true
+
 class Admin::PicturesController < Admin::AdminController
   authorize_resource
 
-  before_action :set_picture, only: [:show, :edit, :update, :destroy]
+  before_action :set_picture, only: %i[show edit update destroy]
 
   def index
     @search = Picture.search(params[:q])
@@ -9,15 +11,13 @@ class Admin::PicturesController < Admin::AdminController
     @pictures = @search.result.page(params[:page]).per(25).reverse_chronological
   end
 
-  def show
-  end
+  def show; end
 
   def new
     @picture = Picture.new
   end
 
-  def edit
-  end
+  def edit; end
 
   def create
     respond_to do |format|
@@ -72,7 +72,7 @@ class Admin::PicturesController < Admin::AdminController
   def set_picture
     @picture = Picture.where(id: params[:id]).first
 
-    fail ActiveRecord::RecordNotFound if @picture.nil?
+    raise ActiveRecord::RecordNotFound if @picture.nil?
   end
 
   def picture_params

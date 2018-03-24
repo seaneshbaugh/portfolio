@@ -1,7 +1,9 @@
+# frozen_string_literal: true
+
 class Admin::PostsController < Admin::AdminController
   authorize_resource
 
-  before_action :set_post, only: [:show, :edit, :update, :destroy]
+  before_action :set_post, only: %i[show edit update destroy]
 
   def index
     @search = Post.search(params[:q])
@@ -9,15 +11,13 @@ class Admin::PostsController < Admin::AdminController
     @posts = @search.result.page(params[:page]).per(25).reverse_chronological
   end
 
-  def show
-  end
+  def show; end
 
   def new
     @post = Post.new
   end
 
-  def edit
-  end
+  def edit; end
 
   def create
     @post = Post.new(post_params)
@@ -41,7 +41,7 @@ class Admin::PostsController < Admin::AdminController
     if !current_user.sysadmin? && !current_user.admin? && @post.user != current_user
       flash[:error] = 'You cannot edit another user\'s posts.'
 
-      redirect_to admin_posts_url and return
+      redirect_to(admin_posts_url) && return
     end
 
     if @post.update(post_params)
@@ -59,7 +59,7 @@ class Admin::PostsController < Admin::AdminController
     if !current_user.sysadmin? && !current_user.admin? && @post.user != current_user
       flash[:error] = 'You cannot edit another user\'s posts.'
 
-      redirect_to admin_posts_url and return
+      redirect_to(admin_posts_url) && return
     end
 
     @post.destroy
@@ -74,7 +74,7 @@ class Admin::PostsController < Admin::AdminController
   def set_post
     @post = Post.where(slug: params[:id]).first
 
-    fail ActiveRecord::RecordNotFound if @post.nil?
+    raise ActiveRecord::RecordNotFound if @post.nil?
   end
 
   def post_params
