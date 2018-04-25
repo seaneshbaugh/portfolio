@@ -7,6 +7,7 @@ gem 'rails', '5.2.0'
 gem 'pg', '~> 1.0.0'
 
 gem 'acts-as-taggable-on', '~> 5.0'
+gem 'bootsnap', '~> 1.3.0', require: false
 gem 'default_value_for', '~> 3.1.0'
 gem 'devise', '~> 4.4.3'
 gem 'friendly_id', '~> 5.2.3'
