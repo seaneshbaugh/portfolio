@@ -36,20 +36,22 @@ group :development do
   gem 'web-console', '>= 3.5.1'
 end
 
-
+group :test do
+  gem 'database_cleaner', '~> 1.7.0'
+  gem 'minitest',  '~> 5.11.3'
+  gem 'minitest-reporters', '~> 1.2.0'
+  gem 'simplecov', '~> 0.16.1', require: false
+end
 
 
 # gem 'ace-rails-ap'
-# gem 'acts-as-taggable-on'
 # gem 'autoprefixer-rails'
 # gem 'bootstrap-colorpicker-rails'
 # gem 'bootstrap_form'
 # gem 'bootstrap_tokenfield_rails'
 # gem 'bunny'
-# gem 'cancan'
 # gem 'coffee-rails'
 # gem 'daemons'
-# gem 'default_value_for'
 # gem 'devise'
 # gem 'exception_notification'
 # gem 'figaro'
@@ -65,13 +67,10 @@ end
 # gem 'less-rails-bootstrap'
 # gem 'nokogiri'
 # gem 'paper_trail'
-# gem 'paperclip'
 # gem 'rails_autolink'
 # gem 'rails_script'
 # gem 'ransack'
 # gem 'sanitize'
-# gem 'seed-fu'
-# gem 'turbolinks'
 # gem 'therubyracer'
 # gem 'twitter-typeahead-rails'
 # gem 'uglifier'
