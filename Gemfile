@@ -7,6 +7,7 @@ gem 'rails', '5.2.0'
 gem 'pg', '~> 1.0.0'
 
 gem 'acts-as-taggable-on', '~> 5.0'
+gem 'aws-sdk-s3', '~> 1.9.1', require: false
 gem 'bootsnap', '~> 1.3.0', require: false
 gem 'default_value_for', '~> 3.1.0'
 gem 'devise', '~> 4.4.3'
@@ -15,7 +16,6 @@ gem 'haml', '~> 5.0.4'
 gem 'jbuilder', '~> 2.7'
 gem 'kaminari', '~> 1.1'
 gem 'paper_trail', '~> 9.0'
-gem 'paperclip', '~> 6.0.0'
 gem 'pundit', '~> 1.1'
 gem 'rolify', '~> 5.2.0'
 gem 'sanitize', '~> 4.6'

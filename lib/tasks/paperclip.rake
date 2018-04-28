@@ -1,194 +1,194 @@
-require 'paperclip'
+# require 'paperclip'
 
-module Paperclip
-  module Task
-    def self.obtain_class
-      class_name = ENV['CLASS'] || ENV['class']
+# module Paperclip
+#   module Task
+#     def self.obtain_class
+#       class_name = ENV['CLASS'] || ENV['class']
 
-      fail 'Must specify CLASS' unless class_name
+#       fail 'Must specify CLASS' unless class_name
 
-      class_name
-    end
+#       class_name
+#     end
 
-    def self.obtain_attachments(klass)
-      klass = Paperclip.class_for(klass.to_s)
+#     def self.obtain_attachments(klass)
+#       klass = Paperclip.class_for(klass.to_s)
 
-      name = ENV['ATTACHMENT'] || ENV['attachment']
+#       name = ENV['ATTACHMENT'] || ENV['attachment']
 
-      fail "Class #{klass.name} has no attachments specified" unless klass.respond_to?(:attachment_definitions)
+#       fail "Class #{klass.name} has no attachments specified" unless klass.respond_to?(:attachment_definitions)
 
-      if !name.blank? && klass.attachment_definitions.keys.map(&:to_s).include?(name.to_s)
-        [name]
-      else
-        klass.attachment_definitions.keys
-      end
-    end
-  end
-end
+#       if !name.blank? && klass.attachment_definitions.keys.map(&:to_s).include?(name.to_s)
+#         [name]
+#       else
+#         klass.attachment_definitions.keys
+#       end
+#     end
+#   end
+# end
 
-namespace :paperclip do
-  desc 'Refreshes both metadata and thumbnails.'
-  task refresh: %w(paperclip:refresh:metadata paperclip:refresh:thumbnails)
-  namespace :refresh do
-    desc 'Regenerates thumbnails for a given CLASS (and optional ATTACHMENT and STYLES splitted by comma).'
-    task thumbnails: :environment do
-      errors = []
+# namespace :paperclip do
+#   desc 'Refreshes both metadata and thumbnails.'
+#   task refresh: %w(paperclip:refresh:metadata paperclip:refresh:thumbnails)
+#   namespace :refresh do
+#     desc 'Regenerates thumbnails for a given CLASS (and optional ATTACHMENT and STYLES splitted by comma).'
+#     task thumbnails: :environment do
+#       errors = []
 
-      klass = Paperclip::Task.obtain_class
+#       klass = Paperclip::Task.obtain_class
 
-      names = Paperclip::Task.obtain_attachments(klass)
+#       names = Paperclip::Task.obtain_attachments(klass)
 
-      styles = (ENV['STYLES'] || ENV['styles'] || '').split(',').map(&:to_sym)
+#       styles = (ENV['STYLES'] || ENV['styles'] || '').split(',').map(&:to_sym)
 
-      names.each do |name|
-        Paperclip.each_instance_with_attachment(klass, name) do |instance|
-          instance.send(name).reprocess!(*styles)
+#       names.each do |name|
+#         Paperclip.each_instance_with_attachment(klass, name) do |instance|
+#           instance.send(name).reprocess!(*styles)
 
-          errors << [instance.id, instance.errors] unless instance.errors.blank?
-        end
-      end
+#           errors << [instance.id, instance.errors] unless instance.errors.blank?
+#         end
+#       end
 
-      errors.each { |error| puts "#{error.first}: #{error.last.full_messages.inspect}" }
-    end
+#       errors.each { |error| puts "#{error.first}: #{error.last.full_messages.inspect}" }
+#     end
 
-    desc 'Regenerates content_type/size metadata for a given CLASS (and optional ATTACHMENT).'
-    task metadata: :environment do
-      klass = Paperclip::Task.obtain_class
+#     desc 'Regenerates content_type/size metadata for a given CLASS (and optional ATTACHMENT).'
+#     task metadata: :environment do
+#       klass = Paperclip::Task.obtain_class
 
-      names = Paperclip::Task.obtain_attachments(klass)
+#       names = Paperclip::Task.obtain_attachments(klass)
 
-      names.each do |name|
-        Paperclip.each_instance_with_attachment(klass, name) do |instance|
-          file = instance.send(name).to_file(:original)
+#       names.each do |name|
+#         Paperclip.each_instance_with_attachment(klass, name) do |instance|
+#           file = instance.send(name).to_file(:original)
 
-          if file
-            instance.send("#{name}_file_name=", instance.send("#{name}_file_name").strip)
+#           if file
+#             instance.send("#{name}_file_name=", instance.send("#{name}_file_name").strip)
 
-            instance.send("#{name}_content_type=", file.content_type.to_s.strip)
+#             instance.send("#{name}_content_type=", file.content_type.to_s.strip)
 
-            instance.send("#{name}_file_size=", file.size) if instance.respond_to?("#{name}_file_size")
+#             instance.send("#{name}_file_size=", file.size) if instance.respond_to?("#{name}_file_size")
 
-            if Rails.version >= '3.0.0'
-              instance.save(validate: false)
-            else
-              instance.save(false)
-            end
-          else
-            true
-          end
-        end
-      end
-    end
+#             if Rails.version >= '3.0.0'
+#               instance.save(validate: false)
+#             else
+#               instance.save(false)
+#             end
+#           else
+#             true
+#           end
+#         end
+#       end
+#     end
 
-    desc 'Regenerates missing thumbnail styles for all classes using Paperclip.'
-    task missing_styles: :environment do
-      # Force loading all model classes to never miss any has_attached_file declaration:
-      Dir[Rails.root + 'app/models/**/*.rb'].each { |path| load path }
+#     desc 'Regenerates missing thumbnail styles for all classes using Paperclip.'
+#     task missing_styles: :environment do
+#       # Force loading all model classes to never miss any has_attached_file declaration:
+#       Dir[Rails.root + 'app/models/**/*.rb'].each { |path| load path }
 
-      Paperclip.missing_attachments_styles.each do |klass, attachment_definitions|
-        attachment_definitions.each do |attachment_name, missing_styles|
-          puts "Regenerating #{klass} -> #{attachment_name} -> #{missing_styles.inspect}"
+#       Paperclip.missing_attachments_styles.each do |klass, attachment_definitions|
+#         attachment_definitions.each do |attachment_name, missing_styles|
+#           puts "Regenerating #{klass} -> #{attachment_name} -> #{missing_styles.inspect}"
 
-          ENV['CLASS'] = klass.to_s
+#           ENV['CLASS'] = klass.to_s
 
-          ENV['ATTACHMENT'] = attachment_name.to_s
+#           ENV['ATTACHMENT'] = attachment_name.to_s
 
-          ENV['STYLES'] = missing_styles.join(',')
+#           ENV['STYLES'] = missing_styles.join(',')
 
-          Rake::Task['paperclip:refresh:thumbnails'].execute
-        end
-      end
+#           Rake::Task['paperclip:refresh:thumbnails'].execute
+#         end
+#       end
 
-      Paperclip.save_current_attachments_styles!
-    end
+#       Paperclip.save_current_attachments_styles!
+#     end
 
-    desc 'Regenerates width/height metadata for a given CLASS (and optional ATTACHMENT).'
-    task dimensions: :environment do
-      klass = Paperclip::Task.obtain_class
+#     desc 'Regenerates width/height metadata for a given CLASS (and optional ATTACHMENT).'
+#     task dimensions: :environment do
+#       klass = Paperclip::Task.obtain_class
 
-      names = Paperclip::Task.obtain_attachments(klass)
+#       names = Paperclip::Task.obtain_attachments(klass)
 
-      styles = ENV['STYLE'] || ENV['style']
+#       styles = ENV['STYLE'] || ENV['style']
 
-      styles = styles.split(',').map { |style| style.strip.to_sym } if styles
+#       styles = styles.split(',').map { |style| style.strip.to_sym } if styles
 
-      names.each do |name|
-        Paperclip.each_instance_with_attachment(klass, name) do |instance|
-          attachment = instance.send(name)
+#       names.each do |name|
+#         Paperclip.each_instance_with_attachment(klass, name) do |instance|
+#           attachment = instance.send(name)
 
-          if styles.nil? || styles.empty?
-            styles = instance.send(name).styles.map { |style| style[0] }
+#           if styles.nil? || styles.empty?
+#             styles = instance.send(name).styles.map { |style| style[0] }
 
-            styles << :original
-          end
+#             styles << :original
+#           end
 
-          styles.uniq!
+#           styles.uniq!
 
-          styles.each do |style|
-            file = attachment.to_file(style)
+#           styles.each do |style|
+#             file = attachment.to_file(style)
 
-            updated = false
+#             updated = false
 
-            if file
-              geometry = Paperclip::Geometry.from_file(file)
+#             if file
+#               geometry = Paperclip::Geometry.from_file(file)
 
-              instance.send("#{name}_#{style}_width=", geometry.width)
+#               instance.send("#{name}_#{style}_width=", geometry.width)
 
-              instance.send("#{name}_#{style}_height=", geometry.height)
+#               instance.send("#{name}_#{style}_height=", geometry.height)
 
-              updated = true
-            else
-              puts "Style \"#{style}\" does not exist!"
-            end
+#               updated = true
+#             else
+#               puts "Style \"#{style}\" does not exist!"
+#             end
 
-            instance.save(validate: false) if updated
-          end
-        end
-      end
-    end
+#             instance.save(validate: false) if updated
+#           end
+#         end
+#       end
+#     end
 
-    desc 'Regenerates MD5 fingerprint for a given CLASS (and optional ATTACHMENT).'
-    task fingerprint: :environment do
-      klass = Paperclip::Task.obtain_class
+#     desc 'Regenerates MD5 fingerprint for a given CLASS (and optional ATTACHMENT).'
+#     task fingerprint: :environment do
+#       klass = Paperclip::Task.obtain_class
 
-      names = Paperclip::Task.obtain_attachments(klass)
+#       names = Paperclip::Task.obtain_attachments(klass)
 
-      names.each do |name|
-        Paperclip.each_instance_with_attachment(klass, name) do |instance|
-          file = instance.send(name).to_file(:original)
+#       names.each do |name|
+#         Paperclip.each_instance_with_attachment(klass, name) do |instance|
+#           file = instance.send(name).to_file(:original)
 
-          if file
-            instance.send("#{name}_fingerprint=", Digest::MD5.hexdigest(file.read))
+#           if file
+#             instance.send("#{name}_fingerprint=", Digest::MD5.hexdigest(file.read))
 
-            instance.save(validate: false)
-          end
-        end
-      end
-    end
-  end
+#             instance.save(validate: false)
+#           end
+#         end
+#       end
+#     end
+#   end
 
-  desc "Cleans out invalid attachments. Useful after you've added new validations."
-  task clean: :environment do
-    klass = Paperclip::Task.obtain_class
+#   desc "Cleans out invalid attachments. Useful after you've added new validations."
+#   task clean: :environment do
+#     klass = Paperclip::Task.obtain_class
 
-    names = Paperclip::Task.obtain_attachments(klass)
+#     names = Paperclip::Task.obtain_attachments(klass)
 
-    names.each do |name|
-      Paperclip.each_instance_with_attachment(klass, name) do |instance|
-        unless instance.valid?
-          attributes = %w(file_size file_name content_type).map { |suffix| "#{name}_#{suffix}".to_sym }
+#     names.each do |name|
+#       Paperclip.each_instance_with_attachment(klass, name) do |instance|
+#         unless instance.valid?
+#           attributes = %w(file_size file_name content_type).map { |suffix| "#{name}_#{suffix}".to_sym }
 
-          if attributes.any? { |attribute| instance.errors[attribute].present? }
-            instance.send("#{name}=", nil)
+#           if attributes.any? { |attribute| instance.errors[attribute].present? }
+#             instance.send("#{name}=", nil)
 
-            if Rails.version >= '3.0.0'
-              instance.save(validate: false)
-            else
-              instance.save(false)
-            end
-          end
-        end
-      end
-    end
-  end
-end
+#             if Rails.version >= '3.0.0'
+#               instance.save(validate: false)
+#             else
+#               instance.save(false)
+#             end
+#           end
+#         end
+#       end
+#     end
+#   end
+# end
