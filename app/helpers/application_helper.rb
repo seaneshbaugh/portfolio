@@ -26,19 +26,15 @@ module ApplicationHelper
   end
 
   def page_title(title)
-    if title.present?
-      title.strip
-    else
-      'seaneshbaugh.com'
-    end
+    return t('application.title') unless title.present?
+
+    title.strip
   end
 
   def page_meta_description(meta_description)
-    if meta_description.present?
-      meta_description.strip
-    else
-      'Sean Eshbaugh\'s personal website.'
-    end
+    return t('application.description') unless meta_description.present?
+
+    meta_description.strip
   end
 
   def present(object, klass = nil)

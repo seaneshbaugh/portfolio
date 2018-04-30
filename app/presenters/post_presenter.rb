@@ -3,6 +3,7 @@
 class PostPresenter < BasePresenter
   include FrontEnd
   include Linkable
+  include MetaContentable
 
   delegate :content_tag, to: :@template
   delegate :params, to: :@template

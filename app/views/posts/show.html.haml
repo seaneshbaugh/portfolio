@@ -1,11 +1,3 @@
 - present @post do |post_presenter|
-  - if post_presenter.title.present?
-    - content_for :page_title do
-      = post_presenter.page_title
-  - if post_presenter.meta_description.present?
-    - content_for :meta_description do
-      = post_presenter.meta_description
-  - if post_presenter.meta_keywords.present?
-    - content_for :meta_keywords do
-      = post_presenter.meta_keywords
+  - post_presenter.meta_content
 = render 'post', post: @post

@@ -11,10 +11,6 @@ module FrontEnd
     content_tag(:div, @object.body.html_safe, class: 'body-content')
   end
 
-  def page_title
-    "#{@object.title} - seaneshbaugh.com"
-  end
-
   def script_tag
     content_tag(:script, @object.script.html_safe) if @object.script.present?
   end

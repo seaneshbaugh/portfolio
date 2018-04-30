@@ -1,13 +1,5 @@
 - present @page do |page_presenter|
-  - if page_presenter.title.present?
-    - content_for :page_title do
-      - page_presenter.page_title
-  - if page_presenter.meta_description.present?
-    - content_for :meta_description do
-      = page_presenter.meta_description
-  - if page_presenter.meta_keywords.present?
-    - content_for :meta_keywords do
-      = page_presenter.meta_keywords
+  = page_presenter.meta_content
   .page{ id: "page-#{page_presenter.slug}" }
     %header.page-header
       %h1{ style: page_presenter.header_style }= page_presenter.title

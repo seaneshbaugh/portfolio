@@ -1,15 +1,22 @@
-#contact.page
-  %header.page-header
-    %h1{ style: "color: #5ea33a;" } Contact
+.page
+  %h3.page-title{ style: 'color: #5ea33a;' }= t('.title')
   .page-body
-    %p.lead To get in contact with me please use the form below. If you are a |
-    recruiter I ask that you don't bother as your messages will be treated as |
-    spam. I am happily employed. If that changes this message will be removed. |
-    = bootstrap_form_for @contact, url: '/contact', layout: :horizontal, html: { honeypot: true } do |f|
-      = f.text_field :name
-      = f.email_field :email
-      = f.text_field :phone_number, label: 'Phone Number'
-      = f.text_field :subject
-      = f.text_area :body, rows: '5'
-      = f.form_group do
-        = f.primary 'Submit'
+    %p.message= t('.message')
+    = form_for @contact, url: contact_path do |f|
+      .input-field
+        = f.text_field :name
+        = f.label :name
+      .input-field
+        = f.email_field :email
+        = f.label :email
+      .label-field
+        = f.text_field :phone_number
+        = f.label :phone_number
+      .label-field
+        = f.text_field :subject
+        = f.label :subject
+        .label-field
+      .label-field
+        = f.text_area :body, rows: '5'
+        = f.label :body
+      = f.submit t('.submit')

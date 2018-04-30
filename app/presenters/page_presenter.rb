@@ -3,6 +3,7 @@
 class PagePresenter < BasePresenter
   include FrontEnd
   include Linkable
+  include MetaContentable
 
   delegate :content_tag, to: :@template
   delegate :contrast_color, to: :@template
