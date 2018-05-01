@@ -2,7 +2,7 @@
 
 class Admin::TagsController < Admin::AdminController
   def index
-    @search = ActsAsTaggableOn::Tag.search(params[:q])
+    @search = ActsAsTaggableOn::Tag.ransack(params[:q])
 
     @tags = @search.result
 
