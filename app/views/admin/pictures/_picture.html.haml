@@ -4,8 +4,8 @@
     %td.col-xs-3.title= link_to picture_presenter.title, admin_picture_path(@picture)
     %td.col-xs-2.created-at= picture_presenter.created_at
     %td.col-xs-1.edit
-      - if can? :edit, @picture
+      - if policy(@picture).edit?
         = icon_edit_link edit_admin_picture_path(@picture)
     %td.col-xs-1.delete
-      - if can? :destroy, @picture
+      - if policy(@picture).destroy?
         = icon_delete_link admin_picture_path(@picture)

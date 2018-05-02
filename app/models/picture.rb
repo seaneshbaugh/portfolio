@@ -18,6 +18,8 @@ class Picture < ApplicationRecord
   # before_validation :normalize_image_file_name
   # after_post_process :save_image_dimensions
 
+  resourcify
+
   def self.attachment_styles
     {
       thumb: {

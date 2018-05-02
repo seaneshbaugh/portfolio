@@ -2,9 +2,9 @@
   %h2= user_presenter.full_name
   .admin-actions
     = link_to 'Back to Index', admin_users_path, class: 'btn btn-default'
-    - if can? :edit, @user
+    - if policy(@user).edit?
       = link_to 'Edit', edit_admin_user_path(@user), class: 'btn btn-primary'
-    - if can? :destroy, @user
+    - if policy(@user).destroy?
       = link_to 'Delete', admin_user_path(@user), class: 'btn btn-danger', data: { confirm: 'Are you sure?' }
   %h3 Contact Information
   .user.attributes

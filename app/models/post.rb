@@ -29,6 +29,8 @@ class Post < ApplicationRecord
 
   has_paper_trail
 
+  resourcify
+
   def published?
     visible
   end

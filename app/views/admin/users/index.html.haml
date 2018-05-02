@@ -6,7 +6,7 @@
     = f.select :role_eq, Ability::ROLES.map { |_, value| [value.titleize, value] }, include_blank: 'Select Role', skip_label: true
     = f.button '<span class="glyphicon glyphicon-search"></span> Search'.html_safe, class: 'btn btn-primary'
     = link_to '<span class="glyphicon glyphicon-remove"></span>'.html_safe, admin_users_path, class: 'btn btn-default', rel: 'tooltip', title: 'Clear Search'
-- if can? :create, User
+- if policy(User).create?
   .clearfix
     = link_to 'New User', new_admin_user_path, class: 'btn btn-primary pull-right'
 - if @users.present?
@@ -31,10 +31,10 @@
               %td.col-xs-2.role= user_presenter.role
               %td.col-xs-2.created-at= user_presenter.created_at
               %td.col-xs-1.edit
-                - if can? :edit, user
+                - if policy(user).edit?
                   = icon_edit_link edit_admin_user_path(user)
               %td.col-xs-1.delete
-                - if can? :destroy, user
+                - if policy(user).destroy?
                   = icon_delete_link admin_user_path(user)
   = paginate @users
 - else

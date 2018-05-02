@@ -1,4 +1,4 @@
-- if can?(:revert, object.class, current_user) && object.persisted? && object.versions.present?
+- if policy(object.class).revert? && object.persisted? && object.versions.present?
   %h2 Previous Versions
   %table.table.table-striped
     %thead

@@ -20,6 +20,8 @@ class User < ApplicationRecord
 
   rolify
 
+  resourcify :other_users
+
   private
 
   def assign_default_role

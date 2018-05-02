@@ -2,9 +2,9 @@
   %h2= picture_presenter.title
   .admin-actions
     = link_to 'Back to Index', admin_pictures_path, class: 'btn btn-default'
-    - if can? :edit, @picture
+    - if policy(@picture).edit?
       = link_to 'Edit', edit_admin_picture_path(@picture), class: 'btn btn-primary'
-    - if can? :destroy, @picture
+    - if policy(@picture).destroy?
       = link_to 'Delete', admin_picture_path(@picture), method: 'delete', class: 'btn btn-danger', data: { confirm: 'Are you sure?' }
   %h3 Picture Attributes
   .picture.attributes

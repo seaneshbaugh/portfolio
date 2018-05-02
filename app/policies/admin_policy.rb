@@ -8,6 +8,6 @@ class AdminPolicy
   end
 
   def index?
-    user.is_admin?
+    user.has_role?(:admin)
   end
 end

@@ -25,6 +25,8 @@ class Page < ApplicationRecord
 
   has_paper_trail
 
+  resourcify
+
   def published?
     visible
   end

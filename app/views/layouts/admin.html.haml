@@ -28,13 +28,13 @@
           = link_to 'Admin Home', admin_root_path, class: 'navbar-brand'
         .navbar-collapse.collapse
           %ul.nav.navbar-nav
-            - if can? :read, Post
+            - if policy(Post).show?
               = nav_link_to 'Posts', admin_posts_path, {}, { segments: 2, wrapper: 'li' }
-            - if can? :read, Page
+            - if policy(Page).show?
               = nav_link_to 'Pages', admin_pages_path, {}, { segments: 2, wrapper: 'li' }
-            - if can? :read, Picture
+            - if policy(Picture).show?
               = nav_link_to 'Pictures', admin_pictures_path, {}, { segments: 2, wrapper: 'li' }
-            - if can? :read, User
+            - if policy(User).show?
               = nav_link_to 'Users', admin_users_path, {}, { segments: 2, wrapper: 'li' }
           %ul.nav.navbar-nav.navbar-right
             %li= link_to 'Site Home', root_path

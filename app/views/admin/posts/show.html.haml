@@ -2,9 +2,9 @@
   %h2= post_presenter.title
   .admin-actions
     = link_to 'Back to Index', admin_posts_path, class: 'btn btn-default'
-    - if can? :edit, @post
+    - if policy(@post).edit?
       = link_to 'Edit', edit_admin_post_path(@post), class: 'btn btn-primary'
-    - if can? :destroy, @post
+    - if policy(@post).destroy?
       = link_to 'Delete', admin_post_path(@post), class: 'btn btn-danger', data: { confirm: 'Are you sure?' }
   %h3 Post Attributes
   .post.attributes

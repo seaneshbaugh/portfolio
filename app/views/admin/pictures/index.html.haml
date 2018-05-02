@@ -6,7 +6,7 @@
     = f.text_field :caption_cont, placeholder: 'Caption', skip_label: true
     = f.button '<span class="glyphicon glyphicon-search"></span> Search'.html_safe, class: 'btn btn-primary'
     = link_to '<span class="glyphicon glyphicon-remove"></span>'.html_safe, admin_pictures_path, class: 'btn btn-default', rel: 'tooltip', title: 'Clear Search'
-- if can? :create, Picture
+- if policy(Picture).create?
   .clearfix
     = link_to 'New Picture', new_admin_picture_path, class: 'btn btn-primary pull-right'
   = form_for [:admin, Picture.new], html: { id: 'new_picture-fileupload', data: { accept: 'gif|jpe?g|png' } } do |f|
@@ -29,10 +29,10 @@
             %td.col-xs-3.title= link_to picture_presenter.title, admin_picture_path(picture)
             %td.col-xs-2.created-at= picture_presenter.created_at
             %td.col-xs-1.edit
-              - if can? :edit, picture
+              - if policy(picture).edit?
                 = icon_edit_link edit_admin_picture_path(picture)
             %td.col-xs-1.delete
-              - if can? :destroy, picture
+              - if policy(picture).destroy?
                 = icon_delete_link admin_picture_path(picture)
 = paginate @pictures
 - unless @pictures.present?

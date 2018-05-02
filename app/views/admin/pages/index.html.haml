@@ -5,7 +5,7 @@
     = f.text_field :body_or_style_cont, placeholder: 'Body, Style, or Script', skip_label: true
     = f.button '<span class="glyphicon glyphicon-search"></span> Search'.html_safe, class: 'btn btn-primary'
     = link_to '<span class="glyphicon glyphicon-remove"></span>'.html_safe, admin_pages_path, class: 'btn btn-default', rel: 'tooltip', title: 'Clear Search'
-- if can? :create, Page
+- if policy(Page).create?
   .clearfix
     = link_to 'New Page', new_admin_page_path, class: 'btn btn-primary pull-right'
 - if @pages.present?
@@ -28,10 +28,10 @@
               %td.col-xs-2.order= page_presenter.order
               %td.col-xs-2.created-at= page_presenter.created_at
               %td.col-xs-1.edit
-                - if can? :edit, page
+                - if policy(page).edit?
                   = icon_edit_link edit_admin_page_path(page)
               %td.col-xs-1.delete
-                - if can? :destroy, page
+                - if policy(page).destroy?
                   = icon_delete_link admin_page_path(page)
   = paginate @pages
 - else
