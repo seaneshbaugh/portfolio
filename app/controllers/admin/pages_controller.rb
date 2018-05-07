@@ -1,17 +1,19 @@
 # frozen_string_literal: true
 
 class Admin::PagesController < Admin::AdminController
-  authorize_resource
-
   before_action :set_page, only: %i[show edit update destroy]
 
   def index
+    authorize Page
+
     @search = Page.search(params[:q])
 
     @pages = @search.result.page(params[:page]).per(25).by_order
   end
 
-  def show; end
+  def show
+    authorize @page
+  end
 
   def new
     @page = Page.new

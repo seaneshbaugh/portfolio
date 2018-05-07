@@ -1,6 +1,6 @@
 %h2 Pages
 .well
-  = search_form_for @search, url: admin_pages_path, builder: BootstrapForm::FormBuilder, html: { class: 'form-inline', method: :get } do |f|
+  = search_form_for @search, url: admin_pages_path, html: { class: 'form-inline', method: :get } do |f|
     = f.text_field :title_cont, placeholder: 'Title', skip_label: true
     = f.text_field :body_or_style_cont, placeholder: 'Body, Style, or Script', skip_label: true
     = f.button '<span class="glyphicon glyphicon-search"></span> Search'.html_safe, class: 'btn btn-primary'

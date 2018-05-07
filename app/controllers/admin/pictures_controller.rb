@@ -1,17 +1,19 @@
 # frozen_string_literal: true
 
 class Admin::PicturesController < Admin::AdminController
-  authorize_resource
-
   before_action :set_picture, only: %i[show edit update destroy]
 
   def index
+    authorize Picture
+
     @search = Picture.search(params[:q])
 
     @pictures = @search.result.page(params[:page]).per(25).reverse_chronological
   end
 
-  def show; end
+  def show
+    authorize @picture
+  end
 
   def new
     @picture = Picture.new

@@ -1,6 +1,6 @@
 %h2 Pictures
 .well
-  = search_form_for @search, url: admin_pictures_path, builder: BootstrapForm::FormBuilder, html: { class: 'form-inline', method: :get } do |f|
+  = search_form_for @search, url: admin_pictures_path, html: { class: 'form-inline', method: :get } do |f|
     = f.text_field :title_cont, placeholder: 'Title', skip_label: true
     = f.text_field :alt_text_cont, placeholder: 'Alt Text', skip_label: true
     = f.text_field :caption_cont, placeholder: 'Caption', skip_label: true

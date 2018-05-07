@@ -32,7 +32,7 @@
             - if policy(User).index?
               %li.main-header-nav-list-item= link_to(t('activerecord.models.user').pluralize, admin_users_path, class: 'main-header-nav-list-item-link')
             %li.main-header-nav-list-item= link_to(t('.header_nav.site_home'), root_path, class: 'main-header-nav-list-item-link')
-            %li.main-header-nav-list-item= link_to(t('.header_nav.my_account'), root_path, class: 'main-header-nav-list-item-link')
+            %li.main-header-nav-list-item= link_to(t('.header_nav.my_account'), admin_account_path, class: 'main-header-nav-list-item-link')
             %li.main-header-nav-list-item= link_to(t('.header_nav.logout'), destroy_user_session_path, method: :delete, class: 'main-header-nav-list-item-link')
       %main.main-content{ role: 'main' }
         = flash_messages

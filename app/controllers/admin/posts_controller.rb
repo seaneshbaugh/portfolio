@@ -1,17 +1,19 @@
 # frozen_string_literal: true
 
 class Admin::PostsController < Admin::AdminController
-  authorize_resource
-
   before_action :set_post, only: %i[show edit update destroy]
 
   def index
-    @search = Post.search(params[:q])
+    authorize Post
+
+    @search = Post.ransack(params[:q])
 
     @posts = @search.result.page(params[:page]).per(25).reverse_chronological
   end
 
-  def show; end
+  def show
+    authorize @post
+  end
 
   def new
     @post = Post.new
