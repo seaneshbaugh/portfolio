@@ -1,0 +1,47 @@
+@import "../variables";
+
+.main-footer {
+    background: $main-footer-background-color;
+    height: $main-footer-height;
+}
+
+.main-footer-credit {
+    color: $main-footer-color;
+    margin: 0rem auto;
+    max-width: 75rem;
+    padding: 0.5rem 0rem;
+    width: 90%;
+
+    a {
+        color: #acace7;
+        text-decoration: none;
+    }
+}
+
+.main-footer-nav {
+    margin: 0rem auto;
+    max-width: 75rem;
+    width: 90%;
+}
+
+.main-footer-nav-list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    list-style: none;
+    margin: 0rem;
+    padding: 0rem;
+}
+
+.main-footer-nav-list-item {
+    .main-footer-nav-list-item-link {
+        display: block;
+        max-width: 2rem;
+        padding: 0rem 0.625rem 0rem 0rem;
+        text-decoration: none;
+
+        img {
+            height: 2rem;
+        }
+    }
+}

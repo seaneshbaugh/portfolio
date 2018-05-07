@@ -34,6 +34,7 @@
             %li.main-header-nav-list-item= link_to(t('.header_nav.site_home'), root_path, class: 'main-header-nav-list-item-link')
             %li.main-header-nav-list-item= link_to(t('.header_nav.my_account'), root_path, class: 'main-header-nav-list-item-link')
             %li.main-header-nav-list-item= link_to(t('.header_nav.logout'), destroy_user_session_path, method: :delete, class: 'main-header-nav-list-item-link')
-    %main.main-content{ role: 'main' }
-      = flash_messages
-      = yield
+      %main.main-content{ role: 'main' }
+        = flash_messages
+        = yield
+    %footer.main-footer{ role: 'contentinfo' }
