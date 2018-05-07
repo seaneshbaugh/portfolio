@@ -17,29 +17,23 @@
     %link{ href: '/humans.txt', rel: 'author' }
     = csrf_meta_tags
   %body
-    %header#main-header.container
-      %h1#title seaneshbaugh.com Admin Panel
-      .navbar.navbar-default
-        .navbar-header
-          %button.navbar-toggle{ 'data-target' => '.navbar-collapse', 'data-toggle' => 'collapse', type: 'button' }
-            %span.icon-bar
-            %span.icon-bar
-            %span.icon-bar
-          = link_to 'Admin Home', admin_root_path, class: 'navbar-brand'
-        .navbar-collapse.collapse
-          %ul.nav.navbar-nav
-            - if policy(Post).show?
-              = nav_link_to 'Posts', admin_posts_path, {}, { segments: 2, wrapper: 'li' }
-            - if policy(Page).show?
-              = nav_link_to 'Pages', admin_pages_path, {}, { segments: 2, wrapper: 'li' }
-            - if policy(Picture).show?
-              = nav_link_to 'Pictures', admin_pictures_path, {}, { segments: 2, wrapper: 'li' }
-            - if policy(User).show?
-              = nav_link_to 'Users', admin_users_path, {}, { segments: 2, wrapper: 'li' }
-          %ul.nav.navbar-nav.navbar-right
-            %li= link_to 'Site Home', root_path
-            = nav_link_to 'My Account', edit_admin_account_path, {}, { segments: 2, wrapper: 'li' }
-            %li= link_to 'Sign Out', destroy_user_session_path, method: :delete
-    %main#content.container
+    .content-wrap
+      %header.main-header{ role: 'banner' }
+        %h1.main-header-title= t('.title')
+        %nav.main-header-nav
+          %ul.main-header-nav-list
+            %li.main-header-nav-list-item= link_to(t('.header_nav.home'), admin_root_path, rel: 'home', class: 'main-header-nav-list-item-link')
+            - if policy(Post).index?
+              %li.main-header-nav-list-item= link_to(t('activerecord.models.post').pluralize, admin_posts_path, class: 'main-header-nav-list-item-link')
+            - if policy(Page).index?
+              %li.main-header-nav-list-item= link_to(t('activerecord.models.page').pluralize, admin_pages_path, class: 'main-header-nav-list-item-link')
+            - if policy(Picture).index?
+              %li.main-header-nav-list-item= link_to(t('activerecord.models.picture').pluralize, admin_pictures_path, class: 'main-header-nav-list-item-link')
+            - if policy(User).index?
+              %li.main-header-nav-list-item= link_to(t('activerecord.models.user').pluralize, admin_users_path, class: 'main-header-nav-list-item-link')
+            %li.main-header-nav-list-item= link_to(t('.header_nav.site_home'), root_path, class: 'main-header-nav-list-item-link')
+            %li.main-header-nav-list-item= link_to(t('.header_nav.my_account'), root_path, class: 'main-header-nav-list-item-link')
+            %li.main-header-nav-list-item= link_to(t('.header_nav.logout'), destroy_user_session_path, method: :delete, class: 'main-header-nav-list-item-link')
+    %main.main-content{ role: 'main' }
       = flash_messages
       = yield

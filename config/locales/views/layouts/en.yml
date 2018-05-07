@@ -3,6 +3,11 @@ en:
     admin:
       author: "Sean Eshbaugh"
       title: "seaneshbaugh.com Admin Panel"
+      header_nav:
+        home: "Admin Home"
+        site_home: "Site Home"
+        my_account: "My Account"
+        logout: "Logout"
     application:
       author: "Sean Eshbaugh"
       title: "Sean Eshbaugh"

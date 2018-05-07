@@ -1,0 +1,44 @@
+.main-header {
+    margin: 0rem auto;
+    max-width: 75rem;
+    width: 90%;
+}
+
+.main-header-title {
+    font-size: 5rem;
+    font-weight: 500;
+    margin: 0rem;
+    padding: 0.625rem 0rem;
+}
+
+.main-header-subtitle {
+    font-size: 1.3125rem;
+    font-weight: 200;
+    margin: 0rem;
+    padding: 0.625rem 0rem;
+}
+
+.main-header-nav-list {
+    display: flex;
+    flex-wrap: wrap;
+    font-size: 2.5rem;
+    font-weight: 700;
+    justify-content: flex-start;
+    list-style: none;
+    margin: 0rem;
+    padding: 0rem;
+}
+
+.main-header-nav-list-item {
+    &:first-child {
+        .main-header-nav-list-item-link {
+            padding: 1.25rem 0.5rem 1.25rem 0rem;
+        }
+    }
+
+    .main-header-nav-list-item-link {
+        max-width: 15rem;
+        padding: 1.25rem 0.5rem;
+        text-decoration: none;
+    }
+}
