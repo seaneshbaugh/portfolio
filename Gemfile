@@ -22,6 +22,7 @@ gem 'rolify', '~> 5.2.0'
 gem 'sanitize', '~> 4.6'
 gem 'seed-fu', '~> 2.3.7'
 gem 'webpacker', '~> 3.2'
+gem 'webpacker-react', '~> 0.3.2'
 
 group :development, :test do
   gem 'byebug', '~> 10.0'

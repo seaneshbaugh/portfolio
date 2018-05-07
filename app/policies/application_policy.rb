@@ -14,12 +14,7 @@ class ApplicationPolicy
   end
 
   def show?
-    case record
-    when Class
-      true
-    else
-      scope.where(id: record.id).exists?
-    end
+    true
   end
 
   def create?
@@ -56,7 +51,7 @@ class ApplicationPolicy
     end
 
     def resolve
-      scope.all
+      scope
     end
   end
 end

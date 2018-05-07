@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class AceBuilder < BootstrapForm::FormBuilder
+class AceBuilder < ActionView::Helpers::FormBuilder
   include ApplicationHelper
 
   delegate :content_tag, to: :@template
@@ -10,8 +10,8 @@ class AceBuilder < BootstrapForm::FormBuilder
   def ace_editor(method, options = {})
     mode = options.delete(:mode) || 'text'
 
-    form_group_builder(method, options) do
-      text_area = text_area_without_bootstrap(method, options)
+    content_tag(:div, class: 'ace-editor-field') do
+      text_area = text_area(method, options)
 
       ace_editor = content_tag(:div, '', id: ace_editor_id_for(method), class: 'ace-editor', data: { 'mode' => mode })
 
@@ -26,7 +26,7 @@ class AceBuilder < BootstrapForm::FormBuilder
 
     modal_id = "#{object_name}_#{method}-picture-selector-modal"
 
-    form_group_builder(method, options.merge(skip_label: true)) do
+    content_tag(:div, class: 'picture-selector') do
       link = link_to(link_body, '/admin/pictures/selector', class: link_class, data: { toggle: 'modal', target: "\##{modal_id}" })
 
       modal = content_tag(:div, '', id: modal_id, class: 'modal fade', role: 'dialog', data: { target: ace_editor_id_for(method) })

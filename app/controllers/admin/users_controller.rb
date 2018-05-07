@@ -1,17 +1,19 @@
 # frozen_string_literal: true
 
 class Admin::UsersController < Admin::AdminController
-  authorize_resource
-
   before_action :set_user, only: %i[show edit update destroy]
 
   def index
-    @search = User.search(params[:q])
+    authorize User
+
+    @search = User.ransack(params[:q])
 
     @users = @search.result.page(params[:page]).per(25).alphabetical
   end
 
-  def show; end
+  def show
+    authorize @user
+  end
 
   def new
     @user = User.new

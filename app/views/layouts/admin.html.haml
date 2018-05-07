@@ -2,13 +2,13 @@
 %html{ dir: 'ltr', lang: 'en-US' }
   %head
     %meta{ charset: 'utf-8' }
-    %title seaneshbaugh.com Admin Panel
+    %title page_title(yield(:page_title))
     %meta{ content: 'width=device-width, initial-scale=1, shrink-to-fit=no', name: 'viewport' }
     %meta{ content: 'seaneshbaugh.com Admin Panel', name: 'description' }
-    %meta{ content: 'Sean Eshbaugh', name: 'author' }
+    %meta{ content: t('.author'), name: 'author' }
     %meta{ content: 'telephone=no', name: 'format-detection' }
-    = stylesheet_link_tag 'admin', media: 'all'
-    = javascript_include_tag 'admin'
+    = stylesheet_pack_tag 'admin', media: 'all'
+    = javascript_pack_tag 'admin'
     %link{ href: '/favicon.ico', rel: 'shortcut icon' }
     %link{ href: image_path('apple-touch-icon-iphone.png'), rel: 'apple-touch-icon', sizes: '57x57' }
     %link{ href: image_path('apple-touch-icon-ipad.png'), rel: 'apple-touch-icon', sizes: '72x72' }

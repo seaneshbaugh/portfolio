@@ -10,7 +10,7 @@
 - if policy(Post).create?
   %section#quick-post.row
     %h2.col-xs-12 Quick Post
-    = bootstrap_form_for [:admin, Post.new], builder: AceBuilder, layout: :horizontal do |f|
+    = form_for [:admin, Post.new], builder: AceBuilder, layout: :horizontal do |f|
       = f.text_field :title
       = f.picture_inserter :body
       = f.text_area :body, style: 'display: none;'

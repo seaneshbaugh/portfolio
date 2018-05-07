@@ -9,5 +9,3 @@
 
 import "../shared";
 import "../application";
-
-console.log('Hello World from Webpacker');

@@ -6,7 +6,7 @@ class UserPolicy < ApplicationPolicy
   end
 
   def show?
-    user.has_role?(:admin) && scope.where(id: record.id).exists?
+    user.has_role?(:admin)
   end
 
   def create?
