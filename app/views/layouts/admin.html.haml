@@ -2,7 +2,7 @@
 %html{ dir: 'ltr', lang: 'en-US' }
   %head
     %meta{ charset: 'utf-8' }
-    %title page_title(yield(:page_title))
+    %title= page_title(yield(:page_title))
     %meta{ content: 'width=device-width, initial-scale=1, shrink-to-fit=no', name: 'viewport' }
     %meta{ content: 'seaneshbaugh.com Admin Panel', name: 'description' }
     %meta{ content: t('.author'), name: 'author' }
@@ -17,7 +17,7 @@
     %link{ href: '/humans.txt', rel: 'author' }
     = csrf_meta_tags
   %body
-    .content-wrap
+    .container
       %header.main-header{ role: 'banner' }
         %h1.main-header-title= t('.title')
         %nav.main-header-nav
@@ -37,4 +37,4 @@
       %main.main-content{ role: 'main' }
         = flash_messages
         = yield
-    %footer.main-footer{ role: 'contentinfo' }
+      %footer.main-footer{ role: 'contentinfo' }
