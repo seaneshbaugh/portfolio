@@ -8,72 +8,82 @@ class Admin::PagesControllerTest < ActionController::TestCase
   test 'should get index' do
     get :index
 
-    assert_response :success
-
-    assert_not_nil assigns(:pages)
+    assert_response 200
   end
 
   test 'should get new' do
     get :new
 
-    assert_response :success
+    assert_response 200
   end
 
   test 'should create page' do
     assert_difference('Page.count') do
-      post :create, page: { title: 'New Page' }
+      post :create, params: { page: { title: 'New Page', body: 'Testing 1 2 3' } }
     end
 
-    assert_redirected_to admin_page_path(assigns(:page))
+    assert_redirected_to admin_page_path(Page.chronological.last)
   end
 
   test 'should not create invalid page' do
     assert_no_difference('Page.count') do
-      post :create, page: { title: '' }
+      post :create, params: { page: { title: '' } }
     end
 
-    assert_template :new
+    assert_response 422
   end
 
   test 'should show page' do
     page = pages(:about)
 
-    get :show, id: page
+    get :show, params: { id: page }
 
-    assert_response :success
+    assert_response 200
   end
 
   test 'should get edit' do
     page = pages(:about)
 
-    get :edit, id: page
+    get :edit, params: { id: page }
 
-    assert_response :success
+    assert_response 200
   end
 
   test 'should update page' do
     page = pages(:about)
 
-    patch :update, id: page, page: { name: 'Updated Page' }
+    patch :update, params: { id: page, page: { title: 'Updated Page' } }
 
-    assert_redirected_to admin_page_path(assigns(:page))
+    page.reload
+
+    assert_redirected_to edit_admin_page_path(page)
+
+    assert page.title == 'Updated Page'
   end
 
   test 'should not update page with invalid data' do
     page = pages(:about)
 
-    patch :update, id: page, page: { title: '' }
+    patch :update, params: { id: page, page: { title: '' } }
 
-    assert_template :edit
+    assert_response 422
   end
 
   test 'should destroy page' do
     page = pages(:about)
 
     assert_difference('Page.count', -1) do
-      delete :destroy, id: page
+      delete :destroy, params: { id: page }
     end
 
     assert_redirected_to admin_pages_path
+  end
+
+  test 'should not destroy a page that does not exist' do
+    invalid_id = Page.pluck(:id).sort.last + 1
+
+    assert_raises(ActiveRecord::RecordNotFound) do
+      delete :destroy, params: { id: invalid_id }
+    end
   end
 end

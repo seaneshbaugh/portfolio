@@ -4,12 +4,15 @@
   "dependencies": {
     "@rails/webpacker": "3.4",
     "babel-preset-react": "^6.24.1",
+    "caniuse-lite": "^1.0.30000697",
+    "materialize-css": "1.0.0-rc.1",
     "normalize.css": "^8.0.0",
     "prop-types": "^15.6.1",
     "rails-ujs": "^5.1.5",
     "react": "^16.3.2",
     "react-ace": "^6.1.0",
     "react-dom": "^16.3.2",
+    "webpack": "^3.11.0",
     "webpacker-react": "^0.3.2"
   },
   "devDependencies": {

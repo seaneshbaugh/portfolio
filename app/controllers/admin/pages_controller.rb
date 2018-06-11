@@ -16,41 +16,47 @@ class Admin::PagesController < Admin::AdminController
   end
 
   def new
+    authorize Page
+
     @page = Page.new
   end
 
-  def edit; end
+  def edit
+    authorize @page
+  end
 
   def create
+    authorize Page
+
     @page = Page.new(page_params)
 
     if @page.save
-      flash[:success] = 'Page was successfully created.'
+      flash[:success] = I18n.t('.success')
 
       redirect_to admin_page_url(@page)
     else
-      flash[:error] = error_messages_for(@page)
+      flash.now[:error] = helpers.error_messages_for(@page)
 
-      render 'new'
+      render 'new', status: 422
     end
   end
 
   def update
-    if @page.update(params[:page])
-      flash[:success] = 'Page was successfully updated.'
+    if @page.update(page_params)
+      flash[:success] = I18n.t('.success')
 
       redirect_to edit_admin_page_url(@page)
     else
-      flash[:error] = error_messages_for(@page)
+      flash.now[:error] = helpers.error_messages_for(@page)
 
-      render 'edit'
+      render 'edit', status: 422
     end
   end
 
   def destroy
     @page.destroy
 
-    flash[:success] = 'Page was successfully deleted.'
+    flash[:success] = I18n.t('.success')
 
     redirect_to admin_pages_url
   end
@@ -58,7 +64,7 @@ class Admin::PagesController < Admin::AdminController
   private
 
   def set_page
-    @page = Page.where(slug: params[:id]).first
+    @page = Page.friendly.find(params[:id])
 
     raise ActiveRecord::RecordNotFound if @page.nil?
   end

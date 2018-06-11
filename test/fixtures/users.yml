@@ -2,4 +2,4 @@
 
 sean_eshbaugh:
   email: "sean@seaneshbaugh.com"
-  role: "sysadmin"
+  roles: admin

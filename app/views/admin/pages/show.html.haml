@@ -2,7 +2,7 @@
   %h2= page_presenter.title
   .admin-actions
     = link_to 'Back to Index', admin_pages_path, class: 'btn btn-default'
-    - if policy@page).edit?
+    - if policy(@page).edit?
       = link_to 'Edit', edit_admin_page_path(@page), class: 'btn btn-primary'
     - if policy(@page).destroy?
       = link_to 'Delete', admin_page_path(@page), method: 'delete', class: 'btn btn-danger', data: { confirm: 'Are you sure?' }

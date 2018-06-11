@@ -21,7 +21,7 @@ class Page < ApplicationRecord
   validates :show_in_menu, inclusion: { in: [true, false] }
   validates :visible, inclusion: { in: [true, false] }
 
-  friendly_id :sanitized_title
+  friendly_id :title
 
   has_paper_trail
 
@@ -31,9 +31,7 @@ class Page < ApplicationRecord
     visible
   end
 
-  def sanitized_title
-    return '' if title.blank?
-
-    CGI.unescapeHTML(Sanitize.clean(title)).gsub(/'|"/, '').gsub(' & ', ' and ').delete('&').squeeze(' ').parameterize
+  def normalize_friendly_id(value)
+    CGI.unescapeHTML(Sanitize.clean(value.to_s)).gsub(/'|"/, '').gsub(' & ', ' and ').delete('&').squeeze(' ').parameterize
   end
 end

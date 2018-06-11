@@ -5,10 +5,8 @@ class Post < ApplicationRecord
   include OptionsForSelect
 
   scope :alphabetical, -> { order(:title) }
-  scope :chronological, -> { order(:created_at) }
   scope :published, -> { where(visible: true) }
   scope :reverse_alphabetical, -> { order(title: :desc) }
-  scope :reverse_chronological, -> { order(created_at: :desc) }
   scope :unpublished, -> { where(visible: false) }
 
   belongs_to :user
