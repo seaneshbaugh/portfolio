@@ -4,6 +4,6 @@
   = f.email_field :email
   = f.password_field :password
   = f.password_field :password_confirmation
-  = f.select :role, Ability.valid_roles(current_user).map { |_, value| [value.titleize, value] }
+  = f.collection_check_boxes(:role_ids, Role.all, :id, :to_s)
   = f.submit 'Submit'
   = link_to 'Cancel', admin_users_path, class: 'btn btn-default'

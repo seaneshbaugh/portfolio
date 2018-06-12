@@ -5,3 +5,9 @@ sean_eshbaugh:
   first_name: "Sean"
   last_name: "Eshbaugh"
   roles: admin
+
+casie_clark:
+  email: "casie@seaneshbaugh.com"
+  first_name: "Casie"
+  last_name: "Clark"
+  roles: user

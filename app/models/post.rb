@@ -23,7 +23,7 @@ class Post < ApplicationRecord
 
   acts_as_taggable
 
-  friendly_id :sanitized_title
+  friendly_id :title
 
   has_paper_trail
 
@@ -31,11 +31,5 @@ class Post < ApplicationRecord
 
   def published?
     visible
-  end
-
-  def sanitized_title
-    return '' if title.blank?
-
-    CGI.unescapeHTML(Sanitize.clean(title)).gsub(/'|"/, '').gsub(' & ', ' and ').delete('&').squeeze(' ').parameterize
   end
 end

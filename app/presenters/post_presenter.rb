@@ -69,7 +69,7 @@ class PostPresenter < BasePresenter
   end
 
   def user_full_name
-    UserPresenter.new(@post.user, @template).full_name
+    @post.user.full_name
   end
 
   private

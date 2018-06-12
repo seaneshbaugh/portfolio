@@ -19,10 +19,6 @@ class UserPresenter < BasePresenter
     link_to '<span class="glyphicon glyphicon-envelope">'.html_safe, "mailto:#{@user.email}", rel: 'tooltip', title: 'Send Email'
   end
 
-  def full_name
-    "#{first_name} #{last_name}"
-  end
-
   def last_sign_in_at
     if @user.last_sign_in_at.present?
       @user.last_sign_in_at.strftime(time_format)

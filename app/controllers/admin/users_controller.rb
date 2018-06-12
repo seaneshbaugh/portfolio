@@ -16,43 +16,53 @@ class Admin::UsersController < Admin::AdminController
   end
 
   def new
+    authorize User
+
     @user = User.new
   end
 
-  def edit; end
+  def edit
+    authorize @user
+  end
 
   def create
+    authorize User
+
     @user = User.new(user_params)
 
     if @user.save
-      flash[:success] = 'User was successfully created.'
+      flash[:success] = t('.success')
 
-      redirect_to admin_user_url(@user)
+      redirect_to admin_user_url(@user), status: :see_other
     else
-      flash[:error] = @user.errors.full_messages.uniq.join('. ') + '.'
+      flash[:error] = helpers.error_messages_for(@user)
 
-      render 'new'
+      render 'new', status: :unprocessable_entity
     end
   end
 
   def update
+    authorize @user
+
     if @user.update(user_params)
-      flash[:success] = 'User was successfully updated.'
+      flash[:success] = t('.success')
 
-      redirect_to edit_admin_user_url(@user)
+      redirect_to edit_admin_user_url(@user), status: :see_other
     else
-      flash[:error] = @user.errors.full_messages.uniq.join('. ') + '.'
+      flash[:error] = helpers.error_messages_for(@user)
 
-      render 'edit'
+      render 'edit', status: :unprocessable_entity
     end
   end
 
   def destroy
+    authorize @user
+
     @user.destroy
 
-    flash[:success] = 'User was successfully deleted.'
+    flash[:success] = t('.success')
 
-    redirect_to admin_users_url
+    redirect_to admin_users_url, status: :see_other
   end
 
   private

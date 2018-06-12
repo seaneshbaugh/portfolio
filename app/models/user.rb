@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 class User < ApplicationRecord
+  include FriendlyId
   include OptionsForSelect
 
   scope :alphabetical, -> { order(:last_name, :first_name) }
@@ -16,11 +17,17 @@ class User < ApplicationRecord
 
   devise :database_authenticatable, :recoverable, :rememberable, :trackable, :validatable
 
+  friendly_id :full_name
+
   has_paper_trail only: %i[email first_name last_name]
 
   rolify
 
   resourcify :other_users
+
+  def full_name
+    "#{first_name} #{last_name}"
+  end
 
   private
 
