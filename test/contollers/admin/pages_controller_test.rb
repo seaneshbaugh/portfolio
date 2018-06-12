@@ -8,7 +8,7 @@ class Admin::PagesControllerTest < ActionController::TestCase
   test 'should get pages index' do
     get :index
 
-    assert_response 200
+    assert_response :ok
   end
 
   test 'should show a page' do
@@ -16,7 +16,7 @@ class Admin::PagesControllerTest < ActionController::TestCase
 
     get :show, params: { id: page }
 
-    assert_response 200
+    assert_response :ok
   end
 
   test 'should not show a page that does not exist' do
@@ -28,7 +28,7 @@ class Admin::PagesControllerTest < ActionController::TestCase
   test 'should get a new page' do
     get :new
 
-    assert_response 200
+    assert_response :ok
   end
 
   test 'should get a page to edit' do
@@ -36,7 +36,7 @@ class Admin::PagesControllerTest < ActionController::TestCase
 
     get :edit, params: { id: page }
 
-    assert_response 200
+    assert_response :ok
   end
 
   test 'should not get a page that does not exist to edit' do
@@ -50,6 +50,8 @@ class Admin::PagesControllerTest < ActionController::TestCase
       post :create, params: { page: { title: 'New Page', body: 'Testing 1 2 3' } }
     end
 
+    assert_response :see_other
+
     assert_redirected_to admin_page_path(Page.chronological.last)
   end
 
@@ -58,7 +60,7 @@ class Admin::PagesControllerTest < ActionController::TestCase
       post :create, params: { page: { title: '' } }
     end
 
-    assert_response 422
+    assert_response :unprocessable_entity
   end
 
   test 'should update a page' do
@@ -70,6 +72,8 @@ class Admin::PagesControllerTest < ActionController::TestCase
 
     assert page.title == 'Updated Page'
 
+    assert_response :see_other
+
     assert_redirected_to edit_admin_page_path(page)
 
     assert_equal I18n.t('admin.pages.update.success'), flash[:success]
@@ -80,7 +84,7 @@ class Admin::PagesControllerTest < ActionController::TestCase
 
     patch :update, params: { id: page, page: { title: '' } }
 
-    assert_response 422
+    assert_response :unprocessable_entity
   end
 
   test 'should not update a page that does not exist' do
@@ -95,6 +99,8 @@ class Admin::PagesControllerTest < ActionController::TestCase
     assert_difference('Page.count', -1) do
       delete :destroy, params: { id: page }
     end
+
+    assert_response :see_other
 
     assert_redirected_to admin_pages_path
   end

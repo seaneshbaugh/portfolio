@@ -33,32 +33,36 @@ class Admin::PagesController < Admin::AdminController
     if @page.save
       flash[:success] = t('.success')
 
-      redirect_to admin_page_url(@page)
+      redirect_to admin_page_url(@page), status: :see_other
     else
       flash.now[:error] = helpers.error_messages_for(@page)
 
-      render 'new', status: 422
+      render 'new', status: :unprocessable_entity
     end
   end
 
   def update
+    authorize @page
+
     if @page.update(page_params)
       flash[:success] = t('.success')
 
-      redirect_to edit_admin_page_url(@page)
+      redirect_to edit_admin_page_url(@page), status: :see_other
     else
       flash.now[:error] = helpers.error_messages_for(@page)
 
-      render 'edit', status: 422
+      render 'edit', status: :unprocessable_entity
     end
   end
 
   def destroy
+    authorize @page
+
     @page.destroy
 
     flash[:success] = t('.success')
 
-    redirect_to admin_pages_url
+    redirect_to admin_pages_url, status: :see_other
   end
 
   private

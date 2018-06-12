@@ -2,4 +2,6 @@
 
 sean_eshbaugh:
   email: "sean@seaneshbaugh.com"
+  first_name: "Sean"
+  last_name: "Eshbaugh"
   roles: admin

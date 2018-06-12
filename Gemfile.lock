@@ -1,3 +1,11 @@
+GIT
+  remote: https://github.com/varvet/pundit.git
+  revision: f2437d1a1e7b4eb573948d67a711238c4100e948
+  branch: master
+  specs:
+    pundit (1.1.0)
+      activesupport (>= 3.0.0)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -148,8 +156,6 @@ GEM
       activerecord (>= 3.0)
     powerpack (0.1.1)
     puma (3.11.4)
-    pundit (1.1.0)
-      activesupport (>= 3.0.0)
     rack (2.0.5)
     rack-proxy (0.6.4)
       rack
@@ -270,7 +276,7 @@ DEPENDENCIES
   paper_trail (~> 9.0)
   pg (~> 1.0.0)
   puma (~> 3.11.4)
-  pundit (~> 1.1)
+  pundit!
   rails (= 5.2.0)
   ransack (~> 1.8.8)
   rolify (~> 5.2.0)

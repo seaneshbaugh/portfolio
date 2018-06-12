@@ -16,70 +16,66 @@ class Admin::PostsController < Admin::AdminController
   end
 
   def new
+    authorize Post
+
     @post = Post.new
   end
 
-  def edit; end
+  def edit
+    authorize @post
+  end
 
   def create
+    authorize Post
+
     @post = Post.new(post_params)
 
-    if !(current_user.sysadmin? || current_user.admin?) || @post.user.nil?
-      @post.user = current_user
-    end
+    @post.user = current_user if @post.user.nil?
 
     if @post.save
-      flash[:success] = 'Post was successfully created.'
+      flash[:success] = t('.success')
 
-      redirect_to admin_post_url(@post)
+      redirect_to admin_post_url(@post), status: :see_other
     else
-      flash[:error] = @post.errors.full_messages.uniq.join('. ') + '.'
+      flash[:error] = helpers.error_messages_for(@post)
 
-      render 'new'
+      render 'new', status: :unprocessable_entity
     end
   end
 
   def update
-    if !current_user.sysadmin? && !current_user.admin? && @post.user != current_user
-      flash[:error] = 'You cannot edit another user\'s posts.'
-
-      redirect_to(admin_posts_url) && return
-    end
+    authorize @post
 
     if @post.update(post_params)
-      flash[:success] = 'Post was successfully updated.'
+      flash[:success] = t('.success')
 
-      redirect_to edit_admin_post_url(@post)
+      redirect_to edit_admin_post_url(@post), status: :see_other
     else
-      flash[:error] = @post.errors.full_messages.uniq.join('. ') + '.'
+      flash[:error] = helpers.error_messages_for(@post)
 
-      render 'edit'
+      render 'edit', status: :unprocessable_entity
     end
   end
 
   def destroy
-    if !current_user.sysadmin? && !current_user.admin? && @post.user != current_user
-      flash[:error] = 'You cannot edit another user\'s posts.'
-
-      redirect_to(admin_posts_url) && return
-    end
+    authorize @post
 
     @post.destroy
 
-    flash[:success] = 'Post was successfully deleted.'
+    flash[:success] = t('.success')
 
-    redirect_to admin_posts_url
+    redirect_to admin_posts_url, status: :see_other
   end
 
   private
 
   def set_post
-    @post = Post.where(slug: params[:id]).first
+    @post = Post.friendly.find(params[:id])
 
     raise ActiveRecord::RecordNotFound if @post.nil?
   end
 
   def post_params
-    params.require(:post).permit(:title, :body, :style, :script, :meta_description, :meta_keywords, :visible)
+    params.require(:post).permit(:user_id, :title, :body, :style, :script, :meta_description, :meta_keywords, :visible)
   end
 end
