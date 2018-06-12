@@ -31,7 +31,7 @@ class Admin::PagesController < Admin::AdminController
     @page = Page.new(page_params)
 
     if @page.save
-      flash[:success] = I18n.t('.success')
+      flash[:success] = t('.success')
 
       redirect_to admin_page_url(@page)
     else
@@ -43,7 +43,7 @@ class Admin::PagesController < Admin::AdminController
 
   def update
     if @page.update(page_params)
-      flash[:success] = I18n.t('.success')
+      flash[:success] = t('.success')
 
       redirect_to edit_admin_page_url(@page)
     else
@@ -56,7 +56,7 @@ class Admin::PagesController < Admin::AdminController
   def destroy
     @page.destroy
 
-    flash[:success] = I18n.t('.success')
+    flash[:success] = t('.success')
 
     redirect_to admin_pages_url
   end
