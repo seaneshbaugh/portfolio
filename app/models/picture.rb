@@ -10,6 +10,7 @@ class Picture < ApplicationRecord
   validates :title, presence: true, length: { maximum: 65535 }
   validates :alt_text, length: { maximum: 65535 }
   validates :caption, length: { maximum: 65535 }
+  validates :image, image_attachment: true
   # validates :image_fingerprint, uniqueness: { if: -> { !Rails.env.test? } }
   # validates_attachment_presence :image
   # validates_attachment_size :image, less_than: 1024.megabytes

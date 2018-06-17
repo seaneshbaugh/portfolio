@@ -59,7 +59,7 @@ class Admin::PicturesControllerTest < ActionController::TestCase
 
   test 'should not create an invalid picture' do
     assert_no_difference('Picture.count') do
-      post :create, params: { picture: { title: '' } }
+      post :create, params: { picture: { title: 'Image Intentionally Left Blank' } }
     end
 
     assert_response :unprocessable_entity
