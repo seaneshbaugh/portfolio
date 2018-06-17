@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module RabbitmqJobProcessor
   class Worker
     @logger = nil

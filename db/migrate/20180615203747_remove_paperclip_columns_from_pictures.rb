@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class RemovePaperclipColumnsFromPictures < ActiveRecord::Migration[5.2]
   def change
     remove_index :pictures, :image_file_name

@@ -1,9 +1,15 @@
 AllCops:
   Exclude:
-#     - bin/**/*
-#     - config/**/*
-    - db/**/*
-#     - script/**/*
+    - bin/bundle
+    - bin/rails
+    - bin/rake
+    - bin/setup
+    - bin/update
+    - bin/webpack
+    - bin/webpack-dev-server
+    - bin/yarn
+    - db/schema.rb
+    - node_modules/**/*
 
 # AbcSize:
 #   Enabled: false

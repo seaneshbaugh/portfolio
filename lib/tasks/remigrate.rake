@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 namespace :db do
   desc 'Drop, create, and then migrate the database'
   task remigrate: :environment do

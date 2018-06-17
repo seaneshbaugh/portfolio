@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 unless ENV['RAILS_ENV'] == 'test'
   begin
     require 'daemons'

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 namespace :db do
   desc 'Clean and then seed the database'
   task reseed: :environment do

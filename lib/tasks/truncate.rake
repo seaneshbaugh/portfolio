@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 namespace :db do
   desc 'Truncate the database tables'
   task truncate: :environment do

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'open-uri'
 
 Dir[Rails.root.join('app', 'models', '**', '*.rb')].sort.each { |file| require file }
