@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_06_12_213739) do
+ActiveRecord::Schema.define(version: 2018_06_15_230831) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -70,22 +70,10 @@ ActiveRecord::Schema.define(version: 2018_06_12_213739) do
     t.text "title", default: "", null: false
     t.text "alt_text", default: "", null: false
     t.text "caption", default: "", null: false
-    t.string "image_file_name", null: false
-    t.string "image_content_type", null: false
-    t.integer "image_file_size", null: false
-    t.string "image_fingerprint", null: false
-    t.integer "image_original_width", null: false
-    t.integer "image_original_height", null: false
-    t.integer "image_medium_width", null: false
-    t.integer "image_medium_height", null: false
-    t.integer "image_thumb_width", null: false
-    t.integer "image_thumb_height", null: false
-    t.datetime "image_updated_at", null: false
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.index ["image_content_type"], name: "index_pictures_on_image_content_type"
-    t.index ["image_file_name"], name: "index_pictures_on_image_file_name"
-    t.index ["image_fingerprint"], name: "index_pictures_on_image_fingerprint"
+    t.string "slug"
+    t.index ["slug"], name: "index_pictures_on_slug"
   end
 
   create_table "posts", force: :cascade do |t|

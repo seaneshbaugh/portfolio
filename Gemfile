@@ -13,6 +13,7 @@ gem 'default_value_for', '~> 3.1.0'
 gem 'devise', '~> 4.4.3'
 gem 'friendly_id', '~> 5.2.3'
 gem 'haml', '~> 5.0.4'
+gem 'image_processing', '~> 1.2'
 gem 'kaminari', '~> 1.1'
 gem 'paper_trail', '~> 9.0'
 gem 'puma', '~> 3.11.4'
@@ -31,7 +32,7 @@ end
 group :development do
   gem 'haml_lint', '~> 0.27', require: false
   gem 'listen', '~> 3.1.5'
-  gem 'rubocop', '~> 0.52', require: false
+  gem 'rubocop', '~> 0.57', require: false
   gem 'web-console', '>= 3.5.1'
 end
 

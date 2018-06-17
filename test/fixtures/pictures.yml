@@ -1,1 +1,13 @@
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+conney:
+  title: "Conney the Corgi"
+  alt_text: "Conney the Corgi"
+  caption: "Conney the Corgi"
+  slug: "conney-the-corgi"
+
+cowboy:
+  title: "Cowboy the Cowdog"
+  alt_text: "Cowboy the Cowdog"
+  caption: "Cowboy the Cowdog"
+  slug: "cowboy-the-cowdog"

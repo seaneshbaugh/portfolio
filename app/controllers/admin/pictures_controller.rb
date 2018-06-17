@@ -16,24 +16,30 @@ class Admin::PicturesController < Admin::AdminController
   end
 
   def new
+    authorize Picture
+
     @picture = Picture.new
   end
 
-  def edit; end
+  def edit
+    authorize @picture
+  end
 
   def create
+    authorize Picture
+
     respond_to do |format|
       format.html do
         @picture = Picture.new(picture_params)
 
         if @picture.save
-          flash[:success] = 'Picture was successfully created.'
+          flash[:success] = t('.success')
 
-          redirect_to admin_picture_url(@picture)
+          redirect_to admin_picture_url(@picture), status: :see_other
         else
-          flash[:error] = @picture.errors.full_messages.uniq.join('. ') + '.'
+          flash[:error] = helpers.error_messages_for(@picture)
 
-          render 'new'
+          render 'new', status: :unprocessable_entity
         end
       end
 
@@ -44,26 +50,32 @@ class Admin::PicturesController < Admin::AdminController
   end
 
   def update
+    authorize @picture
+
     if @picture.update(picture_params)
-      flash[:success] = 'Picture was successfully updated.'
+      flash[:success] = t('.success')
 
-      redirect_to edit_admin_picture_url(@picture)
+      redirect_to edit_admin_picture_url(@picture), status: :see_other
     else
-      flash[:error] = @picture.errors.full_messages.uniq.join('. ') + '.'
+      flash[:error] = helpers.error_messages_for(@picture)
 
-      render 'edit'
+      render 'edit', status: :unprocessable_entity
     end
   end
 
   def destroy
+    authorize @picture
+
     @picture.destroy
 
-    flash[:success] = 'Picture was successfully deleted.'
+    flash[:success] = t('.success')
 
-    redirect_to admin_pictures_url
+    redirect_to admin_pictures_url, status: :see_other
   end
 
   def selector
+    authorize Picture, :create
+
     @pictures = Picture.reverse_chronological
 
     render layout: false
@@ -72,7 +84,7 @@ class Admin::PicturesController < Admin::AdminController
   private
 
   def set_picture
-    @picture = Picture.where(id: params[:id]).first
+    @picture = Picture.friendly.find(params[:id])
 
     raise ActiveRecord::RecordNotFound if @picture.nil?
   end

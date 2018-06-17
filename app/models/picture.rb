@@ -1,6 +1,10 @@
 # frozen_string_literal: true
 
 class Picture < ApplicationRecord
+  include FriendlyId
+
+  has_one_attached :image
+
 #  has_attached_file :image, path: :attachment_path, styles: ->(_) { attachment_styles }, url: :attachment_url
 
   validates :title, presence: true, length: { maximum: 65535 }
@@ -14,6 +18,8 @@ class Picture < ApplicationRecord
   before_validation :ensure_title
   # before_validation :normalize_image_file_name
   # after_post_process :save_image_dimensions
+
+  friendly_id :timestamp
 
   resourcify
 
@@ -40,14 +46,18 @@ class Picture < ApplicationRecord
     "/uploads/:class_singular/:attachment/#{Rails.env.test? ? 'test/' : ''}:style_prefix:basename.:extension"
   end
 
+  def image_filename
+    image.blob.filename.to_s if image.attached?
+  end
+
   private
 
   def default_title
-    File.basename(image_file_name, '.*').to_s
+    File.basename(image_filename, '.*').to_s
   end
 
   def ensure_title
-    self.title = default_title if title.blank? && image_file_name.present?
+    self.title = default_title if title.blank? && image_filename.present?
   end
 
   def normalize_image_file_name
@@ -64,6 +74,12 @@ class Picture < ApplicationRecord
     extension = '.tiff' if extension == '.tif'
 
     image.instance_write(:file_name, "#{basename}#{extension}")
+  end
+
+  def timestamp
+    current_time = Time.now
+
+    "#{current_time.to_i}#{current_time.usec}".ljust(16, '0')
   end
 
   # def save_image_dimensions

@@ -32,3 +32,13 @@ end
 class ActionController::TestCase
   include Devise::Test::ControllerHelpers
 end
+
+# module FixtureFileHelpers
+#   include ActionDispatch::TestProcess::FixtureFile
+
+#   def fixture_file_upload(path, mime_type = nil, binary = false)
+#     puts `pwd`
+#     super(Rails.root.join('test', 'fixtures', 'files', path), mime_type, binary)
+#   end
+# end
+# ActiveRecord::FixtureSet.context_class.include FixtureFileHelpers

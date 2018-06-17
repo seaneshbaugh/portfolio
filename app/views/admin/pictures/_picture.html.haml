@@ -1,6 +1,6 @@
 - present @picture do |picture_presenter|
   %tr.row.picture
-    %td.col-xs-3.thumb= link_to picture_presenter.thumbnail_image, admin_picture_path(@picture)
+    %td.col-xs-3.thumb= link_to picture_presenter.thumbnail_image_tag, admin_picture_path(@picture)
     %td.col-xs-3.title= link_to picture_presenter.title, admin_picture_path(@picture)
     %td.col-xs-2.created-at= picture_presenter.created_at
     %td.col-xs-1.edit

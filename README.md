@@ -10,6 +10,10 @@ This application is intended to be run on Ruby 2.5.0.
 
 This application uses Rails 5.1.5.
 
+## Dependencies
+
+* [vips](https://jcupitt.github.io/libvips/)
+
 ## Local Development Installation
 
 Clone the repository.
