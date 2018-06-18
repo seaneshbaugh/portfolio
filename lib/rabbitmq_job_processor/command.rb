@@ -41,7 +41,7 @@ module RabbitmqJobProcessor
         end
 
         opt.on('-n', '--number_of_workers=workers', 'Number of unique workers to spawn.') do |worker_count|
-          @options[:worker_count] = worker_count.to_i rescue 1
+          @options[:worker_count] = Integer(worker_count, 10)
         end
 
         opt.on('--pid-dir=DIR', 'Specifies an alternate directory in which to store the process id.') do |dir|
@@ -82,7 +82,7 @@ module RabbitmqJobProcessor
       end
     end
 
-    def run(worker_name)
+    def run(_worker_name)
       Dir.chdir(root_dir)
 
       logger = Logger.new(File.join(@options[:log_dir], 'rabbitmq_job_processor.log'))
@@ -92,7 +92,7 @@ module RabbitmqJobProcessor
       worker = RabbitmqJobProcessor::Worker.new(@options)
 
       worker.start
-    rescue => exception
+    rescue StandardError => exception
       STDERR.puts exception.message
 
       STDERR.puts exception.backtrace

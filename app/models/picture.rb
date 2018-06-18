@@ -5,7 +5,7 @@ class Picture < ApplicationRecord
 
   has_one_attached :image
 
-#  has_attached_file :image, path: :attachment_path, styles: ->(_) { attachment_styles }, url: :attachment_url
+  #  has_attached_file :image, path: :attachment_path, styles: ->(_) { attachment_styles }, url: :attachment_url
 
   validates :title, presence: true, length: { maximum: 65535 }
   validates :alt_text, length: { maximum: 65535 }

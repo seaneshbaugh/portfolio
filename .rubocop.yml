@@ -11,26 +11,60 @@ AllCops:
     - db/schema.rb
     - node_modules/**/*
 
-# AbcSize:
-#   Enabled: false
+AbcSize:
+  Enabled: false
 
-# ClassLength:
-#   Enabled: false
+ClassLength:
+  Enabled: false
 
-# CyclomaticComplexity:
-#   Enabled: false
+CyclomaticComplexity:
+  Enabled: false
 
 Documentation:
   Enabled: false
 
-# MethodLength:
-#   Enabled: false
+Layout/DotPosition:
+  Exclude:
+    - db/migrate/20180427214039_convert_to_active_storage.rb
+
+Lint/UnusedMethodArgument:
+  Exclude:
+    - db/migrate/20180427214039_convert_to_active_storage.rb
+
+MethodLength:
+  Enabled: false
+
+Metrics/BlockLength:
+  Exclude:
+    - config/environments/*
+    - config/routes.rb
 
 Metrics/LineLength:
   Enabled: false
 
-# NumericLiterals:
-#   MinDigits: 6
+NumericLiterals:
+  MinDigits: 6
 
-# PerceivedComplexity:
-#   Enabled: false
+PerceivedComplexity:
+  Enabled: false
+
+Style/EmptyMethod:
+  Exclude:
+    - db/migrate/20180427214039_convert_to_active_storage.rb
+
+Style/GuardClause:
+  Exclude:
+    - db/migrate/20180302074916_change_collation_for_tag_names.acts_as_taggable_on_engine.rb
+    - db/migrate/20180302074917_add_missing_indexes_on_taggings.acts_as_taggable_on_engine.rb
+
+Style/IfUnlessModifier:
+  Exclude:
+    - db/migrate/20180427214039_convert_to_active_storage.rb
+
+Style/PerlBackrefs:
+  Exclude:
+    - db/migrate/20180427214039_convert_to_active_storage.rb
+
+Style/SymbolProc:
+  Exclude:
+    - config/initializers/rolify.rb

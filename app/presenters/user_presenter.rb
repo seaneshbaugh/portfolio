@@ -28,7 +28,7 @@ class UserPresenter < BasePresenter
   end
 
   def roles
-    @user.roles.pluck(:name).map { |role| role.titleize }.join(', ')
+    @user.roles.pluck(:name).map(&:titleize).join(', ')
   end
 
   def short_name

@@ -39,6 +39,10 @@ class BasePresenter
     end
   end
 
+  def respond_to_missing?(method, include_all = false)
+    @object.respond_to?(method, include_all)
+  end
+
   private
 
   def time_format

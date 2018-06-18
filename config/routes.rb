@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 Rails.application.routes.draw do
-  devise_for :users, skip: [:sessions, :passwords, :registrations, :confirmations, :unlocks]
+  devise_for :users, skip: %i[sessions passwords registrations confirmations unlocks]
 
   devise_scope :user do
     get '/login' => 'devise/sessions#new', as: :new_user_session
@@ -28,7 +28,7 @@ Rails.application.routes.draw do
     namespace :admin do
       root to: 'admin#index'
 
-      resource :account, only: [:show, :edit, :update]
+      resource :account, only: %i[show edit update]
 
       resources :pages
 

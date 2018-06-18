@@ -19,7 +19,7 @@ module ActiveJob
         end
 
         def enqueue_at(_job)
-          fail NotImplementedError
+          raise NotImplementedError
         end
       end
     end

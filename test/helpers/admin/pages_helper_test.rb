@@ -2,5 +2,7 @@
 
 require 'test_helper'
 
-class Admin::PagesHelperTest < ActionView::TestCase
+module Admin
+  class PagesHelperTest < ActionView::TestCase
+  end
 end

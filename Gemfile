@@ -5,8 +5,8 @@ git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
 ruby '2.5.0'
 
-gem 'rails', '5.2.0'
 gem 'pg', '~> 1.0.0'
+gem 'rails', '5.2.0'
 
 gem 'acts-as-taggable-on', '~> 5.0'
 gem 'aws-sdk-s3', '~> 1.9.1', require: false
@@ -40,11 +40,10 @@ end
 
 group :test do
   gem 'database_cleaner', '~> 1.7.0'
-  gem 'minitest',  '~> 5.11.3'
+  gem 'minitest', '~> 5.11.3'
   gem 'minitest-reporters', '~> 1.2.0'
   gem 'simplecov', '~> 0.16.1', require: false
 end
-
 
 # gem 'ace-rails-ap'
 # gem 'autoprefixer-rails'

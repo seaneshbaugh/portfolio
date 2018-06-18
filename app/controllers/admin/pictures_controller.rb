@@ -1,95 +1,97 @@
 # frozen_string_literal: true
 
-class Admin::PicturesController < Admin::AdminController
-  before_action :set_picture, only: %i[show edit update destroy]
+module Admin
+  class PicturesController < AdminController
+    before_action :set_picture, only: %i[show edit update destroy]
 
-  def index
-    authorize Picture
+    def index
+      authorize Picture
 
-    @search = Picture.search(params[:q])
+      @search = Picture.search(params[:q])
 
-    @pictures = @search.result.page(params[:page]).per(25).reverse_chronological
-  end
+      @pictures = @search.result.page(params[:page]).per(25).reverse_chronological
+    end
 
-  def show
-    authorize @picture
-  end
+    def show
+      authorize @picture
+    end
 
-  def new
-    authorize Picture
+    def new
+      authorize Picture
 
-    @picture = Picture.new
-  end
+      @picture = Picture.new
+    end
 
-  def edit
-    authorize @picture
-  end
+    def edit
+      authorize @picture
+    end
 
-  def create
-    authorize Picture
+    def create
+      authorize Picture
 
-    respond_to do |format|
-      format.html do
-        @picture = Picture.new(picture_params)
+      respond_to do |format|
+        format.html do
+          @picture = Picture.new(picture_params)
 
-        if @picture.save
-          flash[:success] = t('.success')
+          if @picture.save
+            flash[:success] = t('.success')
 
-          redirect_to admin_picture_url(@picture), status: :see_other
-        else
-          flash[:error] = helpers.error_messages_for(@picture)
+            redirect_to admin_picture_url(@picture), status: :see_other
+          else
+            flash[:error] = helpers.error_messages_for(@picture)
 
-          render 'new', status: :unprocessable_entity
+            render 'new', status: :unprocessable_entity
+          end
+        end
+
+        format.js do
+          @picture = Picture.create(picture_params)
         end
       end
+    end
 
-      format.js do
-        @picture = Picture.create(picture_params)
+    def update
+      authorize @picture
+
+      if @picture.update(picture_params)
+        flash[:success] = t('.success')
+
+        redirect_to edit_admin_picture_url(@picture), status: :see_other
+      else
+        flash[:error] = helpers.error_messages_for(@picture)
+
+        render 'edit', status: :unprocessable_entity
       end
     end
-  end
 
-  def update
-    authorize @picture
+    def destroy
+      authorize @picture
 
-    if @picture.update(picture_params)
+      @picture.destroy
+
       flash[:success] = t('.success')
 
-      redirect_to edit_admin_picture_url(@picture), status: :see_other
-    else
-      flash[:error] = helpers.error_messages_for(@picture)
-
-      render 'edit', status: :unprocessable_entity
+      redirect_to admin_pictures_url, status: :see_other
     end
-  end
 
-  def destroy
-    authorize @picture
+    def selector
+      authorize Picture, :create
 
-    @picture.destroy
+      @pictures = Picture.reverse_chronological
 
-    flash[:success] = t('.success')
+      render layout: false
+    end
 
-    redirect_to admin_pictures_url, status: :see_other
-  end
+    private
 
-  def selector
-    authorize Picture, :create
+    def set_picture
+      @picture = Picture.friendly.find(params[:id])
 
-    @pictures = Picture.reverse_chronological
+      raise ActiveRecord::RecordNotFound if @picture.nil?
+    end
 
-    render layout: false
-  end
-
-  private
-
-  def set_picture
-    @picture = Picture.friendly.find(params[:id])
-
-    raise ActiveRecord::RecordNotFound if @picture.nil?
-  end
-
-  def picture_params
-    params.require(:picture).permit(:title, :alt_text, :caption, :image)
+    def picture_params
+      params.require(:picture).permit(:title, :alt_text, :caption, :image)
+    end
   end
 end

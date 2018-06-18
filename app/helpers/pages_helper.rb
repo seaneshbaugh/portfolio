@@ -4,30 +4,30 @@ module PagesHelper
   def color_luminance(hex_code, luminance)
     r, g, b = extract_color_values(hex_code)
 
-    if r && b && g
-      luminance ||= 0
+    raise ArgumentError, 'invalid RGB hex code' unless r && b && g
 
-      r = [[0, r + (r * luminance)].max, 255].min.round
+    luminance ||= 0
 
-      g = [[0, g + (g * luminance)].max, 255].min.round
+    r = [[0, r + (r * luminance)].max, 255].min.round
 
-      b = [[0, b + (b * luminance)].max, 255].min.round
+    g = [[0, g + (g * luminance)].max, 255].min.round
 
-      format('#%02x%02x%02x', r, g, b)
-    end
+    b = [[0, b + (b * luminance)].max, 255].min.round
+
+    format('#%02x%02x%02x', r, g, b)
   end
 
   def contrast_color(hex_code)
     r, g, b = extract_color_values(hex_code)
 
-    if r && b && g
-      a = 1.0 - (0.299 * r.to_f + 0.587 * g.to_f + 0.114 * b.to_f) / 255.0
+    raise ArgumentError, 'invalid RGB hex code' unless r && b && g
 
-      if a < 0.5
-        '#000000'
-      else
-        '#ffffff'
-      end
+    a = 1.0 - (0.299 * r.to_f + 0.587 * g.to_f + 0.114 * b.to_f) / 255.0
+
+    if a < 0.5
+      '#000000'
+    else
+      '#ffffff'
     end
   end
 

@@ -4,12 +4,8 @@ module RabbitmqJobProcessor
   class Worker
     @logger = nil
 
-    def self.logger
-      @logger
-    end
-
-    def self.logger=(new_logger)
-      @logger = new_logger
+    class << self
+      attr_accessor :logger
     end
 
     def self.reload_app?
@@ -18,6 +14,8 @@ module RabbitmqJobProcessor
 
     def initialize(options = {})
       @queue_names = options[:queues]
+
+      @exit = false
     end
 
     def logger
@@ -82,7 +80,7 @@ module RabbitmqJobProcessor
               job.perform(parsed_payload['arguments'].first)
 
               say "Finished processing job #{parsed_payload['job_id']} for \"#{parsed_payload['queue_name']}\"."
-            rescue => exception
+            rescue StandardError => exception
               say "#{exception.message}\n#{exception.backtrace.join("\n")}", 'error'
 
               if parsed_payload['tries'] < 5
@@ -105,7 +103,7 @@ module RabbitmqJobProcessor
 
           @retry_exchanges << retry_exchange
         end
-      rescue => exception
+      rescue StandardError => exception
         say "#{exception.message}\n#{exception.backtrace.join("\n")}", 'error'
 
         raise exception
@@ -119,13 +117,13 @@ module RabbitmqJobProcessor
     end
 
     def stop
-      @connection.close if @connection
+      @connection&.close
 
       @exit = true
     end
 
     def stop?
-      !!@exit
+      @exit
     end
 
     private
