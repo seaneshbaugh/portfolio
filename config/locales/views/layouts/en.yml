@@ -3,6 +3,7 @@ en:
     admin:
       author: "Sean Eshbaugh"
       title: "seaneshbaugh.com Admin Panel"
+      meta_description: "seaneshbaugh.com Admin Panel"
       header_nav:
         home: "Admin Home"
         site_home: "Site Home"
@@ -11,6 +12,7 @@ en:
     application:
       author: "Sean Eshbaugh"
       title: "Sean Eshbaugh"
+      meta_description: "Sean Eshbaugh: Web Developer + Programmer"
       subtitle: "Web Developer + Programmer"
       header_nav:
         home: "Home"

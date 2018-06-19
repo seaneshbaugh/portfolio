@@ -26,13 +26,13 @@ module ApplicationHelper
   end
 
   def page_title(title)
-    return t('application.title') unless title.present?
+    return t('.title') unless title.present?
 
     title.strip
   end
 
   def page_meta_description(meta_description)
-    return t('application.description') unless meta_description.present?
+    return t('.meta_description') unless meta_description.present?
 
     meta_description.strip
   end
