@@ -30,16 +30,25 @@ Install the necessary gems.
 
 Create the databases.
 
-    $ rake db:create
+    $ rails db:create
 
 Add the database tables.
 
-    $ rake db:migrate
-    $ RAILS_ENV=test rake db:migrate
+    $ rails db:migrate
 
 Seed the database.
 
-    $ rake db:seed
+    $ rails db:seed
+
+## Linting
+
+### Ruby
+
+    $ rubocop
+
+### SCSS
+
+    $ yarn run sass-lint --verbose --no-exit --config .sass-lint.yml
 
 ## Contacts
 

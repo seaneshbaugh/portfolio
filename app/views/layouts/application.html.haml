@@ -35,7 +35,7 @@
               %li.main-header-nav-list-item= link_to(page.title, "/#{page.slug}", class: 'main-header-nav-list-item-link', style: "color: #{page.color};")
             %li.main-header-nav-list-item= link_to(t('.header_nav.contact'), contact_path, class: 'main-header-nav-list-item-link', style: 'color: #1b55c0;')
             - if current_user
-              %li.main-header-nav-list-item= link_to(t('.header_nav.admin'), admin_path, class: 'main-header-nav-list-item-link', style: 'color: #4b0082;')
+              %li.main-header-nav-list-item= link_to(t('.header_nav.admin'), admin_root_path, class: 'main-header-nav-list-item-link', style: 'color: #4b0082;')
               %li.main-header-nav-list-item= link_to(t('.header_nav.logout'), destroy_user_session_path, method: :delete, class: 'main-header-nav-list-item-link', style: 'color: #800080;')
       %main.main-content{ role: 'main' }
         = yield

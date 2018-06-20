@@ -2,7 +2,7 @@ options:
   merge-default-rules: false
   max-warnings: 100000
 files:
-  include: "app/javascript/stylesheets/**/*.s+(a|c)ss"
+  include: "app/javascript/**/*.scss"
 rules:
   attribute-quotes:
     - 2
