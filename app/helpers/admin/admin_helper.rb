@@ -13,5 +13,17 @@ module Admin
         }
       end
     end
+
+    def git_repo
+      @git_repo ||= Git.open(Rails.root)
+    end
+
+    def git_branch
+      git_repo.current_branch
+    end
+
+    def git_commit_sha
+      git_repo.log.first.sha
+    end
   end
 end

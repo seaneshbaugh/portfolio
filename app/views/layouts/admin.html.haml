@@ -17,24 +17,38 @@
     %link{ href: '/humans.txt', rel: 'author' }
     = csrf_meta_tags
   %body
-    .container
-      %header.main-header{ role: 'banner' }
-        %h1.main-header-title= t('.title')
-        %nav.main-header-nav
-          %ul.main-header-nav-list
-            %li.main-header-nav-list-item= link_to(t('.header_nav.home'), admin_root_path, rel: 'home', class: 'main-header-nav-list-item-link')
-            - if policy(Post).index?
-              %li.main-header-nav-list-item= link_to(t('activerecord.models.post').pluralize, admin_posts_path, class: 'main-header-nav-list-item-link')
-            - if policy(Page).index?
-              %li.main-header-nav-list-item= link_to(t('activerecord.models.page').pluralize, admin_pages_path, class: 'main-header-nav-list-item-link')
-            - if policy(Picture).index?
-              %li.main-header-nav-list-item= link_to(t('activerecord.models.picture').pluralize, admin_pictures_path, class: 'main-header-nav-list-item-link')
-            - if policy(User).index?
-              %li.main-header-nav-list-item= link_to(t('activerecord.models.user').pluralize, admin_users_path, class: 'main-header-nav-list-item-link')
-            %li.main-header-nav-list-item= link_to(t('.header_nav.site_home'), root_path, class: 'main-header-nav-list-item-link')
-            %li.main-header-nav-list-item= link_to(t('.header_nav.my_account'), admin_account_path, class: 'main-header-nav-list-item-link')
-            %li.main-header-nav-list-item= link_to(t('.header_nav.logout'), destroy_user_session_path, method: :delete, class: 'main-header-nav-list-item-link')
-      %main.main-content{ role: 'main' }
-        = flash_messages
-        = yield
-      %footer.main-footer{ role: 'contentinfo' }
+    %header.main-header{ role: 'banner' }
+      .container
+        .row
+          .col.s12
+            %h1.main-header-title= t('.title')
+        .row
+          .col.s12
+            %nav.main-header-nav
+              .nav-wrapper
+                %ul.main-header-nav-list.left
+                  %li.main-header-nav-list-item= link_to(t('.header_nav.home'), admin_root_path, rel: 'home', class: 'main-header-nav-list-item-link')
+                  - if policy(Post).index?
+                    %li.main-header-nav-list-item= link_to(t('activerecord.models.post').pluralize, admin_posts_path, class: 'main-header-nav-list-item-link')
+                  - if policy(Page).index?
+                    %li.main-header-nav-list-item= link_to(t('activerecord.models.page').pluralize, admin_pages_path, class: 'main-header-nav-list-item-link')
+                  - if policy(Picture).index?
+                    %li.main-header-nav-list-item= link_to(t('activerecord.models.picture').pluralize, admin_pictures_path, class: 'main-header-nav-list-item-link')
+                  - if policy(User).index?
+                    %li.main-header-nav-list-item= link_to(t('activerecord.models.user').pluralize, admin_users_path, class: 'main-header-nav-list-item-link')
+                  %li.main-header-nav-list-item= link_to(t('.header_nav.site_home'), root_path, class: 'main-header-nav-list-item-link')
+                  %li.main-header-nav-list-item= link_to(t('.header_nav.my_account'), admin_account_path, class: 'main-header-nav-list-item-link')
+                  %li.main-header-nav-list-item= link_to(t('.header_nav.logout'), destroy_user_session_path, method: :delete, class: 'main-header-nav-list-item-link')
+    %main.main-content{ role: 'main' }
+      .container
+        .row
+          .col.s12
+            = flash_messages
+        .row
+          .col.s12
+            = yield
+    %footer.main-footer{ role: 'contentinfo' }
+      .container
+        .row
+          .s12
+            %p.main-footer-git-info= t('.git_info', branch: git_branch, commit_sha: git_commit_sha)

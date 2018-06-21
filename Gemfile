@@ -14,6 +14,7 @@ gem 'bootsnap', '~> 1.3.0', require: false
 gem 'default_value_for', '~> 3.1.0'
 gem 'devise', '~> 4.4.3'
 gem 'friendly_id', '~> 5.2.3'
+gem 'git', '~> 1.4.0'
 gem 'haml', '~> 5.0.4'
 gem 'image_processing', '~> 1.2'
 gem 'kaminari', '~> 1.1'

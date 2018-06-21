@@ -9,6 +9,7 @@ en:
         site_home: "Site Home"
         my_account: "My Account"
         logout: "Logout"
+      git_info: "Current Branch: %{branch}, Current Commit: %{commit_sha}"
     application:
       author: "Sean Eshbaugh"
       title: "Sean Eshbaugh"

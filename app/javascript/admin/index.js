@@ -1,1 +1,3 @@
-import "./stylesheets/admin";
+import "./images";
+import "./javascripts";
+import "./stylesheets";

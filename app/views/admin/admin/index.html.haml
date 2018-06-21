@@ -4,7 +4,7 @@
     - if policy("#{model.camelcase}".constantize).create?
       .col-xs-6.col-md-3
         = link_to self.send("new_admin_#{model}_path".to_sym), class: 'thumbnail' do
-          = image_tag image_path("icons/32x32/#{model}-add.png"), alt: "New #{model.capitalize}"
+          = image_tag asset_pack_path("shared/images/icons/32x32/#{model}-add.png"), alt: "New #{model.capitalize}"
           .caption
             %p= "New #{model.capitalize}"
 - if policy(Post).create?

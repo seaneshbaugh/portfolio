@@ -46,6 +46,10 @@ Seed the database.
 
     $ rubocop
 
+### HAML
+
+    $ haml-lint
+
 ### SCSS
 
     $ yarn run sass-lint --verbose --no-exit --config .sass-lint.yml
