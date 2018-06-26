@@ -10,15 +10,15 @@ module Admin
 
     def update
       if @account.update(account_params)
-        sign_in(@account, bypass: true)
+        bypass_sign_in(@account)
 
         flash[:success] = 'Your account was successfully updated.'
 
-        redirect_to admin_account_path
+        redirect_to admin_account_path, status: :see_other
       else
-        flash[:error] = @account.errors.full_messages.uniq.join('. ') + '.'
+        flash.now[:error] = helpers.error_messages_for(@account)
 
-        render 'edit'
+        render 'edit', status: :unprocessable_entity
       end
     end
 
