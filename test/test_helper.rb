@@ -30,11 +30,29 @@ module ActiveSupport
     teardown do
       DatabaseCleaner.clean
     end
+
+    private
+
+    def fixture_file_path(filename)
+      Rails.root.join('test', 'fixtures', 'files', filename)
+    end
+
+    def attach_images_to_pictures!
+      Picture.find_each do |picture|
+        filename = "#{picture.title.parameterize}.jpg"
+
+        picture.image.attach(io: File.open(fixture_file_path(filename)), filename: filename)
+      end
+    end
   end
 end
 
 module ActionController
-  class TestCase
+  class TestCase < ActiveSupport::TestCase
     include Devise::Test::ControllerHelpers
+
+    def fixture_file_upload(filename, mime_type = nil, binary = false)
+      super(fixture_file_path(filename), mime_type, binary)
+    end
   end
 end

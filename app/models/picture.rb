@@ -2,6 +2,7 @@
 
 class Picture < ApplicationRecord
   include FriendlyId
+  include Rails.application.routes.url_helpers
 
   has_one_attached :image
 
@@ -24,31 +25,57 @@ class Picture < ApplicationRecord
 
   resourcify
 
-  def self.attachment_styles
-    {
-      thumb: {
-        geometry: '100x100',
-        format: :jpg,
-        convert_options: '-quality 75 -strip'
-      },
-      medium: {
-        geometry: '300x300',
-        format: :jpg,
-        convert_options: '-quality 85 -strip'
-      }
-    }
-  end
+  # def self.attachment_styles
+  #   {
+  #     thumb: {
+  #       geometry: '100x100',
+  #       format: :jpg,
+  #       convert_options: '-quality 75 -strip'
+  #     },
+  #     medium: {
+  #       geometry: '300x300',
+  #       format: :jpg,
+  #       convert_options: '-quality 85 -strip'
+  #     }
+  #   }
+  # end
 
-  def attachment_path
-    ":rails_root/public/uploads/#{Rails.env.test? ? 'test/' : ''}:class_singular/:attachment/:style_prefix:basename.:extension"
-  end
+  # def attachment_path
+  #   ":rails_root/public/uploads/#{Rails.env.test? ? 'test/' : ''}:class_singular/:attachment/:style_prefix:basename.:extension"
+  # end
 
-  def attachment_url
-    "/uploads/:class_singular/:attachment/#{Rails.env.test? ? 'test/' : ''}:style_prefix:basename.:extension"
-  end
+  # def attachment_url
+  #   "/uploads/:class_singular/:attachment/#{Rails.env.test? ? 'test/' : ''}:style_prefix:basename.:extension"
+  # end
 
   def image_filename
     image.blob.filename.to_s if image.attached?
+  end
+
+  # TODO: Consider DRYing this?
+
+  def medium_image_path
+    rails_blob_path(image, only_path: true)
+  end
+
+  def medium_image_url
+    rails_blob_url(image)
+  end
+
+  def original_image_path
+    rails_blob_path(image, only_path: true)
+  end
+
+  def original_image_url
+    rails_blob_url(image)
+  end
+
+  def thumbnail_image_path
+    rails_blob_path(image, only_path: true)
+  end
+
+  def thumbnail_image_url
+    rails_blob_url(image)
   end
 
   private

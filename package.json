@@ -3,8 +3,10 @@
   "private": true,
   "dependencies": {
     "@rails/webpacker": "3.4",
+    "activestorage": "5.2.0",
     "babel-preset-react": "^6.24.1",
     "caniuse-lite": "^1.0.30000697",
+    "form-serialize": "^0.7.2",
     "material-design-icons": "3.0.1",
     "materialize-css": "1.0.0-rc.1",
     "normalize.css": "^8.0.0",

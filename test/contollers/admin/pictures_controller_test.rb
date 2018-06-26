@@ -115,23 +115,5 @@ module Admin
         delete :destroy, params: { id: 'does-not-exist' }
       end
     end
-
-    def fixture_file_upload(filename, mime_type = nil, binary = false)
-      super(fixture_file_path(filename), mime_type, binary)
-    end
-
-    def fixture_file_path(filename)
-      Rails.root.join('test', 'fixtures', 'files', filename)
-    end
-
-    private
-
-    def attach_images_to_pictures!
-      Picture.find_each do |picture|
-        filename = "#{picture.title.parameterize}.jpg"
-
-        picture.image.attach(io: File.open(fixture_file_path(filename)), filename: filename)
-      end
-    end
   end
 end

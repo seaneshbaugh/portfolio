@@ -1,0 +1,6 @@
+en:
+  admin:
+    pictures:
+      index:
+        title: "Pictures"
+        new_picture: "New Picture"

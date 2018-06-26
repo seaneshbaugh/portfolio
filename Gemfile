@@ -13,6 +13,7 @@ gem 'aws-sdk-s3', '~> 1.9.1', require: false
 gem 'bootsnap', '~> 1.3.0', require: false
 gem 'default_value_for', '~> 3.1.0'
 gem 'devise', '~> 4.4.3'
+gem 'fast_jsonapi', '~> 1.2'
 gem 'friendly_id', '~> 5.2.3'
 gem 'git', '~> 1.4.0'
 gem 'haml', '~> 5.0.4'
@@ -30,6 +31,7 @@ gem 'webpacker-react', '~> 0.3.2'
 
 group :development, :test do
   gem 'byebug', '~> 10.0'
+  gem 'modloc', '~> 1.0.0'
 end
 
 group :development do

@@ -29,23 +29,30 @@ module Admin
     def create
       authorize Picture
 
-      respond_to do |format|
-        format.html do
-          @picture = Picture.new(picture_params)
+      @picture = Picture.new(picture_params)
 
-          if @picture.save
+      respond_to do |format|
+        if @picture.save
+          format.html do
             flash[:success] = t('.success')
 
             redirect_to admin_picture_url(@picture), status: :see_other
-          else
+          end
+
+          format.json do
+            render json: PictureSerializer.new(@picture).serialized_json
+          end
+        else
+          format.html do
             flash[:error] = helpers.error_messages_for(@picture)
 
             render 'new', status: :unprocessable_entity
           end
-        end
 
-        format.js do
-          @picture = Picture.create(picture_params)
+          format.json do
+            # TODO: Maybe put this in a helper? See http://jsonapi.org/format/#error-objects.
+            render json: { errors: @picture.errors.map { |attribute, message| { title: "#{attribute.to_s.humanize} #{message}" } } }
+          end
         end
       end
     end
