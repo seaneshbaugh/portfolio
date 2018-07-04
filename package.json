@@ -2,25 +2,30 @@
   "name": "portfolio",
   "private": true,
   "dependencies": {
-    "@rails/webpacker": "3.4",
+    "@rails/webpacker": "3.5",
     "activestorage": "5.2.0",
     "babel-preset-react": "^6.24.1",
-    "caniuse-lite": "^1.0.30000697",
+    "caniuse-lite": "^1.0.30000859",
+    "classnames": "^2.2.6",
     "form-serialize": "^0.7.2",
     "material-design-icons": "3.0.1",
     "materialize-css": "1.0.0-rc.1",
+    "moment": "^2.22.2",
     "normalize.css": "^8.0.0",
-    "prop-types": "^15.6.1",
-    "rails-ujs": "^5.1.5",
+    "prop-types": "^15.6.2",
+    "rails-ujs": "^5.2.0",
     "react": "^16.3.2",
-    "react-ace": "^6.1.0",
-    "react-dom": "^16.3.2",
+    "react-ace": "^6.1.1",
+    "react-dom": "^16.4.1",
+    "react-redux": "^5.0.7",
+    "redux": "^4.0.0",
     "resolve-url-loader": "^2.3.0",
     "webpack": "^3.11.0",
     "webpacker-react": "^0.3.2"
   },
   "devDependencies": {
+    "eslint": "^5.0.1",
     "sass-lint": "^1.12.1",
-    "webpack-dev-server": "2.11.2"
+    "webpack-dev-server": "3.1.4"
   }
 }

@@ -1,9 +1,9 @@
 GIT
   remote: https://github.com/varvet/pundit.git
-  revision: f2437d1a1e7b4eb573948d67a711238c4100e948
+  revision: 66e49fa55b7eda82e850cfb7b2db2fce923b7bd3
   branch: master
   specs:
-    pundit (1.1.0)
+    pundit (2.0.0.beta1)
       activesupport (>= 3.0.0)
 
 GEM
@@ -360,4 +360,4 @@ RUBY VERSION
    ruby 2.5.0p0
 
 BUNDLED WITH
-   1.16.1
+   1.16.2

@@ -9,4 +9,3 @@ class UserSerializerTest < ActiveSupport::TestCase
     assert serializer.serializable_hash.dig(:data, :attributes, :email) == 'sean@seaneshbaugh.com'
   end
 end
-

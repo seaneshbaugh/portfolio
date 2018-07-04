@@ -34,6 +34,6 @@ class PictureSerializerTest < ActiveSupport::TestCase
 
     serializer = PictureSerializer.new(picture)
 
-    assert URI.regexp =~ serializer.serializable_hash.dig(:data, :attributes, :original_image_url)
+    assert URI::DEFAULT_PARSER.make_regexp =~ serializer.serializable_hash.dig(:data, :attributes, :original_image_url)
   end
 end

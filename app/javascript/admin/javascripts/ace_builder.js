@@ -6,7 +6,7 @@ import AceEditor from "react-ace";
 import "brace/mode/html";
 import "brace/theme/github";
 
-Array.prototype.slice.call(document.querySelectorAll(".ace-editor-field"), 0).forEach(function(aceEditorField, index) {
+Array.from(document.querySelectorAll(".ace-editor-field")).forEach(function(aceEditorField, index) {
   const aceEditor = aceEditorField.querySelector(".ace-editor");
   const textArea = aceEditorField.querySelector("textarea");
   const onChange = ((newValue) => {

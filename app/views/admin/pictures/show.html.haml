@@ -2,9 +2,9 @@
   %h2= picture_presenter.title
   .admin-actions
     = link_to 'Back to Index', admin_pictures_path, class: 'btn btn-default'
-    - if policy(@picture).edit?
+    - if policy([:admin, @picture]).edit?
       = link_to 'Edit', edit_admin_picture_path(@picture), class: 'btn btn-primary'
-    - if policy(@picture).destroy?
+    - if policy([:admin, @picture]).destroy?
       = link_to 'Delete', admin_picture_path(@picture), method: 'delete', class: 'btn btn-danger', data: { confirm: 'Are you sure?' }
   %h3 Picture Attributes
   .picture.attributes
@@ -13,7 +13,7 @@
         %strong.col-xs-12.col-sm-2.attribute-name.preview Preview
         .col-xs-12.col-sm-10.attribute-value.preview= link_to picture_presenter.medium_image_tag, picture_presenter.original_image_path, target: '_blank'
       .row.attribute
-        %strong.col-xs-12.col-sm-2.attribute-name.title Title
+       %strong.col-xs-12.col-sm-2.attribute-name.title Title
         .col-xs-12.col-sm-10.attribute-value.title= picture_presenter.title
       .row.attribute
         %strong.col-xs-12.col-sm-2.attribute-name.alt-text Alt Text

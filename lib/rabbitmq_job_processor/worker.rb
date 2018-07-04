@@ -70,28 +70,26 @@ module RabbitmqJobProcessor
           queue = @channel.queue(queue_name, auto_delete: true, durable: true).bind(exchange)
 
           queue.subscribe do |_delivery_info, _metadata, payload|
-            begin
-              parsed_payload = JSON.parse(payload)
+            parsed_payload = JSON.parse(payload)
 
-              say "Recieved job #{parsed_payload['job_id']} for \"#{parsed_payload['queue_name']}\". Job Class: #{parsed_payload['job_class']}. Arguments: #{parsed_payload['arguments']}"
+            say "Recieved job #{parsed_payload['job_id']} for \"#{parsed_payload['queue_name']}\". Job Class: #{parsed_payload['job_class']}. Arguments: #{parsed_payload['arguments']}"
 
-              job = parsed_payload['job_class'].constantize.new
+            job = parsed_payload['job_class'].constantize.new
 
-              job.perform(parsed_payload['arguments'].first)
+            job.perform(parsed_payload['arguments'].first)
 
-              say "Finished processing job #{parsed_payload['job_id']} for \"#{parsed_payload['queue_name']}\"."
-            rescue StandardError => exception
-              say "#{exception.message}\n#{exception.backtrace.join("\n")}", 'error'
+            say "Finished processing job #{parsed_payload['job_id']} for \"#{parsed_payload['queue_name']}\"."
+          rescue StandardError => exception
+            say "#{exception.message}\n#{exception.backtrace.join("\n")}", 'error'
 
-              if parsed_payload['tries'] < 5
-                parsed_payload['tries'] += 1
+            if parsed_payload['tries'] < 5
+              parsed_payload['tries'] += 1
 
-                say "Retrying job, #{5 - parsed_payload['tries']} tries remaining."
+              say "Retrying job, #{5 - parsed_payload['tries']} tries remaining."
 
-                retry_exchange.publish(parsed_payload.to_json)
-              else
-                say 'Maximum number of retries reached. Deleting job.'
-              end
+              retry_exchange.publish(parsed_payload.to_json)
+            else
+              say 'Maximum number of retries reached. Deleting job.'
             end
           end
 
