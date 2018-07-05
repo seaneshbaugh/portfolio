@@ -1,0 +1,8 @@
+en:
+  admin:
+    pages:
+      index:
+        title: "Pages"
+        new_page: "New Page"
+        no_pages: "There are no pages yet. Click 'New Page' to get started."
+        delete_confirmation: "Are you sure you want to delete this page?"

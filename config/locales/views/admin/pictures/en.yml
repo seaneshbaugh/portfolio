@@ -4,5 +4,5 @@ en:
       index:
         title: "Pictures"
         new_picture: "New Picture"
-        no_picures: "There are no pictures yet. Click 'New Picture' to get started."
-        are_you_sure: "Are you sure you want to delete this picture?"
+        no_pictures: "There are no pictures yet. Click 'New Picture' to get started."
+        delete_confirmation: "Are you sure you want to delete this picture?"

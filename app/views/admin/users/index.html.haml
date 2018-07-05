@@ -1,11 +1,18 @@
-%h2 Users
-.well
-  = search_form_for @search, url: admin_users_path, html: { class: 'form-inline', method: :get } do |f|
-    = f.text_field :first_name_or_last_name_cont, placeholder: 'Name', skip_label: true
-    = f.text_field :email_cont, placeholder: 'Email', skip_label: true
-    = f.select :roles_name_eq, Role.pluck(:name).map { |role| [role.titleize, role] }, include_blank: t('searc.select_role'), skip_label: true
-    = f.button '<span class="glyphicon glyphicon-search"></span> Search'.html_safe, class: 'btn btn-primary'
-    = link_to '<span class="glyphicon glyphicon-remove"></span>'.html_safe, admin_users_path, class: 'btn btn-default', rel: 'tooltip', title: 'Clear Search'
+%h2= t('.title')
+.row
+  = search_form_for @search, url: admin_users_path, html: { class: 'col s12', method: :get } do |f|
+    .row
+      .input-field.col.s3
+        = f.text_field :first_name_or_last_name_cont
+        = f.label :first_name_or_last_name_cont, t('activerecord.attributes.user.first_or_last_name')
+      .input-field.col.s3
+        = f.text_field :email_cont
+        = f.label :first_name_or_last_name_cont, t('activerecord.attributes.user.email')
+      .input-field.col.s3
+        = f.select :roles_name_eq, Role.pluck(:name).map { |role| [role.titleize, role] }, include_blank: t('.search.select_role')
+      .input-field.col.s3
+        = f.button '<span class="glyphicon glyphicon-search"></span> Search'.html_safe, class: 'btn btn-primary'
+        = link_to '<span class="glyphicon glyphicon-remove"></span>'.html_safe, admin_users_path, class: 'btn btn-default', rel: 'tooltip', title: 'Clear Search'
 - if policy(User).create?
   .clearfix
     = link_to 'New User', new_admin_user_path, class: 'btn btn-primary pull-right'

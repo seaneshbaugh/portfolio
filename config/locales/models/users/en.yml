@@ -21,6 +21,7 @@ en:
         authentication_token: "Authentication Token"
         created_at: "Created At"
         updated_at: "Updated At"
+        first_or_last_name: "First or Last Name"
     errors:
       models:
         user:

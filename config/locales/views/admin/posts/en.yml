@@ -1,0 +1,9 @@
+en:
+  admin:
+    posts:
+      index:
+        title: "Posts"
+        new_post: "New Post"
+        no_posts: "There are no posts yet. Click 'New Post' to get started."
+        delete_confirmation: "Are you sure you want to delete this post?"
+

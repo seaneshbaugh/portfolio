@@ -28,13 +28,13 @@
               .nav-wrapper
                 %ul.main-header-nav-list.left
                   %li.main-header-nav-list-item= link_to(t('.header_nav.home'), admin_root_path, rel: 'home', class: 'main-header-nav-list-item-link')
-                  - if policy(Post).index?
+                  - if policy([:admin, Post]).index?
                     %li.main-header-nav-list-item= link_to(t('activerecord.models.post').pluralize, admin_posts_path, class: 'main-header-nav-list-item-link')
-                  - if policy(Page).index?
+                  - if policy([:admin, Page]).index?
                     %li.main-header-nav-list-item= link_to(t('activerecord.models.page').pluralize, admin_pages_path, class: 'main-header-nav-list-item-link')
-                  - if policy(Picture).index?
+                  - if policy([:admin, Picture]).index?
                     %li.main-header-nav-list-item= link_to(t('activerecord.models.picture').pluralize, admin_pictures_path, class: 'main-header-nav-list-item-link')
-                  - if policy(User).index?
+                  - if policy([:admin, User]).index?
                     %li.main-header-nav-list-item= link_to(t('activerecord.models.user').pluralize, admin_users_path, class: 'main-header-nav-list-item-link')
                   %li.main-header-nav-list-item= link_to(t('.header_nav.site_home'), root_path, class: 'main-header-nav-list-item-link')
                   %li.main-header-nav-list-item= link_to(t('.header_nav.my_account'), admin_account_path, class: 'main-header-nav-list-item-link')
