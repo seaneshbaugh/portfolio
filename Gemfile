@@ -48,6 +48,7 @@ group :test do
   gem 'minitest-reporters', '~> 1.2.0'
   gem 'simplecov', '~> 0.16.1', require: false
 end
+
 # gem 'bunny'
 # gem 'daemons'
 # gem 'exception_notification'

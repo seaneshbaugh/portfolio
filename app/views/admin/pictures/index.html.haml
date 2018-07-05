@@ -30,12 +30,12 @@
           - if policy([:admin, picture]).edit?
             = link_to content_tag(:i, 'edit', class: 'material-icons'), edit_admin_picture_path(picture)
           - else
-            %span -
+            %i.material-icons edit
         .destroy.col.s1
           - if policy([:admin, picture]).destroy?
-            = link_to content_tag(:i, 'delete_forever', class: 'material-icons'), admin_picture_path(picture), method: :delete, confirm: t('.are_you_sure')
+            = link_to content_tag(:i, 'delete_forever', class: 'material-icons'), admin_picture_path(picture), method: :delete, confirm: t('.destroy_confirmation')
           - else
-            %span -
--# = paginate @pictures
+            %i.material-icons delete_forever
+= paginate @pictures
 - unless @pictures.present?
   %p.no-items= t('.no_pictures')
