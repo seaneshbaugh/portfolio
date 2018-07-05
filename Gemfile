@@ -48,59 +48,23 @@ group :test do
   gem 'minitest-reporters', '~> 1.2.0'
   gem 'simplecov', '~> 0.16.1', require: false
 end
-
-# gem 'ace-rails-ap'
-# gem 'autoprefixer-rails'
-# gem 'bootstrap-colorpicker-rails'
-# gem 'bootstrap_form'
-# gem 'bootstrap_tokenfield_rails'
 # gem 'bunny'
-# gem 'coffee-rails'
 # gem 'daemons'
 # gem 'exception_notification'
-# gem 'figaro'
-# gem 'haml-rails'
 # gem 'honeypot-captcha'
-# gem 'jquery-fileupload-rails'
-# gem 'jquery-rails'
-# gem 'jquery-ui-rails'
-# gem 'jquery-turbolinks'
-# gem 'kaminari'
-# gem 'less-rails'
-# gem 'less-rails-bootstrap'
-# gem 'nokogiri'
-# gem 'paper_trail'
 # gem 'rails_autolink'
 # gem 'rails_script'
 # gem 'sanitize'
-# gem 'therubyracer'
-# gem 'twitter-typeahead-rails'
-# gem 'uglifier'
 # gem 'unicorn'
-# gem 'virtus'
 
 # group :doc do
 #   gem 'sdoc'
 # end
 
 # group :development do
-#   gem 'better_errors'
-#   gem 'binding_of_caller'
-#   gem 'capistrano'
-#   gem 'capistrano-bundler'
-#   gem 'capistrano-rails'
-#   gem 'capistrano-rvm'
-#   gem 'mailcatcher'
-#   gem 'quiet_assets'
 #   gem 'rails-erd', require: false
-#   gem 'rubocop', require: false
-#   gem 'thin'
 # end
 
 # group :test do
-#   gem 'database_cleaner'
-#   gem 'minitest'
 #   gem 'mini_backtrace'
-#   gem 'minitest-reporters'
-#   gem 'simplecov', require: false
 # end
