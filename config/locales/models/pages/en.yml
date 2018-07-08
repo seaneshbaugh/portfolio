@@ -16,6 +16,7 @@ en:
         visible: "Visible"
         created_at: "Created At"
         updated_at: "Updated At"
+        body_or_style_or_script: "Body, Style, or Script"
     errors:
       models:
         page:
