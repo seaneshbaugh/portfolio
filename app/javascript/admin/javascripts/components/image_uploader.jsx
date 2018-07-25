@@ -83,7 +83,7 @@ class ImageUploader extends React.Component {
         }).then((response) => {
           return response.json();
         }).then((json) => {
-          addPicture(json.data);
+          addPicture(json);
         });
       }
     });

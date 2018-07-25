@@ -16,26 +16,8 @@
         = link_to content_tag(:i, 'clear', class: 'material-icons'), admin_pictures_path, class: 'btn btn-flat waves-effect waves-loght red darken-3'
 - if policy([:admin, Picture]).create?
   .row
-    .col.s12
-      .image-uploader-container
-.pictures.collection
-  .picture-list-container
-  - @pictures.each do |picture|
-    - present picture do |picture_presenter|
-      .picture.row
-        .thumbnail.col.s3= link_to picture_presenter.thumbnail_image_tag, admin_picture_path(picture)
-        .title.col.s4= link_to picture_presenter.title, admin_picture_path(picture)
-        .created-at.col.s3= picture_presenter.created_at
-        .edit.col.s1
-          - if policy([:admin, picture]).edit?
-            = link_to content_tag(:i, 'edit', class: 'material-icons'), edit_admin_picture_path(picture)
-          - else
-            %i.material-icons edit
-        .destroy.col.s1
-          - if policy([:admin, picture]).destroy?
-            = link_to content_tag(:i, 'delete_forever', class: 'material-icons'), admin_picture_path(picture), method: :delete, confirm: t('.destroy_confirmation')
-          - else
-            %i.material-icons delete_forever
+    .image-uploader-container.col.s12
+.picture-list-container{ 'data-pictures' => @pictures.map { |picture| PictureSerializer.new(picture).as_json }.to_json }
 = paginate @pictures
 - unless @pictures.present?
   %p.no-items= t('.no_pictures')

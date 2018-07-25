@@ -8,7 +8,7 @@ import ImageUploader from "../components/image_uploader";
 import PictureList from "../components/pictures_index/picture_list";
 
 const completed = () => {
-  window.picturesStore = createStore(picturesReducer);
+  window.picturesStore = createStore(picturesReducer, { "pictures": JSON.parse(document.querySelector(".picture-list-container").dataset.pictures) });
 
   Array.from(document.querySelectorAll(".image-uploader-container")).forEach((imageUploader, index) => {
     render(<Provider store={window.picturesStore}><ImageUploader /></Provider>, imageUploader);

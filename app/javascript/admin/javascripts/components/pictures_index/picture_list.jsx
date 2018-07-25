@@ -4,6 +4,7 @@ import PropTypes from "prop-types";
 
 import Picture from "./picture";
 
+// TODO: Fix "key={index}". This is an anti-pattern.
 const PictureList = ({ pictures }) => (
   <div className="pictures-list">
     {pictures.map((picture, index) => (
