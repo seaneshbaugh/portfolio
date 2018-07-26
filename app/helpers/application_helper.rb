@@ -5,14 +5,6 @@ module ApplicationHelper
     object.errors.full_messages.uniq.join('. ') + '.'
   end
 
-  def icon_edit_link(url_or_path)
-    link_to('<span class="glyphicon glyphicon-edit"></span>'.html_safe, url_or_path, class: 'btn btn-mini', rel: 'tooltip', edit: 'Edit').html_safe
-  end
-
-  def icon_delete_link(url_or_path)
-    link_to('<span class="glyphicon glyphicon-remove"></span>'.html_safe, url_or_path, method: :delete, data: { confirm: 'Are you sure?' }, class: 'btn btn-mini', rel: 'tooltip', title: 'Delete').html_safe
-  end
-
   def nav_link_to(*args, &block)
     body = block_given? ? capture(&block) : args.shift
 

@@ -7,9 +7,10 @@ en:
         title: "Title"
         alt_text: "Alt Text"
         caption: "Caption"
-        image: "Image"
         created_at: "Created At"
         updated_at: "Updated At"
+        slug: "Slug"
+        image: "Image"
     errors:
       models:
         picture:

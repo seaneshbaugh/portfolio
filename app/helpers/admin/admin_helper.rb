@@ -25,5 +25,13 @@ module Admin
     def git_commit_sha
       git_repo.log.first.sha
     end
+
+    def icon_delete_link(url_or_path)
+      link_to(content_tag(:i, 'delete_forever', class: 'material-icons'), url_or_path, class: 'btn btn-flat waves-effect waves-light red darken-3', rel: 'nofollow', method: :delete, data: { confirm: t('confirm_delete') })
+    end
+
+    def icon_edit_link(url_or_path)
+      link_to(content_tag(:i, 'edit', class: 'material-icons'), url_or_path, class: 'btn btn-flat waves-effect waves-light green darken-3')
+    end
   end
 end
