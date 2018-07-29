@@ -16,30 +16,33 @@
     .col.s12
       = link_to t('.new_page'), new_admin_page_path, class: 'btn btn-fat waves effect waves-light blue'
 - if @pages.present?
-  .table-responsive
-    %table.table.table-striped.table-hover
-      %thead
-        %tr.row
-          %th.col-xs-6= sort_link @search, :title
-          %th.col-xs-2= sort_link @search, :order
-          %th.col-xs-2= sort_link @search, :created_at
-          %th.col-xs-1
-          %th.col-xs-1 
-      %tbody
-        - @pages.each do |page|
-          - present page do |page_presenter|
-            %tr{ class: "row page#{' inactive' unless page_presenter.published?}" }
-              %td.col-xs-6.title
-                = link_to page_presenter.title, admin_page_path(page)
-                = page_presenter.share_link target: '_blank'
-              %td.col-xs-2.order= page_presenter.order
-              %td.col-xs-2.created-at= page_presenter.created_at
-              %td.col-xs-1.edit
-                - if policy(page).edit?
-                  = icon_edit_link edit_admin_page_path(page)
-              %td.col-xs-1.delete
-                - if policy(page).destroy?
-                  = icon_delete_link admin_page_path(page)
-  = paginate @pages
+  .row
+    .col.s12
+      %table.pages.responsive-table
+        %thead
+          %tr
+            %th.page-title= sort_link @search, :title
+            %th.page-order= sort_link @search, :order
+            %th.page-created-at= sort_link @search, :created_at
+            %th.edit
+            %th.delete
+        %tbody
+          - @pages.each do |page|
+            - present page do |page_presenter|
+              %tr{ class: "page#{' inactive' unless page_presenter.published?}" }
+                %td.page-title
+                  = link_to page_presenter.title, admin_page_path(page)
+                  = page_presenter.share_link target: '_blank'
+                %td.page-order= page_presenter.order
+                %td.page-created-at= page_presenter.created_at
+                %td.edit
+                  - if policy([:admin, page]).edit?
+                    = icon_edit_link edit_admin_page_path(page)
+                %td.delete
+                  - if policy([:admin, page]).destroy?
+                    = icon_delete_link admin_page_path(page)
+  .row
+    .col.s12
+      = paginate @pages
 - else
-  %p.lead There are no pages yet. Click 'New Page' to get started.
+  %p.no-items= t('.no_pages')
