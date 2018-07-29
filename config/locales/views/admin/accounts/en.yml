@@ -1,0 +1,7 @@
+en:
+  admin:
+    accounts:
+      show:
+        title: "Your Account"
+      edit:
+        title: "Edit Account"

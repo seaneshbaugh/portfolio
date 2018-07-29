@@ -10,6 +10,15 @@ module Admin
       @search = Picture.search(params[:q])
 
       @pictures = @search.result.page(params[:page]).per(25).reverse_chronological
+
+      # TODO: Consider moving this to a proper API with some sort of token based authentication.
+      respond_to do |format|
+        format.html
+
+        format.json do
+          render json: @pictures.map { |picture| PictureSerializer.new(picture).as_json }
+        end
+      end
     end
 
     def show

@@ -1,1 +1,1 @@
-
+import "./flash_messages";
