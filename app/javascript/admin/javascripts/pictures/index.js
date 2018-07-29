@@ -5,7 +5,7 @@ import { Provider } from "react-redux";
 
 import picturesReducer from "../reducers/pictures_reducer";
 import ImageUploader from "../components/image_uploader";
-import PictureList from "../components/pictures_index/picture_list";
+import PictureList from "../components/picture_list";
 
 const completed = () => {
   const pictureListContainer = document.querySelector(".picture-list-container");

@@ -5,7 +5,7 @@ class PictureSerializer
 
   set_type :picture
 
-  attributes :slug, :title, :alt_text, :caption, :original_image_url
+  attributes :slug, :title, :alt_text, :caption, :original_image_url, :medium_image_path, :thumbnail_image_url
 
   attribute :created_at do |object|
     object.created_at.to_s(:iso8601)

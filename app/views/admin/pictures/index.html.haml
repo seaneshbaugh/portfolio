@@ -17,7 +17,11 @@
 - if policy([:admin, Picture]).create?
   .row
     .image-uploader-container.col.s12
-.picture-list-container{ 'data-pictures' => @pictures.map { |picture| PictureSerializer.new(picture).as_json }.to_json }
-= paginate @pictures
-- unless @pictures.present?
+.row
+  .picture-list-container.col.s12{ 'data-pictures' => @pictures.map { |picture| PictureSerializer.new(picture).as_json }.to_json }
+-if @pictures.present?
+  .row
+    .col.s12
+      = paginate @pictures
+- else
   %p.no-items= t('.no_pictures')
