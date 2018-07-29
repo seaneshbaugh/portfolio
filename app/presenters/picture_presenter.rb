@@ -12,40 +12,15 @@ class PicturePresenter < BasePresenter
   end
 
   # TODO: Consider DRYing this?
-
   def medium_image_tag
-    image_tag medium_image_path, alt: @picture.alt_text, class: 'medium', style: 'max-height: 300px;', title: @picture.title
-  end
-
-  def medium_image_path
-    rails_blob_path(@picture.image, only_path: true)
-  end
-
-  def medium_image_url
-    rails_blob_url(@picture.image)
+    image_tag medium_image_path, alt: @picture.alt_text, class: 'medium-image', title: @picture.title
   end
 
   def original_image_tag
-    image_tag original_image_path, alt: @picture.alt_text, class: 'original', title: @picture.title
-  end
-
-  def original_image_path
-    rails_blob_path(@picture.image, only_path: true)
-  end
-
-  def original_image_url
-    rails_blob_url(@picture.image)
+    image_tag original_image_path, alt: @picture.alt_text, class: 'original-image', title: @picture.title
   end
 
   def thumbnail_image_tag
-    image_tag thumbnail_image_path, alt: @picture.alt_text, class: 'thumb', style: 'max-height: 50px;', title: @picture.title
-  end
-
-  def thumbnail_image_path
-    rails_blob_path(@picture.image, only_path: true)
-  end
-
-  def thumbnail_image_url
-    rails_blob_url(@picture.image)
+    image_tag thumbnail_image_path, alt: @picture.alt_text, class: 'thumbnail-image', title: @picture.title
   end
 end
