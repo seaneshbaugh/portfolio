@@ -1,7 +1,10 @@
 # frozen_string_literal: true
 
 class BasePresenter
+  delegate :content_tag, to: :@template
   delegate :link_to, to: :@template
+  delegate :params, to: :@template
+  delegate :t, to: :@template
 
   def initialize(object, template)
     @object = object

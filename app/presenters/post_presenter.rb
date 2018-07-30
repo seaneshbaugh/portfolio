@@ -5,9 +5,6 @@ class PostPresenter < BasePresenter
   include Linkable
   include MetaContentable
 
-  delegate :content_tag, to: :@template
-  delegate :params, to: :@template
-
   def initialize(post, template)
     super
 
@@ -47,7 +44,7 @@ class PostPresenter < BasePresenter
   def more_link
     return unless truncated?
 
-    content_tag(:div, link_to('Read More', @post), class: 'read-more')
+    content_tag(:div, link_to(t('posts.index.read_more', @post), class: 'read-more'))
   end
 
   def tag_links

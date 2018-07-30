@@ -5,7 +5,6 @@ module MetaContentable
 
   included do
     delegate :content_for, to: :@template
-    delegate :t, to: :@template
   end
 
   def meta_content

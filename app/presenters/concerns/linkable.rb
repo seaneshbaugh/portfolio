@@ -8,7 +8,7 @@ module Linkable
   end
 
   def share_link(options = {})
-    link_to '<span class="glyphicon glyphicon-share"</span>'.html_safe, path, options
+    link_to content_tag(:i, 'open_in_browser', class: 'material-icons'), path, options
   end
 
   def path

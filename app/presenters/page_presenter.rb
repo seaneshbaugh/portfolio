@@ -5,7 +5,6 @@ class PagePresenter < BasePresenter
   include Linkable
   include MetaContentable
 
-  delegate :content_tag, to: :@template
   delegate :contrast_color, to: :@template
 
   def initialize(page, template)
@@ -15,11 +14,7 @@ class PagePresenter < BasePresenter
   end
 
   def color_text
-    if @page.color.present?
-      "<span style=\"background: #{@page.color}; color: #{contrast_color(@page.color)}; padding: 3px;\">#{@page.color}</span>".html_safe
-    else
-      ''
-    end
+    content_tag(:span, @page.color, style: "background: #{@page.color}; color: #{contrast_color(@page.color)}; padding: 3px;") if @page.color.present?
   end
 
   def header_style
@@ -28,17 +23,17 @@ class PagePresenter < BasePresenter
 
   def show_in_menu
     if @page.show_in_menu
-      'Yes'
+      t('yes')
     else
-      'No'
+      t('no')
     end
   end
 
   def visible
     if @page.visible
-      'Yes'
+      t('yes')
     else
-      'No'
+      t('no')
     end
   end
 
