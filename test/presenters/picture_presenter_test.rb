@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'test_helper'
+
 class PicturePresenterTest < ActiveSupport::TestCase
   setup do
     attach_images_to_pictures!

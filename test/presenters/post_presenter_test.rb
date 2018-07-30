@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'test_helper'
+
 class PostPresenterTest < ActiveSupport::TestCase
   test '#first_image returns the first image in the post body' do
     post = Post.new
