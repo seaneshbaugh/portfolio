@@ -26,7 +26,11 @@ class AceBuilder < ActionView::Helpers::FormBuilder
   def picture_inserter(method, options = {}, &block)
     button_class = options.delete(:class) || 'btn btn-flat waves-effect waves-light blue lighten-3'
 
-    button_text = block_given? ? capture(&block) : I18n.t('admin.pages.new.insert_picture')
+    button_text = if block_given?
+                    capture(&block)
+                  else
+                    I18n.t('admin.pages.new.insert_picture')
+                  end
 
     target = options.delete(:target) || ace_editor_id_for(method)
 
