@@ -14,7 +14,7 @@ class PostsController < ApplicationController
   end
 
   def show
-    @post = Post.published.where(slug: params[:id]).first
+    @post = Post.friendly.find(params[:id])
 
     raise ActiveRecord::RecordNotFound if @post.nil?
   end
