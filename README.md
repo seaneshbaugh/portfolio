@@ -20,25 +20,25 @@ Clone the repository.
 
     $ git clone git@github.com:seaneshbaugh/portfolio.git portfolio
 
-cd into the project directory. If you don't have Ruby 2.5.0 already you will want to install it before doing this.
+cd into the project directory.
 
     $ cd portfolio
 
-Install the necessary gems.
+Start the Docker containers.
 
-    $ bundle install
+    $ docker-compose up -d --build
 
-Create the databases.
+Create the development and test databases.
 
-    $ rails db:create
+    $ docker-compose run web rails db:create
 
-Add the database tables.
+Load the database schema.
 
-    $ rails db:migrate
+    $ docker-compose run web rails db:schema:load
 
 Seed the database.
 
-    $ rails db:seed
+    $ docker-compose run web rails db:seed_fu
 
 ## Linting
 

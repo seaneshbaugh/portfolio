@@ -1,0 +1,76 @@
+version: "3"
+
+services:
+  db:
+    image: postgres
+    env_file:
+      - .env
+    volumes:
+      - ./tmp/db:/var/lib/postgresql/data
+  web:
+    build:
+      context: .
+    env_file:
+      - .env
+    command: bundle exec rails s -p 3000 -b '0.0.0.0'
+    volumes:
+      - .:/portfolio
+    ports:
+      - "3000:3000"
+    depends_on:
+      - db
+  webpacker:
+    build: .
+    env_file:
+      - .env
+    command: ./bin/webpack-dev-server
+    volumes:
+      - .:/portfolio
+    ports:
+      - "3035:3035"
+
+# services:
+#   elasticsearch:
+#     build:
+#       context: elasticsearch/
+#     volumes:
+#       - ./elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml:ro
+#     ports:
+#       - "9200:9200"
+#       - "9300:9300"
+#     environment:
+#       ES_JAVA_OPTS: "-Xmx256m -Xms256m"
+#     networks:
+#       - elk
+
+#   logstash:
+#     build:
+#       context: logstash/
+#     volumes:
+#       - ./logstash/config/logstash.yml:/usr/share/logstash/config/logstash.yml:ro
+#       - ./logstash/pipeline:/usr/share/logstash/pipeline:ro
+#     ports:
+#       - "5000:5000"
+#     environment:
+#       LS_JAVA_OPTS: "-Xmx256m -Xms256m"
+#     networks:
+#       - elk
+#     depends_on:
+#       - elasticsearch
+
+#   kibana:
+#     build:
+#       context: kibana/
+#     volumes:
+#       - ./kibana/config/:/usr/share/kibana/config:ro
+#     ports:
+#       - "5601:5601"
+#     networks:
+#       - elk
+#     depends_on:
+#       - elasticsearch
+
+# networks:
+
+#   elk:
+#     driver: bridge

@@ -4,7 +4,7 @@ Rails.application.configure do
   # Settings specified here will take precedence over those in config/application.rb.
 
   # Verifies that versions and hashed value of the package contents in the project's package.json
-  config.webpacker.check_yarn_integrity = true
+  config.webpacker.check_yarn_integrity = false
 
   # In the development environment your application's code is reloaded on
   # every request. This slows down response time but is perfect for development
@@ -66,4 +66,6 @@ Rails.application.configure do
 
   # Use http://localhost:3000 as the base for links in emails.
   config.action_mailer.default_url_options = { host: 'localhost', port: 3000 }
+
+  config.web_console.whitelisted_ips = Socket.ip_address_list.select(&:ipv4?).map { |addrinfo| IPAddr.new(addrinfo.ip_address).mask(24) }
 end
