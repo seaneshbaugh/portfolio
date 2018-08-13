@@ -22,6 +22,7 @@ RUN yarn --pure-lockfile
 RUN gem install bundler -v $BUNDLER_VERSION && \
     bundle install && \
     yarn install
+RUN npm rebuild node-sass
 COPY . $APP_HOME
 
 EXPOSE $APP_PORT
