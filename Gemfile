@@ -6,7 +6,7 @@ git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 ruby '2.5.0'
 
 gem 'pg', '~> 1.0.0'
-gem 'rails', '5.2.0'
+gem 'rails', '5.2.1'
 
 gem 'acts-as-taggable-on', '~> 6.0'
 gem 'aws-sdk-s3', '~> 1.17.0', require: false
@@ -22,7 +22,7 @@ gem 'kaminari', '~> 1.1'
 gem 'paper_trail', '~> 9.2'
 gem 'puma', '~> 3.12.0'
 gem 'pundit', '~> 2.0.0'
-gem 'ransack', '~> 1.8.8'
+gem 'ransack', '~> 2.0.0'
 gem 'rolify', '~> 5.2.0'
 gem 'sanitize', '~> 4.6'
 gem 'seed-fu', '~> 2.3.7'
