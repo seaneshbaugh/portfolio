@@ -1,12 +1,29 @@
-= form_for [:admin, @post], builder: AceBuilder, layout: :horizontal do |f|
-  = f.text_field :title
-  = f.picture_inserter :body
-  = f.ace_editor :body, mode: 'rhtml'
-  = f.ace_editor :style, mode: 'css'
-  = f.ace_editor :script, mode: 'javascript'
-  = f.text_area :meta_description, rows: '2'
-  = f.text_area :meta_keywords, rows: '2'
-  = f.text_field :tag_list, class: 'tokenfield'
-  = f.check_box :visible
-  = f.submit 'Submit'
-  = link_to 'Cancel', admin_posts_path, class: 'btn btn-default'
+= form_for [:admin, @post], builder: AceBuilder, html: { class: 'col s12' } do |f|
+  .row
+    .input-field.col.s12
+      = f.text_field :title
+      = f.label :title
+  .row
+    .input-field.col.s12
+      = f.picture_inserter :body
+  .row
+    .input-field.col.s12
+      = f.ace_editor :body, mode: 'rhtml'
+  .row
+    .input-field.col.s12
+      = f.ace_editor :style, mode: 'css'
+  .row
+    .input-field.col.s12
+      = f.ace_editor :script, mode: 'javascript'
+  .row
+    .input-field.col.s12
+      = f.text_field :tag_list
+      = f.label :tag_list
+  .row
+    .input-field.col.s12
+      = f.label :visible
+      = f.check_box :visible
+  .row
+    .input-field.col.s12
+      = f.submit t('submit'), class: 'btn btn-flat waves-effect waves-light blue darken-3'
+      = link_to t('cancel'), admin_posts_path, class: 'btn btn-flat waves-effect waves-light red darken-3'

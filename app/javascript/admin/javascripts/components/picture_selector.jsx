@@ -43,7 +43,6 @@ class PictureSelector extends React.Component {
   }
 
   insertPicture(picture) {
-    console.log(`#${this.props.target} .ace-editor`);
     const editor = document.querySelector(`#${this.props.target} .ace_editor`).env.editor;
 
     let image = `<img src="${picture.data.attributes.original_image_url}"`;

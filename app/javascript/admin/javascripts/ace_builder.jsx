@@ -48,7 +48,7 @@ const completed = () => {
 };
 
 if (document.readyState === "complete") {
-  setTimeout(completed);
+  window.setTimeout(completed);
 } else {
   document.addEventListener("DOMContentLoaded", completed, false);
 }
