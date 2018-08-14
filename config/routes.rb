@@ -24,6 +24,14 @@ Rails.application.routes.draw do
 
   get '/sitemap.xml' => 'sitemap#index', as: :sitemap, format: :xml
 
+  namespace :api do
+    namespace :v1 do
+      resources :pictures, only: %i[index show]
+      resources :posts, only: %i[index show]
+      resources :tags, only: %i[index]
+    end
+  end
+
   authenticate :user do
     namespace :admin do
       root to: 'admin#index'
