@@ -1,0 +1,32 @@
+<p>The other day I found myself needing to keep a log file for a small Go web application. I'm pretty new to the language so it actually took me longer than I initially thought it would. Mostly for one reason: I couldn't find a clear example of actually using the log package to do what I wanted. I suspect that because this is such a trivial task no one (that I could find) has bothered to document just how to accomplish this. In retrospect this seems so obvious now I can't help but question whether or not this post is even worth writing. I'm going to stick with my original gut instinct.</p>
+<p>To demonstrate, here's a small sample program. All it does is open up a file, log a message, and then quit. Let's take a look at the entire program first and then dive a little deeper.</p>
+<pre>
+package main
+
+import (
+	"fmt"
+	"os"
+	"log"
+)
+
+func main() {
+	logFile, err := os.OpenFile("sample.log", os.O_WRONLY | os.O_APPEND | os.O_CREATE, 0666)
+
+	if err != nil {
+		fmt.Println(err)
+
+		return
+	}
+
+	logger := log.New(logFile, "Sample Log: ", log.Ldate | log.Ltime | log.Lmicroseconds)
+
+	logger.Println("Logger created!")
+}
+</pre>
+<p>For the sake of clarity: this isn't mean to be a final working example of logging in Go, just a demonstration of the setup.</p>
+<p>The first thing we do is open up a file for writing set to append. If the file doesn't exist the <code>os.O_CREATE</code> flag will ensure it is created if possible. After making sure that went well we create a new Logger. Finally we call <code>Println</code> to append our message to the log.</p>
+<p>The final output is something like this:</p>
+<pre>
+Sample Log: 2013/03/21 20:39:29.348481 Logger created!
+</pre>
+<p>For more information on <code>log.New</code> see the <a href="http://golang.org/pkg/log/#New">documentation</a>. Since the documentation doesn't really tell you what the available options for the flag parameter are you can find them <a href="http://golang.org/pkg/log/#pkg-constants">here</a>.</p>

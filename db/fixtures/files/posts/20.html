@@ -1,0 +1,130 @@
+<h2>I.</h2>
+<p>Earlier this week a co-worker of mine was working on some old code for running reports that had been written by someone who had long since departed. Every time he ran a report of a certain type he would always get wildly incorrect results. He had isolated the problem to a call to one particular method. RubyMine, his editor of choice, wasn't being very helpful in revealing the definition of the method. Exasperated, he said something to the effect of &quot;How am I supposed to know where this method is defined?&quot; I was more than a bit excited that I was able to tell him I knew of a way: <code><a href="https://ruby-doc.org/core-2.4.1/Method.html#method-i-source-location">Method#source_location</a></code>.</p>
+<p><code>Method#source_location</code> returns the file name and line number where a given method is defined or nil if it's a native compiled method (e.g. part of the standard library). In order to actually use <code>Method#source_location</code> one must first actually have a method. Fortunately this is pretty easy; the <code><a href="https://ruby-doc.org/core-2.4.1/Object.html#method-i-method">Object#method</a></code> method will return a <code>Method</code> object when called on an instance. If all that is available is a <code>Class</code> or <code>Module</code> then <code><a href="https://ruby-doc.org/core-2.4.1/Module.html#method-i-instance_method">Module#instance_method</a></code> can be used to get an <code><a href="https://ruby-doc.org/core-2.4.1/UnboundMethod.html">UnboundMethod</a></code> object. Either will work.</p>
+<p>Here is an example of <code>Method#source_location</code> when called on a method that is defined in native code as part of the standard library.</p>
+<pre>
+2.4.1 :001 &gt; x = 100
+ =&gt; 100
+2.4.1 :002 &gt; x.method(:to_s)
+ =&gt; #&lt;Method: Integer#to_s&gt;
+2.4.1 :003 &gt; x.method(:to_s).source_location
+ =&gt; nil
+</pre>
+<p>In an irb session a method's source location won't have a file name, but the result won't be nil.</p>
+<pre>
+2.4.1 :004 &gt; class Hello
+2.4.1 :005?&gt;   def hi
+2.4.1 :006?&gt;     puts 'hi!'
+2.4.1 :007?&gt;   end
+2.4.1 :008?&gt; end
+ =&gt; :hi
+2.4.1 :009 &gt; Hello.new.method(:hi)
+ =&gt; #&lt;Method: Hello#hi&gt;
+2.4.1 :010 &gt; Hello.new.method(:hi).source_location
+ =&gt; [&quot;(irb)&quot;, 5]
+</pre>
+<p>Here is an example of <code>UnboundMethod#source_location</code>.</p>
+<pre>
+2.4.1 :011 &gt; Hello.instance_method(:hi)
+ =&gt; #&lt;UnboundMethod: Hello#hi&gt;
+2.4.1 :012 &gt; Hello.instance_method(:hi).source_location
+ =&gt; [&quot;(irb)&quot;, 5]
+</pre>
+<p>If given a file named &quot;goodbye.rb&quot; with the following contents...</p>
+<pre>
+class Goodbye
+  def bye
+    puts 'bye!'
+  end
+end
+</pre>
+<p>...then here is an example of <code>Method#source_location</code> for a method defined in a file.</p>
+<pre>
+2.4.1 :013 &gt; require_relative 'goodbye'
+ =&gt; true
+2.4.1 :014 &gt; Goodbye.new.method(:bye)
+ =&gt; #&lt;Method: Goodbye#bye&gt;
+2.4.1 :015 &gt; Goodbye.new.method(:bye).source_location
+ =&gt; [&quot;/home/sean/goodbye.rb&quot;, 2]
+</pre>
+<p> And once again the <code>UnboundMethod#source_location</code> version.</p>
+<pre>
+2.4.1 :016 &gt; Goodbye.instance_method(:bye)
+ =&gt; #&lt;UnboundMethod: Goodbye#bye&gt;
+2.4.1 :017 &gt; Goodbye.instance_method(:bye).source_location
+ =&gt; [&quot;/home/sean/goodbye.rb&quot;, 2]
+</pre>
+<h2>II.</h2>
+<p>Using this technique my co-worker was able to quickly identify where the method in question was defined. Case closed. Well, not quite. It turned out the method's source location raised more questions than it answered. The method he was looking for was in a related but different class from the one he was expecting. This seemed suspicious so I suggested he try inspecting the inheritance chain of the object the method was called on using <code><a href="https://ruby-doc.org/core-2.4.1/Module.html#method-i-ancestors">Module#ancestors</a></code> method.</p>
+<p><code>Module#ancestors</code> returned nothing out of the ordinary at first glance.</p>
+<pre>
+[ReportA, ReportBase, Object, ..., Kernel, BasicObject]
+</pre>
+<p>What was confusing though was that the source location for the method was inside <code>ReportB</code> not <code>ReportA</code>. So, just how was that happening? After staring at the <code>ReportA</code> class for a minute I realized that it didn't inherit from <code>ReportBase</code>, instead it included it. I had a hunch, so I suggested we take a look at the <code>ReportBase</code> module.</p>
+<p>Below is a minimal reproduction of the behavior.</p>
+<pre>
+module ReportBase
+  def self.included(base)
+    helpers = if base.const_defined?(:Helpers)
+                base::Helpers.extend(Helpers)
+              else
+                Helpers
+              end
+
+    base.const_set(:Helpers, helpers)
+  end
+
+  module Helpers
+    def greet
+      puts 'greetings from ReportBase::Helpers#greet'
+    end
+  end
+end
+
+class ReportA
+  include ReportBase
+
+  module Helpers
+    def greet
+      puts 'greetings from ReportA::Helpers#greet'
+    end
+  end
+end
+
+class ReportB
+  include ReportBase
+
+  module Helpers
+    def greet
+      puts 'greetings from ReportB::Helpers#greet'
+    end
+  end
+end
+
+class ReportC
+  include ReportBase
+end
+</pre>
+<p><code>ReportA</code>, <code>ReportB</code>, and <code>ReportC</code> are all pretty simple. All three include <code>ReportBase</code>. <code>ReportA</code> and <code>ReportB</code> both have a submodule named <code>Helpers</code> which defines a method named <code>greet</code>.</p>
+<p>Where things start to get a little strange is inside <code>ReportBase</code>. The first thing to take note of is that <code><a href="https://ruby-doc.org/core-2.4.1/Module.html#method-i-included">Module#included</a></code> is overridden. <code>Module#included</code> is a callback which is called whenever the module is included in another module or class. This allows for performing some specified action upon inclusion.</p>
+<p>In the case of <code>ReportBase</code> the callback first checks to see if the constant <code>Helpers</code> is defined for the including class/module. If it is, then the including class/module's own <code>Helpers</code> submodule is extended into the <code>ReportBase::Helpers</code> submodule which is then assigned to <code>helpers</code> otherwise <code>ReportBase::Helpers</code> is assigned to <code>helpers</code>. Then the including class/module's <code>Helpers</code> constant is set to the <code>helpers</code>.</p>
+<p>The end result of this is that if the including class/module has its own <code>Helpers</code> submodule then it is effectively merged with <code>ReportBase::Helpers</code> which then overwrites the <code>Helpers</code> submodule in the including class. This happens every time a class or module includes <code>ReportBase</code>. Because <code><a href="https://ruby-doc.org/core-2.4.1/Module.html#method-i-const_set">Module#const_set</a></code> sets the <code>Helpers</code> constant to the <code>Module</code> object rather than creating a new copy this causes <code>ReportBase::Helpers</code> to end up polluted with the <code>Helpers</code> submodule of every class or module that include <code>ReportBase</code>. Worse, it also pollutes the <code>Helpers</code> submodule of each including class or module!</p>
+</p>
+<p>Below demonstrates the sort of frustration my co-worker was experiencing because of this.</p>
+<pre>
+2.4.1 :018 &gt; require_relative 'report_test'
+ =&gt; true
+2.4.1 :019 &gt; ReportA::Helpers.greet
+greetings from ReportB::Helpers#greet
+ =&gt; nil
+2.4.1 :020 &gt; ReportB::Helpers.greet
+greetings from ReportB::Helpers#greet
+ =&gt; nil
+2.4.1 :021 &gt; ReportC::Helpers.greet
+greetings from ReportB::Helpers#greet
+ =&gt; nil
+</pre>
+<p>At the risk of being hyperbolic: this behavior is <em>awful</em>. Truly, maddeningly, <em>awful</em>. Please do not write code like this!</p>
+<p>In retrospect, after careful dissection, this code makes perfect sense. However, at a glance, the actual behavior is surprising. If all I could look at was the definitions of <code>ReportA</code>, <code>ReportB</code>, and <code>ReportC</code> it would take me ages to divine what is actually happening. And even with the source for <code>ReportBase</code> it still wasn't obvious what the source of the behavior was until I spent several minutes parsing through it in my head and writing a minimal reproduction similar to the one presented here.</p>
+<p>I think what the author of the code was trying to do was make it so helper methods from one report class were available in all report classes. That sounds like it might be useful, but the way it was done clobbers the namespacing that the actual structure of the code appears to have. Rails <a href="http://api.rubyonrails.org/classes/ActionController/Helpers.html">helpers</a> actually have very similar behavior. I suspect that's where the idea for this reporting code was taken from.</p>
+<p>This is definitely a case where the code was a little too magical. The most impactful change that could be made to the code would be to make inclusion of the helper modules be explicit. Rather than automatically extend all the helper modules into one module, each report class could instead explicitly include any helpers. The urge to be clever and creative when writing code for an unexciting task like generating reports can be great. You're better off resisting that urge and instead keep things explicit and unsurprising. Your co-workers and your future self will thank you for it.</p>

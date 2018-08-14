@@ -1,0 +1,54 @@
+<p>Recently I found myself needing to overwrite <code>ActiveRecord</code>'s default <code>save</code> method but still retain the ability to call the original method. I know, I know, that's crazy talk, right? What could you possibly need to do that for? Well, in my case it was to provide a way to create &quot;drafts&quot; of my models under certain conditions when <code>save</code> is called. Rather than have all sorts of messy logic repeated over an over my controllers or tucked away in an awkward helper method it made much more sense to me to attach the functionality on my models as I need it. The ever so sublime <a href="https://github.com/airblade/paper_trail">paper_trail</a> gem does something quite similar with <code>ActiveRecord</code> callbacks. But that isn't quite what I needed. What I really wanted was the ability to prevent a model from being saved in the first place. After all, what good is saving a draft if we've overwritten the original in the process? I particularly had in mind a use case where some users could <em>only</em> save drafts, which could be approved at a later time by more privileged users.</p>
+<p>So now that we know the why of doing something that at first seems crazy (and more than a bit dangerous), what about the how? The core of how to override but preserve a method is pretty simple, but I think it might be helpful to provide some context, so bear with me.</p>
+<p>Just like paper_trail, and many other gems, we start off with the following to get our module to load whenever <code>ActiveRecord</code> is loaded. This ensures that we don't have to manually include our module.</p>
+<pre>
+# /lib/kentouzu.rb
+ActiveSupport.on_load(:active_record) do
+  include Kentouzu::Model
+end
+</pre>
+<p>Next we define <code>self.included</code> in or <code>Model</code> module so that when it's included we extend the base class with the <code>ClassMethods</code> module. This provides a slew of class methods to our model, the most important of which for the purpose of this post is the <code>has_drafts</code> method.</p>
+<pre>
+# /lib/kentouzu/has_drafts.rb
+module Kentouzu
+  module Model
+    def self.included(base)
+      base.send :extend, ClassMethods
+    end
+</pre>
+<p>The <code>has_drafts</code> method provides us with a nice way of making it so we only include our <code>InstanceMethods</code> when we actually need it. It'd be really bad if we always override a vital method like <code>save</code>! If we just included the code to orverride the method without going through this it would lead to all sorts of disasterous behavior as our earlier hook into <code>ActiveSupport#on_load</code> would include it in every model in our application even when it doesn't make sense.</p>
+<p>By providing this method we give a nice clean way to add functionality to our models (or really, any class) in the same way paper_trail's <code>has_paper_trail</code> does. Lots of gems take advantage of this pattern.</p>
+<pre>
+    module ClassMethods
+      def has_drafts options = {}
+        send :include, InstanceMethods
+      end
+    end
+</pre>
+<p>Here's where things start to get interesting (and relevant). In our <code>InstanceMethods</code> module we use the same <code>self.included</code> method as before. But this time we call <code>instance_method(:save)</code> on the base class to get an <a href="http://www.ruby-doc.org/core-1.9.3/UnboundMethod.html"><code>UnboundMethod</code></a> for <code>save</code>. This allows us to reuse it later.</p>
+<pre>
+    module InstanceMethods
+      def self.included(base)
+        default_save = base.instance_method(:save)
+</pre>
+<p>After getting a reference to the old <code>save</code> method we then override it with <code>define_method</code>, sent to the base class. <code>define_method</code> is important because it allows access to the surrounding scope where <code>default_save</code> is defined. This lets us use it even after its out of scope. Inside the block the key is the if statement. It checks for the conditions for using our new save method. In my particular case I check to make sure that everything is enabled on the model (in pretty much the same way paper_trail does) and that the conditions for saving are met and then create draft from the model and save the draft without saving the model. The details of what happens here are up to you.</pre>
+<pre>
+        base.send :define_method, :save do
+          if switched_on? && save_draft?
+            draft = Draft.new(:item_type => self.class.base_class.to_s, :item_id => self.id, :event => self.persisted? ? "update" : "create", :source_type => Kentouzu.source.present? ? Kentouzu.source.class.to_s : nil, :source_id => Kentouzu.source.present? ? Kentouzu.source.id : nil, :object => self.to_yaml)
+
+            draft.save
+</pre>
+<p>And now for the <span style="color: #ff0000;">magic</span>. If the conditions for using our new version of the <code>save</code> method aren't met we take our unbound reference to the old <code>save</code> and bind it to <code>self</code> which, since this is an instance method on our model now, is our model. Finally we call it with the <code>()</code> method. You could also use <code>call</code>.</p>
+<pre>
+          else
+            default_save.bind(self).()
+          end
+        end
+      end
+    end
+  end
+end
+</pre>
+<p>Now whenever we call the <code>save</code> method on our model so long as <code>switched_on?</code> and <code>save_draft?</code> return true we'll get a copy of the model as a draft. Of course we could strip this down to something much simpler without all the fancy including, but in my opinion all that is what makes this so useful, we only get it when and where we want it. That's pretty important because overriding methods like this can be very dangerous. I strongly suggest that before you do this you make sure you actually need to.</p>
+<p>The source for the gem this is from is on <a href="https://github.com/seaneshbaugh/kentouzu">GitHub</a>.</p>

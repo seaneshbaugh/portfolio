@@ -1,0 +1,88 @@
+<p>It turns out that setting up SSL on Nginx + Unicorn + Rails is actually pretty easy. But there's a few pitfalls you have to watch out for. The following guide is based partially on <a href="http://articles.slicehost.com/2007/12/19/ubuntu-gutsy-nginx-ssl-and-vhosts">these instructions</a> and assumes you already have an SSL certificate and already have it placed on your server.</a></p>
+<p>Let's take a look at our initial Nginx configuration file. You can find yours in <code>/etc/nginx/sites-available</code>, but if you're reading this you probably already knew that.<p>
+<pre>
+upstream unicorn_mysite {
+	server unix:/tmp/unicorn.mysite.sock fail_timeout=0;
+}
+
+server {
+	listen 80;
+	server_name mysite.com;
+	root /srv/mysite/current/public;
+	access_log /srv/mysite/shared/log/nginx.access.log main;
+	error_log /srv/mysite/shared/log/nginx.error.log info;
+
+	location ^~ /assets/ {
+		gzip_static on;
+		expires max;
+		add_header Cache-Control public;
+	}
+
+	try_files $uri/index.html $uri @unicorn;
+	location @unicorn {
+		proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+		proxy_set_header Host $http_host;
+		proxy_redirect off;
+		proxy_pass http://unicorn_mysite;
+	}
+
+	error_page 500 502 503 504 /500.html;
+	client_max_body_size 4G;
+	keepalive_timeout 10;
+}
+</pre>
+<p>As you can see, this configuration makes some assumptions about our setup that are unlikely to be true for yours. However, for this exercise the details of the configuration are largely inconsequential.</p>
+<p>In your editor of choice take the above config file and copy the <code>server</code> section and paste it below. Now, make the second <code>server</code> section look something like this:</p>
+<pre>
+server {
+	listen 443;
+	ssl on;
+	ssl_certificate /etc/httpd/conf/ssl/mysite.com.crt;
+	ssl_certificate_key /etc/httpd/conf/ssl/mysite.com.key;
+
+	server_name mysite.com;
+	root /srv/mysite/current/public;
+	access_log /srv/mysite/shared/log/nginx.ssl.access.log main;
+	error_log /srv/mysite/shared/log/nginx.ssl.error.log info;
+
+	location ^~ /assets/ {
+		gzip_static on;
+		expires max;
+		add_header Cache-Control public;
+	}
+
+	try_files $uri/index.html $uri @unicorn;
+	location @unicorn {
+		proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+		proxy_set_header X-Forwarded-Proto https;
+		proxy_set_header Host $http_host;
+		proxy_redirect off;
+		proxy_pass http://unicorn_mysite;
+	}
+
+	error_page 500 502 503 504 /500.html;
+	client_max_body_size 4G;
+	keepalive_timeout 10;
+}
+</pre>
+<p>The first difference you should notice is the listen port. HTTPS uses port 443 instead of port 80. The following three lines tell Nginx that we want SSL on and where our certificate and where our certificate keys are being stored. <code>/etc/httpd/conf/ssl</code> is a pretty standard location, but you can keep them anywhere.</p>
+<p>The next change we make is to the log file locations. The normal HTTP config will write to <code>nginx.access.log</code> and <code>nginx.error.log</code>. Here we're telling the HTTPS config to write to <code>nginx.ssl.access.log</code> and <code>nginx.ssl.error.log</code> instead. If you ever encounter any problems with your SSL setup it'll be pretty handy to have your logs separated out by protocol.</p>
+<p>The last difference between the two configurations is the extra <code>proxy_set_header</code> setting. Since we plan on using <code><a href="http://apidock.com/rails/ActionController/ForceSSL/ClassMethods/force_ssl">force_ssl</a></code> in our Rails application to selectively ensure SSL on different controllers this step is really important. <code>force_ssl</code> relies on the <code>HTTP_X_FORWARDED_PROTO</code> HTTP header to determine whether or not the request was an HTTPS request. If this setting isn't set to https then you will end up with an infinite redirect loop as <code>force_ssl</code> will always think the forwarded request isn't HTTPS.</p>
+<p>At this point you should restart Nginx: <code>sudo /etc/init.d/nginx restart</code>. In your Rails app's controller add the call to <code>force_ssl</code> at the top like this:</p>
+<pre>
+class ContactsController < ApplicationController
+  force_ssl
+  before_filter :whatever
+  ...
+</pre>
+<p>Now, when you go to any action on that controller you should immediately be redirected to the SSL version.</p>
+<p>If you get an error similar to &quot;Error 102 (net:: ERR CONNECTION REFUSED)&quot; then this likely means your server is blocking port 443. Odds are you won't have this issue, but I did, so it makes sense to me to include a possible fix. This makes the assumption you're using iptables to manage your ports. Open up <code>/etc/sysconfig/iptables</code> and look for a line similar to this:</p>
+<pre>
+-A INPUT -m state --state NEW -m tcp -p tcp --dport 80 -j ACCEPT
+</pre>
+<p>Immediately below it add the following:</p>
+<pre>
+-A INPUT -m state --state NEW -m tcp -p tcp --dport 443 -j ACCEPT
+</pre>
+<p>As usual, if your settings look similar but not quite the same then base your changes off your settings. The important part here is the <code>--dport</code>, we want to open up port 443. After you do this you'll need to restart iptables with <code>sudo /etc/init.d/iptables restart</code>.</p>
+<p>At this point your controllers with <code>force_ssl</code> in them should be redirecting to the SSL version of your site. Like most ActionController callbacks you can also specify which actions <code>force_ssl</code> will be run on using the <code>only</code> and <code>except</code> options.</p>

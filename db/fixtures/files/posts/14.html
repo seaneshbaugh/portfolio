@@ -1,0 +1,19 @@
+<blockquote>
+  <p>There are two hard things in computer science: cache invalidation, naming things, and off-by-one errors.</p>
+  <footer>
+    &mdash; <cite><a href="http://martinfowler.com/bliki/TwoHardThings.html">Leon Bambrick</a></cite>
+  </footer>
+</blockquote>
+<p>I love that quote, not only because it's more amusing than it should be, but because it's extremely true. I know because I've been bitten by all three things plenty of times. Tonight it was while using the <a href="https://github.com/huacnlee/rails-settings-cached">rails-settings-cached</a> gem to handle some global settings for a Rails application.</p>
+<p>At some point I truncated the settings table so I could reset it with new defaults. Afterwards my new settings weren't taking in the application or showing up in the database. I tried to mimic the behavior of <code>#save_default</code> but with some extra output by doing the following inside my initializer</p>
+<pre>
+if Setting.application_title.nil?
+  puts 'Setting application_title.'
+
+  Setting.application_title = 'My Application'
+end
+</pre>
+<p>just to make sure something weird wasn't going on.</p>
+<p><code>Setting.application_title</code> wasn't returning nil so the setting wasn't being set, even after restarting the server. I discovered that when I added <code>Rails.cache.delete('settings:application_title')</code> before the above that it worked just fine. So of course the normal call to <code>#save_default</code> worked just fine as well.</p>
+<p>It then occurred to me that the problem might be related to <a href="https://github.com/rails/spring">Spring</a> which keeps Rails loaded and ready to get started quickly. I couldn't find confirmation in the Spring source but I'm guessing that by keeping the Rails process around it also keeps the cache nice and full. This means that, despite removing the setting's table's contents and restarting the server, the old settings were hanging around in memory. I'm hesitant to say with 100% confidence that this is what was happening, but it certainly makes sense to me.</p>
+<p>Spring ships with Rails 4.1 by default so if you're making heavy use of the <a href="http://guides.rubyonrails.org/caching_with_rails.html#activesupport-cache-store">Rails cache</a> this sort of thing is probably something you'll have to look out for. Also, keep in mind that the Spring readme does mention, &quot;There's no need to 'shut down' spring. This will happen automatically when you close your terminal.&quot;</p>

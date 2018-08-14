@@ -1,0 +1,21 @@
+<p><a href="http://www.lispworks.com/documentation/HyperSpec/Body/f_nth.htm#nth">Common Lisp</a> and <a href="http://clojuredocs.org/clojure_core/clojure.core/nth">Clojure</a> both provide a built-in <code>nth</code> function for retrieving the nth element in a list. Surprisingly enough Scheme (MIT Scheme at least) doesn't that I'm aware of.</p>
+<p>Fortunately <code>nth</code> is super simple to implement in a recursive fashion:</p>
+<pre>
+(define (nth n l)
+  (if (or (> n (length l)) (< n 0))
+    (error "Index out of bounds.")
+    (if (eq? n 0)
+      (car l)
+      (nth (- n 1) (cdr l)))))
+</pre>
+<p>After checking to make sure that the index <code>n</code> isn't greater than the length of the list <code>l</code> or less than 0 the function checks to see if <code>n</code> is 0. If it is then it simply returns the first item in <code>l</code> with <code><a href="http://sicp.ai.mit.edu/Fall-2004/manuals/scheme-7.5.5/doc/scheme_8.html#SEC74">car</a></code>. Otherwise <code>nth</code> is called again with <code>n - 1</code> and the tail of <code>l</code>, retrieved with <code><a href="http://sicp.ai.mit.edu/Fall-2004/manuals/scheme-7.5.5/doc/scheme_8.html#SEC74">cdr</a></code>.</p>
+<pre>
+seshbaugh ~% scheme --load nth.scm
+...
+;Loading "nth.scm"... done
+
+1 ]=> (nth 3 '(1 2 3 4 5))
+
+;Value: 4
+</pre>
+<p>I'm reasonably certain that this function <a href="http://groups.csail.mit.edu/mac/ftpdir/scheme-reports/r5rs-html.old/r5rs_22.html">is tail recursive</a>; so it should work just fine, albeit slowly, for very long lists.</p>

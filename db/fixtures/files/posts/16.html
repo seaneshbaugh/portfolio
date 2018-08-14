@@ -1,0 +1,12 @@
+<p>Maybe you've heard of <a href="http://tryapl.org/">APL</a> before? It's a now-somewhat-esoteric language from the mid 1960's that makes heavy use of unusual symbols and vector math. It's always been a sort of unapproachable curiosity for me. I have no problem learning weird new syntax, but a language that requires a special keyboard is a bit much! A few weeks ago I discovered that the spirit of APL lives on in languages such as <a href="http://www.jsoftware.com/">J</a> and <a href="http://kx.com/">K</a>, both of which have shed the need for a non-standard input device.</p>
+<p>I decided to give K a try. Fortunately there's a <a href="https://github.com/kevinlawler/kona">free implmenentation</a>. After playing around for a while I ended up reading through the help output to see what the <code>&</code> verb does in its monadic form. What caught my attention though was something I hadn't been looking for: the description for the dyadic form.</p>
+<pre>
+& dyadic   min/and. MIN(x,y) or AND(x,y)
+</pre>
+<p><code>min</code> or <code>and</code>. Now that's something I've never seen before. In retrospect I'm not entirely sure how. I've been programming for a good while now and until now I've never seen <code>min</code> overloaded with <code>and</code>. After thinking about it for a minute I realized that it makes a good deal of sense. If you're working in a language where numeric 0 is a falsey value and you only really have numeric values (i.e. definitely not Ruby) then finding the minimum of two values x and y is equivalent to the boolean and of x and y. If either value is 0 then the result is 0 (falsey) but if both values are not 0 then the result is the non-zero minimum (truthy).</p>
+<p>I was not surprised to find that K also overloads the dyadic <code>|</code> verb to mean both <code>max</code> or <code>or</code>:
+<pre>
+| dyadic   max/or. MAX(x,y) or OR(x,y)
+</pre>
+<p>In a way similar to <code>min</code>, finding the <code>max</code> of two values when both are 0 returns 0 (falsey) but when either value is non-zero the result is always truthy regardless of what the maximum actually is.<p>
+<p>Like just about everything I post here, this is totally obvious in hindsight. I'm only writting about it because despite having dealt with boolean logic for half my life now I've never seen this property of <code>min</code> and <code>max</code> pointed out explicitly before. It makes sense that a language like K, which has such a compact grammar, would overload a those functions in such a way.</p>

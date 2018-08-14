@@ -1,0 +1,445 @@
+<p class="heads-up">This post was written with OS X 10.10 and Xcode 6.4 in mind. With OS X 10.11 and Xcode 7 just around the corner (as of the time this was written) it's safe to say some of the details in this post will become quickly outdated. If I learn that this is the case I will try and update this post. But if you're reading this in 2021 or something don't expect any of this to be accurate.</p>
+<p>A few days ago I set out to create a simple OpenGL program on OS X (10.10.4 to be exact) without using a wrapper library like <a href="https://www.libsdl.org/">SDL</a>. It turns out there's lots of information out there on how to go about this. But, I never came across anything that had complete start to finish instructions for the latest versions of OS X, Xcode and OpenGL. By &quot;start to finish&quot; I mean from creating a new project all the way up to creating a .app that can run on another person's computer without them needing to install any dependencies. Every blog post or tutorial I came across had at least one frustrating gap somewhere in it where the author had (most likely unintentionally) assumed either the reader knew what they were doing or that the step(s) in question were easy to figure out without lots of detail. I don't know about you, but I have no idea what I'm doing and I'm real dumb, so figuring new things out ain't easy. My goal here is to document the process in as much detail as possible so you can't mess it up. There's definitely other, probably better, ways to do this; but this way works pretty well for me. I'm going to try and assume that you have very little knowledge of any of the tools involved and that you're goal is the same as mine: start from scratch and end up with something you can send to a friend. I will however assume that you're no stranger to C++ or git since they are way outside of the scope of this post.</p>
+<p>Before getting started you'll want to acquire the latest version of <a href="https://developer.apple.com/xcode/">Xcode</a> (6.4 (6E35b) as of 7/28/15) and <a href="http://brew.sh/">Homebrew</a>. Xcode can be downloaded through the App Store. Detailed instructions for installing Homebrew can be found <a href="https://github.com/Homebrew/homebrew/blob/master/share/doc/homebrew/Installation.md#installation">here</a> but you can probably just use the instructions on the home page. Homebrew doesn't really have versions as far as I know, just run <code>brew update</code> to make sure you're up to date. You'll also want to make sure you've got the Xcode <a href="https://developer.apple.com/library/ios/technotes/tn2339/_index.html">Command Line Tools Package</a> installed; run <code><a href="https://developer.apple.com/library/mac/documentation/Darwin/Reference/ManPages/man1/xcode-select.1.html">xcode-select --install</a></code> and you'll be good to go.</p>
+<p>Now that you've got Xcode and Homebrew you're ready to install the two libraries you're going to use to make working with OpenGL a less shitty experience: <a href="https://github.com/nigels-com/glew">GLEW</a> and <a href="http://www.glfw.org/">GLFW</a>. The somewhat ironic thing is that getting GLEW and GLFW set up in an Xcode project is itself a real shitty experience.</p>
+<p>A quick aside: the last time I touched OpenGL was probably around 2003, maybe early 2004. At the time I was on Windows XP and wasn't using either GLEW or GLFW (or <a href="https://www.opengl.org/resources/libraries/glut/">GLUT</a> or any similar library). Instead I used <code><a href="https://msdn.microsoft.com/en-us/library/windows/desktop/ms632679(v=vs.85).aspx">CreateWindow</a></code> and <code><a href="https://msdn.microsoft.com/en-us/library/windows/desktop/dd374379(v=vs.85).aspx">wglCreateContext</a></code> (and a <a href="https://www.opengl.org/wiki/Creating_an_OpenGL_Context_(WGL)">shitload of other boilerplate</a>) to create a window and rendering context, switch statements that approached several hundred lines inside a good old fashioned <code><a href="https://msdn.microsoft.com/en-us/library/windows/desktop/ms633573(v=vs.85).aspx">WindowProc</a></code> for handling input, and I don't think I even had a graphics card capable of using anything past OpenGL 1.3 so I definitely wasn't bothering with GLEW.</p>
+<p>All that is to say, when I started reading up on OpenGL again I was kind of confused by the purpose of these libraries. If you've actually been keeping up with OpenGL for the last eleven or twelve years then they're probably not so mysterious. But if you're way out of the loop or totally new to this I think I can shed some light on them and hopefully explain in a convincing way why you'd want to use them. You can skip ahead if this is all familiar territory for you. It wasn't for me so I'm going to provide a brief synopsis of each.</p>
+<p>Let's start with GLEW. OpenGL, like most standards and specifications, is an ongoing and living thing. Since it is fundamentally tied to its implimentation and the underlying graphics hardware, care has been taken to introduce new features in a controlled manner. This is done through <a href="https://www.opengl.org/wiki/OpenGL_Extension">extensions</a> which allow hardware vendors to implement and expose particular features independently. One fairly large downside to the way extensions are implemented is that each extension function's location has to be determined at run time. For this calls to <code><a href="https://developer.apple.com/library/mac/documentation/Darwin/Reference/ManPages/man3/dlopen.3.html">dlopen</a></code> and <code><a href="https://developer.apple.com/library/mac/documentation/Darwin/Reference/ManPages/man3/dlsym.3.html">dlsym</a></code> are necessary (or if you're on Windows: <code><a href="https://msdn.microsoft.com/en-us/library/windows/desktop/dd374386(v=vs.85).aspx">wglGetProcAddress</a></code>). Doing this for every extension function you intend to call is obviously less than ideal. GLEW takes care of this for you and makes calling OpenGL functions a seamless process. You might wonder, <a href="http://stackoverflow.com/questions/10670555/is-glew-mandatory-for-an-up-to-date-opengl-application">&quot;Is this really necessary?&quot;</a>, the answer is no, but boilerplate code is no fun to write.</p>
+<p>Like GLEW, GLFW serves the purpose of reducing boilerplate code to a minimum. However the type of boilerplate it focuses on is entirely different. Before you can actually start using OpenGL you need a <a href="https://developer.apple.com/library/mac/documentation/GraphicsImaging/Conceptual/OpenGL-MacProgGuide/opengl_contexts/opengl_contexts.html">rendering context</a>. To get a rendering context you need a surface or <a href="https://developer.apple.com/library/mac/documentation/Cocoa/Reference/ApplicationKit/Classes/NSWindow_Class/">window</a> to render to. It should go without saying that creating a window is extremely platform dependent. Even when you're targeting just one platform the process can be laborious. GLFW's <code><a href="http://www.glfw.org/docs/latest/group__window.html#ga5c336fddf2cbb5b92f65f10fb6043344">glfwCreateWindow</a></code> makes the whole process nice and easy. As an added bonus GLFW also normalizes the process of dealing with <a href="http://www.glfw.org/docs/latest/group__monitor.html">multiple monitors</a> and <a href="http://www.glfw.org/docs/latest/group__input.html">handling input</a>. I'm usually a big believer in DIY, but unless you've got a really good reason you should probably let GLFW or a similar library handle the details of this kind of highly platform specific initialization. If you're curious you will definitely learn something useful by creating windows and handling input without help, but either can be a very deep rabbit hole if you're not careful.</p>
+<!--more-->
+<p>Now that I've expounded some on the why of GLEW and GLFW let's do some real work and look at the how.</p>
+<p>Since you've got Homebrew installing GLEW and GLFW is easy, just <code>brew install glew</code> and <code>brew install glfw3</code>.</p>
+<div class="screenshot">
+  <a href="http://seaneshbaugh.com/uploads/picture/images/1438202990190894.png"><img src="http://seaneshbaugh.com/uploads/picture/images/1438202990190894.png"></a>
+</div>
+<p>Once that's done it's time to open up Xcode and make a new project (File &gt; New &gt; Project). Select &quot;Cocoa Application&quot; as your project template (under OS X &gt; Application).</p>
+<div class="screenshot">
+  <a href="http://seaneshbaugh.com/uploads/picture/images/1438202988999529.png"><img src="http://seaneshbaugh.com/uploads/picture/images/1438202988999529.png"></a>
+</div>
+<p>You'll sometimes see tutorials tell you to create a Command Line Tool project. I suspect the reason Command Line Tool is what's typically used is because C++ is an option for the language and with Cocoa Application you can select either Swift or Objective-C. It turns out this is a non-issue. There's one very important reason to not go that route though. Creating a Cocoa Application allows you to easily bundle files with the actual executable in a .app container. I'm sure there's a way to coax Command Line Tool projects into doing that, but it's much easier to just start off with a Cocoa Application that's already set up with that in mind.</p>
+<p>Click &quot;Next&quot; and then give your project a name and select Objective-C as the language.</p>
+<div class="screenshot">
+  <a href="http://seaneshbaugh.com/uploads/picture/images/1438202989666727.png"><img src="http://seaneshbaugh.com/uploads/picture/images/1438202989666727.png"></a>
+</div>
+<p>Click &quot;Next&quot; again and then choose a location for your project. Click &quot;Create&quot; when finished.</p>
+<div class="screenshot">
+  <a href="http://seaneshbaugh.com/uploads/picture/images/1438202987657930.png"><img src="http://seaneshbaugh.com/uploads/picture/images/1438202987657930.png"></a>
+</div>
+<p>You should now have a brand new, but not quite empty project.</P>
+<div class="screenshot">
+  <a href="http://seaneshbaugh.com/uploads/picture/images/1438229444592880.png"><img src="http://seaneshbaugh.com/uploads/picture/images/1438229444592880.png"></a>
+</div>
+<p>Build and run the project and you should be presented with an empty window.</p>
+<div class="screenshot">
+  <a href="http://seaneshbaugh.com/uploads/picture/images/1438229442689725.png"><img src="http://seaneshbaugh.com/uploads/picture/images/1438229442689725.png"></a>
+</div>
+<p>Close the window and open up a terminal and cd into the project directory. Do a <code>git status</code> now to confirm everything is as it should be.</p>
+<div class="screenshot">
+  <a href="http://seaneshbaugh.com/uploads/picture/images/1438229442921141.png"><img src="http://seaneshbaugh.com/uploads/picture/images/1438229442921141.png"></a>
+</div>
+<p>There should be a directory waiting to be added and commited, but you don't really want to include that with the project. Copy this for the contents of a <code>.gitignore</code> file:</p>
+<pre>
+.DS_Store
+build/
+*.pbxuser
+!default.pbxuser
+*.mode1v3
+!default.mode1v3
+*.mode2v3
+!default.mode2v3
+*.perspectivev3
+!default.perspectivev3
+xcuserdata
+*.xccheckout
+profile
+.moved-aside
+DerivedData
+*.hmap
+*.xccheckout
+</pre>
+<p>and then use <code><a href="https://developer.apple.com/library/mac/documentation/Darwin/Reference/ManPages/man1/pbpaste.1.html">pbpaste</a></code> and redirect it to <code>.gitignore</code></p>
+<div class="screenshot">
+  <a href="http://seaneshbaugh.com/uploads/picture/images/1438229443726739.png"><img src="http://seaneshbaugh.com/uploads/picture/images/1438229443726739.png"></a>
+</div>
+<p>After creating the <code>.gitignore</code> file now is a good time to commit your changes (<a href="http://blog.codinghorror.com/check-in-early-check-in-often/">check in early, check in often!</a>).
+<div class="screenshot">
+  <a href="http://seaneshbaugh.com/uploads/picture/images/1438229443943974.png"><img src="http://seaneshbaugh.com/uploads/picture/images/1438229443943974.png"></a>
+</div>
+<p>Back in Xcode go ahead and select the test product and delete it (unless you really want to keep it).</p>
+<div class="screenshot">
+  <a href="http://seaneshbaugh.com/uploads/picture/images/1438229444592880.png"><img src="http://seaneshbaugh.com/uploads/picture/images/1438229444592880.png"></a>
+</div>
+<p>Next select the source code group for the tests and delete that too.</p>
+<div class="screenshot">
+  <a href="http://seaneshbaugh.com/uploads/picture/images/1438275561802050.png"><img src="http://seaneshbaugh.com/uploads/picture/images/1438275561802050.png"></a>
+</div>
+<p>Go ahead and commit these changes now.</p>
+<div class="screenshot">
+  <a href="http://seaneshbaugh.com/uploads/picture/images/1438275832551908.png"><img src="http://seaneshbaugh.com/uploads/picture/images/1438275832551908.png"></a>
+</div>
+<p>In Xcode find <code>main.m</code>...</p>
+<div class="screenshot">
+  <a href="http://seaneshbaugh.com/uploads/picture/images/1438276916605426.png"><img src="http://seaneshbaugh.com/uploads/picture/images/1438276916605426.png"></a>
+</div>
+<p>and rename it to <code>main.cpp</code>. This is why you don't care if Xcode only lets you select between Switft and Objective-C. You might also want to add in some sort of simple &quot;Hello, world!&quot; for the time being.</p>
+<div class="screenshot">
+  <a href="http://seaneshbaugh.com/uploads/picture/images/1438277072185610.png"><img src="http://seaneshbaugh.com/uploads/picture/images/1438277072185610.png"></a>
+</div>
+<p>Build and run the project just to make sure everything is working. You should see your output below in the debug area.</p>
+<div class="screenshot">
+  <a href="http://seaneshbaugh.com/uploads/picture/images/1438277138202002.png"><img src="http://seaneshbaugh.com/uploads/picture/images/1438277138202002.png"></a>
+</div>
+<p>Commit those changes.</p>
+<p>You may be wondering now, &quot;Why is this guy telling me when to commit? I'm a grown up, I can commit when I want to.&quot; And you're not wrong for thinking that. But during this process of figuring all of this out I found there were several points to which I reverted at least once. I suspect that if you're as clueless as I was/am you'll want to do the same. I hope that by explicitly calling out when those points are I'll save you some trouble later on.</p>
+<div class="screenshot">
+  <a href="http://seaneshbaugh.com/uploads/picture/images/1438277215226540.png"><img src="http://seaneshbaugh.com/uploads/picture/images/1438277215226540.png"></a>
+</div>
+<p>Now that you're not working with a normal Cocoa application anymore there's a few files you don't need. Specifically: <code>AppDelegate.h</code>, <code>AppDelegate.m</code>, <code>Images.xcassets</code>, and <code>MainMenu.xib</code>. Highlight them...</p>
+<div class="screenshot">
+  <a href="http://seaneshbaugh.com/uploads/picture/images/1438277618629339.png"><img src="http://seaneshbaugh.com/uploads/picture/images/1438277618629339.png"></a>
+</div>
+<p>and delete them.</p>
+<div class="screenshot">
+  <a href="http://seaneshbaugh.com/uploads/picture/images/1438277871895884.png"><img src="http://seaneshbaugh.com/uploads/picture/images/1438277871895884.png"></a>
+</div>
+<p>Commit the changes, and if you feel like it, build and run the project again just to make sure all is well.</p>
+<div class="screenshot">
+  <a href="http://seaneshbaugh.com/uploads/picture/images/1438277905657893.png"><img src="http://seaneshbaugh.com/uploads/picture/images/1438277905657893.png"></a>
+</div>
+<p>These next couple of steps aren't necessary in the slightest. In fact, for a small demo project they're pointless. But I'm going to assume that maybe someday this project will become larger, more complicated, and have many many source files. To make that eventuality less of a nightmare create a directory named <code>src</code> (or whatever you want really) and then move your <code>main.cpp</code> file into it.</p>
+<div class="screenshot">
+  <a href="http://seaneshbaugh.com/uploads/picture/images/1438278218531174.png"><img src="http://seaneshbaugh.com/uploads/picture/images/1438278218531174.png"></a>
+</div>
+<p>Xcode will now be confused. Don't worry. <a href="http://stackoverflow.com/a/27024809/329602">You can fix it.</a> Create a group under your project named &quot;src&quot; (or whatever you named the directory from before).</p>
+<div class="screenshot">
+  <a href="http://seaneshbaugh.com/uploads/picture/images/1438278427631209.png"><img src="http://seaneshbaugh.com/uploads/picture/images/1438278427631209.png"></a>
+</div>
+<p>Move <code>main.cpp</code> into that group.</p>
+<div class="screenshot">
+  <a href="http://seaneshbaugh.com/uploads/picture/images/1438278510882691.png"><img src="http://seaneshbaugh.com/uploads/picture/images/1438278510882691.png"></a>
+</div>
+<p>Highlight <code>main.cpp</code> and make sure that in the File Inspector it says &quot;Relative to Group&quot; under Location. Then click the little folder icon to browse for the file.</p>
+<div class="screenshot">
+  <a href="http://seaneshbaugh.com/uploads/picture/images/1438278660642066.png"><img src="http://seaneshbaugh.com/uploads/picture/images/1438278660642066.png"></a>
+</div>
+<p>Select it and click &quot;Choose&quot;. The file should no longer appear red and Xcode should now be unconfused.</p>
+<div class="screenshot">
+  <a href="http://seaneshbaugh.com/uploads/picture/images/1438278744395549.png"><img src="http://seaneshbaugh.com/uploads/picture/images/1438278744395549.png"></a>
+</div>
+<p>Once again it's a great time to build and run the project to make sure nothing is broken and commit your changes.</p>
+<div class="screenshot">
+  <a href="http://seaneshbaugh.com/uploads/picture/images/1438278795380270.png"><img src="http://seaneshbaugh.com/uploads/picture/images/1438278795380270.png"></a>
+</div>
+<p>Finally it's time to start doing something actually related to OpenGL. Sort of. In Xcode select your project in the project navigator and then select the target and click the &quot;Build Phases&quot; tab.</p>
+<div class="screenshot">
+  <a href="http://seaneshbaugh.com/uploads/picture/images/1438291442256559.png"><img src="http://seaneshbaugh.com/uploads/picture/images/1438291442256559.png"></a>
+</div>
+<p>Expand the &quot;Link Binary With Libraries&quot; section and then click the + button to begin selecting a framework to link against. Start typing &quot;OpenGL.framework&quot; to filter out the OpenGL framework.</p>
+<div class="screenshot">
+  <a href="http://seaneshbaugh.com/uploads/picture/images/1438293878235498.png"><img src="http://seaneshbaugh.com/uploads/picture/images/1438293878235498.png"></a>
+</div>
+<p>Select OpenGL.framework and click &quot;Add&quot;</p>
+<div class="screenshot">
+  <a href="http://seaneshbaugh.com/uploads/picture/images/1438293999982920.png"><img src="http://seaneshbaugh.com/uploads/picture/images/1438293999982920.png"></a>
+</div>
+<p>Click the + button again to repeat the process. This time click &quot;Add other...&quot;</p>
+<div class="screenshot">
+  <a href="http://seaneshbaugh.com/uploads/picture/images/1438294096573360.png"><img src="http://seaneshbaugh.com/uploads/picture/images/1438294096573360.png"></a>
+</div>
+<p>Navigate to the directory where Homebrew installed the GLFW dylib files. In my case it was <code>/usr/local/Cellar/glfw3/3.1.1/lib</code>. Yours might be different if you ended up with a more recent version of GLFW. Pro-tip: you can hit &#8679;+&#8984;+g in the file browse modal to just type the directory you want to go to.</p>
+<div class="screenshot">
+  <a href="http://seaneshbaugh.com/uploads/picture/images/1438294300988402.png"><img src="http://seaneshbaugh.com/uploads/picture/images/1438294300988402.png"></a>
+</div>
+<p>Select <code>libglfw3.3.1.dylib</code> and click &quot;Open&quot;. It should go without saying that if your version of GLFW is different the name of the dylib will be different. From now on, for both GLEW and GLFW I'm going to assume you have the same version I do and that if you don't you know to find the appropriate files based on the version you have.</p>
+<div class="screenshot">
+  <a href="http://seaneshbaugh.com/uploads/picture/images/1438294827574059.png"><img src="http://seaneshbaugh.com/uploads/picture/images/1438294827574059.png"></a>
+</div>
+<p>Click the + button one last time and click &quot;Add other...&quot; again. This time navigate to the directory where Homebrew installed the GLEW dylib files. Mine are in <code>/usr/local/Cellar/glew/1.12.0/lib</code>.</p>
+<div class="screenshot">
+  <a href="http://seaneshbaugh.com/uploads/picture/images/1438294955265336.png"><img src="http://seaneshbaugh.com/uploads/picture/images/1438294955265336.png"></a>
+</div>
+<p>Select <code>libGLEW.1.12.0.dylib</code> and click &quot;Open&quot;.</p>
+<div class="screenshot">
+    <a href="http://seaneshbaugh.com/uploads/picture/images/1438295182152725.png"><img src="http://seaneshbaugh.com/uploads/picture/images/1438295182152725.png"></a>
+</div>
+<p>Create another group in your project named &quot;Frameworks&quot; and drag the three libraries you just added into it.</p>
+<div class="screenshot">
+  <a href="http://seaneshbaugh.com/uploads/picture/images/1438295063649021.png"><img src="http://seaneshbaugh.com/uploads/picture/images/1438295063649021.png"></a>
+</div>
+<p>Select the &quot;Build Settings&quot; tab and then scroll down to the &quot;Search Path&quot; section. Expand the &quot;Header Search Path&quot; setting.</p>
+<div class="screenshot">
+  <a href="http://seaneshbaugh.com/uploads/picture/images/1438295314429952.png"><img src="http://seaneshbaugh.com/uploads/picture/images/1438295314429952.png"></a>
+</div>
+<p>Double click the path next to &quot;Debug&quot; to reveal a pop up dialog that lets you add header search paths.</p>
+<div class="screenshot">
+  <a href="http://seaneshbaugh.com/uploads/picture/images/1438295554668559.png"><img src="http://seaneshbaugh.com/uploads/picture/images/1438295554668559.png"></a>
+</div>
+<p>Click the + button to add a new path and enter <code>/usr/local/include</code>. By default the compiler will look inside <code>/usr/include</code> for header files since that's where system managed headers go. <code>/usr/local/include</code> is where user managed headers go. See <a href="http://apple.stackexchange.com/a/119265">this answer to a totally unrelated question</a> for a bit of context. If you installed GLEW and GLFW from source yourself and set the prefix path to something else you would enter that path instead. Click outside the pop up to close it.</p>
+<div class="screenshot">
+  <a href="http://seaneshbaugh.com/uploads/picture/images/1438317968980450.png"><img src="http://seaneshbaugh.com/uploads/picture/images/1438317968980450.png"></a>
+</div>
+<p>Double click the path next to &quot;Release&quot; to reveal the same pop up dialog.</p>
+<div class="screenshot">
+  <a href="http://seaneshbaugh.com/uploads/picture/images/1438318126325045.png"><img src="http://seaneshbaugh.com/uploads/picture/images/1438318126325045.png"></a>
+</div>
+<p>Click the + button again and enter the same path as before and close the pop up. I would strongly recommend attempting to build and run the project again.</p>
+<div class="screenshot">
+  <a href="http://seaneshbaugh.com/uploads/picture/images/1438318224986117.png"><img src="http://seaneshbaugh.com/uploads/picture/images/1438318224986117.png"></a>
+</div>
+<p>And now is also a really good time to commit your changes.</p>
+<div class="screenshot">
+  <a href="http://seaneshbaugh.com/uploads/picture/images/1438319085601948.png"><img src="http://seaneshbaugh.com/uploads/picture/images/1438319085601948.png"></a>
+</div>
+<p>Click on the &quot;Build Phases&quot; tab again.</p>
+<div class="screenshot">
+  <a href="http://seaneshbaugh.com/uploads/picture/images/1438319334790250.png"><img src="http://seaneshbaugh.com/uploads/picture/images/1438319334790250.png"></a>
+</div>
+<p>And click the + button in the upper left part of the view to to add a new build phase. Select &quot;New Copy Files Phase&quot;.</p>
+<div class="screenshot">
+  <a href="http://seaneshbaugh.com/uploads/picture/images/1438319520406505.png"><img src="http://seaneshbaugh.com/uploads/picture/images/1438319520406505.png"></a>
+</div>
+<p>In the &quot;Destination&quot; dropdown select &quot;Frameworks&quot;.</p>
+<div class="screenshot">
+  <a href="http://seaneshbaugh.com/uploads/picture/images/1438319589238774.png"><img src="http://seaneshbaugh.com/uploads/picture/images/1438319589238774.png"></a>
+</div>
+<p>Click the + button and then select <code>libGLEW.1.12.0.dylib</code> from the list.</p>
+<div class="screenshot">
+  <a href="http://seaneshbaugh.com/uploads/picture/images/1438618711234050.png"><img src="http://seaneshbaugh.com/uploads/picture/images/1438618711234050.png"></a>
+</div>
+<p>Click the + button again and this time select <code>libglfw3.3.1.dylib</code></p>
+<div class="screenshot">
+  <a href="http://seaneshbaugh.com/uploads/picture/images/1438619301344020.png"><img src="http://seaneshbaugh.com/uploads/picture/images/1438619301344020.png"></a>
+</div>
+<p>Now uncheck both boxes under &quot;Code Sign On Copy&quot;. Normally you would want to keep these checked <a href="https://developer.apple.com/library/mac/technotes/tn2206/_index.html#//apple_ref/doc/uid/DTS40007919-CH1-TNTAG20">since all executable resources in the .app need to be signed</a>. The problem is that the next step presented here will modify the dylib files and therefore make the code signing invalid. Instead they will have to be code signed <em>after</em> modification manually.</p>
+<div class="screenshot">
+  <a href="http://seaneshbaugh.com/uploads/picture/images/1438619357189281.png"><img src="http://seaneshbaugh.com/uploads/picture/images/1438619357189281.png"></a>
+</div>
+<p>Once again it's time to commit!</p>
+<div class="screenshot">
+  <a href="http://seaneshbaugh.com/uploads/picture/images/1438620358229577.png"><img src="http://seaneshbaugh.com/uploads/picture/images/1438620358229577.png"></a>
+</div>
+<p>Now it's time to start getting into the part of this process that made me feel like I should write about all of this: <a href="https://www.mikeash.com/pyblog/friday-qa-2009-11-06-linking-and-install-names.html">dynamically linked libraries and install names</a>! Not what you were expecting right? I mean, this post is nominally about OpenGL (and using GLEW and GLFW on OS X) so why is it that this is what inspired me? Because if you actually want someone besides yourself to be able to run the final executable you're going to have to figure this part out.</p>
+<p>When you installed GLEW and GLFW the binary files that were downloaded were built so that the install name for each dylib was <code>/usr/local/lib/libGLEW.1.12.0.dylib</code> and <code>/usr/local/lib/libglfw3.3.dylib</code>. You may have noticed that the actual place that Homebrew installed the libraries is a little different. The last thing Homebrew does is create a symlink in <code>/usr/local/lib</code> to the actual dylib. So what exactly is an install name? When the linker is run it looks at the install name in the library and uses that when creating the final executable. The result is that the executable will attempt to load the library at that path when it is run. Using <code><a href="http://www.unix.com/man-page/osx/1/otool/">otool</a></code> it is possible to see all of the dynamically linked libraries that an executable file will load.</p>
+<div class="screenshot">
+  <a href="http://seaneshbaugh.com/uploads/picture/images/1438627329502280.png"><img src="http://seaneshbaugh.com/uploads/picture/images/1438627329502280.png"></a>
+</div>
+<p>You can see the install name of each of the .dylib files on the first line of the output of <code>otool -L</code>. Now that the GLEW and GLFW dylib files are being copied into the .app it's time to add a &quot;Run Script&quot; phase to the project's build phases to fix the install path of the dylibs. In the project navigator select the project, click &quot;Build Phases&quot;, and then click the + button in the top left corner and select &quot;New Run Script Phase&quot;</p>
+<div class="screenshot">
+  <a href="http://seaneshbaugh.com/uploads/picture/images/1438631696170667.png"><img src="http://seaneshbaugh.com/uploads/picture/images/1438631696170667.png"></a>
+</div>
+<p>In the text area for the script enter the following:</p>
+<pre>
+install_name_tool -id @executable_path/../Frameworks/libglfw3.3.1.dylib "$TARGET_BUILD_DIR/$TARGET_NAME.app/Contents/Frameworks/libglfw3.3.1.dylib"
+install_name_tool -id @executable_path/../Frameworks/libGLEW.1.12.0.dylib "$TARGET_BUILD_DIR/$TARGET_NAME.app/Contents/Frameworks/libGLEW.1.12.0.dylib"
+install_name_tool -change /usr/local/lib/libglfw3.3.dylib @executable_path/../Frameworks/libglfw3.3.1.dylib "$TARGET_BUILD_DIR/$TARGET_NAME.app/Contents/MacOS/$PRODUCT_NAME"
+install_name_tool -change /usr/local/lib/libGLEW.1.12.0.dylib @executable_path/../Frameworks/libGLEW.1.12.0.dylib "$TARGET_BUILD_DIR/$TARGET_NAME.app/Contents/MacOS/$PRODUCT_NAME"
+codesign --force --sign - --preserve-metadata=identifier,entitlements "$TARGET_BUILD_DIR/$TARGET_NAME.app/Contents/Frameworks/libglfw3.3.1.dylib"
+codesign --force --sign - --preserve-metadata=identifier,entitlements "$TARGET_BUILD_DIR/$TARGET_NAME.app/Contents/Frameworks/libGLEW.1.12.0.dylib"
+</pre>
+<p>The first thing this script does is use <code><a href="http://www.unix.com/man-page/osx/1/install_name_tool/">install_name_tool</a> -id</code> to change the install name of the GLEW and GLFW dylibs. The first argument, <code>@executable_path/../Frameworks/libglfw3.3.1.dylib</code>, is the new install name for the library. <code>@executable_path</code> means it should be relative to the location of the executable file. The second argument is the location of the dylib file being modified. The <code>$TARGET_BUILD_DIR</code> and <code>$TARGET_NAME</code> in the path to the dylibs ensure that the correct absolute path is used during the build phase since the exact location of the output will depend on your project's name and whether or not your building for debug or release.</p>
+<p>After changing the install name of dylib the next step is to use <code>install_name_tool -change</code> to change the old install name (seen before using <code>otool -L</code>) to the new one.</p>
+<p>Finally the dylib is signed with <code><a href="https://developer.apple.com/library/mac/documentation/Darwin/Reference/ManPages/man1/codesign.1.html">codesign</a></code>. The arguments for this are taken from what Xcode would use if you had left the &quot;Code Sign On Copy&quot; boxes checked. This last step ensures that the codesigning actually works. The previous two steps modify the dylib files that are copied into the .app and if you just let them be code signed like normal the program will crash when attempting to load the dylibs.</p>
+<div class="screenshot">
+  <a href="http://seaneshbaugh.com/uploads/picture/images/1438634182585018.png"><img src="http://seaneshbaugh.com/uploads/picture/images/1438634182585018.png"></a>
+</div>
+<p>Now that all of the build phases are in place it's time to input the actual code that does something fun and useful (for a generous definition of useful) with OpenGL. Put the following in <code>main.cpp</code>:</p>
+<pre>
+#include &lt;GL/glew.h&gt;
+#include &lt;GLFW/glfw3.h&gt;
+#include &lt;iostream&gt;
+
+static void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods) {
+    if (key == GLFW_KEY_ESCAPE &amp;&amp; action == GLFW_PRESS) {
+        glfwSetWindowShouldClose(window, GL_TRUE);
+    }
+}
+
+int main(int argc, const char* argv[]) {
+    if (!glfwInit()) {
+        return 1;
+    }
+
+    int monitorCount;
+
+    GLFWmonitor** monitors = glfwGetMonitors(&monitorCount);
+
+    GLFWmonitor* largestMonitor = monitors[0];
+
+    const GLFWvidmode* largestVidmode = glfwGetVideoMode(largestMonitor);
+
+    for (int i = 1; i &lt; monitorCount; i += 1) {
+        const GLFWvidmode* vidmode = glfwGetVideoMode(monitors[i]);
+
+        if (vidmode->width * vidmode-&gt;height &gt; largestVidmode-&gt;width * largestVidmode-&gt;height) {
+            largestVidmode = vidmode;
+
+            largestMonitor = monitors[i];
+        }
+    }
+
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
+
+    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+
+    GLFWwindow* window = glfwCreateWindow(largestVidmode-&gt;width, largestVidmode-&gt;height, &quot;OpenGLTest&quot;, largestMonitor, nullptr);
+
+    if (window == nullptr) {
+        std::cerr &lt;&lt; &quot;Failed to create GLFW window.&quot; &lt;&lt; std::endl;
+
+        glfwTerminate();
+
+        return 1;
+    }
+
+    glfwMakeContextCurrent(window);
+
+    glewExperimental = GL_TRUE;
+
+    glewInit();
+
+    const GLubyte* openGLRenderer = glGetString(GL_RENDERER);
+
+    const GLubyte* openGLVersion = glGetString(GL_VERSION);
+
+    std::cout &lt;&lt; &quot;Renderer: &quot; &lt;&lt; openGLRenderer &lt;&lt; std::endl;
+
+    std::cout &lt;&lt; &quot;OpenGL version supported: &quot; &lt;&lt; openGLVersion &lt;&lt; std::endl;
+
+    glEnable(GL_DEPTH_TEST);
+
+    glDepthFunc(GL_LESS);
+
+    float points[] = {
+        0.0f, 0.5f, 0.0f,
+        0.5f, -0.5f, 0.0f,
+        -0.5f, -0.5f, 0.0f
+    };
+
+    GLuint triangleVBO = 0;
+
+    glGenBuffers(1, &amp;triangleVBO);
+
+    glBindBuffer(GL_ARRAY_BUFFER, triangleVBO);
+
+    glBufferData(GL_ARRAY_BUFFER, 9 * sizeof(float), points, GL_STATIC_DRAW);
+
+    GLuint triangleVAO = 0;
+
+    glGenVertexArrays(1, &amp;triangleVAO);
+
+    glBindVertexArray(triangleVAO);
+
+    glEnableVertexAttribArray(0);
+
+    glBindBuffer(GL_ARRAY_BUFFER, triangleVBO);
+
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
+
+    const char* vertexShaderSource =
+    &quot;#version 400\n&quot;
+    &quot;in vec3 vp;&quot;
+    &quot;void main() {&quot;
+    &quot;  gl_Position = vec4 (vp, 1.0);&quot;
+    &quot;}&quot;
+
+    const char* fragmentShaderSource =
+    &quot;#version 400\n&quot;
+    &quot;out vec4 frag_colour;&quot;
+    &quot;void main() {&quot;
+    &quot;  frag_colour = vec4(1.0, 1.0, 1.0, 1.0);&quot;
+    &quot;}&quot;;
+
+    GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);
+
+    glShaderSource(vertexShader, 1, &amp;vertexShaderSource, nullptr);
+
+    glCompileShader(vertexShader);
+
+    GLuint fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
+
+    glShaderSource(fragmentShader, 1, &amp;fragmentShaderSource, nullptr);
+
+    glCompileShader(fragmentShader);
+
+    GLuint shaderProgram = glCreateProgram();
+
+    glAttachShader(shaderProgram, fragmentShader);
+
+    glAttachShader(shaderProgram, vertexShader);
+
+    glLinkProgram(shaderProgram);
+
+    glfwSetKeyCallback(window, keyCallback);
+
+    while (!glfwWindowShouldClose(window)) {
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+        glUseProgram(shaderProgram);
+
+        glBindVertexArray(triangleVAO);
+
+        glDrawArrays(GL_TRIANGLES, 0, 3);
+
+        glfwSwapBuffers(window);
+
+        glfwPollEvents();
+    }
+
+    glfwTerminate();
+
+    return 0;
+}
+</pre>
+<p>I'm not going to go into extreme detail on the code in this post. The primary reason is that it's largely not mine. I present the code only as a good fairly minimal OpenGL program. Here are the places from which the above code was stolen:</p>
+<ul>
+  <li><a href="http://www.tomdalling.com/blog/modern-opengl/01-getting-started-in-xcode-and-visual-cpp/">&quot;Modern OpenGL 01 - Getting Started in Xcode, Visual C++, and Linux&quot; by Tom Dalling</a></li>
+  <li><a href="http://learnopengl.com/#!Getting-started/Hello-Window">&quot;Hello Window&quot; by Joey de Vries</a></li>
+  <li><a href="http://learnopengl.com/#!Getting-started/Hello-Triangle">&quot;Hello Triangle&quot; by Joey de Vries</a></li>
+  <li><a href="http://antongerdelan.net/opengl/hellotriangle.html">&quot;Hello Triangle&quot; by Anton Gerdelan</a></li>
+</ul>
+<p>The only thing I've really added is the use of <code><a href="http://www.glfw.org/docs/latest/group__monitor.html#ga3fba51c8bd36491d4712aa5bd074a537">glfwGetMonitors</a></code> and <code><a href="http://www.glfw.org/docs/latest/group__monitor.html#gafc1bb972a921ad5b3bd5d63a95fc2d52">glfwGetVideoMode</a></code> to find the largest available monitor so that it can be used for full screen rendering. I also made it so the calls to <code><a href="http://www.glfw.org/docs/latest/group__window.html#ga4fd9e504bb937e79588a0ffdca9f620b">glfwWindowHint</a></code> request OpenGL 4.1.</p>
+<div class="screenshot">
+  <a href="http://seaneshbaugh.com/uploads/picture/images/1438637644639461.png"><img src="http://seaneshbaugh.com/uploads/picture/images/1438637644639461.png"></a>
+</div>
+<p>Build and run the project and you should see a white triangle in the middle of a black screen on your largest monitor. Press &quot;escape&quot; to exit the program. You should see the debug output from the program in the debug console in Xcode.</p>
+<div class="screenshot">
+  <a href="http://seaneshbaugh.com/uploads/picture/images/1438638577759761.png"><img src="http://seaneshbaugh.com/uploads/picture/images/1438638577759761.png"></a>
+</div>
+<p>Now it's time for the final step: exporting the app. Click Product &gt; Archive to bring up the archive dialog.</p>
+<div class="screenshot">
+  <a href="http://seaneshbaugh.com/uploads/picture/images/1438655034669636.png"><img src="http://seaneshbaugh.com/uploads/picture/images/1438655034669636.png"></a>
+</div>
+<p>Select the archive and then click &quot;Export&quot;.</p>
+<div class="screenshot">
+  <a href="http://seaneshbaugh.com/uploads/picture/images/1438662607144972.png"><img src="http://seaneshbaugh.com/uploads/picture/images/1438662607144972.png"></a>
+</div>
+<p>Select the &quot;Export as a Mac Application&quot; option and then click &quot;Next&quot;.</p>
+<div class="screenshot">
+  <a href="http://seaneshbaugh.com/uploads/picture/images/1438662719949970.png"><img src="http://seaneshbaugh.com/uploads/picture/images/1438662719949970.png"></a>
+</div>
+<p>Select a location (anywhere will do) and then click &quot;Export&quot;.</p>
+<div class="screenshot">
+  <a href="http://seaneshbaugh.com/uploads/picture/images/1438662805978693.png"><img src="http://seaneshbaugh.com/uploads/picture/images/1438662805978693.png"></a>
+</div>
+<p>Open the app and make sure it works. There's one last thing you should probably do first though; unlink GLEW and GLFW just to make sure the copied and modified dylibs are being loaded correctly. <code>brew unlink glew && brew unlink glfw3</code> should take care of this for you.</p>
+<div class="screenshot">
+  <a href="http://seaneshbaugh.com/uploads/picture/images/1438662894785546.png"><img src="http://seaneshbaugh.com/uploads/picture/images/1438662894785546.png"></a>
+</div>
+<p>Open the app again. If the exported app still works this means the exeuctable is referencing its own local copies of the GLEW and GLFW dylibs and not the ones installed on your system. Re-link GLEW and GLFW now.</p>
+<div class="screenshot">
+  <a href="http://seaneshbaugh.com/uploads/picture/images/1438663061750370.png"><img src="http://seaneshbaugh.com/uploads/picture/images/1438663061750370.png"></a>
+</div>
+<p>And there you have it, a working .app that has all of the stuff you need in it to get started on something useful using OpenGL.</p>
+<p>Here are some additional resources worth looking at. Most of them focus on OpenGL specific things rather than dealing with the tools you use.</p>
+<ul>
+  <li><a href="http://www.tomdalling.com/blog/category/modern-opengl/">&quot;Modern OpenGL Series&quot; by Tom Dalling</a></li>
+  <li><a href="https://github.com/tomdalling/opengl-series">&quot;Modern OpenGL Series&quot; source</a></li>
+  <li><A href="http://antongerdelan.net/opengl/">&quot;Anton's OpenGL 4 Tutorials&quot; by Dr. Anton Gerdelan</a></li>
+  <li><A href="https://open.gl/">&quot;open.gl&quot; by Alexander Overvoorde</a></li>
+  <li><A href="http://learnopengl.com/">&quot;Learn OpenGL&quot; by Joey de Vries</a></li>
+  <li><A href="http://docs.gl/">&quot;docs.gl&quot; by Jorge Rodríguez</a></li>
+</ul>

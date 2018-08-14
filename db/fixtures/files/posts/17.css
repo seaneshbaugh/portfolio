@@ -1,0 +1,17 @@
+#posts .post .heads-up {
+  display: none;
+}
+
+.heads-up {
+  color: #e34234;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.screenshot {
+  text-align: center;
+}
+
+.screenshot img {
+  max-width: 750px;
+}

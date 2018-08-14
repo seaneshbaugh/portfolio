@@ -1,0 +1,116 @@
+<p>Here's an idea I've had rolling around inside my head for a while: hashes with multiple keys for the same value. Or, rather, some data structure, that is like a hash, except that only the values are unique, not the key/value pair. A data structure like that would allow for multiple keys to access the same underlying data. What use could this possibly be? Well, I occasionally find myself doing something along these lines:</p>
+<pre>
+def flash_message_alert_class(name)
+  case name
+    when :success, :notice
+      'alert-success'
+    when :info
+      'alert-info'
+    when :warning
+      'alert-warning'
+    when :danger, :alert, :error
+      'alert-danger'
+    else
+      'alert-info'
+  end
+end
+</pre>
+<p>Where <code>name</code> is a key to the <a href="http://api.rubyonrails.org/classes/ActionDispatch/Flash/FlashHash.html">Rails flash hash</a>. That particular example isn't too egregious; it's easy enough to understand, only a handful of lines long, and most importantly has only a few possible outcomes. But what if that wasn't the case? What if we had 10, 100, or even 1000 when clauses? What if each of those clauses had as many possible values that would trigger it? That seems far fetched, and it is, but consider a more likely scenario, what if the above mapping between sets of symbols and a single string was somehow constructed at run-time based on various forms of input. It'd be very impractical or downright impossible to write a case statement to handle that. It occurred to me the other day that the above scenario could be modeled has a data structure much like the one I described.</p>
+<p>I'm positive I'm not the first person to think of this, but I have no idea what it would be called so I can't verify whether or not it has a name. If you're reading this and know the proper technical name of the data structure I've described <em>please</em> <a href="/contact">send me a message</a>, I would love to know. For now I'm calling it a &quot;multiple key hash&quot;. Other possible names I've considered are &quot;unique value hash&quot;, &quot;dedupicated hash&quot;, and &quot;double layered hash&quot;. That last one will make sense in a minute.</p>
+<p>I did however find an interesting <a href="http://stackoverflow.com/a/15914313/329602">Stack Overflow</a> answer which offered up what the poster called an <code>AliasedHash</code>. That data structure is pretty cool and is so close to what I've been thinking about but it's not quite there. I want &quot;aliasing&quot; to be implicit and consequently I want it to be impossible to have duplicate values. Attempting to create one will instead merely create an &quot;alias&quot;.</p>
+<p>Yesterday evening I finally got enough inspiration to implement a multiple key hash in Ruby. What I have so far is still very rough, untested (since I'm only one step beyond playing around in an irb REPL), and likely very bad as far as performance goes. Here's the most important parts:</p>
+<pre>
+class MultikeyHash
+  def initialize(initial_values = nil)
+    @outer_hash = {}
+
+    @inner_hash = {}
+
+    @next_inner_key = 1
+
+    if initial_values
+      initial_values.each do |keys, value|
+        if keys.is_a?(Array) && !keys.empty?
+          keys.each do |key|
+            self[key] = value
+          end
+        else
+          self[keys] = value
+        end
+      end
+    end
+  end
+
+  def [](outer_key)
+    inner_key = @outer_hash[outer_key]
+
+    if inner_key.nil?
+      nil
+    else
+      @inner_hash[inner_key]
+    end
+  end
+
+  def []=(outer_key, new_value)
+    inner_key = @inner_hash.select { |_, existing_value| existing_value == new_value }.map { |key, _| key }.first
+
+    if inner_key
+      @outer_hash[outer_key] = inner_key
+    else
+      @outer_hash[outer_key] = @next_inner_key
+
+      @inner_hash[@next_inner_key] = new_value
+
+      @next_inner_key += 1
+    end
+  end
+end
+</pre>
+<div class="well">
+  <p>A quick note before I explain this code in detail. The <code>MultikeyHash#new</code> method behaves a bit differently from <code>Hash#new</code> method; rather than take the default value (a feature I have not yet implemented) it takes a hash that represents the initial values of the <code>MultikeyHash</code>. Here is an example of how it would be used:</p>
+  <pre>
+m = MultikeyHash.new(['a', 'b', 'c'] => 'letters', [1, 2, 3] => 'numbers') #=> #&lt;MultikeyHash:0x007f9ad31bb370 @outer_hash={"a"=>1, "b"=>1, "c"=>1, 1=>2, 2=>2, 3=>2}, @inner_hash={1=>"letters", 2=>"numbers"}, @next_inner_key=3&gt;
+
+m[1]                                                                       #=> "numbers"
+
+m[2]                                                                       #=> "numbers"
+
+m['a']                                                                     #=> "letters"
+
+m['b']                                                                     #=> "letters"
+  </pre>
+  <p>If a key in the initial hash is a non-empty array then each element in that array is made a key of the new MultikeyHash. This means that if you want an actual array to be a key you will have to nest it inside of another array. Unfortunately I haven't been able to come up with a better solution. I'm afraid this might become a nuisance since it's not at all obvious without reading the source for <code>initialize</code>. I'm also considering changing it to accept anything that response to <code>each</code> to make it a bit more flexible.</p>
+</div>
+<p>The <code>MultikeyHash</code> class consists primarily of two hashes. The outer hash is what is exposed to the user. The keys behave like normal hash keys but the values are always just a key to the inner hash. I've chosen to use an integer for simplicity's sake. When accessing a <code>MultikeyHash</code> value we first find the inner hash key in the outer hash. If it exists we use that key to get the value from the inner hash, otherwise we return nil.</p>
+<p>Setting a value is a bit more complicated. First we check the inner hash to see if the value exists in the inner hash and if it does we get the inner key for it and set the outer hash value for the outer key to the inner key. If the value was not found we set the outer hash value for the outer key to a new inner key and then set the inner hash value for that new inner key to the new value and increment the inner key counter. The result of all this shuffling is that new values are effectively inserted as normal and existing values are given one more key by which they can be accessed. From the user's perspective hash access occurs like normal, but in reality there are two layers of access, the first mediating access to the second (hence why &quot;double layered hash&quot; is a name I've considered).</p>
+<p>
+<p>The above code works just fine, but it lacks something very important. One of the key features of Ruby's hashes is their ability to be enumerated. The <a href="http://www.ruby-doc.org/core-2.1.1/Enumerable.html">Enumerable</a> module provides a powerful set of methods to any class that implements its own <code>each</code> method. Let's take a look at just how easy this is:</p>
+<pre>
+class MultikeyHash
+  include Enumerable
+
+  # Omitting the rest of the class for the sake of brevity.
+
+  def each(&amp;block)
+    @outer_hash.group_by { |_, inner_key| inner_key }.inject({}) { |acc, e| acc[e.last.map { |i| i.first }] = @inner_hash[e.first]; acc }.each do |key, value|
+      block.call(key, value)
+    end
+  end
+end
+</pre>
+<p>By grouping the outer hash by the inner key and then collecting those groups into a new hash where the key is all of the outer keys and the value is value the inner key points to we end up with a hash that looks like <code>{[:a, :b, :c]=>"letters", [1, 2, 3]=>"numbers"}</code>. This lets us easily implement an inspect method:</p>
+<pre>
+class MultikeyHash
+  # Omitting the rest of the class for the sake of brevity.
+
+  def inspect
+    "{#{self.map { |keys, value| "#{keys.inspect}=>#{value.inspect}" }.join(', ')}}"
+  end
+
+  def to_s
+    inspect
+  end
+end
+</pre>
+<p>Because <code>MultikeyHash</code> has an <code>each</code> method it now has all the other goodies like <code>map</code>, <code>select</code>, <code>reject</code>, and <code>inject</code>.</p>
+<p>I'm still pretty hesitant to say this data structure is a good idea. I haven't actually used it for anything so I have no idea how it works in the real world. Odds are I never will. Either way, building new types of data structures is always lots of fun! You can find the whole class <a href="https://gist.github.com/seaneshbaugh/10678527">here</a>.</p>

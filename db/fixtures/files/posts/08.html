@@ -1,0 +1,39 @@
+<p>Last night I went to a surprisingly crowded meetup featuring Dave Thomas (of &quot;pickaxe&quot; fame) giving a talk about <a href="http://elixir-lang.org/">Elixir</a>. I had a great time hearing him share his experience and the chance to pick his brain about Elixir was rather exciting. His most interesting take away point: Elixir may or may not be the next &quot;big thing&quot; in programming languages, but whatever it ends up being, it's going to look and feel very similar to Elixir. I think I'm starting to be inclined to agree.</p>
+<p>The best part about the meetup was that I left with a better understanding of Elixir's (and Erlang's) concept of pattern matching and why it's so important. About a week ago I was attempting to do <a href="http://projecteuler.net/problem=1">Project Euler problem 1</a> in Elixir. Whenever I encounter a new language I like to re-solve some of the easier Euler problems with it just to get a feel for the language, how to set it up an environment, and how to handle the basic syntax and patterns. Since I've already done most of them in Ruby or JavaScript I have a basic understanding of what I'm trying to do. My first attempt at Euler #1 is, in retrospect, embarrassing. When Dave Thomas said that early on with Elixir he was stuck in a Ruby mindset I totally understood what he meant.</p>
+<pre>
+defmodule Euler do
+  def naive_euler_1(x) do
+    if x <= 1 do
+      0
+    else
+      if rem(x, 3) == 0 || rem(x, 5) == 0 do
+        x + naive_euler_1(x - 1)
+      else
+        naive_euler_1(x - 1)
+      end
+    end
+  end
+end
+
+IO.puts Euler.naive_euler_1(999)
+</pre>
+<p>I suppose it's not terrible considering I had only read and understood a few parts of the <a href="http://elixir-lang.org/getting_started/2.html">&quot;Getting Started&quot;</a> documentation. At least it's recursive!</p>
+<p>After getting home last night I immediately set out to re-write the above but using the awe-inspiring power of pattern matching.</p>
+<pre>
+defmodule Euler do
+  def better_euler_1(x) when x <= 1, do: 0
+  def better_euler_1(x) when rem(x, 3) == 0 or rem(x, 5) == 0, do: x + better_euler_1(x - 1)
+  def better_euler_1(x), do: better_euler_1(x - 1)
+end
+</pre>
+<p>Holy crap. No conditionals. Okay, well, technically there are conditionals, but they're in the form of guard statements on the pattern matching part of the function clause (I really hope I'm getting my terms right here!). Still, this is much cleaner and, from what I understand, much more idiomatic. Dave was rather emphatic in pointing out that by removing the standard if-then-else type of conditional logic you remove the possibility of many of the bugs typically found in software. I can't say I know from experience that that's true, but it's a very intriguing argument and one I hope to explore.</p>
+<p>After Dave was done speaking a couple of people from the audience went up front and shared some things they've been doing with Elixir lately. The first person, while giving a quick rundown of his version of <a href="https://github.com/gvaughn/elixir_kata/tree/master/conway">Conway's Game of Life</a> pointed out something interesting that had only been briefly touched upon earlier while Dave was speaking (although I'd seen it before while reading up on Elixir); the <code><a href="http://elixir-lang.org/docs/stable/Kernel.html#|>/2">|&gt;</a></code> macro. <code>|&gt;</code> takes whatever is returned from the left and passes it as the first argument to a function on the right. It's a simple but powerful expression. Realizing this I set out to shorten my solution to Euler #1 even further.</p>
+<pre>
+IO.puts 1..999 |> Enum.filter(fn x -> rem(x, 3) == 0 || rem(x, 5) == 0 end) |> Enum.reduce(0, fn (x, sum) -> x + sum end)
+</pre>
+<p>Again, holy crap. This is almost identical to my standard Ruby solution.</p>
+<pre>
+puts (1..999).select { |i| i % 3 == 0 || i % 5 == 0 }.inject(:+)
+</pre>
+<p>In fact, were I reading it out loud and explaining it to someone I would probably end up using almost the same English words in both cases. To me, that's a good sign.</p>
+<p>As soon as I'm done writing this I'm going to pre-order <a href="http://pragprog.com/book/elixir/programming-elixir">Dave's new book</a> on Elixir. He said he's as excited about Elixir as he was about Ruby many years ago. Color me excited too.</p>

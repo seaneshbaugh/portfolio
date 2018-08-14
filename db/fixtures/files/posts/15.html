@@ -1,0 +1,240 @@
+<p>Most of the time ActiveRecord <a href="http://guides.rubyonrails.org/active_record_callbacks.html">Callbacks</a> are pretty straight forward. But sometimes in larger projects or when using certain gems you can end up with more callbacks happening than you realize. If you're curious about just what is happening when on your model there's no straight forward way that I'm aware of to find out. However, it's actually not too difficult to do yourself.</p>
+<p>If you look at the methods available on an ActiveRecord model you'll find several related to callbacks. Here's what we find when inspecting a model that has a <a href="https://github.com/thoughtbot/paperclip">Paperclip</a> attachment (you'll see why in a minute).</p>
+<pre class="irb-output">
+~/my_project% rails c
+Loading development environment (Rails 4.2.0)
+2.2.1 :001 &gt; MyModel.methods.select { |method| method.to_s.include?('callback') }
+ =&gt; [:_validate_callbacks,
+ :_save_callbacks,
+ :_destroy_callbacks,
+ :_commit_callbacks,
+ :_post_process_callbacks,
+ :_post_process_callbacks?,
+ :_post_process_callbacks=,
+ :_file_post_process_callbacks,
+ :_file_post_process_callbacks?,
+ :_file_post_process_callbacks=,
+ :_validate_callbacks?,
+ :_validate_callbacks=,
+ :_validation_callbacks,
+ :_validation_callbacks?,
+ :_validation_callbacks=,
+ :_initialize_callbacks,
+ :_initialize_callbacks?,
+ :_initialize_callbacks=,
+ :_find_callbacks,
+ :_find_callbacks?,
+ :_find_callbacks=,
+ :_touch_callbacks,
+ :_touch_callbacks?,
+ :_touch_callbacks=,
+ :_save_callbacks?,
+ :_save_callbacks=,
+ :_create_callbacks,
+ :_create_callbacks?,
+ :_create_callbacks=,
+ :_update_callbacks,
+ :_update_callbacks?,
+ :_update_callbacks=,
+ :_destroy_callbacks?,
+ :_destroy_callbacks=,
+ :_commit_callbacks?,
+ :_commit_callbacks=,
+ :_rollback_callbacks,
+ :_rollback_callbacks?,
+ :_rollback_callbacks=,
+ :raise_in_transactional_callbacks,
+ :raise_in_transactional_callbacks=,
+ :define_paperclip_callbacks,
+ :normalize_callback_params,
+ :__update_callbacks,
+ :set_callback,
+ :skip_callback,
+ :reset_callbacks,
+ :define_callbacks,
+ :get_callbacks,
+ :set_callbacks,
+ :define_model_callbacks]
+</pre>
+<p>That's a pretty lengthy list, and just by glancing at it we can see several methods like <code>_initialize_callbacks=</code> and <code>skip_callback</code> that aren't likely to be relevant to the problem at hand. The protected method <a href="http://api.rubyonrails.org/classes/ActiveSupport/Callbacks/ClassMethods.html#method-i-get_callbacks"><code>get_callbacks</code></a> looks promising, but if you look at <a href="https://github.com/rails/rails/blob/v4.2.0/activesupport/lib/active_support/callbacks.rb#L742">the source</a>:</p>
+<pre>
+def get_callbacks(name)
+  send &quot;_#{name}_callbacks&quot;
+end
+</pre>
+<p>it quickly becomes obvious that it wasn't meant to be used to get a comprehensive list of all the callbacks on a model. Instead it just gives us the callbacks related to one particular event. That's great, but what about when we don't know all of the events? I deliberately chose a model with a Paperclip attachment because Paperclip provides some of its own callback events. They could easily be missed if we assumed only the standard ActiveRecord callbacks were available. Without knowing otherwise before hand that's a fair, but potentially incorrect, assumption.</p>
+<p>From <code>get_callbacks</code> we can see that the methods it calls all take the form of &quot;_#{name}_callbacks&quot; where <code>name</code> is the name of the event. Well, a few methods in our list from before seem to match that pattern, so with a little help from a regular expression we can get just those:</p>
+<pre class="irb-output">
+2.2.1 :002 &gt; MyModel.methods.select { |method| method.to_s =~ /^_{1}[^_].+_callbacks$/ }
+ =&gt; [:_validate_callbacks,
+ :_save_callbacks,
+ :_destroy_callbacks,
+ :_commit_callbacks,
+ :_post_process_callbacks,
+ :_file_post_process_callbacks,
+ :_validation_callbacks,
+ :_initialize_callbacks,
+ :_find_callbacks,
+ :_touch_callbacks,
+ :_create_callbacks,
+ :_update_callbacks,
+ :_rollback_callbacks]
+</pre>
+<p>This is great, but still not quite what we want. Each of these methods returns an array-like <a href="https://github.com/rails/rails/blob/v4.2.0/activesupport/lib/active_support/callbacks.rb#L471">CallbackChain</a> object containing a set of <a href="https://github.com/rails/rails/blob/v4.2.0/activesupport/lib/active_support/callbacks.rb#L348">Callback</a> objects:</p>
+<pre class="irb-output">
+2.2.1 :003 &gt; MyModel._save_callbacks
+ =&gt; #&lt;ActiveSupport::Callbacks::CallbackChain:0x007fbf7567e918
+ @callbacks=nil,
+ @chain=
+  [#&lt;ActiveSupport::Callbacks::Callback:0x007fbf7362c098
+    @chain_config=
+     {:scope=&gt;[:kind, :name],
+      :terminator=&gt;
+       #&lt;Proc:0x007fbf73237cf8@/Users/sean_eshbaugh/.rvm/gems/ruby-2.2.1@my_project/gems/activemodel-4.2.0/lib/active_model/callbacks.rb:106 (lambda)&gt;,
+      :skip_after_callbacks_if_terminated=&gt;true},
+    @filter=
+     #&lt;Proc:0x007fbf7362c390@/Users/sean_eshbaugh/.rvm/gems/ruby-2.2.1@my_project/gems/paperclip-4.2.1/lib/paperclip/has_attached_file.rb:91&gt;,
+    @if=
+     [#&lt;ActiveSupport::Callbacks::Conditionals::Value:0x007fbf7362c340
+       @block=
+        #&lt;Proc:0x007fbf7362c2f0@/Users/sean_eshbaugh/.rvm/gems/ruby-2.2.1@my_project/gems/activemodel-4.2.0/lib/active_model/callbacks.rb:141&gt;&gt;],
+    @key=70230125666760,
+    @kind=:after,
+    @name=:save,
+    @unless=[]&gt;,
+   #&lt;ActiveSupport::Callbacks::Callback:0x007fbf75684ae8
+    @chain_config=
+     {:scope=&gt;[:kind, :name],
+      :terminator=&gt;
+       #&lt;Proc:0x007fbf73237cf8@/Users/sean_eshbaugh/.rvm/gems/ruby-2.2.1@my_project/gems/activemodel-4.2.0/lib/active_model/callbacks.rb:106 (lambda)&gt;,
+      :skip_after_callbacks_if_terminated=&gt;true},
+    @filter=:autosave_associated_records_for_document,
+    @if=[],
+    @key=:autosave_associated_records_for_document,
+    @kind=:before,
+    @name=:save,
+    @unless=[]&gt;,
+   #&lt;ActiveSupport::Callbacks::Callback:0x007fbf7567ea80
+    @chain_config=
+     {:scope=&gt;[:kind, :name],
+      :terminator=&gt;
+       #&lt;Proc:0x007fbf73237cf8@/Users/sean_eshbaugh/.rvm/gems/ruby-2.2.1@my_project/gems/activemodel-4.2.0/lib/active_model/callbacks.rb:106 (lambda)&gt;,
+      :skip_after_callbacks_if_terminated=&gt;true},
+    @filter=:autosave_associated_records_for_uploader,
+    @if=[],
+    @key=:autosave_associated_records_for_uploader,
+    @kind=:before,
+    @name=:save,
+    @unless=[]&gt;],
+ @config=
+  {:scope=&gt;[:kind, :name],
+   :terminator=&gt;
+    #&lt;Proc:0x007fbf73237cf8@/Users/sean_eshbaugh/.rvm/gems/ruby-2.2.1@my_project/gems/activemodel-4.2.0/lib/active_model/callbacks.rb:106 (lambda)&gt;,
+   :skip_after_callbacks_if_terminated=&gt;true},
+ @mutex=#&lt;Mutex:0x007fbf7567e8c8&gt;,
+ @name=:save&gt;
+</pre>
+<p>Each of these has an interesting method named <a href="https://github.com/rails/rails/blob/v4.2.0/activesupport/lib/active_support/callbacks.rb#L367"><code>raw_filter</code></a> which returns either a method name Symbol or a Proc object. Let's see what we get when we inspect that for each of our model's save callbacks:</p>
+<pre class="ibr-output">
+2.2.1 :004 &gt; MyModel._save_callbacks.map { |callback| callback.raw_filter }
+ =&gt; [#&lt;Proc:0x007fbf7362c390@/Users/sean_eshbaugh/.rvm/gems/ruby-2.2.1@my_project/gems/paperclip-4.2.1/lib/paperclip/has_attached_file.rb:91&gt;,
+ :autosave_associated_records_for_document,
+ :autosave_associated_records_for_uploader]
+</pre>
+<p>We get an array with a Proc and a couple of Symbols which starts to give us a much better sense of what will happen when we save a model. There's one more important detail though that we've overlooked, each Callback object has a <code>kind</code> property that will tell us whether the callback gets called before, after, or around the event. Let's group our callbacks by <code>kind</code>:</p>
+<pre class="ibr-output">
+2.2.1 :005 &gt; MyModel._save_callbacks.group_by(&amp;:kind).each { |_, callbacks| callbacks.map! { |callback| callback.raw_filter } }
+ =&gt; {:after=>
+  [#&lt;Proc:0x007fbf7362c390@/Users/sean_eshbaugh/.rvm/gems/ruby-2.2.1@my_project/gems/paperclip-4.2.1/lib/paperclip/has_attached_file.rb:91&gt;],
+ :before=>
+  [:autosave_associated_records_for_document,
+   :autosave_associated_records_for_uploader]}
+ => {:after=>[#&lt;Proc:0x007fbf7362c390@/Users/sean_eshbaugh/.rvm/gems/ruby-2.2.1@my_project/gems/paperclip-4.2.1/lib/paperclip/has_attached_file.rb:91&gt;], :before=>[:autosave_associated_records_for_document, :autosave_associated_records_for_uploader]}
+</pre>
+<p>Awesome! Finally something that will start to give us real insight into what happens when. But we can still do better, what about all the callbacks? If we combine the regular expression filter of the class methods from before with the above we get a complete picture for the whole model:
+<pre class="irb-output">
+2.2.1 :006 &gt; MyModel.methods.select { |method| method.to_s =~ /^_{1}[^_].+_callbacks$/ }.each_with_object({}) { |method, memo| memo[method] = MyModel.send(method).group_by(&amp;:kind).each { |_, callbacks| callbacks.map! { |callback| callback.raw_filter } } }
+ =&gt; {:_validate_callbacks=&gt;
+  {:before=&gt;
+    [#&lt;ActiveModel::BlockValidator:0x007fbf7362d3f8
+      @attributes=[:file],
+      @block=
+       #&lt;Proc:0x007fbf7362d510@/Users/sean_eshbaugh/.rvm/gems/ruby-2.2.1@my_project/gems/paperclip-4.2.1/lib/paperclip/has_attached_file.rb:27&gt;,
+      @options={}&gt;,
+     #&lt;Paperclip::Validators::MediaTypeSpoofDetectionValidator:0x007fbf73624320
+      @attributes=[:file],
+      @options=
+       {:if=&gt;
+         #&lt;Proc:0x007fbf736245f0@/Users/sean_eshbaugh/.rvm/gems/ruby-2.2.1@my_project/gems/paperclip-4.2.1/lib/paperclip/has_attached_file.rb:85 (lambda)&gt;}&gt;,
+     #&lt;ActiveRecord::Validations::PresenceValidator:0x007fbf7567e440
+      @attributes=[:document],
+      @options={}&gt;,
+     #&lt;ActiveRecord::Validations::PresenceValidator:0x007fbf7567dc20
+      @attributes=[:uploader],
+      @options={}&gt;,
+     #&lt;ActiveRecord::Validations::UniquenessValidator:0x007fbf7567d400
+      @attributes=[:file_fingerprint],
+      @klass=
+       MyModel(id: integer, file_file_name: string, file_content_type: string, file_file_size: integer, file_updated_at: datetime, file_fingerprint: string, created_at: datetime, updated_at: datetime),
+      @options=
+       {:case_sensitive=&gt;true,
+        :if=&gt;
+         #&lt;Proc:0x007fbf7567d5b8@/Users/sean_eshbaugh/sites/clickherelabs/hub/app/models/attachment.rb:22 (lambda)&gt;}&gt;,
+     #&lt;Paperclip::Validators::AttachmentPresenceValidator:0x007fbf7567c4b0
+      @attributes=[:file],
+      @options={}&gt;,
+     #&lt;Paperclip::Validators::AttachmentSizeValidator:0x007fbf756774d8
+      @attributes=[:file],
+      @options={:less_than=&gt;1073741824}&gt;,
+     #&lt;Paperclip::Validators::AttachmentFileTypeIgnoranceValidator:0x007fbf75676510
+      @attributes=[:file],
+      @options={}&gt;]},
+ :_save_callbacks=&gt;
+  {:after=&gt;
+    [#&lt;Proc:0x007fbf7362c390@/Users/sean_eshbaugh/.rvm/gems/ruby-2.2.1@my_project/gems/paperclip-4.2.1/lib/paperclip/has_attached_file.rb:91&gt;],
+   :before=&gt;
+    [:autosave_associated_records_for_document,
+     :autosave_associated_records_for_uploader]},
+ :_destroy_callbacks=&gt;
+  {:before=&gt;
+    [#&lt;Proc:0x007fbf73627f48@/Users/sean_eshbaugh/.rvm/gems/ruby-2.2.1@my_project/gems/paperclip-4.2.1/lib/paperclip/has_attached_file.rb:92&gt;]},
+ :_commit_callbacks=&gt;
+  {:after=&gt;
+    [#&lt;Proc:0x007fbf736279f8@/Users/sean_eshbaugh/.rvm/gems/ruby-2.2.1@my_project/gems/paperclip-4.2.1/lib/paperclip/has_attached_file.rb:93&gt;]},
+ :_post_process_callbacks=&gt;{},
+ :_file_post_process_callbacks=&gt;
+  {:before=&gt;
+    [#&lt;Proc:0x007fbf75687888@/Users/sean_eshbaugh/.rvm/gems/ruby-2.2.1@my_project/gems/paperclip-4.2.1/lib/paperclip/validators.rb:67&gt;,
+     #&lt;Proc:0x007fbf75677b18@/Users/sean_eshbaugh/.rvm/gems/ruby-2.2.1@my_project/gems/paperclip-4.2.1/lib/paperclip/validators.rb:67&gt;,
+     #&lt;Proc:0x007fbf75676bf0@/Users/sean_eshbaugh/.rvm/gems/ruby-2.2.1@my_project/gems/paperclip-4.2.1/lib/paperclip/validators.rb:67&gt;]},
+ :_validation_callbacks=&gt;{},
+ :_initialize_callbacks=&gt;{},
+ :_find_callbacks=&gt;{},
+ :_touch_callbacks=&gt;{},
+ :_create_callbacks=&gt;{},
+ :_update_callbacks=&gt;{},
+ :_rollback_callbacks=&gt;{}}
+</pre>
+<p>And for the sake of reusability we can easily wrap this up in a module (pardon the terrible name):</p>
+<pre>
+module ShowCallbacks
+  def show_callbacks
+    _callback_methods = methods.select do |method|
+      method.to_s =~ /^_{1}[^_].+_callbacks$/
+    end
+
+    _callback_methods.each_with_object({}) do |method, memo|
+      memo[method] = send(method).group_by(&amp;:kind).each do |_, callbacks|
+        callbacks.map! do |callback|
+          callback.raw_filter
+        end
+      end
+    end
+  end
+end
+
+class MyModel
+  extend ShowCallbacks
+  ...
+end
+</pre>

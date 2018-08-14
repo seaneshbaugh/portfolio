@@ -1,0 +1,37 @@
+<p>File this under &quot;things that are obvious in retrospect&quot;. I got to wondering if it's possible to recursively call a closure in Elixir. The answer is of course, yes, but with a small caveat. You simply have to pass the function (so it can't be truly anonymous) as an argument so it can be used as a callback.</p>
+<p>Consider the following pathetic first attempt:</p>
+<pre>
+lol = fn
+  0 -> 0
+  x -> x + lol.(x - 1)
+end
+
+IO.puts lol.(100)
+</pre>
+<p>Looks good, right? Not quite...</p>
+<pre>
+seshbaugh ~% elixir lol.exs
+** (CompileError) /Users/seshbaugh/lol.exs:3: function lol/0 undefined
+    src/elixir_translator.erl:463: :elixir_translator.translate_each/2
+    src/elixir_translator.erl:613: :elixir_translator.translate_arg/2
+    lists.erl:1339: :lists.mapfoldl/3
+    lists.erl:1340: :lists.mapfoldl/3
+    src/elixir_translator.erl:620: :elixir_translator.translate_args/2
+    src/elixir_translator.erl:80: :elixir_translator.translate_each/2
+    lists.erl:1339: :lists.mapfoldl/3
+</pre>
+<p>The closure has no idea what we're talking about. Which shouldn't really come as a surprise, we're still in the middle of defining the value of <code>lol</code> (that's my understanding as of right now, if I discover that I'm right for the wrong reason I will be sure to update this post). If we want to call <code>lol</code> from within itself we have to pass a reference to it to itself, like so:</p>
+<pre>
+lol = fn
+  _, 0 -> 0
+  lol, x -> x + lol.(lol, x - 1)
+end
+
+IO.puts lol.(lol, 100)
+</pre>
+<p>This time around we pass <code>lol</code> has an argument to itself. In the first function clause the callback is ignored (since its purpose is to halt the recursion) and in the second one we use call it, with itself as the first argument again. Now when we run this we get the expected output:</p>
+<pre>
+seshbaugh ~% elixir lol.exs
+5050
+</pre>
+<p>I'm not sure if this is really all that useful, since you could (and probably should) use <code>defp</code> in your modules to define private functions that aren't available outside the module. But it never hurts to know what's possible!</p>

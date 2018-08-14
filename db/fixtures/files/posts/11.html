@@ -1,0 +1,71 @@
+<p>Lately it seems like all of my posts are about things that are super, painfully, embarrassingly obvious in hindsight. The trend continues!</p>
+<p>Over the last week I've been learning to use <a href="https://wiki.opscode.com/display/chef/Home">Chef</a> to set up some servers at work (with the help of the <a href="https://github.com/scottvrosenthal/iron_chef">iron_chef</a> gem, which was written by a co-worker of mine). At this point I feel like a real dummy for never having bothered to use Chef before, especially since it's been around for some time now. If you're not using Chef for server management you really ought to look into it. It makes automating your setup easy and having everything that your servers need documented in your scripts is awesome.</p>
+<p>Despite quickly becoming a &quot;why wasn't I using this before?&quot; sort of tool there's been a few conceptual hurdles, as there always is with any framework or DSL. The one that really got me is the <code>not_if</code>/<code>only_if</code> conditional guards on resource blocks. The Chef <a href="http://docs.opscode.com/resource.html">documentation</a> lays it out in what seems like a straightforward manner:</p>
+<blockquote>The not_if and only_if conditional executions can be used to put additional guards around certain resources so that they are only run when the condition is met.</blockquote>
+<p>Seems simple right? Well, if you look around enough you'll see examples of <code>not_if</code> and <code>only_if</code> used with either a block passed as the argument or with a String passed as the argument.</p>
+<p>Here's two quick real and I swear not-contrived examples. One with a block:</p>
+<pre>
+bash 'unarchive-lame-source' do
+  cwd ::File.dirname(src_filepath)
+
+  code &lt;&lt;-EOH
+    tar zxf #{::File.basename(src_filepath)} -C #{::File.dirname(src_filepath)}
+  EOH
+
+  not_if { ::File.directory?(::File.join(Chef::Config[:file_cache_path] || 'tmp', &quot;lame-#{node['lame']['version']}&quot;)) }
+end
+</pre>
+<p>And one with a string:</p>
+<pre>
+bash 'compile-lame-source' do
+  cwd ::File.dirname(src_filepath)
+
+  code &lt;&lt;-EOH
+    cd lame-#{node['lame']['version']} &amp;&amp;
+    ./configure #{lame_options.join(' ')} &amp;&amp;
+    make &amp;&amp;
+    make install
+  EOH
+
+  not_if 'sudo ldconfig &amp;&amp; ldconfig -p | grep libmp3lame'
+end
+</pre>
+<p>Here comes the embarrassing part. To me, at least, it wasn't clear what each form of the method call did, or really that there is a difference between the two. When passing a block as the argument, the result of the block, truthy or falsy, determines whether or not the resource is run. When passing a String, it is executed as a shell command and the return result of the command is used to determine whether or not the resource is run. Remember, for shell commands a return result of 0 indicates success (or true) and anything else, typically 1, but it can be any non-zero value, indicates failure (or false).</p>
+<p>At first I was naively trying to use <code>not_if</code> like this <code>not_if { 'sudo ldconfig &amp;&amp; ldconfig -p | grep libmp3lame' }</code> expecting the block to run the command. Instead, the block just returns the string. Since Strings are truthy the block always returns true and always skips the resource for <code>not_if</code> or runs the resource for <code>only_if</code>.<p>
+<p>If we take a look at the <a href="https://github.com/opscode/chef/blob/master/lib/chef/resource/conditional.rb">source</a> for <code>Chef::Resource::Conditional#initialize</code> it becomes pretty clear what's going on.</p>
+<pre>
+def initialize(positivity, command=nil, command_opts={}, &amp;block)
+  @positivity = positivity
+  case command
+  when String
+    @command, @command_opts = command, command_opts
+    @block = nil
+  when nil
+    raise ArgumentError, &quot;only_if/not_if requires either a command or a block&quot; unless block_given?
+    @command, @command_opts = nil, nil
+    @block = block
+  else
+    raise ArgumentError, &quot;Invalid only_if/not_if command: #{command.inspect} (#{command.class})&quot;
+  end
+end
+</pre>
+<p>Here we can clearly see that if the optional command is passed as a String the <code>Chef::Resource::Conditional</code> object is initialized with the command and command options and the block instance variable set to nil (and importantly, ignored if it was passed at all). If no command was passed but a block was given then the command and command options instance variables are set to nil and the block instance variable is set to the block that was passed. And finally an exception is raised if no command or block is given or if something weird is passed as the command.</p>
+<p>And if you look a little bit further down in the source you'll find where the conditional is actually evaluated:</p>
+<pre>
+def evaluate
+  @command ? evaluate_command : evaluate_block
+end
+
+def evaluate_command
+  shell_out(@command, @command_opts).status.success?
+rescue Chef::Exceptions::CommandTimeout
+  Chef::Log.warn "Command '#{@command}' timed out"
+  false
+end
+
+def evaluate_block
+  @block.call
+end
+</pre>
+<p>Pretty much exactly as I described above. If the command instance variable is present, it'll evaluate the command, otherwise it'll call the block. If you're interested in seeing how the cross-platform <code>shell_out</code> method works you can check out the <a href="https://github.com/opscode/mixlib-shellout">source</a>, it's definitely worth a read.</p>
+<p>In fact, I think the takeaway from all of this is, when in doubt, go straight to the source code. It'll save you lots of time and you'd be hard pressed to not learn something new, especially if you're diving into a well-known and properly designed library.</p>
