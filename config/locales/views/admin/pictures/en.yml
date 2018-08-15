@@ -4,5 +4,12 @@ en:
       index:
         title: "Pictures"
         new_picture: "New Picture"
-        destroy_confirmation: "Are you sure you want to delete this picture?"
+        delete_confirmation: "Are you sure you want to delete this picture?"
         no_pictures: "There are no pictures yet. Click 'New Picture' to get started."
+      show:
+        title: "Picture"
+        back_to_pictures: "Back to Pictures"
+      new:
+        title: "New Picture"
+      edit:
+        title: "Edit Picture"

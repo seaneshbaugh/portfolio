@@ -4,8 +4,11 @@ en:
       index:
         title: "Posts"
         new_post: "New Post"
-        no_posts: "There are no posts yet. Click 'New Post' to get started."
         delete_confirmation: "Are you sure you want to delete this post?"
+        no_posts: "There are no posts yet. Click 'New Post' to get started."
+      show:
+        title: "Post"
+        back_to_posts: "Back to Posts"
       new:
         title: "New Post"
       edit:
