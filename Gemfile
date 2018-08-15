@@ -10,6 +10,7 @@ gem 'rails', '5.2.1'
 
 gem 'acts-as-taggable-on', '~> 6.0'
 gem 'aws-sdk-s3', '~> 1.17.0', require: false
+gem 'classnames', '~> 1.0.0'
 gem 'bootsnap', '~> 1.3.1', require: false
 gem 'default_value_for', '~> 3.1.0'
 gem 'devise', '~> 4.4.3'
