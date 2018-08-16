@@ -1,60 +1,53 @@
 - present @page do |page_presenter|
-  %h2= page_presenter.title
-  .admin-actions
-    = link_to 'Back to Index', admin_pages_path, class: 'btn btn-default'
-    - if policy(@page).edit?
-      = link_to 'Edit', edit_admin_page_path(@page), class: 'btn btn-primary'
-    - if policy(@page).destroy?
-      = link_to 'Delete', admin_page_path(@page), method: 'delete', class: 'btn btn-danger', data: { confirm: 'Are you sure?' }
-  %h3 Page Attributes
-  .page.attributes
-    .row.attribute
-      %strong.col-xs-12.col-sm-2.attribute-name.title Title
-      .col-xs-12.col-sm-10.attribute-value.title= page_presenter.title
-    .row.attribute
-      %strong.col-xs-12.col-sm-2.attribute-name.slug Slug
-      .col-xs-12.col-sm-10.attribute-value.slug
+  .row
+    .col.s12
+      %h2= "#{t('.title')}: #{page_presenter.title}"
+  .row
+    .admin-actions.col.s12
+      = link_to t('.back_to_pages'), admin_pages_path, class: info_button_class
+      - if policy([:admin, @page]).edit?
+        = edit_icon_link(edit_admin_page_path(@page), label: t('edit'))
+      - if policy([:admin, @page]).destroy?
+        = delete_icon_link(admin_page_path(@page), label: t('delete'))
+  .page
+    .attribute.title.row
+      .attribute-name.col.s12.m3.l3= t('activerecord.attributes.page.title')
+      .attribute-value.col.s12.m9.l9= page_presenter.title
+    .attribute.slug.row
+      .attribute-name.col.s12.m3.l3= t('activerecord.attributes.page.slug')
+      .attribute-value.col.s12.m9.l9
         = page_presenter.slug
         = page_presenter.share_link target: '_blank'
-    .row.attribute
-      %strong.col-xs-12.col-sm-2.attribute-name.body Body
-      .col-xs-12.col-sm-10.attribute-value.body
+    .attribute.body.row
+      .attribute-name.col.s12.m3.l3= t('activerecord.attributes.page.body')
+      .attribute-value.col.s12.m9.l9
         - if page_presenter.body.present?
           %pre= page_presenter.body
-        - else
-    .row.attribute
-      %strong.col-xs-12.col-sm-2.attribute-name.style Style
-      .col-xs-12.col-sm-10.attribute-value.style
+    .attribute.style.row
+      .attribute-name.col.s12.m3.l3= t('activerecord.attributes.page.style')
+      .attribute-value.col.s12.m9.l9
         - if page_presenter.style.present?
           %pre= page_presenter.style
-        - else
-    .row.attribute
-      %strong.col-xs-12.col-sm-2.attribute-name.script Script
-      .col-xs-12.col-sm-10.attribute-value.script
+    .attribute.script.row
+      .attribute-name.col.s12.m3.l3= t('activerecord.attributes.page.script')
+      .attribute-value.col.s12.m9.l9
         - if page_presenter.script.present?
           %pre= page_presenter.script
-        - else
-    .row.attribute
-      %strong.col-xs-12.col-sm-2.attribute-name.meta-description Meta Description
-      .col-xs-12.col-sm-10.attribute-value.meta-description= page_presenter.meta_description
-    .row.attribute
-      %strong.col-xs-12.col-sm-2.attribute-name.meta-keywords Meta Keywords
-      .col-xs-12.col-sm-10.attribute-value.meta-keywords= page_presenter.meta_keywords
-    .row.attribute
-      %strong.col-xs-12.col-sm-2.attribute-name.order Order
-      .col-xs-12.col-sm-10.attribute-value.order= page_presenter.order
-    .row.attribute
-      %strong.col-xs-12.col-sm-2.attribute-name.color Color
-      .col-xs-12.col-sm-10.attribute-value.color= page_presenter.color_text
-    .row.attribute
-      %strong.col-xs-12.col-sm-2.attribute-name.show-in-menu Show in Menu?
-      .col-xs-12.col-sm-10.attribute-value.show-in-menu= page_presenter.show_in_menu
-    .row.attribute
-      %strong.col-xs-12.col-sm-2.attribute-name.visible Visible?
-      .col-xs-12.col-sm-10.attribute-value.visible= page_presenter.visible
-    .row.attribute
-      %strong.col-xs-12.col-sm-2.attribute-name.created-at Created At
-      .col-xs-12.col-sm-10.attribute-value.created-at= page_presenter.created_at
-    .row.attribute
-      %strong.col-xs-12.col-sm-2.attribute-name.updated-at Updated At
-      .col-xs-12.col-sm-10.attribute-value.updated-at= page_presenter.updated_at
+    .attribute.order.row
+      .attribute-name.col.s12.m3.l3= t('activerecord.attributes.page.order')
+      .attribute-value.col.s12.m9.l9= page_presenter.order
+    .attribute.color.row
+      .attribute-name.col.s12.m3.l3= t('activerecord.attributes.page.color')
+      .attribute-value.col.s12.m9.l9= page_presenter.color_text
+    .attribute.show-in-menu.row
+      .attribute-name.col.s12.m3.l3= t('activerecord.attributes.page.show_in_menu')
+      .attribute-value.col.s12.m9.l9= page_presenter.show_in_menu
+    .attribute.visible.row
+      .attribute-name.col.s12.m3.l3= t('activerecord.attributes.page.visible')
+      .attribute-value.col.s12.m9.l9= page_presenter.visible
+    .attribute.created-at.row
+      .attribute-name.col.s12.m3.l3= t('activerecord.attributes.page.created_at')
+      .attribute-value.col.s12.m9.l9= page_presenter.created_at
+    .attribute.updated-at.row
+      .attribute-name.col.s12.m3.l3= t('activerecord.attributes.page.updated_at')
+      .attribute-value.col.s12.m9.l9= page_presenter.updated_at

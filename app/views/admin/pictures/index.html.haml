@@ -12,14 +12,14 @@
         = f.text_field :caption_cont
         = f.label :caption_cont, t('activerecord.attributes.picture.caption')
       .input-field.col.s3
-        = f.button content_tag(:i, 'search', class: 'material-icons'), class: 'btn btn-flat waves-effect waves-light yellow darken-3'
-        = link_to content_tag(:i, 'clear', class: 'material-icons'), admin_pictures_path, class: 'btn btn-flat waves-effect waves-loght red darken-3'
+        = f.button search_icon, class: caution_button_class
+        = cancel_icon_link(admin_pictures_path)
 - if policy([:admin, Picture]).create?
   .row
     .image-uploader-container.col.s12
 .row
-  .picture-list-container.col.s12{ 'data-pictures' => @pictures.map { |picture| PictureSerializer.new(picture).as_json }.to_json }
--if @pictures.present?
+  .picture-list-container.col.s12{ 'data-pictures' => @pictures.map { |picture| PictureSerializer.new(picture) }.to_json }
+- if @pictures.present?
   .row
     .col.s12
       = paginate @pictures

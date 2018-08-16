@@ -4,11 +4,18 @@ class PicturePresenter < BasePresenter
   include Rails.application.routes.url_helpers
 
   delegate :image_tag, to: :@template
+  delegate :key, :filename, :content_type, :metadata, :byte_size, :checksum, to: :'@picture.image.attachment.blob', prefix: :image
 
   def initialize(picture, template)
     super
 
     @picture = picture
+  end
+
+  def image_size(pretty = true)
+    return "#{image_byte_size.to_s.chars.to_a.reverse.each_slice(3).map(&:join).join(',').reverse} bytes" unless pretty
+
+    Filesize.new(image_byte_size).pretty
   end
 
   # TODO: Consider DRYing this?

@@ -1,13 +1,39 @@
-= form_for [:admin, @page], builder: AceBuilder, layout: :horizontal do |f|
-  = f.text_field :title
-  = f.ace_editor :body, mode: 'rhtml'
-  = f.ace_editor :style, mode: 'css'
-  = f.ace_editor :script, mode: 'javascript'
-  = f.text_area :meta_description, rows: '2'
-  = f.text_area :meta_keywords, rows: '2'
-  = f.number_field :order
-  = f.text_field :color, class: 'colorpicker-control'
-  = f.check_box :show_in_menu
-  = f.check_box :visible
-  = f.submit 'Submit'
-  = link_to 'Cancel', admin_pages_path, class: 'btn btn-default'
+= form_for [:admin, @page], builder: AceBuilder, html: { class: 'col s12' } do |f|
+  .row
+    .input-field.col.s12
+      = f.text_field :title
+      = f.label :title
+  .row
+    .input-field.col.s12
+      = f.picture_inserter :body
+  .row
+    .input-field.col.s12
+      = f.ace_editor :body, mode: 'rhtml'
+  .row
+    .input-field.col.s12
+      = f.ace_editor :style, mode: 'css'
+  .row
+    .input-field.col.s12
+      = f.ace_editor :script, mode: 'javascript'
+  .row
+    .input-field.col.s12
+      = f.number_field :order
+      = f.label :order
+  .row
+    .input-field.col.s12
+      = f.color_field :color
+      = f.label :color
+  .row
+    .input-field.col.s12
+      = f.label :show_in_menu do
+        = f.check_box :show_in_menu
+        %span= t('activerecord.pages.attributes.show_in_menu')
+  .row
+    .input-field.col.s12
+      = f.label :visible do
+        = f.check_box :visible
+        %span= t('activerecord.pages.attributes.visible')
+  .row
+    .input-field.col.s12
+      = f.submit t('submit'), class: success_button_class
+      = link_to t('cancel'), admin_pages_path, class: warning_button_class

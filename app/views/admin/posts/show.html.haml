@@ -1,51 +1,46 @@
 - present @post do |post_presenter|
-  %h2= post_presenter.title
-  .admin-actions
-    = link_to 'Back to Index', admin_posts_path, class: 'btn btn-default'
-    - if policy(@post).edit?
-      = link_to 'Edit', edit_admin_post_path(@post), class: 'btn btn-primary'
-    - if policy(@post).destroy?
-      = link_to 'Delete', admin_post_path(@post), class: 'btn btn-danger', data: { confirm: 'Are you sure?' }
-  %h3 Post Attributes
-  .post.attributes
-    .row.attribute
-      %strong.col-xs-12.col-sm-2.attribute-name.title Title
-      .col-xs-12.col-sm-10.attribute-value.title= post_presenter.title
-    .row.attribute
-      %strong.col-xs-12.col-sm-2.attribute-name.slug Slug
-      .col-xs-12.col-sm-10.attribute-value.slug
+  .row
+    .col.s12
+      %h2= "#{t('.title')}: #{post_presenter.title}"
+  .row
+    .admin-actions.col.s12
+      = link_to t('.back_to_posts'), admin_posts_path, class: info_button_class
+      - if policy([:admin, @post]).edit?
+        = edit_icon_link(edit_admin_post_path(@post), label: t('edit'))
+      - if policy([:admin, @post]).destroy?
+        = delete_icon_link(admin_post_path(@post), label: t('delete'))
+  .post
+    .attribute.title.row
+      .attribute-name.col.s12.m3.l3= t('activerecord.attributes.post.title')
+      .attribute-value.col.s12.m9.l9= post_presenter.title
+    .attribute.slug.row
+      .attribute-name.col.s12.m3.l3= t('activerecord.attributes.post.slug')
+      .attribute-value.col.s12.m9.l9
         = post_presenter.slug
         = post_presenter.share_link target: '_blank'
-    .row.attribute
-      %strong.col-xs-12.col-sm-2.attribute-name.body Body
-      .col-xs-12.col-sm-10.attribute-value.body
+    .attribute.body.row
+      .attribute-name.col.s12.m3.l3= t('activerecord.attributes.post.body')
+      .attribute-value.col.s12.m9.l9
         - if post_presenter.body.present?
-          %pre= post_presenter.body
-        - else
-    .row.attribute
-      %strong.col-xs-12.col-sm-2.attribute-name.style Style
-      .col-xs-12.col-sm-10.attribute-value.style
+          %pre
+            - post_presenter.body.split("\n").each do |line|
+              = content_tag(:span, line)
+    .attribute.style.row
+      .attribute-name.col.s12.m3.l3= t('activerecord.attributes.post.style')
+      .attribute-value.col.s12.m9.l9
         - if post_presenter.style.present?
           %pre= post_presenter.style
-        - else
-    .row.attribute
-      %strong.col-xs-12.col-sm-2.attribute-name.script Script
-      .col-xs-12.col-sm-10.attribute-value.script
+    .attribute.script.row
+      .attribute-name.col.s12.m3.l3= t('activerecord.attributes.post.script')
+      .attribute-value.col.s12.m9.l9
         - if post_presenter.script.present?
           %pre= post_presenter.script
-        - else
-    .row.attribute
-      %strong.col-xs-12.col-sm-2.attribute-name.meta-description Meta Description
-      .col-xs-12.col-sm-10.attribute-value.meta-description= post_presenter.meta_description
-    .row.attribute
-      %strong.col-xs-12.col-sm-2.attribute-name.meta-keywords Meta Keywords
-      .col-xs-12.col-sm-10.attribute-value.meta-keywords= post_presenter.meta_keywords
-    .row.attribute
-      %strong.col-xs-12.col-sm-2.attribute-name.visible Visible?
-      .col-xs-12.col-sm-10.attribute-value.visible= post_presenter.visible
-    .row.attribute
-      %strong.col-xs-12.col-sm-2.attribute-name.created-at Created At
-      .col-xs-12.col-sm-10.attribute-value.created-at= post_presenter.created_at
-    .row.attribute
-      %strong.col-xs-12.col-sm-2.attribute-name.updated-at Updated At
-      .col-xs-12.col-sm-10.attribute-value.updated-at= post_presenter.updated_at
+    .attribute.visible.row
+      .attribute-name.col.s12.m3.l3= t('activerecord.attributes.post.visible')
+      .attribute-value.col.s12.m9.l9= post_presenter.visible
+    .attribute.created-at.row
+      .attribute-name.col.s12.m3.l3= t('activerecord.attributes.post.created_at')
+      .attribute-value.col.s12.m9.l9= post_presenter.created_at
+    .attribute.updated-at.row
+      .attribute-name.col.s12.m3.l3= t('activerecord.attributes.post.updated_at')
+      .attribute-value.col.s12.m9.l9= post_presenter.updated_at

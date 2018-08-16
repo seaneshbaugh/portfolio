@@ -8,6 +8,46 @@ module Admin
       end
     end
 
+    def cancel_icon(options = {})
+      content_tag(:i, 'clear', class: classnames('material-icons', options[:class]))
+    end
+
+    def cancel_icon_link(url_or_path, options = {})
+      link_to(url_or_path, class: warning_button_class) do
+        label = options[:label].to_s if options[:label]
+
+        cancel_icon(class: { 'left' => label }) + label
+      end
+    end
+
+    def caution_button_class
+      'btn btn-flat waves-effect waves-light yellow darken-3'
+    end
+
+    def delete_icon(options = {})
+      content_tag(:i, 'delete_forever', class: classnames('material-icons', options[:class]))
+    end
+
+    def delete_icon_link(url_or_path, options = {})
+      link_to(url_or_path, class: warning_button_class, rel: 'nofollow', method: :delete, data: { confirm: t('confirm_delete') }) do
+        label = options[:label].to_s if options[:label]
+
+        delete_icon(class: { 'left' => label })+ label
+      end
+    end
+
+    def edit_icon(options = {})
+      content_tag(:i, 'edit', class: classnames('material-icons', options[:class]))
+    end
+
+    def edit_icon_link(url_or_path, options = {})
+      link_to(url_or_path, class: success_button_class) do
+        label = options[:label].to_s if options[:label]
+
+        edit_icon(class: { 'left' => label }) + label
+      end
+    end
+
     def gem_dependencies
       lockfile = Bundler::LockfileParser.new(Bundler.read_file(Rails.root.join('Gemfile.lock')))
 
@@ -32,16 +72,24 @@ module Admin
       git_repo.log.first.sha
     end
 
-    def icon_delete_link(url_or_path)
-      link_to(content_tag(:i, 'delete_forever', class: 'material-icons'), url_or_path, class: 'btn btn-flat waves-effect waves-light red darken-3', rel: 'nofollow', method: :delete, data: { confirm: t('confirm_delete') })
-    end
-
-    def icon_edit_link(url_or_path)
-      link_to(content_tag(:i, 'edit', class: 'material-icons'), url_or_path, class: 'btn btn-flat waves-effect waves-light green darken-3')
+    def info_button_class
+      'btn btn-flat waves-effect waves-light blue darken-3'
     end
 
     def quick_links_column_width
       @quick_links_column_width ||= 12 / creatable_models.length
+    end
+
+    def search_icon(options = {})
+      content_tag(:i, 'search', class: classnames('material-icons', options[:class]))
+    end
+
+    def success_button_class
+      'btn btn-flat waves-effect waves-light green darken-3'
+    end
+
+    def warning_button_class
+      'btn btn-flat waves-effect waves-light red darken-3'
     end
   end
 end

@@ -1,29 +1,53 @@
 - present @picture do |picture_presenter|
-  %h2= picture_presenter.title
-  .admin-actions
-    = link_to 'Back to Index', admin_pictures_path, class: 'btn btn-default'
-    - if policy([:admin, @picture]).edit?
-      = link_to 'Edit', edit_admin_picture_path(@picture), class: 'btn btn-primary'
-    - if policy([:admin, @picture]).destroy?
-      = link_to 'Delete', admin_picture_path(@picture), method: 'delete', class: 'btn btn-danger', data: { confirm: 'Are you sure?' }
-  %h3 Picture Attributes
-  .picture.attributes
-    .row.attributes
-      .row.attribute
-        %strong.col-xs-12.col-sm-2.attribute-name.preview Preview
-        .col-xs-12.col-sm-10.attribute-value.preview= link_to picture_presenter.medium_image_tag, picture_presenter.original_image_path, target: '_blank'
-      .row.attribute
-        %strong.col-xs-12.col-sm-2.attribute-name.title Title
-        .col-xs-12.col-sm-10.attribute-value.title= picture_presenter.title
-      .row.attribute
-        %strong.col-xs-12.col-sm-2.attribute-name.alt-text Alt Text
-        .col-xs-12.col-sm-10.attribute-value.alt-text= picture_presenter.alt_text
-      .row.attribute
-        %strong.col-xs-12.col-sm-2.attribute-name.caption Caption
-        .col-xs-12.col-sm-10.attribute-value.caption= picture_presenter.caption
-      .row.attribute
-        %strong.col-xs-12.col-sm-2.attribute-name.created-at Created At
-        .col-xs-12.col-sm-10.attribute-value.created-at= picture_presenter.created_at
-      .row.attribute
-        %strong.col-xs-12.col-sm-2.attribute-name.updated-at Updated At
-        .col-xs-12.col-sm-10.attribute-value.updated-at= picture_presenter.updated_at
+  .row
+    .col.s12
+      %h2= "#{t('.title')}: #{picture_presenter.title}"
+  .row
+    .admin-actions.col.s12
+      = link_to t('.back_to_pictures'), admin_pictures_path, class: info_button_class
+      - if policy([:admin, @picture]).edit?
+        = edit_icon_link(edit_admin_picture_path(@picture), label: t('edit'))
+      - if policy([:admin, @picture]).destroy?
+        = delete_icon_link(admin_picture_path(@picture), label: t('delete'))
+  .picture
+    .attribute.preview.row
+      .attribute-name.col.s12.m3.l3= t('.preview')
+      .attribute-value.col.s12.m9.l9= link_to picture_presenter.medium_image_tag, picture_presenter.original_image_path, target: '_blank'
+    .attribute.title.row
+      .attribute-name.col.s12.m3.l3= t('activerecord.attributes.picture.title')
+      .attribute-value.col.s12.m9.l9= picture_presenter.title
+    .attribute.slug.row
+      .attribute-name.col.s12.m3.l3= t('activerecord.attributes.picture.slug')
+      .attribute-value.col.s12.m9.l9= picture_presenter.slug
+  .attribute.body.row
+    .attribute-name.col.s12.m3.l3= t('activerecord.attributes.picture.alt_text')
+    .attribute-value.col.s12.m9.l9= picture_presenter.alt_text
+  .attribute.style.row
+    .attribute-name.col.s12.m3.l3= t('activerecord.attributes.picture.caption')
+    .attribute-value.col.s12.m9.l9= picture_presenter.caption
+  .attribute.image-key.row
+    .attribute-name.col.s12.m3.l3= t('activerecord.attributes.active_storage/blob.key')
+    .attribute-value.col.s12.m9.l9= picture_presenter.image_key
+  .attribute.image-filename.row
+    .attribute-name.col.s12.m3.l3= t('activerecord.attributes.active_storage/blob.filename')
+    .attribute-value.col.s12.m9.l9= picture_presenter.image_filename
+  .attribute.image.content-type.row
+    .attribute-name.col.s12.m3.l3= t('activerecord.attributes.active_storage/blob.content_type')
+    .attribute-value.col.s12.m9.l9= picture_presenter.image_content_type
+  .attribute.image-metadata.row
+    .attribute-name.col.s12.m3.l3= t('activerecord.attributes.active_storage/blob.metadata')
+    .attribute-value.col.s12.m9.l9= picture_presenter.image_metadata.inspect
+  .attribute.image-byte-size.row
+    .attribute-name.col.s12.m3.l3= t('activerecord.attributes.active_storage/blob.byte_size')
+    .attribute-value.col.s12.m9.l9
+      %span{ title: picture_presenter.image_size(false) }= picture_presenter.image_size
+  .attribute.image-checksum.row
+    .attribute-name.col.s12.m3.l3= t('activerecord.attributes.active_storage/blob.checksum')
+    .attribute-value.col.s12.m9.l9
+      %span{ title: picture_presenter.image_checksum }= Digest::hexencode(picture_presenter.image_checksum.unpack('m0').first)
+  .attribute.created-at.row
+    .attribute-name.col.s12.m3.l3= t('activerecord.attributes.picture.created_at')
+    .attribute-value.col.s12.m9.l9= picture_presenter.created_at
+  .attribute.updated-at.row
+    .attribute-name.col.s12.m3.l3= t('activerecord.attributes.picture.updated_at')
+    .attribute-value.col.s12.m9.l9= picture_presenter.updated_at

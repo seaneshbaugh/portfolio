@@ -9,6 +9,7 @@ en:
       show:
         title: "Picture"
         back_to_pictures: "Back to Pictures"
+        preview: "Preview"
       new:
         title: "New Picture"
       edit:

@@ -21,9 +21,10 @@
       = f.label :tag_list
   .row
     .input-field.col.s12
-      = f.label :visible
-      = f.check_box :visible
+      = f.label :visible do
+        = f.check_box :visible
+        %span= t('activerecord.posts.attributes.visible')
   .row
     .input-field.col.s12
-      = f.submit t('submit'), class: 'btn btn-flat waves-effect waves-light blue darken-3'
-      = link_to t('cancel'), admin_posts_path, class: 'btn btn-flat waves-effect waves-light red darken-3'
+      = f.submit t('submit'), class: success_button_class
+      = link_to t('cancel'), admin_posts_path, class: warning_button_class

@@ -9,12 +9,12 @@
         = f.text_field :body_or_style_cont
         = f.label :body_or_style_or_script_cont, t('activerecord.attributes.post.body_or_style')
       .input-field.col.s3
-        = f.button content_tag(:i, 'search', class: 'material-icons'), class: 'btn btn-flat waves-effect waves-light yellow darken-3'
-        = link_to content_tag(:i, 'clear', class: 'material-icons'), admin_posts_path, class: 'btn btn-flat waves-effect waves-loght red darken-3'
+        = f.button search_icon, class: caution_button_class
+        = cancel_icon_link(admin_posts_path)
 - if policy([:admin, Post]).create?
   .row
     .col.s12
-      = link_to t('.new_post'), new_admin_post_path, class: 'btn btn-fat waves effect waves-light blue'
+      = link_to t('.new_post'), new_admin_post_path, class: success_button_class
 - if @posts.present?
   .row
     .col.s12
@@ -29,7 +29,7 @@
         %tbody
           - @posts.each do |post|
             - present post do |post_presenter|
-              %tr{ class: "post#{' inactive' unless post_presenter.published?}" }
+              %tr{ class: classnames('post', { 'inactive' => !post_presenter.published? }) }
                 %td.post-title
                   = link_to post_presenter.title, admin_post_path(post)
                   = post_presenter.share_link target: '_blank'
@@ -37,10 +37,10 @@
                 %td.post-created-at= post_presenter.created_at
                 %td.edit
                   - if policy([:admin, post]).edit?
-                    = icon_edit_link edit_admin_post_path(post)
+                    = edit_icon_link edit_admin_post_path(post)
                 %td.delete
                   - if policy([:admin, post]).destroy?
-                    = icon_delete_link admin_post_path(post)
+                    = delete_icon_link admin_post_path(post)
   .row
     .col.s12
       = paginate @posts

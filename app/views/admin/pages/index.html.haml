@@ -9,38 +9,38 @@
         = f.text_field :body_or_style_or_script_cont
         = f.label :body_or_style_or_script_cont, t('activerecord.attributes.page.body_or_style_or_script')
       .input-field.col.s3
-        = f.button content_tag(:i, 'search', class: 'material-icons'), class: 'btn btn-flat waves-effect waves-light yellow darken-3'
-        = link_to content_tag(:i, 'clear', class: 'material-icons'), admin_pages_path, class: 'btn btn-flat waves-effect waves-loght red darken-3'
+        = f.button search_icon, class: caution_button_class
+        = cancel_icon_link(admin_pages_path)
 - if policy([:admin, Page]).create?
   .row
     .col.s12
-      = link_to t('.new_page'), new_admin_page_path, class: 'btn btn-fat waves effect waves-light blue'
+      = link_to t('.new_page'), new_admin_page_path, class: success_button_class
 - if @pages.present?
   .row
     .col.s12
-      %table.pages.responsive-table
+      %table.pages
         %thead
           %tr
             %th.page-title= sort_link @search, :title
-            %th.page-order= sort_link @search, :order
+            %th.page-order.hide-on-small-only= sort_link @search, :order
             %th.page-created-at= sort_link @search, :created_at
             %th.edit
             %th.delete
         %tbody
           - @pages.each do |page|
             - present page do |page_presenter|
-              %tr{ class: "page#{' inactive' unless page_presenter.published?}" }
+              %tr{ class: classnames('page', { 'inactive' => !page_presenter.published? }) }
                 %td.page-title
                   = link_to page_presenter.title, admin_page_path(page)
                   = page_presenter.share_link target: '_blank'
-                %td.page-order= page_presenter.order
+                %td.page-order.hide-on-small-only= page_presenter.order
                 %td.page-created-at= page_presenter.created_at
-                %td.edit
+                %td.edit.right-align
                   - if policy([:admin, page]).edit?
-                    = icon_edit_link edit_admin_page_path(page)
-                %td.delete
+                    = edit_icon_link edit_admin_page_path(page)
+                %td.delete.right-align
                   - if policy([:admin, page]).destroy?
-                    = icon_delete_link admin_page_path(page)
+                    = delete_icon_link admin_page_path(page)
   .row
     .col.s12
       = paginate @pages

@@ -1,9 +1,29 @@
-%h2 Edit Account
-= form_for @account, url: admin_account_path, as: :account, layout: :horizontal do |f|
-  = f.text_field :first_name
-  = f.text_field :last_name
-  = f.email_field :email
-  = f.password_field :password
-  = f.password_field :password_confirmation
-  = f.submit 'Update Account'
-  = link_to 'Cancel', admin_account_path, class: 'btn btn-default'
+.row
+  .col.s12
+    %h2= t('.title')
+.row
+  = form_for @account, url: admin_account_path, as: :account, html: { class: 'col s12' } do |f|
+    .row
+      .input-field.col.s12
+        = f.text_field :first_name
+        = f.label :first_name
+    .row
+      .input-field.col.s12
+        = f.text_field :last_name
+        = f.label :last_name
+    .row
+      .input-field.col.s12
+        = f.email_field :email
+        = f.label :email
+    .row
+      .input-field.col.s12
+        = f.password_field :password
+        = f.label :password
+    .row
+      .input-field.col.s12
+        = f.password_field :password_confirmation
+        = f.label :password_confirmation
+    .row
+      .input-field.col.s12
+        = f.submit t('submit'), class: success_button_class
+        = link_to t('cancel'), admin_account_path, class: warning_button_class

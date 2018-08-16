@@ -1,7 +1,21 @@
-= form_for [:admin, @picture], layout: :horizontal do |f|
-  = f.text_field :title
-  = f.text_field :alt_text
-  = f.text_field :caption
-  = f.file_field :image
-  = f.submit 'Submit'
-  = link_to 'Cancel', admin_pictures_path, class: 'btn btn-default'
+= form_for [:admin, @picture], html: { class: 'col s12' } do |f|
+  .row
+    .input-field.col.s12
+      = f.text_field :title
+      = f.label :title
+  .row
+    .input-field.col.s12
+      = f.text_field :alt_text
+      = f.label: :alt_text
+  .row
+    .input-field.col.s12
+      = f.text_field :caption
+      = f.label :caption
+  .row
+    .input-field.col.s12
+      = f.file_field :image
+      = f.label :image
+  .row
+    .input-field.col.s12
+      = f.submit t('submit'), class: success_button_class
+      = link_to t('cancel'), admin_pictures_path, class: warning_button_class

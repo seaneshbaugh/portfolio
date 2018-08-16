@@ -11,12 +11,12 @@
       .input-field.col.s3
         = f.select :roles_name_eq, Role.pluck(:name).map { |role| [role.titleize, role] }, include_blank: t('.search.select_role')
       .input-field.col.s3
-        = f.button content_tag(:i, 'search', class: 'material-icons'), class: 'btn btn-flat waves-effect waves-light yellow darken-3'
-        = link_to content_tag(:i, 'clear', class: 'material-icons'), admin_users_path, class: 'btn btn-flat waves-effect waves-loght red darken-3'
+        = f.button search_icon, class: warning_button_class
+        = cancel_icon_link(admin_users_path)
 - if policy([:admin, User]).create?
   .row
     .col.s12
-      = link_to t('.new_user'), new_admin_user_path, class: 'btn btn-primary pull-right'
+      = link_to t('.new_user'), new_admin_user_path, class: success_button_class
 - if @users.present?
   .row
     .col.s12
@@ -41,10 +41,10 @@
                 %td.user-created-at= user_presenter.created_at
                 %td.edit
                   - if policy([:admin, user]).edit?
-                    = icon_edit_link edit_admin_user_path(user)
+                    = edit_icon_link edit_admin_user_path(user)
                 %td.delete
                   - if policy([:admin, user]).destroy?
-                    = icon_delete_link admin_user_path(user)
+                    = delete_icon_link admin_user_path(user)
   .row
     .col.s12
       = paginate @users
