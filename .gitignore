@@ -36,3 +36,4 @@ yarn-debug.log*
 .DS_Store
 
 /db/fixtures/files/pictures
+.env.prod
