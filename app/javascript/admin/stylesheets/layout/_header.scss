@@ -1,5 +1,15 @@
+@import "~materialize-css/sass/components/variables";
+
 .main-header {
     .main-header-title {
         text-align: center;
     }
 }
+
+// @media #{$small-and-down} {
+//     .main-header {
+//         .main-header-title {
+//             font-size: 1rem;
+//         }
+//     }
+// }

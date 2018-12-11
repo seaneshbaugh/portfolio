@@ -18,3 +18,35 @@
         }
     }
 }
+
+// .attribute {
+//     .attribute-value {
+//         pre {
+//             white-space: pre-wrap;
+//         }
+
+//         pre {
+//   background: #303030;
+//   color: #f1f1f1;
+//   padding: 10px 16px;
+//   border-radius: 2px;
+//   border-top: 4px solid #00aeef;
+//   -moz-box-shadow: inset 0 0 10px #000;
+//   box-shadow: inset 0 0 10px #000;
+//   counter-reset: line;
+// }
+// pre span {
+//   display: block;
+//   line-height: 1.5rem;
+// }
+// pre span:before {
+//   counter-increment: line;
+//   content: counter(line);
+//   display: inline-block;
+//   border-right: 1px solid #ddd;
+//   padding: 0 .5em;
+//   margin-right: .5em;
+//   color: #888
+// }
+//     }
+// }
