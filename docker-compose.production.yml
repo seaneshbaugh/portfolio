@@ -1,0 +1,33 @@
+version: "3"
+
+volumes:
+  db-data:
+    external: false
+
+services:
+  db:
+    image: postgres
+    env_file:
+      - .env.prod
+    volumes:
+      - db-data:/var/lib/postgresql/data
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile.production
+      args:
+        - RAILS_ENV=production
+        - NODE_ENV=production
+        - POSTGRES_USER=${POSTGRES_USER}
+        - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+        - PORTFOLIO_DATABASE=${PORTFOLIO_DATABASE}
+        - PORTFOLIO_DATABASE_USERNAME=${PORTFOLIO_DATABASE_USERNAME}
+        - PORTFOLIO_DATABASE_PASSWORD=${PORTFOLIO_DATABASE_PASSWORD}
+        - PORTFOLIO_DATABASE_HOST=${PORTFOLIO_DATABASE_HOST}
+        - PORTFOLIO_DATABASE_PORT=${PORTFOLIO_DATABASE_PORT}
+    env_file: .env.prod
+    command: bundle exec rails s -p 3000 -b '0.0.0.0'
+    ports:
+      - "3000:3000"
+    depends_on:
+      - db
