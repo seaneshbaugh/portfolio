@@ -11,8 +11,9 @@ amazon:
   service: S3
   access_key_id: <%= Rails.application.credentials.dig(:aws, :access_key_id) %>
   secret_access_key: <%= Rails.application.credentials.dig(:aws, :secret_access_key) %>
-  region: <%= ENV.fetch('AWS_REGION') { 'us-east-1' } %>
-  bucket: <%= ENV.fetch('S3_BUCKET') { 'seaneshbaugh.com' } %>
+  region: <%= ENV.fetch('AWS_REGION') { 'nyc3' } %>
+  bucket: <%= ENV.fetch('S3_BUCKET') { 'seaneshbaugh' } %>
+  endpoint: <%= ENV.fetch('S3_ENDPOINT') { 'https://nyc3.digitaloceanspaces.com' } %>
 
 # Remember not to checkin your GCS keyfile to a repository
 # google:
