@@ -44,7 +44,7 @@ class PostPresenter < BasePresenter
   def more_link
     return unless truncated?
 
-    content_tag(:div, link_to(t('posts.index.read_more', @post), class: 'read-more'))
+    content_tag(:div, link_to(t('posts.index.read_more'), @post), class: 'read-more')
   end
 
   def tag_links
