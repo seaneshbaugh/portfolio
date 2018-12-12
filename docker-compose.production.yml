@@ -16,8 +16,6 @@ services:
       context: .
       dockerfile: Dockerfile.production
       args:
-        - RAILS_ENV=production
-        - NODE_ENV=production
         - POSTGRES_USER=${POSTGRES_USER}
         - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
         - PORTFOLIO_DATABASE=${PORTFOLIO_DATABASE}
@@ -25,6 +23,9 @@ services:
         - PORTFOLIO_DATABASE_PASSWORD=${PORTFOLIO_DATABASE_PASSWORD}
         - PORTFOLIO_DATABASE_HOST=${PORTFOLIO_DATABASE_HOST}
         - PORTFOLIO_DATABASE_PORT=${PORTFOLIO_DATABASE_PORT}
+        - AWS_REGION=${AWS_REGION}
+        - S3_BUCKET=${S3_BUCKET}
+        - S3_ENDPOINT=${S3_ENDPOINT}
     env_file: .env.prod
     command: bundle exec rails s -p 3000 -b '0.0.0.0'
     ports:
