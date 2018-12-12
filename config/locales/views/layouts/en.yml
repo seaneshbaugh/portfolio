@@ -10,6 +10,7 @@ en:
         my_account: "My Account"
         logout: "Logout"
       git_info: "Current Branch: %{branch}, Current Commit: %{commit_sha}"
+      git_info_disabled: "Git info is only available in development mode."
     application:
       author: "Sean Eshbaugh"
       title: "Sean Eshbaugh"

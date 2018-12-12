@@ -51,4 +51,7 @@
       .container
         .row
           .s12
-            %p.main-footer-git-info= t('.git_info', branch: git_branch, commit_sha: git_commit_sha)
+            - if Rails.env.development?
+              %p.main-footer-git-info= t('.git_info', branch: git_branch, commit_sha: git_commit_sha)
+            - else
+              %p.main-footer-git-info= t('.git_info_disabled')
