@@ -19,6 +19,8 @@ services:
       - "3000:3000"
     depends_on:
       - db
+    environment:
+      - WEBPACKER_DEV_SERVER_HOST=webpacker
   webpacker:
     build: .
     env_file:
@@ -28,6 +30,8 @@ services:
       - .:/portfolio
     ports:
       - "3035:3035"
+    environment:
+      - WEBPACKER_DEV_SERVER_HOST=0.0.0.0
 
 # services:
 #   elasticsearch:
