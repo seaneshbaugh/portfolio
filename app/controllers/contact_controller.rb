@@ -9,7 +9,7 @@ class ContactController < ApplicationController
     @contact = Contact.new(contact_params)
 
     if @contact.valid?
-      ContactJob.perform_later(@contact.to_json)
+      ContactJob.perform_later(@contact.to_json(except: %w[errors validation_context]))
 
       render 'thanks'
     else

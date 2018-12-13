@@ -2,6 +2,7 @@
 
 class Contact
   include ActiveModel::Model
+  include ActiveModel::Validations
 
   attr_accessor :name
   attr_accessor :email
