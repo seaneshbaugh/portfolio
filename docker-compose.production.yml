@@ -14,7 +14,7 @@ services:
   web:
     build:
       context: .
-      dockerfile: Dockerfile.production
+      dockerfile: ./docker/web/Dockerfile.production
       args:
         - POSTGRES_USER=${POSTGRES_USER}
         - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
@@ -28,7 +28,13 @@ services:
         - S3_ENDPOINT=${S3_ENDPOINT}
     env_file: .env.prod
     command: bundle exec rails s -p 3000 -b '0.0.0.0'
-    ports:
-      - "3000:3000"
     depends_on:
       - db
+  nginx:
+    build:
+      context: .
+      dockerfile: ./docker/nginx/Dockerfile
+    depends_on:
+      - web
+    ports:
+      - "80:80"
