@@ -40,6 +40,20 @@ Seed the database.
 
     $ docker-compose run web rails db:seed_fu
 
+## Deploying
+
+Set up a docker machine \(apparently this is already deprecated?\).
+
+    $ docker-machine create --driver=digitalocean --digitalocean-access-token=$DIGITAL_OCEAN_TOKEN -digitalocean-size=2gb portfolio
+
+Use the docker machine in the current shell.
+
+    $ eval $(docker-machine env portfolio)
+
+Start the Docker containers.
+
+    $ docker-compose -f docker-compose.production.yml up -d --build
+
 ## Linting
 
 ### Ruby
