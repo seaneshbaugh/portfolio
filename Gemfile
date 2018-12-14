@@ -10,8 +10,8 @@ gem 'rails', '5.2.1'
 
 gem 'acts-as-taggable-on', '~> 6.0'
 gem 'aws-sdk-s3', '~> 1.17.0', require: false
-gem 'classnames', '~> 1.0.0'
 gem 'bootsnap', '~> 1.3.1', require: false
+gem 'classnames', '~> 1.0.0'
 gem 'default_value_for', '~> 3.1.0'
 gem 'devise', '~> 4.4.3'
 gem 'fast_jsonapi', '~> 1.3'
@@ -55,10 +55,6 @@ end
 # gem 'daemons'
 # gem 'exception_notification'
 # gem 'honeypot-captcha'
-# gem 'rails_autolink'
-# gem 'rails_script'
-# gem 'sanitize'
-# gem 'unicorn'
 
 # group :doc do
 #   gem 'sdoc'
@@ -66,8 +62,4 @@ end
 
 # group :development do
 #   gem 'rails-erd', require: false
-# end
-
-# group :test do
-#   gem 'mini_backtrace'
 # end

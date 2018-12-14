@@ -32,7 +32,7 @@ module Admin
       link_to(url_or_path, class: warning_button_class, rel: 'nofollow', method: :delete, data: { confirm: t('confirm_delete') }) do
         label = options[:label].to_s if options[:label]
 
-        delete_icon(class: { 'left' => label })+ label
+        delete_icon(class: { 'left' => label }) + label
       end
     end
 
