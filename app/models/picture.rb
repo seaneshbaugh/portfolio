@@ -83,21 +83,4 @@ class Picture < ApplicationRecord
 
     "#{current_time.to_i}#{current_time.usec}".ljust(16, '0')
   end
-
-  # def save_image_dimensions
-  #   original_geometry = Paperclip::Geometry.from_file(image.queued_for_write[:original])
-
-  #   self.image_original_width = original_geometry.width
-  #   self.image_original_height = original_geometry.height
-
-  #   medium_geometry = Paperclip::Geometry.from_file(image.queued_for_write[:medium])
-
-  #   self.image_medium_width = medium_geometry.width
-  #   self.image_medium_height = medium_geometry.height
-
-  #   thumb_geometry = Paperclip::Geometry.from_file(image.queued_for_write[:thumb])
-
-  #   self.image_thumb_width = thumb_geometry.width
-  #   self.image_thumb_height = thumb_geometry.height
-  # end
 end
