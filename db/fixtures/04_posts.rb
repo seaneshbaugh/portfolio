@@ -4,6 +4,20 @@ def fixture_file(post_id, format)
   File.read(Rails.root.join('db', 'fixtures', 'files', 'posts', "#{post_id.to_s.rjust(2, '0')}.#{format}"))
 end
 
+def fix_image_urls(html)
+  image_urls = html.scan(/<img\s?.+src\s*=\s*"(.+?)".*?>/).flatten
+
+  image_urls.each do |image_url|
+    blob = ActiveStorage::Blob.where(filename: image_url.split('/').last).first
+
+    next unless blob
+
+    html.gsub!(image_url, Rails.application.routes.url_helpers.rails_blob_url(blob))
+  end
+
+  html
+end
+
 Post.seed(:id) do |s|
   s.id = 1
   s.user_id = 1
@@ -75,7 +89,7 @@ Post.seed(:id) do |s|
   s.user_id = 1
   s.title = 'Ripping Vinyl'
   s.slug = 'ripping-vinyl'
-  s.body = fixture_file(5, 'html')
+  s.body = fix_image_urls(fixture_file(5, 'html'))
   s.style = fixture_file(5, 'css')
   s.script = fixture_file(5, 'js')
   s.meta_description = ''
@@ -279,7 +293,7 @@ Post.seed(:id) do |s|
   s.user_id = 1
   s.title = 'Creating an OpenGL 4.1 program with GLEW and GLFW in XCode'
   s.slug = 'creating-an-opengl-4-1-program-with-glew-and-glfw-in-xcode'
-  s.body = fixture_file(17, 'html')
+  s.body = fix_image_urls(fixture_file(17, 'html'))
   s.style = fixture_file(17, 'css')
   s.script = fixture_file(17, 'js')
   s.meta_description = ''
