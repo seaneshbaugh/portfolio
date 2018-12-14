@@ -62,7 +62,7 @@ Rails.application.configure do
   # Use Mailcatcher for sending email.
   config.action_mailer.delivery_method = :smtp
 
-  config.action_mailer.smtp_settings = { address: 'localhost', port: 1025 }
+  config.action_mailer.smtp_settings = { address: 'mail', port: 1025 }
 
   # Use http://localhost:3000 as the base for links in emails.
   config.action_mailer.default_url_options = { host: 'localhost', port: 3000 }

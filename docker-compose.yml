@@ -7,6 +7,10 @@ services:
       - .env
     volumes:
       - ./tmp/db:/var/lib/postgresql/data
+  mail:
+    image: schickling/mailcatcher
+    ports:
+      - "1080:1080"
   web:
     build:
       context: .

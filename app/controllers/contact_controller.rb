@@ -6,13 +6,15 @@ class ContactController < ApplicationController
   end
 
   def create
-    @contact = Contact.new(contact_params)
+    @contact = Contact.new(contact_params).sanitize!
 
     if @contact.valid?
       ContactJob.perform_later(@contact.to_json(except: %w[errors validation_context]))
 
       render 'thanks'
     else
+      flash.now[:error] = helpers.error_messages_for(@contact)
+
       render 'new'
     end
   end
