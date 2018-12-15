@@ -18,6 +18,10 @@
 @import "./pages";
 @import "./posts";
 
+.hidden {
+    display: none;
+}
+
 .waves-button-input {
     color: $button-flat-color;
 }
