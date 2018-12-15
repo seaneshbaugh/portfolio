@@ -3,8 +3,16 @@
 module ApplicationHelper
   include ClassNames
 
+  def caution_button_class
+    'btn btn-flat waves-effect waves-light yellow darken-3'
+  end
+
   def error_messages_for(object)
     object.errors.full_messages.uniq.join('. ') + '.'
+  end
+
+  def info_button_class
+    'btn btn-flat waves-effect waves-light blue darken-3'
   end
 
   def nav_link_to(*args, &block)
@@ -39,6 +47,14 @@ module ApplicationHelper
     yield presenter if block_given?
 
     presenter
+  end
+
+  def success_button_class
+    'btn btn-flat waves-effect waves-light green darken-3'
+  end
+
+  def warning_button_class
+    'btn btn-flat waves-effect waves-light red darken-3'
   end
 
   class NavLinkGenerator

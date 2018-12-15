@@ -1,0 +1,22 @@
+@charset "UTF-8";
+
+@import "./variables";
+@import "~materialize-css/sass/components/color-variables";
+@import "~materialize-css/sass/components/color-classes";
+@import "~materialize-css/sass/components/variables";
+@import "./typography";
+@import "~materialize-css/sass/components/normalize";
+@import "~materialize-css/sass/components/global";
+@import "~materialize-css/sass/components/badges";
+@import "~materialize-css/sass/components/transitions";
+@import "~materialize-css/sass/components/buttons";
+@import "~materialize-css/sass/components/dropdown";
+@import "~materialize-css/sass/components/waves";
+@import "~materialize-css/sass/components/forms/forms";
+@import "./layout";
+@import "./pages";
+@import "./posts";
+
+.waves-button-input {
+    color: $button-flat-color;
+}

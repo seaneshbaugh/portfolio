@@ -17,6 +17,7 @@ $background-color: $white !default;
 $text-color: $off-black !default;
 
 $main-header-color: $off-black !default;
-$main-footer-background-color: $off-black !default;
+$main-footer-background-color: $black !default;
 $main-footer-color: $off-white !default;
 $main-footer-height: 80px !default;
+$button-flat-color: color("shades", "white") !global;

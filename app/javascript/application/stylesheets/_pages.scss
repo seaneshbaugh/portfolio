@@ -6,3 +6,10 @@
     font-size: 2rem;
     font-weight: 700;
 }
+
+// This is a cheap hack. I can't figure out why the height is 0 without this.
+.input-field {
+    &.with-checkbox {
+        height: 3.5625rem;
+    }
+}

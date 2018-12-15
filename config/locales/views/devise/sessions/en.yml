@@ -4,8 +4,9 @@ en:
       new:
         title: "Login"
         submit: 'Login'
+        remember_me: "Remember Me"
     shared:
-      _links:
+      links:
         new_session: "Login"
         new_password: "Forgot your password?"
         new_unlock: "Didn't receive unlock instructions?"

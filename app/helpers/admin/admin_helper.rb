@@ -20,10 +20,6 @@ module Admin
       end
     end
 
-    def caution_button_class
-      'btn btn-flat waves-effect waves-light yellow darken-3'
-    end
-
     def delete_icon(options = {})
       content_tag(:i, 'delete_forever', class: classnames('material-icons', options[:class]))
     end
@@ -72,24 +68,12 @@ module Admin
       git_repo.log.first.sha
     end
 
-    def info_button_class
-      'btn btn-flat waves-effect waves-light blue darken-3'
-    end
-
     def quick_links_column_width
       @quick_links_column_width ||= 12 / creatable_models.length
     end
 
     def search_icon(options = {})
       content_tag(:i, 'search', class: classnames('material-icons', options[:class]))
-    end
-
-    def success_button_class
-      'btn btn-flat waves-effect waves-light green darken-3'
-    end
-
-    def warning_button_class
-      'btn btn-flat waves-effect waves-light red darken-3'
     end
   end
 end

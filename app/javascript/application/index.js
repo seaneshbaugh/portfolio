@@ -1,1 +1,2 @@
-import "./stylesheets/application";
+import "./javascripts";
+import "./stylesheets";
