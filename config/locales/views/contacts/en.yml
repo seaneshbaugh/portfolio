@@ -4,9 +4,8 @@ en:
       title: "Contact"
       message: >
         To get in contact with me please use the form below. If you are a
-        recruiter I ask that you don't bother as your messages will be treated
-        as spam. I am happily employed. If that changes this message will be
-        removed.
+        recruiter: I am not interested in relocating nor am I interested
+        in contract or contract-to-hire positions.
       submit: "Send Message"
     thanks:
       message: "Thank you for your message! I will get back to you soon."
