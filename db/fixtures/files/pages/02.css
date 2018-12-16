@@ -1,0 +1,94 @@
+.job {
+    margin-bottom: 0.625rem;
+}
+
+.job .employment-date {
+    font-size: 1rem;
+    padding-left: 0;
+}
+
+.job .job-title {
+    font-size: 1rem;
+    padding-left: 0;
+}
+
+.job .employer {
+    font-size: 1rem;
+    padding-left: 0;
+}
+
+.job .employment-location {
+    font-size: 1rem;
+    padding-left: 0;
+}
+
+p.offline {
+    color: #afafaf;
+    font-size: 0.625rem;
+}
+
+a.offline {
+    text-decoration: line-through;
+}
+
+@media (min-width: 48rem) {
+    .job .employment-date {
+        font-size: 1.125rem;
+    }
+
+    .job .job-title {
+        font-size: 1.125rem;
+    }
+
+    .job .employer {
+        font-size: 1.125rem;
+    }
+
+    .job .employment-location {
+        font-size: 1.125rem;
+    }
+}
+
+@media (min-width: 62rem) {
+    .job {
+        margin-bottom: 1rem;
+    }
+
+    .job .employment-date {
+        font-size: 1.375rem;
+    }
+
+    .job .job-title {
+        font-size: 1.375rem;
+    }
+
+    .job .employer {
+        font-size: 1.375rem;
+    }
+
+    .job .employment-location {
+        font-size: 1.375rem;
+    }
+}
+
+@media (min-width: 75rem) {
+    .job {
+        margin-bottom: 1.25rem;
+    }
+
+    .job .employment-date {
+        font-size: 1.625rem;
+    }
+
+    .job .job-title {
+        font-size: 1.625rem;
+    }
+
+    .job .employer {
+        font-size: 1.625rem;
+    }
+
+    .job .employment-location {
+        font-size: 1.625rem;
+    }
+}
