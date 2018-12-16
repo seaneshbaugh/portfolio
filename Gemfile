@@ -6,7 +6,7 @@ git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 ruby '2.5.0'
 
 gem 'pg', '~> 1.1.3'
-gem 'rails', '5.2.1'
+gem 'rails', '5.2.2'
 
 gem 'acts-as-taggable-on', '~> 6.0'
 gem 'aws-sdk-s3', '~> 1.30.0', require: false
