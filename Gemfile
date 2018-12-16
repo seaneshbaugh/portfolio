@@ -41,7 +41,7 @@ group :development do
   gem 'listen', '~> 3.1.5'
   gem 'rubocop', '~> 0.61', require: false
   gem 'rubycritic', '~> 3.5', require: false
-  gem 'web-console', '>= 3.5.1'
+  gem 'web-console', '>= 3.7.0'
 end
 
 group :test do
