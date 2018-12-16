@@ -1,7 +1,7 @@
-FROM ruby:2.5.0
+FROM ruby:2.5.3
 
 ENV APP_HOME /portfolio
-ENV BUNDLER_VERSION 1.16.2
+ENV BUNDLER_VERSION 1.17.2
 ENV APP_PORT 3000
 
 RUN curl -sL https://deb.nodesource.com/setup_10.x | bash - && \

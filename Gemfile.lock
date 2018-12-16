@@ -354,7 +354,7 @@ DEPENDENCIES
   webpacker-react (~> 0.3.2)
 
 RUBY VERSION
-   ruby 2.5.0p0
+   ruby 2.5.3p105
 
 BUNDLED WITH
-   1.16.2
+   1.17.2
