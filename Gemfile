@@ -40,7 +40,7 @@ group :development do
   gem 'haml_lint', '~> 0.28', require: false
   gem 'listen', '~> 3.1.5'
   gem 'rubocop', '~> 0.58', require: false
-  gem 'rubycritic', '~> 3.4', require: false
+  gem 'rubycritic', '~> 3.5', require: false
   gem 'web-console', '>= 3.5.1'
 end
 
