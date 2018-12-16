@@ -17,9 +17,12 @@ const completed = () => {
     const mode = aceEditor.dataset.mode;
     const theme = aceEditor.dataset.theme;
     const textArea = aceEditorField.querySelector("textarea.value");
+    const label = aceEditorField.querySelector("label");
     const onChange = ((newValue) => {
       textArea.value = newValue;
     });
+
+    label.classList.remove("active");
 
     render(
       <AceEditor
@@ -30,6 +33,8 @@ const completed = () => {
         editorProps={{ "$blockScrolling": true }}
         height="300px"
         width="100%"
+        wrapEnabled={true}
+        value={textArea.value}
       />,
       aceEditor
     );
