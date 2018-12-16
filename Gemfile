@@ -14,7 +14,7 @@ gem 'bootsnap', '~> 1.3.1', require: false
 gem 'classnames', '~> 1.0.0'
 gem 'default_value_for', '~> 3.1.0'
 gem 'devise', '~> 4.5.0'
-gem 'fast_jsonapi', '~> 1.3'
+gem 'fast_jsonapi', '~> 1.5'
 gem 'filesize', '~> 0.2.0'
 gem 'friendly_id', '~> 5.2.3'
 gem 'git', '~> 1.4.0'
