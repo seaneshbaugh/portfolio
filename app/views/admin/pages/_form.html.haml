@@ -19,20 +19,18 @@
     .input-field.col.s12
       = f.number_field :order
       = f.label :order
-  .row
+  .row.color-input-field
     .input-field.col.s12
       = f.color_field :color
       = f.label :color
-  .row
-    .input-field.col.s12
-      = f.label :show_in_menu do
-        = f.check_box :show_in_menu
-        %span= t('activerecord.pages.attributes.show_in_menu')
-  .row
-    .input-field.col.s12
-      = f.label :visible do
-        = f.check_box :visible
-        %span= t('activerecord.pages.attributes.visible')
+  %p
+    = f.label :show_in_menu do
+      = f.check_box :show_in_menu
+      %span= t('activerecord.attributes.page.show_in_menu')
+  %p
+    = f.label :visible do
+      = f.check_box :visible
+      %span= t('activerecord.attributes.page.visible')
   .row
     .input-field.col.s12
       = f.submit t('submit'), class: success_button_class

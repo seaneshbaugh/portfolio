@@ -19,11 +19,10 @@
     .input-field.col.s12
       = f.text_field :tag_list
       = f.label :tag_list
-  .row
-    .input-field.col.s12
-      = f.label :visible do
-        = f.check_box :visible
-        %span= t('activerecord.posts.attributes.visible')
+  %p
+    = f.label :visible do
+      = f.check_box :visible
+      %span= t('activerecord.attributes.post.visible')
   .row
     .input-field.col.s12
       = f.submit t('submit'), class: success_button_class

@@ -10,7 +10,7 @@
         = f.password_field :password
         = f.label :password
       - if devise_mapping.rememberable?
-        .input-field.with-checkbox
+        %p
           = f.label :remember_me do
             = f.check_box :remember_me
             %span= t('.remember_me')
