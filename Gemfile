@@ -47,7 +47,7 @@ end
 group :test do
   gem 'database_cleaner', '~> 1.7.0'
   gem 'minitest', '~> 5.11.3'
-  gem 'minitest-reporters', '~> 1.3.1'
+  gem 'minitest-reporters', '~> 1.3.5'
   gem 'simplecov', '~> 0.16.1', require: false
 end
 
