@@ -27,7 +27,3 @@ class JavascriptValidator < ActiveModel::EachValidator
     end
   end
 end
-
-
-
-

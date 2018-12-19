@@ -38,9 +38,7 @@ module PagesHelper
 
     hex_code = hex_code[1..hex_code.length - 1]
 
-    if hex_code.length < 6
-      hex_code = hex_code[0] + hex_code[0] + hex_code[1] + hex_code[1] + hex_code[2] + hex_code[2]
-    end
+    hex_code = hex_code[0] + hex_code[0] + hex_code[1] + hex_code[1] + hex_code[2] + hex_code[2] if hex_code.length < 6
 
     r = hex_code[0, 2].to_i(16)
 

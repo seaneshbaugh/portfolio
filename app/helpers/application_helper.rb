@@ -75,9 +75,7 @@ module ApplicationHelper
     def to_html
       html = link
 
-      if @options[:wrapper]
-        html = content_tag(@options[:wrapper], html, class: wrapper_classes)
-      end
+      html = content_tag(@options[:wrapper], html, class: wrapper_classes) if @options[:wrapper]
 
       html.html_safe
     end

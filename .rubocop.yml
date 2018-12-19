@@ -59,6 +59,8 @@ Style/GuardClause:
 
 Style/IfUnlessModifier:
   Exclude:
+    - db/migrate/20180302074916_change_collation_for_tag_names.acts_as_taggable_on_engine.rb
+    - db/migrate/20180302074917_add_missing_indexes_on_taggings.acts_as_taggable_on_engine.rb
     - db/migrate/20180427214039_convert_to_active_storage.rb
 
 Style/PerlBackrefs:
