@@ -14,9 +14,9 @@ class Post < ApplicationRecord
   validates :user_id, presence: true
   validates_associated :user
   validates :title, presence: true, length: { maximum: 255 }, uniqueness: true
-  validates :body, presence: true, length: { minimum: 4, maximum: 16_777_215 }
-  validates :style, length: { maximum: 4_194_303 }
-  validates :script, length: { maximum: 4_194_303 }
+  validates :body, presence: true, length: { minimum: 4, maximum: 16_777_215 }, html: { allow_blank: true }
+  validates :style, length: { maximum: 4_194_303 }, css: { allow_blank: true }
+  validates :script, length: { maximum: 4_194_303 }, javascript: { allow_blank: true }
   validates :meta_description, length: { maximum: 65535 }
   validates :meta_keywords, length: { maximum: 65535 }
   validates :visible, inclusion: { in: [true, false] }
