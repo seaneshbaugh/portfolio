@@ -74,5 +74,10 @@ Style/SymbolProc:
 Rails:
   Enabled: true
 
+Rails/CreateTableWithTimestamps:
+  Exclude:
+    - db/migrate/20180304103412_rolify_create_roles.rb
+    - db/migrate/20131015151146_acts_as_taggable_on_migration.rb
+
 Rails/HasAndBelongsToMany:
   Enabled: false

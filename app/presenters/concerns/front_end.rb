@@ -3,6 +3,7 @@
 module FrontEnd
   extend ActiveSupport::Concern
 
+  # rubocop:disable Rails/OutputSafety
   def body_tag
     content_tag(:div, @object.body.html_safe, class: 'body-content')
   end
@@ -14,4 +15,5 @@ module FrontEnd
   def style_tag
     content_tag(:style, @object.style.html_safe) if @object.style.present?
   end
+  # rubocop:enable Rails/OutputSafety
 end

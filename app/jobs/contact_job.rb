@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class ContactJob < ActiveJob::Base
+class ContactJob < ApplicationJob
   queue_as :contact
 
   def perform(*args)

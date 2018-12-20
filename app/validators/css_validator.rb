@@ -12,7 +12,7 @@ class CssValidator < ActiveModel::EachValidator
 
     errors = `node -e "#{validation_script}"`
 
-    return unless errors.present?
+    return if errors.blank?
 
     errors.split("\n").each do |error|
       record.errors.add(attribute, error)

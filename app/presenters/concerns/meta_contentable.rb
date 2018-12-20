@@ -14,7 +14,7 @@ module MetaContentable
   end
 
   def meta_description_content
-    return unless @object.meta_description.present?
+    return if @object.meta_description.blank?
 
     content_for :meta_description do
       @object.meta_description
@@ -22,7 +22,7 @@ module MetaContentable
   end
 
   def page_title_content
-    return unless @object.title.present?
+    return if @object.title.blank?
 
     content_for :page_title do
       "#{@object.title.strip} - #{t('application.title')}"

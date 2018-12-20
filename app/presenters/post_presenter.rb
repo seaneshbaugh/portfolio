@@ -27,6 +27,7 @@ class PostPresenter < BasePresenter
     images[0]['src'] unless images.empty?
   end
 
+  # rubocop:disable Rails/OutputSafety
   def more
     if params[:action] == 'index' && truncated?
       body_content = @post.body[0..@post.body.index('<!--more-->') - 1]
@@ -40,6 +41,7 @@ class PostPresenter < BasePresenter
       body_tag
     end
   end
+  # rubocop:enable Rails/OutputSafety
 
   def more_link
     return unless truncated?
@@ -47,9 +49,11 @@ class PostPresenter < BasePresenter
     content_tag(:div, link_to(t('posts.index.read_more'), @post), class: 'read-more')
   end
 
+  # rubocop:disable Rails/OutputSafety
   def tag_links
     @post.tag_list.map { |tag| link_to tag, root_path(tag: tag) }.join(', ').html_safe
   end
+  # rubocop:enable Rails/OutputSafety
 
   def truncated?
     @post.body.include?('<!--more-->')
