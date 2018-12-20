@@ -17,8 +17,8 @@ Page.seed(:id) do |s|
   s.color = '#97080e'
   s.show_in_menu = true
   s.visible = true
-  s.created_at = Time.parse('2012-11-18 06:38:34')
-  s.updated_at = Time.parse('2018-08-14 11:26:48')
+  s.created_at = Time.zone.parse('2012-11-18 06:38:34')
+  s.updated_at = Time.zone.parse('2018-08-14 11:26:48')
 end
 
 Page.seed(:id) do |s|
@@ -34,8 +34,8 @@ Page.seed(:id) do |s|
   s.color = '#da4b0f'
   s.show_in_menu = true
   s.visible = true
-  s.created_at = Time.parse('2012-11-17 21:43:47')
-  s.updated_at = Time.parse('2018-02-20 11:32:27')
+  s.created_at = Time.zone.parse('2012-11-17 21:43:47')
+  s.updated_at = Time.zone.parse('2018-02-20 11:32:27')
 end
 
 Page.seed(:id) do |s|
@@ -51,8 +51,8 @@ Page.seed(:id) do |s|
   s.color = '#e9b104'
   s.show_in_menu = true
   s.visible = true
-  s.created_at = Time.parse('2012-11-17 21:46:26')
-  s.updated_at = Time.parse('2014-07-04 18:42:46')
+  s.created_at = Time.zone.parse('2012-11-17 21:46:26')
+  s.updated_at = Time.zone.parse('2014-07-04 18:42:46')
 end
 
 Page.seed(:id) do |s|
@@ -68,8 +68,8 @@ Page.seed(:id) do |s|
   s.color = '#488c13'
   s.show_in_menu = true
   s.visible = true
-  s.created_at = Time.parse('2014-07-18 00:19:49')
-  s.updated_at = Time.parse('2017-03-04 01:41:13')
+  s.created_at = Time.zone.parse('2014-07-18 00:19:49')
+  s.updated_at = Time.zone.parse('2017-03-04 01:41:13')
 end
 
 Page.seed(:id) do |s|
@@ -85,6 +85,6 @@ Page.seed(:id) do |s|
   s.color = '#000000'
   s.show_in_menu = false
   s.visible = true
-  s.created_at = Time.parse('2015-01-29 00:05:50')
-  s.updated_at = Time.parse('2015-05-19 23:54:05')
+  s.created_at = Time.zone.parse('2015-01-29 00:05:50')
+  s.updated_at = Time.zone.parse('2015-05-19 23:54:05')
 end

@@ -46,7 +46,7 @@ NumericLiterals:
   MinDigits: 6
 
 PerceivedComplexity:
-  Enabled: false
+  Enabled: true
 
 Style/EmptyMethod:
   Exclude:
@@ -70,3 +70,9 @@ Style/PerlBackrefs:
 Style/SymbolProc:
   Exclude:
     - config/initializers/rolify.rb
+
+Rails:
+  Enabled: true
+
+Rails/HasAndBelongsToMany:
+  Enabled: false

@@ -29,8 +29,8 @@ Post.seed(:id) do |s|
   s.meta_description = ''
   s.meta_keywords = ''
   s.visible = true
-  s.created_at = Time.parse('2012-05-26 05:34:22')
-  s.updated_at = Time.parse('2013-10-15 14:36:52')
+  s.created_at = Time.zone.parse('2012-05-26 05:34:22')
+  s.updated_at = Time.zone.parse('2013-10-15 14:36:52')
 end
 
 Post.where(id: 1).first.tag_list.add('C#')
@@ -46,8 +46,8 @@ Post.seed(:id) do |s|
   s.meta_description = ''
   s.meta_keywords = ''
   s.visible = true
-  s.created_at = Time.parse('2012-12-01 04:30:52')
-  s.updated_at = Time.parse('2013-10-15 14:39:00')
+  s.created_at = Time.zone.parse('2012-12-01 04:30:52')
+  s.updated_at = Time.zone.parse('2013-10-15 14:39:00')
 end
 
 Post.where(id: 2).first.tag_list.add('Ruby', 'Rails', 'ActiveRecord', 'Kentouzu', 'paper_trail')
@@ -63,8 +63,8 @@ Post.seed(:id) do |s|
   s.meta_description = ''
   s.meta_keywords = ''
   s.visible = true
-  s.created_at = Time.parse('2013-02-05 17:39:26')
-  s.updated_at = Time.parse('2013-10-15 14:41:47')
+  s.created_at = Time.zone.parse('2013-02-05 17:39:26')
+  s.updated_at = Time.zone.parse('2013-10-15 14:41:47')
 end
 
 Post.where(id: 3).first.tag_list.add('Nginx', 'Unicorn', 'Rails', 'SSL')
@@ -80,8 +80,8 @@ Post.seed(:id) do |s|
   s.meta_description = ''
   s.meta_keywords = ''
   s.visible = true
-  s.created_at = Time.parse('2013-03-01 11:37:45')
-  s.updated_at = Time.parse('2013-03-01 11:39:46')
+  s.created_at = Time.zone.parse('2013-03-01 11:37:45')
+  s.updated_at = Time.zone.parse('2013-03-01 11:39:46')
 end
 
 Post.seed(:id) do |s|
@@ -95,8 +95,8 @@ Post.seed(:id) do |s|
   s.meta_description = ''
   s.meta_keywords = ''
   s.visible = true
-  s.created_at = Time.parse('2013-03-03 05:55:02')
-  s.updated_at = Time.parse('2013-11-25 18:18:15')
+  s.created_at = Time.zone.parse('2013-03-03 05:55:02')
+  s.updated_at = Time.zone.parse('2013-11-25 18:18:15')
 end
 
 Post.where(id: 5).first.tag_list.add('records')
@@ -112,8 +112,8 @@ Post.seed(:id) do |s|
   s.meta_description = ''
   s.meta_keywords = ''
   s.visible = true
-  s.created_at = Time.parse('2013-03-21 23:01:01')
-  s.updated_at = Time.parse('2013-10-15 14:44:26')
+  s.created_at = Time.zone.parse('2013-03-21 23:01:01')
+  s.updated_at = Time.zone.parse('2013-10-15 14:44:26')
 end
 
 Post.where(id: 6).first.tag_list.add('Go')
@@ -129,8 +129,8 @@ Post.seed(:id) do |s|
   s.meta_description = ''
   s.meta_keywords = ''
   s.visible = true
-  s.created_at = Time.parse('2013-07-19 16:06:21')
-  s.updated_at = Time.parse('2013-10-15 14:44:45')
+  s.created_at = Time.zone.parse('2013-07-19 16:06:21')
+  s.updated_at = Time.zone.parse('2013-10-15 14:44:45')
 end
 
 Post.where(id: 7).first.tag_list.add('Elixir', 'Ruby', 'Erlang')
@@ -146,8 +146,8 @@ Post.seed(:id) do |s|
   s.meta_description = ''
   s.meta_keywords = ''
   s.visible = true
-  s.created_at = Time.parse('2013-08-01 08:12:36')
-  s.updated_at = Time.parse('2013-10-15 14:45:09')
+  s.created_at = Time.zone.parse('2013-08-01 08:12:36')
+  s.updated_at = Time.zone.parse('2013-10-15 14:45:09')
 end
 
 Post.where(id: 8).first.tag_list.add('Elixir')
@@ -163,8 +163,8 @@ Post.seed(:id) do |s|
   s.meta_description = ''
   s.meta_keywords = ''
   s.visible = true
-  s.created_at = Time.parse('2013-08-06 17:35:43')
-  s.updated_at = Time.parse('2013-10-15 14:45:37')
+  s.created_at = Time.zone.parse('2013-08-06 17:35:43')
+  s.updated_at = Time.zone.parse('2013-10-15 14:45:37')
 end
 
 Post.where(id: 9).first.tag_list.add('Elixir')
@@ -180,8 +180,8 @@ Post.seed(:id) do |s|
   s.meta_description = ''
   s.meta_keywords = ''
   s.visible = true
-  s.created_at = Time.parse('2013-10-14 16:53:21')
-  s.updated_at = Time.parse('2013-10-15 14:46:21')
+  s.created_at = Time.zone.parse('2013-10-14 16:53:21')
+  s.updated_at = Time.zone.parse('2013-10-15 14:46:21')
 end
 
 Post.where(id: 10).first.tag_list.add('Scheme', 'Common Lisp', 'Clojure', 'tail recursion')
@@ -197,8 +197,8 @@ Post.seed(:id) do |s|
   s.meta_description = ''
   s.meta_keywords = ''
   s.visible = true
-  s.created_at = Time.parse('2013-11-26 10:15:40')
-  s.updated_at = Time.parse('2014-01-27 22:19:37')
+  s.created_at = Time.zone.parse('2013-11-26 10:15:40')
+  s.updated_at = Time.zone.parse('2014-01-27 22:19:37')
 end
 
 Post.where(id: 11).first.tag_list.add('Ruby', 'Chef')
@@ -214,8 +214,8 @@ Post.seed(:id) do |s|
   s.meta_description = ''
   s.meta_keywords = ''
   s.visible = true
-  s.created_at = Time.parse('2014-04-14 15:27:03')
-  s.updated_at = Time.parse('2014-05-27 22:42:51')
+  s.created_at = Time.zone.parse('2014-04-14 15:27:03')
+  s.updated_at = Time.zone.parse('2014-05-27 22:42:51')
 end
 
 Post.where(id: 12).first.tag_list.add('Ruby', 'data structures')
@@ -231,8 +231,8 @@ Post.seed(:id) do |s|
   s.meta_description = ''
   s.meta_keywords = ''
   s.visible = true
-  s.created_at = Time.parse('2014-04-17 23:29:42')
-  s.updated_at = Time.parse('2015-11-01 01:14:18')
+  s.created_at = Time.zone.parse('2014-04-17 23:29:42')
+  s.updated_at = Time.zone.parse('2015-11-01 01:14:18')
 end
 
 Post.where(id: 13).first.tag_list.add('sed', 'tr', 'awk', 'Ruby', 'shell scripting')
@@ -248,8 +248,8 @@ Post.seed(:id) do |s|
   s.meta_description = ''
   s.meta_keywords = ''
   s.visible = true
-  s.created_at = Time.parse('2014-09-05 23:52:48')
-  s.updated_at = Time.parse('2018-08-03 13:14:58')
+  s.created_at = Time.zone.parse('2014-09-05 23:52:48')
+  s.updated_at = Time.zone.parse('2018-08-03 13:14:58')
 end
 
 Post.where(id: 14).first.tag_list.add('Ruby', 'Rails', 'Spring', 'caching')
@@ -265,8 +265,8 @@ Post.seed(:id) do |s|
   s.meta_description = ''
   s.meta_keywords = ''
   s.visible = true
-  s.created_at = Time.parse('2015-03-27 22:21:12')
-  s.updated_at = Time.parse('2015-04-21 16:12:39')
+  s.created_at = Time.zone.parse('2015-03-27 22:21:12')
+  s.updated_at = Time.zone.parse('2015-04-21 16:12:39')
 end
 
 Post.where(id: 15).first.tag_list.add('Ruby', 'Rails', 'ActiveRecord', 'callbacks')
@@ -282,8 +282,8 @@ Post.seed(:id) do |s|
   s.meta_description = ''
   s.meta_keywords = ''
   s.visible = true
-  s.created_at = Time.parse('2015-06-18 11:44:48')
-  s.updated_at = Time.parse('2015-06-18 11:47:48')
+  s.created_at = Time.zone.parse('2015-06-18 11:44:48')
+  s.updated_at = Time.zone.parse('2015-06-18 11:47:48')
 end
 
 Post.where(id: 16).first.tag_list.add('K', 'boolean logic')
@@ -299,8 +299,8 @@ Post.seed(:id) do |s|
   s.meta_description = ''
   s.meta_keywords = ''
   s.visible = true
-  s.created_at = Time.parse('2015-08-04 23:17:15')
-  s.updated_at = Time.parse('2016-04-05 20:04:56')
+  s.created_at = Time.zone.parse('2015-08-04 23:17:15')
+  s.updated_at = Time.zone.parse('2016-04-05 20:04:56')
 end
 
 Post.where(id: 17).first.tag_list.add('OpenGL', 'C++', 'Xcode', 'OS X', 'GLEW', 'GLFW')
@@ -316,8 +316,8 @@ Post.seed(:id) do |s|
   s.meta_description = ''
   s.meta_keywords = ''
   s.visible = true
-  s.created_at = Time.parse('2016-01-25 20:06:58')
-  s.updated_at = Time.parse('2016-01-25 20:06:58')
+  s.created_at = Time.zone.parse('2016-01-25 20:06:58')
+  s.updated_at = Time.zone.parse('2016-01-25 20:06:58')
 end
 
 Post.seed(:id) do |s|
@@ -331,8 +331,8 @@ Post.seed(:id) do |s|
   s.meta_description = ''
   s.meta_keywords = ''
   s.visible = true
-  s.created_at = Time.parse('2016-02-02 14:04:49')
-  s.updated_at = Time.parse('2016-04-05 20:54:11')
+  s.created_at = Time.zone.parse('2016-02-02 14:04:49')
+  s.updated_at = Time.zone.parse('2016-04-05 20:54:11')
 end
 
 Post.where(id: 19).first.tag_list.add('Scheme', 'association lists')
@@ -348,8 +348,8 @@ Post.seed(:id) do |s|
   s.meta_description = ''
   s.meta_keywords = ''
   s.visible = true
-  s.created_at = Time.parse('2017-04-14 21:25:29')
-  s.updated_at = Time.parse('2018-02-23 14:10:33')
+  s.created_at = Time.zone.parse('2017-04-14 21:25:29')
+  s.updated_at = Time.zone.parse('2018-02-23 14:10:33')
 end
 
 Post.where(id: 20).first.tag_list.add('Ruby')

@@ -65,7 +65,7 @@ class Picture < ApplicationRecord
   def normalize_image_file_name
     return unless image.file? && image.dirty?
 
-    current_time = Time.now
+    current_time = Time.now.utc
 
     basename = "#{current_time.to_i}#{current_time.usec}".ljust(16, '0')
 
@@ -79,7 +79,7 @@ class Picture < ApplicationRecord
   end
 
   def timestamp
-    current_time = Time.now
+    current_time = Time.now.utc
 
     "#{current_time.to_i}#{current_time.usec}".ljust(16, '0')
   end
