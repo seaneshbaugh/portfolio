@@ -3,7 +3,10 @@
 require 'simplecov'
 
 SimpleCov.start 'rails' do
+  add_group 'Builders', 'app/builders'
+  add_group 'Policies', 'app/policies'
   add_group 'Presenters', 'app/presenters'
+  add_group 'Serializers', 'app/serializers'
   add_group 'Validators', 'app/validators'
 end
 
