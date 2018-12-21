@@ -16,6 +16,10 @@ class Contact
   validates :subject, presence: true, length: { minimum: 4, maximum: 128, allow_blank: true }
   validates :body, presence: true, length: { minimum: 8, maximum: 2048, allow_blank: true }
 
+  def as_json(options = nil)
+    super({ except: %w[errors validation_context] }.deep_merge(options || {}))
+  end
+
   def sanitize!
     @email = email.downcase.strip
 
