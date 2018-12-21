@@ -18,7 +18,7 @@ class CssValidatorTest < ActiveSupport::TestCase
     assert dummy_object.valid?
   end
 
-  test 'invalid HTML' do
+  test 'invalid CSS' do
     dummy_object = DummyClass.new
 
     dummy_object.style = 'h1 color: #fe12bc; }'
