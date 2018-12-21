@@ -7,7 +7,7 @@ module Admin
     def index
       authorize Picture
 
-      @search = Picture.search(params[:q])
+      @search = Picture.ransack(params[:q])
 
       @pictures = @search.result.page(params[:page]).per(25).reverse_chronological
 

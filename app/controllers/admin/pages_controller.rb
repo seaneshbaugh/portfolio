@@ -7,7 +7,7 @@ module Admin
     def index
       authorize Page
 
-      @search = Page.search(params[:q])
+      @search = Page.ransack(params[:q])
 
       @pages = @search.result.page(params[:page]).per(25).by_order
     end
