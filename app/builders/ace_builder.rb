@@ -3,6 +3,7 @@
 class AceBuilder < ActionView::Helpers::FormBuilder
   include ApplicationHelper
 
+  delegate :capture, to: :@template
   delegate :content_tag, to: :@template
   delegate :label_tag, to: :@template
   delegate :link_to, to: :@template
