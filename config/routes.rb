@@ -18,7 +18,7 @@ Rails.application.routes.draw do
 
   post '/contact' => 'contact#create'
 
-  resources :posts, only: [:show]
+  resources :posts, only: %i[show]
 
   get '/posts.rss' => 'posts#index', format: :rss
 
@@ -58,5 +58,5 @@ Rails.application.routes.draw do
 
   root to: 'posts#index'
 
-  get ':id' => 'pages#show'
+  get ':id' => 'pages#show', as: :page
 end
