@@ -2,7 +2,6 @@
 
 class User < ApplicationRecord
   include FriendlyId
-  include OptionsForSelect
 
   scope :alphabetical, -> { order(:last_name, :first_name) }
   scope :reverse_alphabetical, -> { order(last_name: :desc, first_name: :desc) }

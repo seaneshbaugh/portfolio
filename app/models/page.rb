@@ -2,7 +2,6 @@
 
 class Page < ApplicationRecord
   extend FriendlyId
-  include OptionsForSelect
 
   scope :alphabetical, -> { order(:title) }
   scope :by_order, -> { order(:order) }

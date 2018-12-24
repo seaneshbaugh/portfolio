@@ -2,7 +2,6 @@
 
 class Post < ApplicationRecord
   include FriendlyId
-  include OptionsForSelect
 
   scope :alphabetical, -> { order(:title) }
   scope :published, -> { where(visible: true) }
