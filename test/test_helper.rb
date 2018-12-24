@@ -16,7 +16,12 @@ require File.expand_path('../config/environment', __dir__)
 require 'rails/test_help'
 require 'minitest/reporters'
 
-Minitest::Reporters.use!
+mean_time_reporter_options = {
+  previous_runs_filename: Rails.root.join('tmp', 'minitest_reporters_previous_run'),
+  report_filename: Rails.root.join('tmp', 'minitest_reporters_report')
+}
+
+Minitest::Reporters.use! Minitest::Reporters::MeanTimeReporter.new(mean_time_reporter_options)
 
 DatabaseCleaner.strategy = :transaction
 
@@ -50,9 +55,9 @@ module ActiveSupport
   end
 end
 
-module ActionController
-  class TestCase < ActiveSupport::TestCase
-    include Devise::Test::ControllerHelpers
+module ActionDispatch
+  class IntegrationTest
+    include Devise::Test::IntegrationHelpers
 
     def fixture_file_upload(filename, mime_type = nil, binary = false)
       super(fixture_file_path(filename), mime_type, binary)

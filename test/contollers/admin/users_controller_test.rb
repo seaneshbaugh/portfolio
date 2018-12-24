@@ -3,13 +3,13 @@
 require 'test_helper'
 
 module Admin
-  class UsersControllerTest < ActionController::TestCase
+  class UsersControllerTest < ActionDispatch::IntegrationTest
     setup do
       sign_in users(:sean_eshbaugh)
     end
 
     test 'should get users index' do
-      get :index
+      get admin_users_url
 
       assert_response :ok
     end
@@ -17,19 +17,19 @@ module Admin
     test 'should show a user' do
       user = users(:casie_clark)
 
-      get :show, params: { id: user }
+      get admin_users_url(user)
 
       assert_response :ok
     end
 
     test 'should not show a user that does not exist' do
       assert_raises(ActiveRecord::RecordNotFound) do
-        get :show, params: { id: 'does-not-exist' }
+        get admin_user_url(id: 'does-not-exist')
       end
     end
 
     test 'should get a new user' do
-      get :new
+      get new_admin_user_url
 
       assert_response :ok
     end
@@ -37,20 +37,20 @@ module Admin
     test 'should get a user to edit' do
       user = users(:casie_clark)
 
-      get :edit, params: { id: user }
+      get edit_admin_user_url(user)
 
       assert_response :ok
     end
 
     test 'should not get a user that does not exist to edit' do
       assert_raises(ActiveRecord::RecordNotFound) do
-        get :edit, params: { id: 'does-not-exist' }
+        get edit_admin_user_url(id: 'does-not-exist')
       end
     end
 
     test 'should create a user' do
       assert_difference('User.count', 1) do
-        post :create, params: { user: { email: 'newuser@seaneshbaugh.com', first_name: 'New', last_name: 'User', password: 'test123456', password_confirmation: 'test123456' } }
+        post admin_users_url, params: { user: { email: 'newuser@seaneshbaugh.com', first_name: 'New', last_name: 'User', password: 'test123456', password_confirmation: 'test123456' } }
       end
 
       assert_response :see_other
@@ -60,7 +60,7 @@ module Admin
 
     test 'should not create an invalid user' do
       assert_no_difference('User.count') do
-        post :create, params: { user: { email: '' } }
+        post admin_users_url, params: { user: { email: '' } }
       end
 
       assert_response :unprocessable_entity
@@ -69,7 +69,7 @@ module Admin
     test 'should update a user' do
       user = users(:casie_clark)
 
-      patch :update, params: { id: user, user: { email: 'updateduser@seaneshbaugh.com' } }
+      patch admin_user_url(user), params: { user: { email: 'updateduser@seaneshbaugh.com' } }
 
       user.reload
 
@@ -85,14 +85,14 @@ module Admin
     test 'should not update a user with invalid data' do
       user = users(:casie_clark)
 
-      patch :update, params: { id: user, user: { email: '' } }
+      patch admin_user_url(user), params: { user: { email: '' } }
 
       assert_response :unprocessable_entity
     end
 
     test 'should not update a user that does not exist' do
       assert_raises(ActiveRecord::RecordNotFound) do
-        patch :update, params: { id: 'does-not-exist', user: { email: 'doesnotexist@seaneshbaugh.com' } }
+        patch admin_user_url(id: 'does-not-exist'), params: { user: { email: 'doesnotexist@seaneshbaugh.com' } }
       end
     end
 
@@ -100,7 +100,7 @@ module Admin
       user = users(:casie_clark)
 
       assert_difference('User.count', -1) do
-        delete :destroy, params: { id: user }
+        delete admin_user_url(user)
       end
 
       assert_response :see_other
@@ -110,7 +110,7 @@ module Admin
 
     test 'should not destroy a user that does not exist' do
       assert_raises(ActiveRecord::RecordNotFound) do
-        delete :destroy, params: { id: 'does-not-exist' }
+        delete admin_user_url(id: 'does-not-exist')
       end
     end
   end

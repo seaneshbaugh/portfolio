@@ -3,7 +3,7 @@
 require 'test_helper'
 
 module Admin
-  class PicturesControllerTest < ActionController::TestCase
+  class PicturesControllerTest < ActionDispatch::IntegrationTest
     setup do
       attach_images_to_pictures!
 
@@ -11,7 +11,7 @@ module Admin
     end
 
     test 'should get pictures index' do
-      get :index
+      get admin_pictures_url
 
       assert_response :ok
     end
@@ -19,19 +19,19 @@ module Admin
     test 'should show a picture' do
       picture = pictures(:conney)
 
-      get :show, params: { id: picture }
+      get admin_picture_url(picture)
 
       assert_response :ok
     end
 
     test 'should not show a picture that does not exist' do
       assert_raises(ActiveRecord::RecordNotFound) do
-        get :show, params: { id: 'does-not-exist' }
+        get admin_picture_url(id: 'does-not-exist')
       end
     end
 
     test 'should get a new picture' do
-      get :new
+      get new_admin_picture_url
 
       assert_response :ok
     end
@@ -39,20 +39,20 @@ module Admin
     test 'should get a picture to edit' do
       picture = pictures(:cowboy)
 
-      get :edit, params: { id: picture }
+      get edit_admin_picture_url(picture)
 
       assert_response :ok
     end
 
     test 'should not get a picture that does not exist to edit' do
       assert_raises(ActiveRecord::RecordNotFound) do
-        get :edit, params: { id: 'does-not-exist' }
+        get edit_admin_picture_url(id: 'does-not-exist')
       end
     end
 
     test 'should create a picture' do
       assert_difference('Picture.count', 1) do
-        post :create, params: { picture: { title: 'New Picture', body: 'Testing 1 2 3', image: fixture_file_upload('conney-the-corgi.jpg', 'image/jpeg', true) } }
+        post admin_pictures_url, params: { picture: { title: 'New Picture', body: 'Testing 1 2 3', image: fixture_file_upload('conney-the-corgi.jpg', 'image/jpeg', true) } }
       end
 
       assert_response :see_other
@@ -62,7 +62,7 @@ module Admin
 
     test 'should not create an invalid picture' do
       assert_no_difference('Picture.count') do
-        post :create, params: { picture: { title: 'Image Intentionally Left Blank' } }
+        post admin_pictures_url, params: { picture: { title: 'Image Intentionally Left Blank' } }
       end
 
       assert_response :unprocessable_entity
@@ -71,7 +71,7 @@ module Admin
     test 'should update a picture' do
       picture = pictures(:conney)
 
-      patch :update, params: { id: picture, picture: { title: 'Updated Picture' } }
+      patch admin_picture_url(picture), params: { picture: { title: 'Updated Picture' } }
 
       picture.reload
 
@@ -87,14 +87,14 @@ module Admin
     test 'should not update a picture with invalid data' do
       picture = pictures(:cowboy)
 
-      patch :update, params: { id: picture, picture: { title: 'A' * 65536 } }
+      patch admin_picture_url(picture), params: { picture: { title: 'A' * 65536 } }
 
       assert_response :unprocessable_entity
     end
 
     test 'should not update a picture that does not exist' do
       assert_raises(ActiveRecord::RecordNotFound) do
-        patch :update, params: { id: 'does-not-exist', picture: { title: 'Does Not Exist', body: 'Picture intentionally left blank.' } }
+        patch admin_picture_url(id: 'does-not-exist'), params: { picture: { title: 'Does Not Exist', body: 'Picture intentionally left blank.' } }
       end
     end
 
@@ -102,7 +102,7 @@ module Admin
       picture = pictures(:conney)
 
       assert_difference('Picture.count', -1) do
-        delete :destroy, params: { id: picture }
+        delete admin_picture_url(picture)
       end
 
       assert_response :see_other
@@ -112,7 +112,7 @@ module Admin
 
     test 'should not destroy a picture that does not exist' do
       assert_raises(ActiveRecord::RecordNotFound) do
-        delete :destroy, params: { id: 'does-not-exist' }
+        delete admin_picture_url(id: 'does-not-exist')
       end
     end
   end

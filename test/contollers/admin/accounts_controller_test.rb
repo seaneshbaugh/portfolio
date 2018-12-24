@@ -3,19 +3,19 @@
 require 'test_helper'
 
 module Admin
-  class AccountsControllerTest < ActionController::TestCase
+  class AccountsControllerTest < ActionDispatch::IntegrationTest
     setup do
       sign_in users(:sean_eshbaugh)
     end
 
     test 'should get account show' do
-      get :show
+      get admin_account_url
 
       assert_response :ok
     end
 
     test 'should get account edit' do
-      get :edit
+      get edit_admin_account_url
 
       assert_response :ok
     end
@@ -23,7 +23,7 @@ module Admin
     test "should update the current user's account" do
       user = users(:sean_eshbaugh)
 
-      patch :update, params: { account: { email: 'updateduser@seaneshbaugh.com' } }
+      patch admin_account_url, params: { account: { email: 'updateduser@seaneshbaugh.com' } }
 
       user.reload
 
@@ -37,7 +37,7 @@ module Admin
     end
 
     test 'should not update the current user with invalid data' do
-      patch :update, params: { account: { email: '' } }
+      patch admin_account_url, params: { account: { email: '' } }
 
       assert_response :unprocessable_entity
     end

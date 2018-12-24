@@ -2,9 +2,9 @@
 
 require 'test_helper'
 
-class SitemapControllerTest < ActionController::TestCase
+class SitemapControllerTest < ActionDispatch::IntegrationTest
   test 'should get index' do
-    get :index, format: :xml
+    get sitemap_url, as: :xml
 
     assert_response :ok
   end

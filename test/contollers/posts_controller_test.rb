@@ -2,9 +2,9 @@
 
 require 'test_helper'
 
-class PostsControllerTest < ActionController::TestCase
+class PostsControllerTest < ActionDispatch::IntegrationTest
   test 'should get posts index' do
-    get :index
+    get root_url
 
     assert_response :ok
   end
@@ -12,14 +12,14 @@ class PostsControllerTest < ActionController::TestCase
   test 'should show a post' do
     post = posts(:first_post)
 
-    get :show, params: { id: post }
+    get post_url(post)
 
     assert_response :ok
   end
 
   test 'should not show a post that does not exist' do
     assert_raise(ActiveRecord::RecordNotFound) do
-      get :show, params: { id: 'does-not-exist' }
+      get post_url(id: 'does-not-exist')
     end
   end
 end
