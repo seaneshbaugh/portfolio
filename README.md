@@ -40,13 +40,18 @@ Seed the database.
 
     $ docker-compose run web rails db:seed_fu
 
-Note: When updating `package.json`, after rebuilding the Docker image, you might get the following error:
+## Troubleshooting
 
-```
-Node Sass could not find a binding for your current environment: Linux 64-bit with Node.js 10.x
-```
+#### `Node Sass could not find a binding for your current environment: Linux 64-bit with Node.js 10.x`
 
-This can be fixed by running `docker-compose run web yarn install --force` and then restarting the container.
+If you update `/package.json` and run `yarn install` on the host machine it will overwrite the contents of `/node_modules` and in the process will rebuild Node Sass for the host machine. If the host machine is not the same OS as the Docker container you will see this error. This can be fixed by running `docker-compose run -rm web yarn install --force` and then restarting the `web` container.
+
+#### `no space left on device`
+
+This happens from time to time. Dead containers and unused images can be cleaned up with:
+
+    $ docker ps --filter status=dead --filter status=exited -aq | xargs docker rm -v
+    $ docker images --no-trunc | grep '<none>' | awk '{ print $3 }' | xargs docker rmi
 
 ## Deploying
 
