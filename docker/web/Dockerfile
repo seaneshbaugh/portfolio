@@ -18,7 +18,7 @@ COPY Gemfile $APP_HOME/Gemfile
 COPY Gemfile.lock $APP_HOME/Gemfile.lock
 COPY package.json $APP_HOME/package.json
 COPY yarn.lock $APP_HOME/yarn.lock
-RUN yarn --pure-lockfile
+RUN yarn --pure-lockfile --network-timeout 3600000
 RUN gem install bundler -v $BUNDLER_VERSION && \
     bundle install && \
     yarn install
