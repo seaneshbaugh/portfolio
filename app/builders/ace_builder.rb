@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# TODO: Consider renaming this class.
 class AceBuilder < ActionView::Helpers::FormBuilder
   include ApplicationHelper
 
@@ -36,6 +37,14 @@ class AceBuilder < ActionView::Helpers::FormBuilder
     target = options.delete(:target) || ace_editor_id_for(method)
 
     content_tag(:div, '', class: 'picture-selector', data: { 'buttonclassname' => button_class, 'buttontext' => button_text, 'target' => target })
+  end
+
+  def tag_list(method, options = {})
+    tags = (object.send(method) || []).join(',')
+
+    suggestions = (options.delete(:suggestions) || []).join(',')
+
+    content_tag(:div, '', class: 'taglist-container', data: { 'tags' => tags, 'suggestions' => suggestions, 'objectname' => object_name, 'method' => method.to_s })
   end
 
   private
