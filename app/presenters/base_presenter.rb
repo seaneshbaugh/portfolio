@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class BasePresenter
+  include Rails.application.routes.url_helpers
+
   delegate :content_tag, to: :@template
   delegate :link_to, to: :@template
   delegate :params, to: :@template
