@@ -1,9 +1,4 @@
 version: "3"
-
-volumes:
-  db-data:
-    external: false
-
 services:
   db:
     image: postgres
@@ -34,7 +29,16 @@ services:
     build:
       context: .
       dockerfile: ./docker/nginx/Dockerfile
-    depends_on:
-      - web
+    restart: unless-stopped
     ports:
       - "80:80"
+      - "443:443"
+    environment:
+      - STAGING=0
+      - CERTBOT_EMAIL=seaneshbaugh@gmail.com
+    volumes:
+      - nginx_secrets:/etc/letsencrypt
+volumes:
+  db-data:
+    external: false
+  nginx_secrets:
