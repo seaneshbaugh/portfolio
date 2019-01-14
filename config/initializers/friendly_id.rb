@@ -82,7 +82,7 @@ FriendlyId.defaults do |config|
 
   config.use(Module.new do
     def should_generate_new_friendly_id?
-      slug.blank? || title_changed?
+      slug.blank? || (respond_to?(:title_changed?) && title_changed?) || (respond_to?(:first_name_changed?) && first_name_changed?) || (respond_to?(:last_name_changed?) && last_name_changed?)
     end
   end)
 
