@@ -1,4 +1,4 @@
-FROM ruby:2.5.3
+FROM ruby:2.6.2
 
 ENV APP_HOME /portfolio
 ENV BUNDLER_VERSION 1.17.2
