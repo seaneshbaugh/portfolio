@@ -21,6 +21,8 @@ class Contact
   end
 
   def sanitize!
+    @name = name.strip
+
     @email = email.downcase.strip
 
     @subject = Sanitize.clean(subject).gsub(/\n|\r|\t/, '').strip
