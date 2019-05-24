@@ -2,8 +2,6 @@
 
 module Admin
   class PicturesController < AdminController
-    before_action :set_picture, only: %i[show edit update destroy]
-
     def index
       authorize Picture
 
@@ -22,6 +20,8 @@ module Admin
     end
 
     def show
+      @picure = find_picture
+
       authorize @picture
     end
 
@@ -29,10 +29,6 @@ module Admin
       authorize Picture
 
       @picture = Picture.new
-    end
-
-    def edit
-      authorize @picture
     end
 
     def create
@@ -53,7 +49,7 @@ module Admin
           end
         else
           format.html do
-            flash[:error] = helpers.error_messages_for(@picture)
+            flash.now[:error] = helpers.error_messages_for(@picture)
 
             render 'new', status: :unprocessable_entity
           end
@@ -66,7 +62,15 @@ module Admin
       end
     end
 
+    def edit
+      @picture = find_picture
+
+      authorize @picture
+    end
+
     def update
+      @picture = find_picture
+
       authorize @picture
 
       if @picture.update(picture_params)
@@ -74,13 +78,15 @@ module Admin
 
         redirect_to edit_admin_picture_url(@picture), status: :see_other
       else
-        flash[:error] = helpers.error_messages_for(@picture)
+        flash.now[:error] = helpers.error_messages_for(@picture)
 
         render 'edit', status: :unprocessable_entity
       end
     end
 
     def destroy
+      @picture = find_picture
+
       authorize @picture
 
       @picture.destroy
@@ -100,10 +106,8 @@ module Admin
 
     private
 
-    def set_picture
-      @picture = Picture.friendly.find(params[:id])
-
-      raise ActiveRecord::RecordNotFound if @picture.nil?
+    def find_picture
+      Picture.friendly.find(params[:id])
     end
 
     def picture_params
