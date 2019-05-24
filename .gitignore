@@ -37,3 +37,4 @@ yarn-debug.log*
 
 /db/fixtures/files/pictures
 .env.prod
+/dump*.sql
