@@ -1,6 +1,6 @@
 /* TEAM */
   Developer and Contributor: Sean Eshbaugh
-  Site: http://seaneshbaugh.com/
+  Site: https://seaneshbaugh.com/
   GitHub: https://github.com/seaneshbaugh
   Contact: sean (at) seaneshbaugh.com
 
@@ -11,7 +11,7 @@
 
 /* SITE */
   Created On: 2011/06/19
-  Last Updated: 2018/12/14
+  Last Updated: 2019/05/24
   Language: English
   Doctype: HTML5
   Lovingly Made In: Emacs
