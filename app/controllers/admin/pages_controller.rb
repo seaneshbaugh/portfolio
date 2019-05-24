@@ -2,8 +2,6 @@
 
 module Admin
   class PagesController < AdminController
-    before_action :set_page, only: %i[show edit update destroy]
-
     def index
       authorize Page
 
@@ -13,6 +11,8 @@ module Admin
     end
 
     def show
+      @page = find_page
+
       authorize @page
     end
 
@@ -20,10 +20,6 @@ module Admin
       authorize Page
 
       @page = Page.new
-    end
-
-    def edit
-      authorize @page
     end
 
     def create
@@ -42,7 +38,15 @@ module Admin
       end
     end
 
+    def edit
+      @page = find_page
+
+      authorize @page
+    end
+
     def update
+      @page = find_page
+
       authorize @page
 
       if @page.update(page_params)
@@ -57,6 +61,8 @@ module Admin
     end
 
     def destroy
+      @page = find_page
+
       authorize @page
 
       @page.destroy
@@ -68,10 +74,8 @@ module Admin
 
     private
 
-    def set_page
-      @page = Page.friendly.find(params[:id])
-
-      raise ActiveRecord::RecordNotFound if @page.nil?
+    def find_page
+      Page.friendly.find(params[:id])
     end
 
     def page_params
