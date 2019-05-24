@@ -2,8 +2,6 @@
 
 module Admin
   class UsersController < AdminController
-    before_action :set_user, only: %i[show edit update destroy]
-
     def index
       authorize User
 
@@ -13,6 +11,8 @@ module Admin
     end
 
     def show
+      @user = find_user
+
       authorize @user
     end
 
@@ -22,11 +22,9 @@ module Admin
       @user = User.new
     end
 
-    def edit
-      authorize @user
-    end
-
     def create
+      @user = find_user
+
       authorize User
 
       @user = User.new(user_params)
@@ -36,13 +34,21 @@ module Admin
 
         redirect_to admin_user_url(@user), status: :see_other
       else
-        flash[:error] = helpers.error_messages_for(@user)
+        flash.now[:error] = helpers.error_messages_for(@user)
 
         render 'new', status: :unprocessable_entity
       end
     end
 
+    def edit
+      @user = find_user
+
+      authorize @user
+    end
+
     def update
+      @user = find_user
+
       authorize @user
 
       if @user.update(user_params)
@@ -50,13 +56,15 @@ module Admin
 
         redirect_to edit_admin_user_url(@user), status: :see_other
       else
-        flash[:error] = helpers.error_messages_for(@user)
+        flash.now[:error] = helpers.error_messages_for(@user)
 
         render 'edit', status: :unprocessable_entity
       end
     end
 
     def destroy
+      @user = find_user
+
       authorize @user
 
       @user.destroy
@@ -68,10 +76,8 @@ module Admin
 
     private
 
-    def set_user
-      @user = User.where(id: params[:id]).first
-
-      raise ActiveRecord::RecordNotFound if @user.nil?
+    def find_user
+      User.find_by!(id: params[:id])
     end
 
     def user_params
