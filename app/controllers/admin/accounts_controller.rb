@@ -18,7 +18,7 @@ module Admin
 
         flash[:success] = t('.success')
 
-        redirect_to admin_edit_account_url, status: :see_other
+        redirect_to edit_admin_account_url, status: :see_other
       else
         flash.now[:error] = helpers.error_messages_for(@account)
 

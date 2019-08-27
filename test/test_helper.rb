@@ -23,22 +23,16 @@ mean_time_reporter_options = {
 
 Minitest::Reporters.use! Minitest::Reporters::MeanTimeReporter.new(mean_time_reporter_options)
 
-DatabaseCleaner.strategy = :transaction
+Webpacker.compile
 
 module ActiveSupport
+  self.test_order = :random
+
   class TestCase
     # Setup all fixtures in test/fixtures/*.yml for all tests in alphabetical order.
     fixtures :all
 
     # Add more helper methods to be used by all tests here...
-    setup do
-      DatabaseCleaner.start
-    end
-
-    teardown do
-      DatabaseCleaner.clean
-    end
-
     private
 
     def fixture_file_path(filename)

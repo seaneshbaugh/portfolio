@@ -31,7 +31,7 @@ module Admin
 
       assert_response :see_other
 
-      assert_redirected_to admin_account_path
+      assert_redirected_to edit_admin_account_path
 
       assert_equal I18n.t('admin.accounts.update.success'), flash[:success]
     end

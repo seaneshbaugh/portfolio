@@ -23,8 +23,6 @@ module Admin
     end
 
     def create
-      @user = find_user
-
       authorize User
 
       @user = User.new(user_params)

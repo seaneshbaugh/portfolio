@@ -20,7 +20,7 @@ module Admin
     end
 
     def show
-      @picure = find_picture
+      @picture = find_picture
 
       authorize @picture
     end
