@@ -14,7 +14,7 @@ class Contact
   validates :email, presence: true, email: { allow_blank: true }
   validates :phone_number, length: { maximum: 32 }
   validates :subject, presence: true, length: { minimum: 4, maximum: 128, allow_blank: true }
-  validates :body, presence: true, length: { minimum: 8, maximum: 2048, allow_blank: true }
+  validates :body, presence: true, length: { minimum: 8, maximum: 2048, allow_blank: true }, not_spam: { allow_blank: true }
 
   def as_json(options = nil)
     super({ except: %w[errors validation_context] }.deep_merge(options || {}))

@@ -1,0 +1,17 @@
+en:
+  activemodel:
+    models:
+      contact: "Contact"
+    attributes:
+      contact:
+        name: "Name"
+        email: "Email"
+        phone_number: "Phone Number"
+        subject: "Subject"
+        body: "Body"
+    errors:
+      models:
+        contact:
+          attributes:
+            body:
+              is_spam: "is spam"

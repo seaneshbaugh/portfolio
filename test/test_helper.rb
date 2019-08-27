@@ -29,10 +29,18 @@ module ActiveSupport
   self.test_order = :random
 
   class TestCase
-    # Setup all fixtures in test/fixtures/*.yml for all tests in alphabetical order.
+    class << self
+      alias context describe
+    end
+
+    # Setup all fixtures in test/fixtures/*.(yml|csv) for all tests in alphabetical order.
+    #
+    # Note: You'll currently still have to declare fixtures explicitly in integration tests
+    # -- they do not yet inherit this setting
     fixtures :all
 
     # Add more helper methods to be used by all tests here...
+
     private
 
     def fixture_file_path(filename)
@@ -56,5 +64,12 @@ module ActionDispatch
     def fixture_file_upload(filename, mime_type = nil, binary = false)
       super(fixture_file_path(filename), mime_type, binary)
     end
+  end
+end
+
+Shoulda::Matchers.configure do |config|
+  config.integrate do |with|
+    with.test_framework :minitest
+    with.library :rails
   end
 end
