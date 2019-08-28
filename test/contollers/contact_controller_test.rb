@@ -20,4 +20,12 @@ class ContactControllerTest < ActionDispatch::IntegrationTest
 
     assert_response :unprocessable_entity
   end
+
+  test 'should return a 200 response but NOT enqueue a new ContactJob if the body contains spam' do
+    assert_no_enqueued_jobs do
+      post contact_url, params: { contact: { name: 'Test Contact', email: 'test@test.com', phone_number: '+1 214-123-4567', subject: 'Hello!', body: "This is a #{NotSpamValidator::SPAM_PHRASES.first} test." } }
+    end
+
+    assert_response :ok
+  end
 end

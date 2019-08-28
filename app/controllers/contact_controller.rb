@@ -12,6 +12,8 @@ class ContactController < ApplicationController
       ContactJob.perform_later(@contact.to_json)
 
       render 'thanks'
+    elsif @contact.errors[:body].include?('is spam')
+      render 'thanks'
     else
       flash.now[:error] = helpers.error_messages_for(@contact)
 
