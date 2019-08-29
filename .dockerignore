@@ -4,4 +4,8 @@ tmp/
 .byebug_history
 .pry_history
 docker-compose.yml
+docker-compose.production.yml
 yarn-error.log
+*.sql
+coverage/
+fixtures/files/
