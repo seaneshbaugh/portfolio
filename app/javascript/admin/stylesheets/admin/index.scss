@@ -20,3 +20,22 @@
         }
     }
 }
+
+section.gems {
+    ul {
+        margin-left: 1.6rem;
+
+        li {
+            list-style-type: square;
+
+            ul {
+                margin-left: 0rem;
+                padding-left: 1.6rem;
+
+                li {
+                    list-style-type: disc;
+                }
+            }
+        }
+    }
+}
