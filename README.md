@@ -42,9 +42,13 @@ Seed the database.
 
 ## Troubleshooting
 
-#### `Node Sass could not find a binding for your current environment: Linux 64-bit with Node.js 10.x`
+#### `Node Sass could not find a binding for your current environment: Linux 64-bit with Node.js 12.x`
 
-If you update `/package.json` and run `yarn install` on the host machine it will overwrite the contents of `/node_modules` and in the process will rebuild Node Sass for the host machine. If the host machine is not the same OS as the Docker container you will see this error. This can be fixed by running `docker-compose run --rm web yarn install --force` and then restarting the `web` container.
+or
+
+#### `Module build failed: ModuleBuildError: Module build failed: Error: Node Sass does not yet support your current environment: Linux 64-bit with Unsupported runtime (72)`
+
+If you update `/package.json` and run `yarn install` on the host machine it will overwrite the contents of `/node_modules` and in the process will rebuild Node Sass for the host machine. If the host machine is not the same OS as the Docker container you will see this error. This can be fixed by running `docker-compose run --rm web yarn install --force` and then restarting the `web` and `webpacker` containers.
 
 #### `no space left on device`
 

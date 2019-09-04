@@ -10,10 +10,10 @@
     = stylesheet_pack_tag 'application', media: 'all'
     = javascript_pack_tag 'application'
     %link{ href: '/favicon.ico', rel: 'shortcut icon' }
-    %link{ href: asset_pack_path('shared/images/apple-touch-icon-iphone.png'), rel: 'apple-touch-icon', sizes: '57x57' }
-    %link{ href: asset_pack_path('shared/images/apple-touch-icon-ipad.png'), rel: 'apple-touch-icon', sizes: '72x72' }
-    %link{ href: asset_pack_path('shared/images/apple-touch-icon-iphone-retina.png'), rel: 'apple-touch-icon', sizes: '114x114' }
-    %link{ href: asset_pack_path('shared/images/apple-touch-icon-ipad-retina.png'), rel: 'apple-touch-icon', sizes: '144x144' }
+    %link{ href: asset_pack_path('media/shared/images/apple-touch-icon-iphone.png'), rel: 'apple-touch-icon', sizes: '57x57' }
+    %link{ href: asset_pack_path('media/shared/images/apple-touch-icon-ipad.png'), rel: 'apple-touch-icon', sizes: '72x72' }
+    %link{ href: asset_pack_path('media/shared/images/apple-touch-icon-iphone-retina.png'), rel: 'apple-touch-icon', sizes: '114x114' }
+    %link{ href: asset_pack_path('media/shared/images/apple-touch-icon-ipad-retina.png'), rel: 'apple-touch-icon', sizes: '144x144' }
     %link{ href: '/humans.txt', rel: 'author' }
     = csrf_meta_tags
   %body
@@ -44,5 +44,5 @@
       %div.main-footer-credit= t('.credit_html')
       %nav.main-footer-nav
         %ul.main-footer-nav-list
-          %li.main-footer-nav-list-item= link_to(image_tag(asset_pack_path('shared/images/icons/social/github.png', alt_text: 'GitHub')), 'https://github.com/seaneshbaugh', class: 'main-footer-nav-list-item-link')
-          %li.main-footer-nav-list-item= link_to(image_tag(asset_pack_path('shared/images/icons/social/linkedin.png', alt_text: 'LinkedIn')), 'https://www.linkedin.com/in/sean-eshbaugh-44153434', class: 'main-footer-nav-list-item-link')
+          %li.main-footer-nav-list-item= link_to(image_tag(asset_pack_path('media/shared/images/icons/social/github.png', alt_text: 'GitHub')), 'https://github.com/seaneshbaugh', class: 'main-footer-nav-list-item-link')
+          %li.main-footer-nav-list-item= link_to(image_tag(asset_pack_path('media/shared/images/icons/social/linkedin.png', alt_text: 'LinkedIn')), 'https://www.linkedin.com/in/sean-eshbaugh-44153434', class: 'main-footer-nav-list-item-link')

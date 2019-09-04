@@ -3,14 +3,14 @@
 source 'https://rubygems.org'
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
-ruby '2.6.3'
+ruby '2.6.4'
 
 gem 'pg', '1.1.4'
-gem 'rails', '5.2.2.1'
+gem 'rails', '6.0.0'
 
-gem 'acts-as-taggable-on', '6.0.0'
-gem 'aws-sdk-s3', '1.46.0', require: false
-gem 'bootsnap', '1.4.4', require: false
+gem 'acts-as-taggable-on', github: 'mbleigh/acts-as-taggable-on' #, '6.0.0'
+gem 'aws-sdk-s3', '1.48.0', require: false
+gem 'bootsnap', '1.4.5', require: false
 gem 'classnames', '1.0.0'
 gem 'default_value_for', '3.3.0'
 gem 'devise', '4.7.0'
@@ -28,7 +28,7 @@ gem 'ransack', '2.3.0'
 gem 'rolify', '5.2.0'
 gem 'sanitize', '5.0.0'
 gem 'seed-fu', '2.3.9'
-gem 'webpacker', '3.5.5'
+gem 'webpacker', '4.0.7'
 gem 'webpacker-react', '0.3.2'
 
 group :development, :test do
@@ -41,14 +41,14 @@ group :development do
   gem 'listen', '3.1.5'
   gem 'rubocop', '0.74.0', require: false
   gem 'rubycritic', '4.1.0', require: false
-  gem 'web-console', '3.7.0'
+  gem 'web-console', '4.0.1'
 end
 
 group :test do
   gem 'minitest', '5.11.3'
   gem 'minitest-matchers', '1.4.1'
-  gem 'minitest-reporters', '1.3.6'
-  gem 'minitest-spec-rails', '5.5.0'
+  gem 'minitest-reporters', '1.3.8'
+  gem 'minitest-spec-rails', '6.0.0'
   gem 'shoulda-matchers', '4.1.2'
   gem 'simplecov', '0.17.0', require: false
 end

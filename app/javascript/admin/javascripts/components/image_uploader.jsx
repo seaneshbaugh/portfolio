@@ -2,8 +2,7 @@ import React from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import classNames from "classnames";
-import { DirectUpload } from "activestorage";
-
+import { DirectUpload } from "@rails/activestorage";
 import { addPicture } from "../actions/pictures_actions";
 
 let fileInputId = 0;
