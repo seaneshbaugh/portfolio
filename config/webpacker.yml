@@ -94,3 +94,6 @@ production:
 
   # Cache manifest.json for performance
   cache_manifest: true
+
+  # Turn on compile output for production builds. If they fail it's kind of important to know why.
+  webpack_compile_output: true
