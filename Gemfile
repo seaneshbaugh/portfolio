@@ -13,7 +13,7 @@ gem 'aws-sdk-s3', '1.48.0', require: false
 gem 'bootsnap', '1.4.5', require: false
 gem 'classnames', '1.0.0'
 gem 'default_value_for', '3.3.0'
-gem 'devise', '4.7.0'
+gem 'devise', '4.7.1'
 gem 'fast_jsonapi', '1.5'
 gem 'filesize', '0.2.0'
 gem 'friendly_id', '5.2.5'
