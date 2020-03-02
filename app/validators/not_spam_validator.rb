@@ -2,20 +2,25 @@
 
 class NotSpamValidator < ActiveModel::EachValidator
   SPAM_PHRASES = %w[
+    aged
     backlink
     brand
     business
     cafergot
+    casino
     cheap
     cialis
     coupon
     credit
+    gift
     investment
     leads
     medication
     merchant
     payment
     pills
+    slot
+    testimonials
     viagra
   ].freeze
 
