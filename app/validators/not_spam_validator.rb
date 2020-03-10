@@ -54,7 +54,9 @@ class NotSpamValidator < ActiveModel::EachValidator
   end
 
   def contains_spam_phrases?(value)
-    SPAM_PHRASES.any? { |spam| value.downcase.include?(spam) }
+    downcased_value = value.downcase
+
+    SPAM_PHRASES.any? { |spam| downcased_value.include?(spam) }
   end
 
   def is_spam?(value)
