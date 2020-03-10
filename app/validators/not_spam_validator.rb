@@ -4,6 +4,7 @@ class NotSpamValidator < ActiveModel::EachValidator
   SPAM_PHRASES = %w[
     aged
     backlink
+    boyfriend
     brand
     business
     cafergot
@@ -13,12 +14,16 @@ class NotSpamValidator < ActiveModel::EachValidator
     coupon
     credit
     gift
+    girlfriend
     investment
     leads
     medication
     merchant
     payment
     pills
+    relationship
+    russia
+    sex
     slot
     testimonials
     viagra
