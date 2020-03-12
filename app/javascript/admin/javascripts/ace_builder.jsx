@@ -1,15 +1,14 @@
 import React from "react";
 import { render } from "react-dom";
-import brace from "brace";
 import AceEditor from "react-ace";
 import PictureSelector from "./components/picture_selector";
 
-import "brace/mode/css";
-import "brace/mode/html";
-import "brace/mode/javascript";
-import "brace/mode/text";
-import "brace/mode/rhtml";
-import "brace/theme/github";
+import "ace-builds/src-noconflict/mode-css";
+import "ace-builds/src-noconflict/mode-html";
+import "ace-builds/src-noconflict/mode-javascript";
+import "ace-builds/src-noconflict/mode-text";
+import "ace-builds/src-noconflict/mode-rhtml";
+import "ace-builds/src-noconflict/theme-github";
 
 const completed = () => {
   Array.from(document.querySelectorAll(".ace-editor-field")).forEach((aceEditorField, index) => {
