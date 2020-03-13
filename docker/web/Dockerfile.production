@@ -1,4 +1,4 @@
-FROM ruby:2.6.4
+FROM ruby:2.7.0
 
 ARG POSTGRES_USER
 ARG POSTGRES_PASSWORD
@@ -14,11 +14,11 @@ ARG S3_ENDPOINT
 ENV RAILS_ENV production
 ENV NODE_ENV production
 ENV APP_HOME /portfolio
-ENV BUNDLER_VERSION 2.0.2
+ENV BUNDLER_VERSION 2.1.2
 ENV APP_PORT 3000
 ENV RAILS_SERVE_STATIC_FILES true
 
-RUN curl -sL https://deb.nodesource.com/setup_12.x | bash - && \
+RUN curl -sL https://deb.nodesource.com/setup_13.x | bash - && \
     curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - && \
     echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list && \
     apt-get update -qq && \
