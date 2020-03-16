@@ -68,12 +68,20 @@ module Admin
       git_repo.log.first.sha
     end
 
+    def node_version
+      `nodejs -v`
+    end
+
     def quick_links_column_width
       @quick_links_column_width ||= 12 / creatable_models.length
     end
 
     def search_icon(options = {})
       content_tag(:i, 'search', class: classnames('material-icons', options[:class]))
+    end
+
+    def yarn_version
+      `yarn -v`
     end
   end
 end
