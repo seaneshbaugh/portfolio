@@ -2,7 +2,9 @@
 
 class NotSpamValidator < ActiveModel::EachValidator
   SPAM_PHRASES = %w[
+    affordable
     aged
+    alcohol
     backlink
     boyfriend
     brand
@@ -16,11 +18,14 @@ class NotSpamValidator < ActiveModel::EachValidator
     gift
     girlfriend
     investment
+    laminine
     leads
     medication
     merchant
     payment
+    porn
     pills
+    rehab
     relationship
     russia
     sex
@@ -45,7 +50,7 @@ class NotSpamValidator < ActiveModel::EachValidator
   private
 
   def contains_bad_links?(value)
-    BAD_TLDS.any? { |tld| value =~ /.+\.#{tld}/ }
+    BAD_TLDS.any? { |bad_tld| value =~ /.+\.#{bad_tld}/ }
   end
 
   # I can't imagine a case where I would ever get a legitimate message in Russian.
