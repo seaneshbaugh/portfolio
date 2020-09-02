@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
-# TODO: Consider renaming this class.
+# TODO: Consider renaming this class. It does more than just add ace_editor. Maybe each
+# type of field should be in some sort of concern and then included in a PortfolioBuilder
+# class.
 class AceBuilder < ActionView::Helpers::FormBuilder
   include ApplicationHelper
 
@@ -39,13 +41,13 @@ class AceBuilder < ActionView::Helpers::FormBuilder
     content_tag(:div, '', class: 'picture-selector', data: { 'buttonclassname' => button_class, 'buttontext' => button_text, 'target' => target })
   end
 
-  def tag_list(method, options = {})
-    tags = (object.send(method) || []).join(',')
+  # def tag_list(method, options = {})
+  #   tags = (object.send(method) || []).join(',')
 
-    suggestions = (options.delete(:suggestions) || []).join(',')
+  #   suggestions = (options.delete(:suggestions) || []).join(',')
 
-    content_tag(:div, '', class: 'taglist-container', data: { 'tags' => tags, 'suggestions' => suggestions, 'objectname' => object_name, 'method' => method.to_s })
-  end
+  #   content_tag(:div, '', class: 'taglist-container', data: { 'tags' => tags, 'suggestions' => suggestions, 'objectname' => object_name, 'method' => method.to_s })
+  # end
 
   private
 

@@ -17,7 +17,8 @@
       = f.ace_editor :script, mode: 'javascript'
   .row
     .input-field.taglist-input-field.col.s12
-      = f.tag_list :tag_list, suggestions: ActsAsTaggableOn::Tag.pluck(:name)
+      =# f.tag_list :tag_list, suggestions: ActsAsTaggableOn::Tag.pluck(:name)
+      = f.text_field :tag_list
       = f.label :tag_list
   %p
     = f.label :visible do

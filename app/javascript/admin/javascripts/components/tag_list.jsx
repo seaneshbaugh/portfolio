@@ -1,70 +1,72 @@
-import React from "react";
-import { findDOMNode } from "react-dom";
-import PropTypes from "prop-types";
-import { WithContext as ReactTags } from "react-tag-input";
+// TODO: Find a replacement for react-tag-input. It has way outdated dependencies.
 
-const KeyCodes = {
-  comma: 188,
-  enter: 13,
-  tab: 9
-};
+// import React from "react";
+// import { findDOMNode } from "react-dom";
+// import PropTypes from "prop-types";
+// import { WithContext as ReactTags } from "react-tag-input";
 
-const delimiters = [KeyCodes.comma, KeyCodes.enter, KeyCodes.tab];
+// const KeyCodes = {
+//   comma: 188,
+//   enter: 13,
+//   tab: 9
+// };
 
-class TagList extends React.Component {
-  constructor(props) {
-    super(props);
+// const delimiters = [KeyCodes.comma, KeyCodes.enter, KeyCodes.tab];
 
-    const tags = props.tags.map(tag => ({ id: tag, text: tag }));
-    const suggestions = props.suggestions.map(suggestion => ({ id: suggestion, text: suggestion }));
+// class TagList extends React.Component {
+//   constructor(props) {
+//     super(props);
 
-    this.state = { tags, suggestions };
+//     const tags = props.tags.map(tag => ({ id: tag, text: tag }));
+//     const suggestions = props.suggestions.map(suggestion => ({ id: suggestion, text: suggestion }));
 
-    this.handleDelete = this.handleDelete.bind(this);
-    this.handleAddition = this.handleAddition.bind(this);
-    this.handleDrag = this.handleDrag.bind(this);
-  }
+//     this.state = { tags, suggestions };
 
-  handleDelete(index) {
-    const { tags } = this.state;
+//     this.handleDelete = this.handleDelete.bind(this);
+//     this.handleAddition = this.handleAddition.bind(this);
+//     this.handleDrag = this.handleDrag.bind(this);
+//   }
 
-    this.setState({
-      tags: tags.filter((tag, i) => index !== i),
-    });
-  }
+//   handleDelete(index) {
+//     const { tags } = this.state;
 
-  handleAddition(tag) {
-    this.setState(state => ({ tags: [...state.tags, tag] }));
-  }
+//     this.setState({
+//       tags: tags.filter((tag, i) => index !== i),
+//     });
+//   }
 
-  handleDrag(tag, currentPosition, newPosition) {
-    const tags = [...this.state.tags];
-    const newTags = tags.slice();
+//   handleAddition(tag) {
+//     this.setState(state => ({ tags: [...state.tags, tag] }));
+//   }
 
-    newTags.splice(currentPosition, 1);
-    newTags.splice(newPosition, 0, tag);
+//   handleDrag(tag, currentPosition, newPosition) {
+//     const tags = [...this.state.tags];
+//     const newTags = tags.slice();
 
-    this.setState({ tags: newTags });
-  }
+//     newTags.splice(currentPosition, 1);
+//     newTags.splice(newPosition, 0, tag);
 
-  render() {
-    const { tags, suggestions } = this.state;
-    const hiddenInputId = `${this.props.objectName}_${this.props.method}`;
-    const hiddenInputName = `${this.props.objectName}[${this.props.method}]`;
-    const hiddenInputValue = tags.map((tag) => tag.text).join(",");
+//     this.setState({ tags: newTags });
+//   }
 
-    return (
-      <div className="taglist">
-        <ReactTags tags={tags}
-                   suggestions={suggestions}
-                   handleDelete={this.handleDelete}
-                   handleAddition={this.handleAddition}
-                   handleDrag={this.handleDrag}
-                   delimiters={delimiters} />
-        <input type="hidden" id={hiddenInputId} name={hiddenInputName} value={hiddenInputValue} />
-      </div>
-    );
-  }
-};
+//   render() {
+//     const { tags, suggestions } = this.state;
+//     const hiddenInputId = `${this.props.objectName}_${this.props.method}`;
+//     const hiddenInputName = `${this.props.objectName}[${this.props.method}]`;
+//     const hiddenInputValue = tags.map((tag) => tag.text).join(",");
 
-export default TagList;
+//     return (
+//       <div className="taglist">
+//         <ReactTags tags={tags}
+//                    suggestions={suggestions}
+//                    handleDelete={this.handleDelete}
+//                    handleAddition={this.handleAddition}
+//                    handleDrag={this.handleDrag}
+//                    delimiters={delimiters} />
+//         <input type="hidden" id={hiddenInputId} name={hiddenInputName} value={hiddenInputValue} />
+//       </div>
+//     );
+//   }
+// };
+
+// export default TagList;
