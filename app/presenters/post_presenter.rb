@@ -51,9 +51,13 @@ class PostPresenter < BasePresenter
 
   # rubocop:disable Rails/OutputSafety
   def tag_links
-    @post.tag_list.map { |tag| link_to tag, root_path(tag: tag) }.join(', ').html_safe
+    @post.tag_list.map { |tag| link_to(tag, root_path(tag: tag)) }.join(', ').html_safe
   end
   # rubocop:enable Rails/OutputSafety
+
+  def tag_list
+    @post.tag_list.join(', ')
+  end
 
   def truncated?
     @post.body.include?('<!--more-->')
