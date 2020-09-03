@@ -125,4 +125,9 @@ Rails.application.configure do
 
   # Use https://seaneshbaugh.com as the base for links in emails.
   config.action_mailer.default_url_options = { host: 'seaneshbaugh.com', protocol: 'https' }
+
+  config.middleware.use ExceptionNotification::Rack, email: {
+    sender_address: Rails.application.credentials.dig(:smtp, :user_name),
+    exception_recipients: 'seaneshbaugh@gmail.com'
+  }
 end

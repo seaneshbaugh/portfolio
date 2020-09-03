@@ -1,24 +1,28 @@
-# [seaneshbaugh.com](http://seaneshbaugh.com/)
+# [seaneshbaugh.com](https://seaneshbaugh.com/)
 
 This is the repository for my personal website.
 
 ## Ruby Version
 
-This application is intended to be run on Ruby 2.5.0.
+This application uses Ruby 2.7.1.
 
 ## Rails Version
 
-This application uses Rails 5.1.5.
+This application uses Rails 6.0.3.2.
+
+## Node.js Version
+
+This application uses Node.js 14.9.0.
 
 ## Dependencies
 
 * [vips](https://jcupitt.github.io/libvips/)
 
-## Local Development Installation
+## Local Development Setup
 
 Clone the repository.
 
-    $ git clone git@github.com:seaneshbaugh/portfolio.git portfolio
+    $ git clone git@github.com:seaneshbaugh/portfolio.git
 
 cd into the project directory.
 
@@ -30,15 +34,15 @@ Start the Docker containers.
 
 Create the development and test databases.
 
-    $ docker-compose run web rails db:create
+    $ docker-compose run --rm web rails db:create
 
 Load the database schema.
 
-    $ docker-compose run web rails db:schema:load
+    $ docker-compose run --rm web rails db:schema:load
 
 Seed the database.
 
-    $ docker-compose run web rails db:seed_fu
+    $ docker-compose run --rm web rails db:seed_fu
 
 ## Troubleshooting
 
@@ -57,33 +61,19 @@ This happens from time to time. Dead containers and unused images can be cleaned
     $ docker ps --filter status=dead --filter status=exited -aq | xargs docker rm -v
     $ docker images --no-trunc | grep '<none>' | awk '{ print $3 }' | xargs docker rmi
 
-## Deploying
-
-Set up a docker machine \(apparently this is already deprecated?\).
-
-    $ docker-machine create --driver=digitalocean --digitalocean-access-token=$DIGITAL_OCEAN_TOKEN -digitalocean-size=2gb portfolio
-
-Use the docker machine in the current shell.
-
-    $ eval $(docker-machine env portfolio)
-
-Start the Docker containers.
-
-    $ docker-compose -f docker-compose.production.yml up -d --build
-
 ## Linting
 
 ### Ruby
 
-    $ rubocop
+    $ docker-compose run --rm web bundle exec rubocop
 
 ### HAML
 
-    $ haml-lint
+    $ docker-compose run --rm web bundle exec haml-lint
 
 ### SCSS
 
-    $ yarn run sass-lint --verbose --no-exit --config .sass-lint.yml
+    $ docker-compose run --rm web  yarn run sass-lint --verbose --no-exit --config .sass-lint.yml
 
 ## Contacts
 

@@ -1,24 +1,10 @@
-FROM ruby:2.7.0
+FROM ruby:2.7.1
 
-ARG POSTGRES_USER
-ARG POSTGRES_PASSWORD
-ARG PORTFOLIO_DATABASE
-ARG PORTFOLIO_DATABASE_USERNAME
-ARG PORTFOLIO_DATABASE_PASSWORD
-ARG PORTFOLIO_DATABASE_HOST
-ARG PORTFOLIO_DATABASE_PORT
-ARG AWS_REGION
-ARG S3_BUCKET
-ARG S3_ENDPOINT
-
-ENV RAILS_ENV production
-ENV NODE_ENV production
 ENV APP_HOME /portfolio
-ENV BUNDLER_VERSION 2.1.2
+ENV BUNDLER_VERSION 2.1.4
 ENV APP_PORT 3000
-ENV RAILS_SERVE_STATIC_FILES true
 
-RUN curl -sL https://deb.nodesource.com/setup_13.x | bash - && \
+RUN curl -sL https://deb.nodesource.com/setup_14.x | bash - && \
     curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - && \
     echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list && \
     apt-get update -qq && \
@@ -42,8 +28,6 @@ RUN yarn install
 RUN npm rebuild node-sass
 
 COPY . $APP_HOME
-
-RUN bundle exec rails webpacker:compile
 
 EXPOSE $APP_PORT
 

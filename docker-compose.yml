@@ -2,13 +2,13 @@ version: "3"
 
 services:
   db:
-    image: postgres
+    image: "postgres"
     env_file:
-      - .env
+      - ".env"
     volumes:
-      - ./tmp/db:/var/lib/postgresql/data
+      - "./tmp/db:/var/lib/postgresql/data"
   mail:
-    image: schickling/mailcatcher
+    image: "schickling/mailcatcher"
     ports:
       - "1080:1080"
   pgadmin:
@@ -24,28 +24,28 @@ services:
   web:
     build:
       context: .
-      dockerfile: ./docker/web/Dockerfile
+      dockerfile: "./Dockerfile"
     env_file:
-      - .env
-    command: bundle exec rails s -p 3000 -b '0.0.0.0'
+      - ".env"
+    command: "bundle exec rails s -p 3000 -b '0.0.0.0'"
     volumes:
-      - .:/portfolio
+      - ".:/portfolio"
     ports:
       - "3000:3000"
     depends_on:
-      - db
+      - "db"
     environment:
-      - WEBPACKER_DEV_SERVER_HOST=webpacker
+      - "WEBPACKER_DEV_SERVER_HOST=webpacker"
   webpacker:
     build:
       context: .
-      dockerfile: ./docker/web/Dockerfile
+      dockerfile: "./Dockerfile"
     env_file:
-      - .env
-    command: ./bin/webpack-dev-server
+      - ".env"
+    command: "./bin/webpack-dev-server"
     volumes:
-      - .:/portfolio
+      - ".:/portfolio"
     ports:
       - "3035:3035"
     environment:
-      - WEBPACKER_DEV_SERVER_HOST=0.0.0.0
+      - "WEBPACKER_DEV_SERVER_HOST=0.0.0.0"

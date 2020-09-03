@@ -32,9 +32,7 @@ yarn-debug.log*
 
 /coverage
 
-.env
 .DS_Store
 
 /db/fixtures/files/pictures
-.env.prod
 /dump*.sql
