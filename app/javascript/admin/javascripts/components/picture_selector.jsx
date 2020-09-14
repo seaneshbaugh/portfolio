@@ -13,7 +13,7 @@ class PictureSelector extends React.Component {
 
     this.openModal = this.openModal.bind(this);
     this.closeModal = this.closeModal.bind(this);
-    this.insertPicture = this.insertPicture.bind(this);
+    this.handleSelect = this.handleSelect.bind(this);
   }
 
   openModal(event) {
@@ -42,18 +42,8 @@ class PictureSelector extends React.Component {
     });
   }
 
-  insertPicture(picture) {
-    const editor = document.querySelector(`#${this.props.target} .ace_editor`).env.editor;
-
-    let image = `<img src="${picture.data.attributes.original_image_url}"`;
-
-    if (picture.data.attributes.alt_text) {
-      image += ` alt=${picture.data.attributes.alt_text}"`;
-    }
-
-    image += ">";
-
-    editor.insert(image);
+  handleSelect(picture) {
+    this.props.onSelect(picture);
 
     this.setState({
       "modalOpen": false
@@ -65,7 +55,7 @@ class PictureSelector extends React.Component {
     let overlay = null;
 
     if (this.state.modalOpen) {
-      modal = <Modal pictures={this.state.pictures} pictureOnClick={this.insertPicture} />;
+      modal = <Modal pictures={this.state.pictures} pictureOnClick={this.handleSelect} />;
       overlay = <div className="picture-selector-modal-overlay" onClick={this.closeModal}></div>;
     }
 
@@ -82,7 +72,7 @@ class PictureSelector extends React.Component {
 PictureSelector.propTypes = {
   "buttonClassName": PropTypes.string,
   "buttonText": PropTypes.string,
-  "target": PropTypes.string.isRequired
+  "onSelect": PropTypes.func.isRequired
 };
 
 export default PictureSelector;

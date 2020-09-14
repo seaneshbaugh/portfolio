@@ -1,6 +1,7 @@
 .picture-selector-modal {
     .picture-selector-modal-pictures {
         .picture-selector-modal-picture {
+            cursor: pointer;
             text-align: center;
 
             img {
@@ -8,6 +9,7 @@
             }
 
             .title {
+                display: block;
                 font-size: 0.75rem;
             }
         }

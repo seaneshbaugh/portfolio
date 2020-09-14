@@ -14,7 +14,7 @@ module PagesHelper
 
     b = [[0, b + (b * luminance)].max, 255].min.round
 
-    format('#%02x%02x%02x', r, g, b)
+    format('#%<r>02x%<g>02x%<b>02x', r: r, g: g, b: b)
   end
 
   def contrast_color(hex_code)

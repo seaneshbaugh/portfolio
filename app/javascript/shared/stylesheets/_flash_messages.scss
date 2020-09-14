@@ -2,6 +2,8 @@
 
 .flash-messages {
     .flash-message {
+        cursor: pointer;
+
         &.flash-message-success {
             background: color("green", "lighten-4");
         }

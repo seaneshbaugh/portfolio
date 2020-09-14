@@ -22,7 +22,7 @@ module Api
 
         assert_response :ok
 
-        assert response.body == PictureSerializer.new(picture).to_json
+        assert_equal(PictureSerializer.new(picture).to_json, response.body)
       end
 
       test 'should not show a picture that does not exist' do

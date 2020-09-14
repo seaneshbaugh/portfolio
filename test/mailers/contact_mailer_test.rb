@@ -8,12 +8,12 @@ class ContactMailerTest < ActionMailer::TestCase
 
     email = ContactMailer.contact_form_message(contact).deliver
 
-    assert !ActionMailer::Base.deliveries.empty?
+    assert_not ActionMailer::Base.deliveries.empty?
 
-    assert_equal ['seaneshbaugh@gmail.com'], email.to
+    assert_equal(['seaneshbaugh@gmail.com'], email.to)
 
-    assert_equal 'seaneshbaugh.com Contact Form - Hello!', email.subject
+    assert_equal('seaneshbaugh.com Contact Form - Hello!', email.subject)
 
-    assert_match '<h1>New Contact Form Message</h1>', email.encoded
+    assert_match('<h1>New Contact Form Message</h1>', email.encoded)
   end
 end

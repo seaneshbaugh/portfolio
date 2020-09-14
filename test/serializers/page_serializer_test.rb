@@ -6,7 +6,7 @@ class PageSerializerTest < ActiveSupport::TestCase
 
     serializer = PageSerializer.new(page)
 
-    assert serializer.serializable_hash.dig(:data, :attributes, :title) == 'About'
+    assert_equal('About', serializer.serializable_hash.dig(:data, :attributes, :title))
   end
 
   test "it serializes the page's body" do
@@ -14,6 +14,6 @@ class PageSerializerTest < ActiveSupport::TestCase
 
     serializer = PageSerializer.new(page)
 
-    assert serializer.serializable_hash.dig(:data, :attributes, :body) == '<p>About me.</p>'
+    assert_equal('<p>About me.</p>', serializer.serializable_hash.dig(:data, :attributes, :body))
   end
 end

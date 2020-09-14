@@ -6,6 +6,6 @@ class UserSerializerTest < ActiveSupport::TestCase
 
     serializer = UserSerializer.new(user)
 
-    assert serializer.serializable_hash.dig(:data, :attributes, :email) == 'sean@seaneshbaugh.com'
+    assert_equal('sean@seaneshbaugh.com', serializer.serializable_hash.dig(:data, :attributes, :email))
   end
 end

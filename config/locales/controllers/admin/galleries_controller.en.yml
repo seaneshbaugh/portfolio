@@ -1,0 +1,9 @@
+en:
+  admin:
+    galleries:
+      create:
+        success: "Gallery was successfully created."
+      update:
+        success: "Gallery was successfully updated."
+      delete:
+        success: "Gallery was successfully deleted."

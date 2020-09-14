@@ -1,0 +1,37 @@
+- present @gallery do |gallery_presenter|
+  .row
+    .col.s12
+      %h2= "#{t('.title')}: #{gallery_presenter.name}"
+  .row
+    .admin-actions.col.s12
+      = link_to t('.back_to_galleries'), admin_galleries_path, class: info_button_class
+      - if policy([:admin, @gallery]).edit?
+        = edit_icon_link(edit_admin_gallery_path(@gallery), label: t('edit'))
+      - if policy([:admin, @gallery]).destroy?
+        = delete_icon_link(admin_gallery_path(@gallery), label: t('delete'))
+  .gallery
+    .attribute.name.row
+      .attribute-name.col.s12.m3.l3= t('activerecord.attributes.gallery.name')
+      .attribute-value.col.s12.m9.l9= gallery_presenter.name
+    .attribute.slug.row
+      .attribute-name.col.s12.m3.l3= t('activerecord.attributes.gallery.slug')
+      .attribute-value.col.s12.m9.l9
+        = gallery_presenter.slug
+        = gallery_presenter.share_link target: '_blank'
+    .attribute.description.row
+      .attribute-name.col.s12.m3.l3= t('activerecord.attributes.gallery.description')
+      .attribute-value.col.s12.m9.l9
+        - if gallery_presenter.description.present?
+          %pre= gallery_presenter.description
+    .attribute.order.row
+      .attribute-name.col.s12.m3.l3= t('activerecord.attributes.gallery.order')
+      .attribute-value.col.s12.m9.l9= gallery_presenter.order
+    .attribute.visible.row
+      .attribute-name.col.s12.m3.l3= t('activerecord.attributes.gallery.visible')
+      .attribute-value.col.s12.m9.l9= gallery_presenter.visible
+    .attribute.created-at.row
+      .attribute-name.col.s12.m3.l3= t('activerecord.attributes.gallery.created_at')
+      .attribute-value.col.s12.m9.l9= gallery_presenter.created_at
+    .attribute.updated-at.row
+      .attribute-name.col.s12.m3.l3= t('activerecord.attributes.gallery.updated_at')
+      .attribute-value.col.s12.m9.l9= gallery_presenter.updated_at

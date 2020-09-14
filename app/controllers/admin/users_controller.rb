@@ -75,7 +75,7 @@ module Admin
     private
 
     def find_user
-      User.find_by!(id: params[:id])
+      User.find(params[:id])
     end
 
     def user_params

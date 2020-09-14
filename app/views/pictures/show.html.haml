@@ -1,0 +1,15 @@
+- present @gallery do |gallery_presenter|
+  .gallery{ id: "gallery-#{gallery_presenter.slug}" }
+    %header.gallery-header
+      %h1{ style: 'color: #3e4ad9;' }= gallery_presenter.name
+    .gallery-description
+      = gallery_presenter.description_tag
+    .gallery-pictures.masonry.bordered
+      - gallery_presenter.gallery_pictures.each_with_index do |gallery_picture, index|
+        - present gallery_picture.picture do |picture_presenter|
+          .gallery-picture.brick
+            %a.lightbox{ href: picture_presenter.original_image_path, 'data-gallery' => 'gallery-pictures', 'data-title' => picture_presenter.title, 'data-description' =>  "#gallery-picture-description-#{index}" }
+              = image_tag(picture_presenter.medium_image_path, alt: picture_presenter.alt_text)
+              .glightbox-desc{ id: "gallery-picture-description-#{index}" }
+                %p.caption= picture_presenter.caption
+                .metadata= picture_presenter.formatted_exif

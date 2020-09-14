@@ -34,6 +34,8 @@
                     %li.main-header-nav-list-item= link_to(t('activerecord.models.page').pluralize, admin_pages_path, class: 'main-header-nav-list-item-link')
                   - if policy([:admin, Picture]).index?
                     %li.main-header-nav-list-item= link_to(t('activerecord.models.picture').pluralize, admin_pictures_path, class: 'main-header-nav-list-item-link')
+                  - if policy([:admin, Gallery]).index?
+                    %li.main-header-nav-list-item= link_to(t('activerecord.models.gallery').pluralize, admin_galleries_path, class: 'main-header-nav-list-item-link')
                   - if policy([:admin, User]).index?
                     %li.main-header-nav-list-item= link_to(t('activerecord.models.user').pluralize, admin_users_path, class: 'main-header-nav-list-item-link')
                   %li.main-header-nav-list-item= link_to(t('.header_nav.site_home'), root_path, class: 'main-header-nav-list-item-link')

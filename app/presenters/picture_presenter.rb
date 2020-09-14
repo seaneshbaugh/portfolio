@@ -12,6 +12,26 @@ class PicturePresenter < BasePresenter
     @picture = picture
   end
 
+  # TODO: Maybe figure out a more elegant way to handle this.
+  def formatted_exif
+    model = image_metadata.dig('exif', 'model')
+    lens_model = image_metadata.dig('exif', 'lens_model')
+    date_time = image_metadata.dig('exif', 'date_time')
+    exposure_time = image_metadata.dig('exif', 'exposure_time')
+    f_number = image_metadata.dig('exif', 'f_number')
+    iso_speed_ratings = image_metadata.dig('exif', 'iso_speed_ratings')
+    focal_length = image_metadata.dig('exif', 'focal_length')
+
+    return '' unless model && lens_model && date_time && exposure_time && f_number && iso_speed_ratings && focal_length
+
+    f_number = Rational(*f_number.split('/').map(&:to_i)).to_f.to_s if f_number
+
+    focal_length = Rational(*focal_length.split('/').map(&:to_i)).to_f.to_s if focal_length
+
+    # TODO: i18n this.
+    "Model: #{model}, Lens: #{lens_model}, Exposure: #{exposure_time}, F-Number: #{f_number}, ISO: #{iso_speed_ratings}, Focal Length: #{focal_length}mm"
+  end
+
   def image_size(pretty = true)
     return "#{image_byte_size.to_s.chars.to_a.reverse.each_slice(3).map(&:join).join(',').reverse} bytes" unless pretty
 

@@ -1,0 +1,48 @@
+%h2= t('.title')
+.row
+  = search_form_for @search, url: admin_galleries_path, html: { class: 'col s12', method: :get } do |f|
+    .row
+      .input-field.col.s3
+        = f.text_field :name_cont
+        = f.label :name_cont, t('activerecord.attributes.gallery.name')
+      .input-field.col.s6
+        = f.text_field :description_cont
+        = f.label :description_cont, t('activerecord.attributes.gallery.description')
+      .input-field.col.s3
+        = f.button search_icon, class: caution_button_class
+        = cancel_icon_link(admin_galleries_path)
+- if policy([:admin, Gallery]).create?
+  .row
+    .col.s12
+      = link_to t('.new_gallery'), new_admin_gallery_path, class: success_button_class
+- if @galleries.present?
+  .row
+    .col.s12
+      %table.galleries
+        %thead
+          %tr
+            %th.gallery-name= sort_link @search, :name
+            %th.gallery-order.hide-on-small-only= sort_link @search, :order
+            %th.gallery-created-at= sort_link @search, :created_at
+            %th.edit
+            %th.delete
+        %tbody
+          - @galleries.each do |gallery|
+            - present gallery do |gallery_presenter|
+              %tr{ class: classnames('gallery', { 'inactive' => !gallery_presenter.published? }) }
+                %td.gallery-title
+                  = link_to gallery_presenter.name, admin_gallery_path(gallery)
+                  = gallery_presenter.share_link target: '_blank'
+                %td.gallery-order.hide-on-small-only= gallery_presenter.order
+                %td.gallery-created-at= gallery_presenter.created_at
+                %td.edit.right-align
+                  - if policy([:admin, gallery]).edit?
+                    = edit_icon_link edit_admin_gallery_path(gallery)
+                %td.delete.right-align
+                  - if policy([:admin, gallery]).destroy?
+                    = delete_icon_link admin_gallery_path(gallery)
+  .row
+    .col.s12
+      = paginate @galleries
+- else
+  %p.no-items= t('.no_galleries')

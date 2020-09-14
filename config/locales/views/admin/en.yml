@@ -6,6 +6,7 @@ en:
           quick_links:
             title: "Quick Links"
             material_icons:
+              gallery: "add_photo_alternate"
               page: "note_add"
               picture: "add_a_photo"
               post: "comment"

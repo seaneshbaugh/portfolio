@@ -6,7 +6,9 @@ class EmailValidatorTest < ActiveSupport::TestCase
   class DummyClass
     include ActiveModel::Model
     include ActiveModel::Validations
+
     attr_accessor :email
+
     validates :email, email: true
   end
 
@@ -25,6 +27,6 @@ class EmailValidatorTest < ActiveSupport::TestCase
 
     assert_not dummy_object.valid?
 
-    assert dummy_object.errors[:email] == ['is invalid']
+    assert_equal(['is invalid'], dummy_object.errors[:email])
   end
 end

@@ -16,7 +16,7 @@
     %link{ href: asset_pack_path('media/shared/images/apple-touch-icon-ipad-retina.png'), rel: 'apple-touch-icon', sizes: '144x144' }
     %link{ href: '/humans.txt', rel: 'author' }
     = csrf_meta_tags
-  %body
+  %body{ class: current_user.present? ? 'logged-in' : nil }
     .content-wrap
       %header.main-header{ role: 'banner' }
         %h1.main-header-title= t('.title')
@@ -33,10 +33,11 @@
             %li.main-header-nav-list-item= link_to(t('.header_nav.home'), root_path, rel: 'home', class: 'main-header-nav-list-item-link', style: 'color: #000000;')
             - @pages.each do |page|
               %li.main-header-nav-list-item= link_to(page.title, "/#{page.slug}", class: 'main-header-nav-list-item-link', style: "color: #{page.color};")
-            %li.main-header-nav-list-item= link_to(t('.header_nav.contact'), contact_path, class: 'main-header-nav-list-item-link', style: 'color: #1b55c0;')
+            %li.main-header-nav-list-item= link_to(t('.header_nav.pictures'), pictures_path, class: 'main-header-nav-list-item-link', style: 'color: #3e4ad9;')
+            %li.main-header-nav-list-item= link_to(t('.header_nav.contact'), contact_path, class: 'main-header-nav-list-item-link', style: 'color: #5e0bb0;')
             - if current_user
-              %li.main-header-nav-list-item= link_to(t('.header_nav.admin'), admin_root_path, class: 'main-header-nav-list-item-link', style: 'color: #4b0082;')
-              %li.main-header-nav-list-item= link_to(t('.header_nav.logout'), destroy_user_session_path, method: :delete, class: 'main-header-nav-list-item-link', style: 'color: #800080;')
+              %li.main-header-nav-list-item= link_to(t('.header_nav.admin'), admin_root_path, class: 'main-header-nav-list-item-link', style: 'color: #333333;')
+              %li.main-header-nav-list-item= link_to(t('.header_nav.logout'), destroy_user_session_path, method: :delete, class: 'main-header-nav-list-item-link', style: 'color: #333333 ;')
       %main.main-content{ role: 'main' }
         = flash_messages
         = yield

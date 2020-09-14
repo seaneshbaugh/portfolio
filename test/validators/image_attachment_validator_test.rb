@@ -16,6 +16,6 @@ class ImageAttachmentValidatorTest < ActiveSupport::TestCase
 
     assert_not picture.valid?
 
-    assert picture.errors[:image] == ['no file uploaded']
+    assert_equal(['no file uploaded'], picture.errors[:image])
   end
 end

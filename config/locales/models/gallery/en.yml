@@ -1,0 +1,19 @@
+en:
+  activerecord:
+    models:
+      gallery: "Gallery"
+    attributes:
+      gallery:
+        name: "Name"
+        slug: "Slug"
+        description: "Description"
+        order: "Order"
+        visible: "Visible"
+        created_at: "Created At"
+        updated_at: "Updated At"
+    errors:
+      models:
+        gallery:
+          attributes:
+            visible:
+              inclusion: "must be true or false"

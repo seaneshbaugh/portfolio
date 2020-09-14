@@ -43,16 +43,20 @@ module ActiveSupport
 
     private
 
-    def fixture_file_path(filename)
-      Rails.root.join('test', 'fixtures', 'files', filename)
-    end
-
     def attach_images_to_pictures!
       Picture.find_each do |picture|
         filename = "#{picture.title.parameterize}.jpg"
 
         picture.image.attach(io: File.open(fixture_file_path(filename)), filename: filename)
       end
+    end
+
+    def fixture_file_path(filename)
+      Rails.root.join('test', 'fixtures', 'files', filename)
+    end
+
+    def view_context
+      ActionView::Base.new(ActionView::LookupContext.new(ActionController::Base.view_paths), {}, ActionController::Base.new)
     end
   end
 end

@@ -1,0 +1,21 @@
+en:
+  activerecord:
+    models:
+      gallery_picture: "Gallery Picture"
+    attributes:
+      gallery_picture:
+        gallery_id: "Gallery ID"
+        picture_id: "Picture ID"
+        order: "Order"
+        featured: "Featured"
+        visible: "Visible"
+        created_at: "Created At"
+        updated_at: "Updated At"
+    errors:
+      models:
+        gallery_picture:
+          attributes:
+            featured:
+              inclusion: "must be true or false"
+            visible:
+              inclusion: "must be true or false"

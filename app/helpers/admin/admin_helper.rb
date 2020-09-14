@@ -3,13 +3,13 @@
 module Admin
   module AdminHelper
     def creatable_models
-      @creatable_models ||= [Post, Page, Picture, User].select do |model|
+      @creatable_models ||= [Post, Page, Picture, Gallery, User].select do |model|
         policy([:admin, model]).create?
       end
     end
 
     def cancel_icon(options = {})
-      content_tag(:i, 'clear', class: classnames('material-icons', options[:class]))
+      tag.i('clear', class: classnames('material-icons', options[:class]))
     end
 
     def cancel_icon_link(url_or_path, options = {})
@@ -21,7 +21,7 @@ module Admin
     end
 
     def delete_icon(options = {})
-      content_tag(:i, 'delete_forever', class: classnames('material-icons', options[:class]))
+      tag.i('delete_forever', class: classnames('material-icons', options[:class]))
     end
 
     def delete_icon_link(url_or_path, options = {})
@@ -33,7 +33,7 @@ module Admin
     end
 
     def edit_icon(options = {})
-      content_tag(:i, 'edit', class: classnames('material-icons', options[:class]))
+      tag.i('edit', class: classnames('material-icons', options[:class]))
     end
 
     def edit_icon_link(url_or_path, options = {})
@@ -76,8 +76,12 @@ module Admin
       @quick_links_column_width ||= 12 / creatable_models.length
     end
 
+    def quick_links_offset
+      @quick_links_offset ||= (12 % (creatable_models.length * quick_links_column_width)) / 2
+    end
+
     def search_icon(options = {})
-      content_tag(:i, 'search', class: classnames('material-icons', options[:class]))
+      tag.i('search', class: classnames('material-icons', options[:class]))
     end
 
     def yarn_version

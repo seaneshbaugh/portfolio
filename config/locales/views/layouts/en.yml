@@ -18,6 +18,7 @@ en:
       subtitle: "Web Developer + Programmer"
       header_nav:
         home: "Home"
+        pictures: "Pictures"
         contact: "Contact"
         admin: "Admin"
         logout: "Logout"

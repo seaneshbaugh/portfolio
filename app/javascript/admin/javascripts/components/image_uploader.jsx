@@ -25,8 +25,10 @@ class ImageUploader extends React.Component {
     this.handleDrop = this.handleDrop.bind(this);
   }
 
-  componentWillMount() {
-    this.setState({ "fileInputId": `image-uploader-file-input-${getFileInputId()}` });
+  UNSAFE_componentWillMount() {
+    const x = `image-uploader-file-input-${getFileInputId()}`;
+    console.log(x);
+    this.setState({ "fileInputId": x });
   }
 
   handleDragEnter() {

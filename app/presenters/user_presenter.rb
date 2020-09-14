@@ -16,7 +16,7 @@ class UserPresenter < BasePresenter
   end
 
   def email_link
-    link_to content_tag(:i, 'email', class: 'material-icons'), "mailto:#{@user.email}"
+    link_to(tag.i('email', class: 'material-icons'), "mailto:#{@user.email}")
   end
 
   def last_sign_in_at

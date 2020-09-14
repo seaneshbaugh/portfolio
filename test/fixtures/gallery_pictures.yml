@@ -1,0 +1,15 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+conney:
+  gallery: salt_plains
+  picture: conney
+  order: 0
+  visible: true
+  featured: true
+
+cowboy:
+  gallery: salt_plains
+  picture: cowboy
+  order: 1
+  visible: true
+  featured: false

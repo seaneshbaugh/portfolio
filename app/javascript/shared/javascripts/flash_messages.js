@@ -1,7 +1,7 @@
 const completed = () => {
-  Array.from(document.querySelectorAll(".flash-message")).forEach((flashMessage, index) => {
+  document.querySelectorAll(".flash-message").forEach((flashMessage, index) => {
     flashMessage.addEventListener("click", (event) => {
-      flashMessage.classList.add("animated", "fadeOut");
+      flashMessage.classList.add("animate__animated", "animate__fadeOutUp");
     });
 
     flashMessage.addEventListener("animationend", (event) => {

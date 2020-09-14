@@ -1,3 +1,8 @@
+require:
+  - rubocop-minitest
+  - rubocop-performance
+  - rubocop-rails
+
 AllCops:
   Exclude:
     - bin/bundle
@@ -10,43 +15,72 @@ AllCops:
     - bin/yarn
     - db/schema.rb
     - node_modules/**/*
-
-AbcSize:
-  Enabled: false
-
-ClassLength:
-  Enabled: false
-
-CyclomaticComplexity:
-  Enabled: false
-
-Documentation:
-  Enabled: false
+  NewCops: enable
 
 Layout/DotPosition:
   Exclude:
     - db/migrate/20180427214039_convert_to_active_storage.rb
 
+Layout/LineLength:
+  Max: 256
+
+Lint/BinaryOperatorWithIdenticalOperands:
+  Enabled: false
+
 Lint/UnusedMethodArgument:
   Exclude:
     - db/migrate/20180427214039_convert_to_active_storage.rb
 
-MethodLength:
-  Enabled: false
+Metrics/AbcSize:
+  Exclude:
+    - db/migrate/20180427214039_convert_to_active_storage.rb
+  Max: 34
 
 Metrics/BlockLength:
   Exclude:
+    - app/views/sitemap/index.xml.builder
     - config/environments/*
     - config/routes.rb
 
-Metrics/LineLength:
+# Metrics/ClassLength:
+#   Enabled: false
+
+Metrics/CyclomaticComplexity:
+  Max: 21
+
+Metrics/MethodLength:
+  Exclude:
+    - db/migrate/20121031160028_devise_create_users.rb
+    - db/migrate/20180427214039_convert_to_active_storage.rb
+  Max: 24
+
+Metrics/PerceivedComplexity:
+  Max: 24
+
+Rails/BulkChangeTable:
+  Exclude:
+    - db/migrate/20180615203747_remove_paperclip_columns_from_pictures.rb
+
+Rails/CreateTableWithTimestamps:
+  Exclude:
+    - db/migrate/20180304103412_rolify_create_roles.rb
+    - db/migrate/20131015151146_acts_as_taggable_on_migration.rb
+
+Rails/FilePath:
+  EnforcedStyle: arguments
+
+Rails/HasAndBelongsToMany:
   Enabled: false
 
-NumericLiterals:
-  MinDigits: 6
+Rails/SquishedSQLHeredocs:
+  Exclude:
+    - db/migrate/20180427214039_convert_to_active_storage.rb
 
-PerceivedComplexity:
-  Enabled: true
+Style/AccessorGrouping:
+  EnforcedStyle: separated
+
+Style/Documentation:
+  Enabled: false
 
 Style/EmptyMethod:
   Exclude:
@@ -63,21 +97,16 @@ Style/IfUnlessModifier:
     - db/migrate/20180302074917_add_missing_indexes_on_taggings.acts_as_taggable_on_engine.rb
     - db/migrate/20180427214039_convert_to_active_storage.rb
 
+Style/NumericLiterals:
+  MinDigits: 6
+
 Style/PerlBackrefs:
   Exclude:
     - db/migrate/20180427214039_convert_to_active_storage.rb
 
+Style/RedundantFetchBlock:
+  Enabled: false
+
 Style/SymbolProc:
   Exclude:
     - config/initializers/rolify.rb
-
-Rails:
-  Enabled: true
-
-Rails/CreateTableWithTimestamps:
-  Exclude:
-    - db/migrate/20180304103412_rolify_create_roles.rb
-    - db/migrate/20131015151146_acts_as_taggable_on_migration.rb
-
-Rails/HasAndBelongsToMany:
-  Enabled: false

@@ -34,7 +34,7 @@ class PostPresenter < BasePresenter
 
       body_content_class = 'body-content truncated'
 
-      body_content_tag = content_tag(:div, body_content.html_safe, class: body_content_class)
+      body_content_tag = tag.div(body_content.html_safe, class: body_content_class)
 
       body_content_tag + more_link
     else
@@ -46,7 +46,7 @@ class PostPresenter < BasePresenter
   def more_link
     return unless truncated?
 
-    content_tag(:div, link_to(t('posts.index.read_more'), @post), class: 'read-more')
+    tag.div(link_to(t('posts.index.read_more'), @post), class: 'read-more')
   end
 
   # rubocop:disable Rails/OutputSafety

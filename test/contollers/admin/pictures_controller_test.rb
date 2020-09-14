@@ -75,13 +75,13 @@ module Admin
 
       picture.reload
 
-      assert picture.title == 'Updated Picture'
+      assert_equal('Updated Picture', picture.title)
 
       assert_response :see_other
 
       assert_redirected_to edit_admin_picture_path(picture)
 
-      assert_equal I18n.t('admin.pictures.update.success'), flash[:success]
+      assert_equal(I18n.t('admin.pictures.update.success'), flash[:success])
     end
 
     test 'should not update a picture with invalid data' do

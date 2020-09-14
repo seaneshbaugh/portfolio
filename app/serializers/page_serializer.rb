@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class PageSerializer
-  include FastJsonapi::ObjectSerializer
+  include JSONAPI::Serializer
 
   set_type :page
 

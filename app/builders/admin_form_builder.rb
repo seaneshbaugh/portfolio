@@ -1,25 +1,22 @@
 # frozen_string_literal: true
 
-# TODO: Consider renaming this class. It does more than just add ace_editor. Maybe each
-# type of field should be in some sort of concern and then included in a PortfolioBuilder
-# class.
-class AceBuilder < ActionView::Helpers::FormBuilder
+class AdminFormBuilder < ActionView::Helpers::FormBuilder
   include ApplicationHelper
 
   delegate :capture, to: :@template
-  delegate :content_tag, to: :@template
   delegate :label_tag, to: :@template
   delegate :link_to, to: :@template
+  delegate :tag, to: :@template
 
   def ace_editor(method, options = {})
     mode = options.delete(:mode) || 'text'
 
     theme = options.delete(:theme) || 'github'
 
-    content_tag(:div, class: 'ace-editor-field input-field') do
+    tag.div(class: 'ace-editor-field input-field') do
       label = label(method)
 
-      ace_editor = content_tag(:div, '', id: ace_editor_id_for(method), class: 'ace-editor', data: { 'mode' => mode, 'theme' => theme })
+      ace_editor = tag.div('', id: ace_editor_id_for(method), class: 'ace-editor', data: { 'mode' => mode, 'theme' => theme })
 
       text_area = text_area(method, options.merge(class: 'value'))
 
@@ -38,7 +35,7 @@ class AceBuilder < ActionView::Helpers::FormBuilder
 
     target = options.delete(:target) || ace_editor_id_for(method)
 
-    content_tag(:div, '', class: 'picture-selector', data: { 'buttonclassname' => button_class, 'buttontext' => button_text, 'target' => target })
+    tag.div('', class: 'picture-inserter', data: { 'buttonclassname' => button_class, 'buttontext' => button_text, 'target' => target })
   end
 
   # def tag_list(method, options = {})
@@ -46,7 +43,7 @@ class AceBuilder < ActionView::Helpers::FormBuilder
 
   #   suggestions = (options.delete(:suggestions) || []).join(',')
 
-  #   content_tag(:div, '', class: 'taglist-container', data: { 'tags' => tags, 'suggestions' => suggestions, 'objectname' => object_name, 'method' => method.to_s })
+  #   tag.div('', class: 'taglist-container', data: { 'tags' => tags, 'suggestions' => suggestions, 'objectname' => object_name, 'method' => method.to_s })
   # end
 
   private

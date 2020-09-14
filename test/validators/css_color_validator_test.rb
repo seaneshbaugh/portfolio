@@ -6,7 +6,9 @@ class CssColorValidatorTest < ActiveSupport::TestCase
   class DummyClass
     include ActiveModel::Model
     include ActiveModel::Validations
+
     attr_accessor :color
+
     validates :color, css_color: true
   end
 
@@ -25,6 +27,6 @@ class CssColorValidatorTest < ActiveSupport::TestCase
 
     assert_not dummy_object.valid?
 
-    assert dummy_object.errors[:color] == ['is invalid']
+    assert_equal(['is invalid'], dummy_object.errors[:color])
   end
 end

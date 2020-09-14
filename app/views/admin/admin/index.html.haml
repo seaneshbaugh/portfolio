@@ -4,8 +4,8 @@
       .col.s12
         %h2= t('.section.quick_links.title')
     .row
-      - creatable_models.each do |model|
-        %div{ class: "quick-link col s#{quick_links_column_width}" }
+      - creatable_models.each_with_index do |model, index|
+        %div{ class: "quick-link col s#{quick_links_column_width} #{index == 0 ? "offset-s#{quick_links_offset}" : '' }" }
           = link_to(send("new_admin_#{model.name.downcase}_path")) do
             %i.material-icons= t(".section.quick_links.material_icons.#{model.name.downcase}")
             %span.caption= t("admin.#{model.name.pluralize.downcase}.index.new_#{model.name.downcase}")
@@ -15,7 +15,7 @@
       .col.s12
         %h2= t('.section.quick_post.title')
     .row
-      = form_for [:admin, Post.new], builder: AceBuilder, html: { class: 'col s12' } do |f|
+      = form_for [:admin, Post.new], builder: AdminFormBuilder, html: { class: 'col s12' } do |f|
         .row
           .input-field.col.s12
             = f.text_field :title

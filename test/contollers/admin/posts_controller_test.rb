@@ -73,13 +73,13 @@ module Admin
 
       post.reload
 
-      assert post.title == 'Updated Post'
+      assert_equal('Updated Post', post.title)
 
       assert_response :see_other
 
       assert_redirected_to edit_admin_post_path(post)
 
-      assert_equal I18n.t('admin.posts.update.success'), flash[:success]
+      assert_equal(I18n.t('admin.posts.update.success'), flash[:success])
     end
 
     test 'should not update a post with invalid data' do

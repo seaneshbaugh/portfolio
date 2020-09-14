@@ -2,7 +2,8 @@
 
 module Admin
   class AdminPolicy
-    attr_accessor :user, :record
+    attr_accessor :user
+    attr_accessor :record
 
     def initialize(user, record)
       @user = user
@@ -43,7 +44,8 @@ module Admin
     end
 
     class Scope
-      attr_reader :user, :scope
+      attr_reader :user
+      attr_reader :scope
 
       def initialize(user, scope)
         @user = user

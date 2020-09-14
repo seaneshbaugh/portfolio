@@ -2,7 +2,7 @@
 
 class JavascriptValidator < ActiveModel::EachValidator
   def validate_each(record, attribute, value)
-    Tempfile.open do |script|
+    Tempfile.open(['script-validation', '.js']) do |script|
       script.write(value)
       script.flush
 

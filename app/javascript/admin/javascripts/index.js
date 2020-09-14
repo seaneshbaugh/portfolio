@@ -1,5 +1,3 @@
-import "materialize-css/dist/js/materialize.js";
-
-import "./ace_builder";
+import "./admin_form_builder";
+import "./galleries";
 import "./pictures";
-import "./posts";

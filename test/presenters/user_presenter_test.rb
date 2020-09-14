@@ -8,10 +8,6 @@ class UserPresenterTest < ActiveSupport::TestCase
 
     user_presenter = UserPresenter.new(user, view_context)
 
-    assert user_presenter.email_link == '<a href="mailto:sean@seaneshbaugh.com"><i class="material-icons">email</i></a>'
-  end
-
-  def view_context
-    ActionView::Base.new(ActionController::Base.view_paths, {}, ActionController::Base.new)
+    assert_equal('<a href="mailto:sean@seaneshbaugh.com"><i class="material-icons">email</i></a>', user_presenter.email_link)
   end
 end

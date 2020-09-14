@@ -77,7 +77,7 @@ Rails.application.configure do
   # config.logger = ActiveSupport::TaggedLogging.new(Syslog::Logger.new 'app-name')
 
   logger = if ENV['RAILS_LOG_TO_STDOUT'].present?
-             ActiveSupport::Logger.new(STDOUT)
+             ActiveSupport::Logger.new($stdout)
            else
              ActiveSupport::Logger.new('/proc/1/fd/1')
            end

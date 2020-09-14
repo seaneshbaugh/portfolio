@@ -6,7 +6,9 @@ class JavascriptValidatorTest < ActiveSupport::TestCase
   class DummyClass
     include ActiveModel::Model
     include ActiveModel::Validations
+
     attr_accessor :script
+
     validates :script, javascript: true
   end
 
@@ -25,7 +27,7 @@ class JavascriptValidatorTest < ActiveSupport::TestCase
 
     assert_not dummy_object.valid?
 
-    assert dummy_object.errors[:script] == ["SyntaxError: Unexpected token ( at line 1\n function(x, y, { return x + y; }\n         ^"]
+    assert_equal(["SyntaxError: Function statements require a function name at line 1\n function(x, y, { return x + y; }\n^^^^^^^^"], dummy_object.errors[:script])
   end
 
   test 'invalid JavaScript on second line' do
@@ -35,6 +37,6 @@ class JavascriptValidatorTest < ActiveSupport::TestCase
 
     assert_not dummy_object.valid?
 
-    assert dummy_object.errors[:script] == ["SyntaxError: Unexpected token ( at line 2\n function(x, y, { return x + y; }\n        ^"]
+    assert_equal(["SyntaxError: Function statements require a function name at line 2\n function(x, y, { return x + y; }\n^^^^^^^^"], dummy_object.errors[:script])
   end
 end

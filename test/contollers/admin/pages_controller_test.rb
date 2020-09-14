@@ -73,13 +73,13 @@ module Admin
 
       page.reload
 
-      assert page.title == 'Updated Page'
+      assert_equal('Updated Page', page.title)
 
       assert_response :see_other
 
       assert_redirected_to edit_admin_page_path(page)
 
-      assert_equal I18n.t('admin.pages.update.success'), flash[:success]
+      assert_equal(I18n.t('admin.pages.update.success'), flash[:success])
     end
 
     test 'should not update a page with invalid data' do

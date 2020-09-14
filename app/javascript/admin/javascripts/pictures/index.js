@@ -8,19 +8,18 @@ import ImageUploader from "../components/image_uploader";
 import PictureList from "../components/picture_list";
 
 const completed = () => {
+  const imageUploaderContainer = document.querySelector(".image-uploader-container");
   const pictureListContainer = document.querySelector(".picture-list-container");
 
-  if (pictureListContainer) {
-    window.picturesStore = createStore(picturesReducer, { "pictures": JSON.parse(document.querySelector(".picture-list-container").dataset.pictures) });
-
-    Array.from(document.querySelectorAll(".image-uploader-container")).forEach((imageUploader, index) => {
-      render(<Provider store={window.picturesStore}><ImageUploader /></Provider>, imageUploader);
-    });
-
-    Array.from(document.querySelectorAll(".picture-list-container")).forEach((pictureList, index) => {
-      render(<Provider store={window.picturesStore}><PictureList /></Provider>, pictureList);
-    });
+  if (!imageUploaderContainer || !pictureListContainer) {
+    return;
   }
+
+  window.picturesStore = createStore(picturesReducer, { "pictures": JSON.parse(pictureListContainer.dataset.pictures) });
+
+  render(<Provider store={window.picturesStore}><ImageUploader /></Provider>, imageUploaderContainer);
+
+  render(<Provider store={window.picturesStore}><PictureList /></Provider>, pictureListContainer);
 };
 
 if (document.readyState === "complete") {

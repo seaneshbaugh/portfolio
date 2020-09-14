@@ -4,7 +4,7 @@ require 'test_helper'
 
 class NotSpamValidatorTest < ActiveSupport::TestCase
   test 'not spam' do
-    contact = Contact.new(name: 'Test Contact', email: 'test@test.com', subject: 'Test', body: "testing 1 2 3")
+    contact = Contact.new(name: 'Test Contact', email: 'test@test.com', subject: 'Test', body: 'testing 1 2 3')
 
     assert contact.valid?
   end
@@ -15,7 +15,7 @@ class NotSpamValidatorTest < ActiveSupport::TestCase
 
       assert_not contact.valid?
 
-      assert contact.errors[:body] == ['is spam']
+      assert_equal(['is spam'], contact.errors[:body])
     end
   end
 end

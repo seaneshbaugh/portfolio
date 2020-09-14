@@ -4,8 +4,7 @@ import Picture from "./modal/picture";
 
 class Modal extends React.Component {
   render() {
-    // TODO: key index antipattern
-    const pictures = this.props.pictures.map((picture, index) => {
+    const pictures = this.props.pictures.map((picture) => {
       const onClick = (event) => {
         event.preventDefault();
 
@@ -13,7 +12,7 @@ class Modal extends React.Component {
       };
 
       return (
-        <Picture key={index} picture={picture} onClick={onClick} />
+        <Picture key={picture.data.id} picture={picture} onClick={onClick} />
       );
     });
 

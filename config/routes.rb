@@ -20,6 +20,8 @@ Rails.application.routes.draw do
 
   resources :posts, only: %i[show]
 
+  resources :pictures, only: %i[index show]
+
   get '/posts.rss' => 'posts#index', format: :rss
 
   get '/sitemap.xml' => 'sitemap#index', as: :sitemap, format: :xml
@@ -45,6 +47,8 @@ Rails.application.routes.draw do
           get :selector
         end
       end
+
+      resources :galleries
 
       resources :posts
 

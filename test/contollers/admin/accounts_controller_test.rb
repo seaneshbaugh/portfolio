@@ -27,13 +27,13 @@ module Admin
 
       user.reload
 
-      assert user.email == 'updateduser@seaneshbaugh.com'
+      assert_equal('updateduser@seaneshbaugh.com', user.email)
 
       assert_response :see_other
 
       assert_redirected_to edit_admin_account_path
 
-      assert_equal I18n.t('admin.accounts.update.success'), flash[:success]
+      assert_equal(I18n.t('admin.accounts.update.success'), flash[:success])
     end
 
     test 'should not update the current user with invalid data' do

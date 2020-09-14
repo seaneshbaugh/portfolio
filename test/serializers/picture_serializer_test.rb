@@ -10,7 +10,7 @@ class PictureSerializerTest < ActiveSupport::TestCase
 
     serializer = PictureSerializer.new(picture)
 
-    assert serializer.serializable_hash.dig(:data, :attributes, :title) == 'Conney the Corgi'
+    assert_equal('Conney the Corgi', serializer.serializable_hash.dig(:data, :attributes, :title))
   end
 
   test "it serializes the picture's alt text" do
@@ -18,7 +18,7 @@ class PictureSerializerTest < ActiveSupport::TestCase
 
     serializer = PictureSerializer.new(picture)
 
-    assert serializer.serializable_hash.dig(:data, :attributes, :alt_text) == 'Conney the Corgi'
+    assert_equal('Conney the Corgi', serializer.serializable_hash.dig(:data, :attributes, :alt_text))
   end
 
   test "it serializes the picture's caption" do
@@ -26,7 +26,7 @@ class PictureSerializerTest < ActiveSupport::TestCase
 
     serializer = PictureSerializer.new(picture)
 
-    assert serializer.serializable_hash.dig(:data, :attributes, :caption) == 'Conney the Corgi'
+    assert_equal('Conney the Corgi', serializer.serializable_hash.dig(:data, :attributes, :caption))
   end
 
   test "it serializes the picture's original image URL" do
@@ -34,6 +34,6 @@ class PictureSerializerTest < ActiveSupport::TestCase
 
     serializer = PictureSerializer.new(picture)
 
-    assert URI::DEFAULT_PARSER.make_regexp =~ serializer.serializable_hash.dig(:data, :attributes, :original_image_url)
+    assert_match(URI::DEFAULT_PARSER.make_regexp, serializer.serializable_hash.dig(:data, :attributes, :original_image_url))
   end
 end

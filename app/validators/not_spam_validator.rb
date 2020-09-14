@@ -44,7 +44,7 @@ class NotSpamValidator < ActiveModel::EachValidator
   def validate_each(record, attribute, value)
     return if options[:allow_blank] && value.blank?
 
-    record.errors.add(attribute, options[:message] || :is_spam) if is_spam?(value)
+    record.errors.add(attribute, options[:message] || :is_spam) if spam?(value)
   end
 
   private
@@ -64,7 +64,7 @@ class NotSpamValidator < ActiveModel::EachValidator
     SPAM_PHRASES.any? { |spam| downcased_value.include?(spam) }
   end
 
-  def is_spam?(value)
+  def spam?(value)
     contains_bad_links?(value) ||
       contains_cyrillic_characters?(value) ||
       contains_spam_phrases?(value)

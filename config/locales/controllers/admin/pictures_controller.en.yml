@@ -1,0 +1,9 @@
+en:
+  admin:
+    pictures:
+      create:
+        success: "Picture was successfully created."
+      update:
+        success: "Picture was successfully updated."
+      delete:
+        success: "Picture was successfully deleted."

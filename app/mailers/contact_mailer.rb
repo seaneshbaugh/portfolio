@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-class ContactMailer < ActionMailer::Base
-  default from: 'sean@seaneshbaugh.com'
-
+class ContactMailer < ApplicationMailer
   def contact_form_message(contact)
     @contact = contact
 

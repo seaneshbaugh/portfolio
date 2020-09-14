@@ -1,0 +1,8 @@
+%h1{ style: 'color: #3e4ad9;' }= t('.title')
+.row.galleries
+  - @galleries.select { |gallery| gallery.gallery_pictures.length > 0 }.each do |gallery|
+    .gallery.col.s3
+      .gallery-preview
+        = link_to(image_tag(gallery.featured_or_first_picture.medium_image_path), picture_path(gallery))
+      .gallery-name
+        = link_to(gallery.name, picture_path(gallery))

@@ -6,6 +6,8 @@ class SitemapController < ApplicationController
 
     @posts = Post.published.reverse_chronological
 
+    @galleries = Gallery.published.reverse_chronological
+
     respond_to do |format|
       format.xml do
         render layout: false

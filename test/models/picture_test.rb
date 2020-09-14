@@ -9,6 +9,6 @@ class PictureTest < ActiveSupport::TestCase
 
     assert_not picture.valid?
 
-    assert picture.errors[:image].include?(I18n.t('activerecord.errors.models.picture.attributes.image.no_file_uploaded'))
+    assert_includes(picture.errors[:image], I18n.t('activerecord.errors.models.picture.attributes.image.no_file_uploaded'))
   end
 end

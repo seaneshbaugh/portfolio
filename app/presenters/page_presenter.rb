@@ -14,7 +14,7 @@ class PagePresenter < BasePresenter
   end
 
   def color_text
-    content_tag(:span, @page.color, style: "background: #{@page.color}; color: #{contrast_color(@page.color)}; padding: 3px;") if @page.color.present?
+    tag.span(@page.color, style: "background: #{@page.color}; color: #{contrast_color(@page.color)}; padding: 3px;") if @page.color.present?
   end
 
   def header_style

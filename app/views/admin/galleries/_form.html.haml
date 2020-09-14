@@ -1,0 +1,22 @@
+= form_for [:admin, @gallery], builder: AdminFormBuilder, html: { class: 'col s12' } do |f|
+  .row
+    .input-field.col.s12
+      = f.text_field :name
+      = f.label :name
+  .row
+    .input-field.col.s12
+      = f.ace_editor :description, mode: 'rhtml'
+  .row
+    .input-field.col.s12
+      = f.number_field :order
+      = f.label :order
+  %p
+    = f.label :visible do
+      = f.check_box :visible
+      %span= t('activerecord.attributes.gallery.visible')
+  %h2 Pictures
+  .gallery-pictures-container{ 'data-gallerypictures' => @gallery.gallery_pictures.map { |gallery_picture| GalleryPictureSerializer.new(gallery_picture) }.to_json }
+  .row
+    .input-field.col.s12
+      = f.submit t('submit'), class: success_button_class
+      = link_to t('cancel'), admin_galleries_path, class: warning_button_class

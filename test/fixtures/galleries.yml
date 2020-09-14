@@ -1,0 +1,8 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+salt_plains:
+  name: "Salt Plains"
+  slug: "salt-plains"
+  description: "Took a detour to the Great Salt Plains State Park in Oklahoma"
+  order: 0
+  visible: false

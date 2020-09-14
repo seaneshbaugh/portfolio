@@ -3,7 +3,7 @@
 class BasePresenter
   include Rails.application.routes.url_helpers
 
-  delegate :content_tag, to: :@template
+  delegate :tag, to: :@template
   delegate :link_to, to: :@template
   delegate :params, to: :@template
   delegate :t, to: :@template
@@ -45,7 +45,7 @@ class BasePresenter
   end
 
   def respond_to_missing?(method, include_all = false)
-    @object.respond_to?(method, include_all)
+    @object.respond_to?(method, include_all) || super
   end
 
   private

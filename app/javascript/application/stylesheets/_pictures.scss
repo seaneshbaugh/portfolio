@@ -1,0 +1,101 @@
+@import "./variables";
+@import "~glightbox/dist/css/glightbox";
+
+.galleries {
+    .gallery {
+        .gallery-preview {
+            text-align: center;
+
+            img {
+                max-width: 100%;
+            }
+        }
+
+        .gallery-name {
+            color: $black;
+            text-align: center;
+
+            a {
+                color: $black;
+            }
+        }
+    }
+}
+
+.gallery {
+    .gallery-description {
+        font-size: 1.5rem;
+    }
+
+    .gallery-pictures {
+        margin-top: 2rem;
+    }
+}
+
+.masonry {
+    column-fill: initial;
+    column-gap: 1.875rem;
+    text-align: center;
+    transition: all 0.5s ease-in-out;
+
+    &.bordered {
+        column-rule: 1px solid $off-white;
+        column-gap: 3.125rem;
+
+        .brick {
+            border-bottom: 1px solid $off-white;
+            margin-bottom: 1.5625rem;
+            padding-bottom: 1.5625rem;
+        }
+    }
+
+    &.gutterless {
+        column-gap: 0;
+
+        .brick {
+            margin-bottom: 0;
+        }
+    }
+
+    .brick {
+        display: inline-block;
+        margin-bottom: 1.875rem;
+        vertical-align: top;
+
+        &:hover {
+            img {
+                opacity: 0.75;
+            }
+        }
+
+        img {
+            backface-visibility: hidden;
+            max-width: 100%;
+            transition: all .5s ease-in-out;
+            vertical-align: middle;
+        }
+    }
+}
+
+@media only screen and (min-width: 768px) and (max-width: 1023px) {
+    .masonry {
+        column-count: 2;
+    }
+}
+
+@media only screen and (min-width: 1024px) {
+    .masonry {
+        column-count: 3;
+    }
+}
+
+.glightbox-clean, .glightbox-modern {
+    .gdesc-inner {
+        padding: 0.625rem;
+    }
+
+    .gslide-title {
+        line-height: 1rem;
+        margin: 0.25rem 0rem;
+    }
+}
