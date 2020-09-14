@@ -8,7 +8,7 @@ This application uses Ruby 2.7.1.
 
 ## Rails Version
 
-This application uses Rails 6.0.3.2.
+This application uses Rails 6.0.3.3.
 
 ## Node.js Version
 
