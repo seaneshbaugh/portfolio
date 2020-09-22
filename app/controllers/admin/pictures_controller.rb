@@ -45,7 +45,7 @@ module Admin
           end
 
           format.json do
-            render json: PictureSerializer.new(@picture).serialized_json
+            render json: PictureSerializer.new(@picture).as_json
           end
         else
           format.html do
