@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class GalleryPresenter < BasePresenter
+class GalleryPresenter < ApplicationPresenter
   include FrontEnd
   include Linkable
 

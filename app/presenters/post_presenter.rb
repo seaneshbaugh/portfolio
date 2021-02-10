@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class PostPresenter < BasePresenter
+class PostPresenter < ApplicationPresenter
   include FrontEnd
   include Linkable
   include MetaContentable

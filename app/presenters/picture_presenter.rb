@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class PicturePresenter < BasePresenter
+class PicturePresenter < ApplicationPresenter
   include Rails.application.routes.url_helpers
 
   delegate :image_tag, to: :@template

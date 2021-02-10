@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class UserPresenter < BasePresenter
+class UserPresenter < ApplicationPresenter
   def initialize(user, template)
     super
 
