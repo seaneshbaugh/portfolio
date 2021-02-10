@@ -22,6 +22,14 @@ class ApplicationPresenter
     end
   end
 
+  def form_title
+    if @object.persisted?
+      "Edit #{@object.class.base_class.to_s.titleize}"
+    else
+      "New #{@object.class.base_class.to_s.titleize}"
+    end
+  end
+
   def method_missing(method, *args, &block)
     @object.send(method, *args, &block)
   rescue NoMethodError
@@ -37,14 +45,6 @@ class ApplicationPresenter
       @object.updated_at.strftime(time_format)
     else
       'N/A'
-    end
-  end
-
-  def form_title
-    if @object.persisted?
-      "Edit #{@object.class.base_class.to_s.titleize}"
-    else
-      "New #{@object.class.base_class.to_s.titleize}"
     end
   end
 
