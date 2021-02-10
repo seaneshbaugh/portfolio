@@ -6,7 +6,7 @@
       = post_presenter.created_at('%B %d, %Y %l:%M:%S %p')
     .post-body.col-xs-12
       = post_presenter.style_tag
-      = post_presenter.more
+      = post_presenter.more(params[:action] == 'index')
       = post_presenter.script_tag
     %footer.post-footer.col-xs-12
       - if post_presenter.tag_list.present?

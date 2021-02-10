@@ -28,8 +28,8 @@ class PostPresenter < ApplicationPresenter
   end
 
   # rubocop:disable Rails/OutputSafety
-  def more
-    if params[:action] == 'index' && truncated?
+  def more(truncate = true)
+    if truncate && truncated?
       body_content = @post.body[0..@post.body.index('<!--more-->') - 1]
 
       body_content_class = 'body-content truncated'
