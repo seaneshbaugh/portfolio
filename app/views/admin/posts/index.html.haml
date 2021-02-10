@@ -1,6 +1,6 @@
 %h2= t('.title')
 .row
-  = search_form_for @search, url: admin_pages_path, html: { class: 'col s12', method: :get } do |f|
+  = search_form_for @search, url: admin_posts_path, html: { class: 'col s12', method: :get } do |f|
     .row
       .input-field.col.s3
         = f.text_field :title_cont
