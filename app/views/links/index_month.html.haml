@@ -1,0 +1,12 @@
+#page-links-all.page
+  %header.page-header
+    %h1= t('.title', year: @year, month: Date::MONTHNAMES[@month.to_i])
+  %ul.links
+    - @links.each do |link|
+      - present link do |link_presenter|
+        %li.link
+          %p.link= link_to(link_presenter.text, link_presenter.url, target: '_blank')
+          - if link_presenter.description.present?
+            %p.description= link_presenter.description
+          - if link_presenter.tags.present?
+            %p.tags= link_presenter.tag_links([links_path, @year, @month].select(&:present?).join('/'))

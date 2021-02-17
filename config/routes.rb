@@ -22,6 +22,10 @@ Rails.application.routes.draw do
 
   resources :pictures, only: %i[index show]
 
+  get '/links' => 'links#index', as: :links
+  get '/links/:year' => 'links#index'
+  get '/links/:year/:month' => 'links#index'
+
   get '/posts.rss' => 'posts#index', format: :rss
 
   get '/sitemap.xml' => 'sitemap#index', as: :sitemap, format: :xml
@@ -40,6 +44,10 @@ Rails.application.routes.draw do
 
       resource :account, only: %i[show edit update]
 
+      resources :galleries
+
+      resources :links
+
       resources :pages
 
       resources :pictures do
@@ -47,8 +55,6 @@ Rails.application.routes.draw do
           get :selector
         end
       end
-
-      resources :galleries
 
       resources :posts
 

@@ -39,7 +39,15 @@ class PagePresenter < ApplicationPresenter
 
   private
 
-  def base_path
-    '/'
+  def link_text_method
+    :title
+  end
+
+  def link_url_method
+    :page_path
+  end
+
+  def page_path
+    @template.page_path(@page)
   end
 end

@@ -1,0 +1,42 @@
+- present @link do |link_presenter|
+  .row
+    .col.s12
+      %h2= "#{t('.title')}: #{link_presenter.text}"
+  .row
+    .admin-actions.col.s12
+      = link_to t('.back_to_links'), admin_links_path, class: info_button_class
+      - if policy([:admin, @link]).edit?
+        = edit_icon_link(edit_admin_link_path(@link), label: t('edit'))
+      - if policy([:admin, @link]).destroy?
+        = delete_icon_link(admin_link_path(@link), label: t('delete'))
+  .link
+    .attribute.text.row
+      .attribute-name.col.s12.m3.l3= t('activerecord.attributes.link.text')
+      .attribute-value.col.s12.m9.l9= link_presenter.text
+    .attribute.slug.row
+      .attribute-name.col.s12.m3.l3= t('activerecord.attributes.link.url')
+      .attribute-value.col.s12.m9.l9
+        = link_presenter.url
+        = link_presenter.share_link(target: '_blank')
+    .attribute.description.row
+      .attribute-name.col.s12.m3.l3= t('activerecord.attributes.link.description')
+      .attribute-value.col.s12.m9.l9
+        - if link_presenter.description.present?
+          %pre
+            - link_presenter.description.split("\n").each do |line|
+              = content_tag(:span, line)
+    .attribute.visible.row
+      .attribute-name.col.s12.m3.l3= t('activerecord.attributes.link.visible')
+      .attribute-value.col.s12.m9.l9= link_presenter.visible
+    .attribute.visible.row
+      .attribute-name.col.s12.m3.l3= t('activerecord.attributes.link.visible')
+      .attribute-value.col.s12.m9.l9= link_presenter.visible
+    .attribute.tags.row
+      .attribute-name.col.s12.m3.l3= t('activerecord.attributes.link.tag_list')
+      .attribute-value.col.s12.m9.l9= link_presenter.tag_list
+    .attribute.created-at.row
+      .attribute-name.col.s12.m3.l3= t('activerecord.attributes.link.created_at')
+      .attribute-value.col.s12.m9.l9= link_presenter.created_at
+    .attribute.updated-at.row
+      .attribute-name.col.s12.m3.l3= t('activerecord.attributes.link.updated_at')
+      .attribute-value.col.s12.m9.l9= link_presenter.updated_at

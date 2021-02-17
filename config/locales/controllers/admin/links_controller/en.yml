@@ -1,0 +1,9 @@
+en:
+  admin:
+    links:
+      create:
+        success: "Link was successfully created."
+      update:
+        success: "Link was successfully updated."
+      delete:
+        success: "Link was successfully deleted."

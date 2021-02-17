@@ -1,0 +1,29 @@
+= form_for [:admin, @link], builder: AdminFormBuilder, html: { class: 'col s12' } do |f|
+  .row
+    .input-field.col.s12
+      = f.text_field :text
+      = f.label :text
+  .row
+    .input-field.col.s12
+      = f.text_field :url
+      = f.label :url
+  .row
+    .input-field.col.s12
+      = f.ace_editor :description, mode: 'rhtml'
+  .row
+    .input-field.col.s12
+      = f.text_field :published_at, class: 'datepicker'
+      = f.label :published_at
+  %p
+    = f.label :visible do
+      = f.check_box :visible
+      %span= t('activerecord.attributes.link.visible')
+  .row
+    .input-field.taglist-input-field.col.s12
+      =# f.tag_list :tag_list, suggestions: ActsAsTaggableOn::Tag.pluck(:name)
+      = f.text_field :tag_list
+      = f.label :tag_list
+  .row
+    .input-field.col.s12
+      = f.submit t('submit'), class: success_button_class
+      = link_to t('cancel'), admin_links_path, class: warning_button_class

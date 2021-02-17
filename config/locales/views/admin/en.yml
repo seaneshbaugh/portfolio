@@ -6,11 +6,14 @@ en:
           quick_links:
             title: "Quick Links"
             material_icons:
-              gallery: "add_photo_alternate"
+              gallery: "add_to_queue"
+              link: "insert_link"
               page: "note_add"
               picture: "add_a_photo"
               post: "comment"
               user: "person_add"
+          quick_link:
+            title: "Quick Link"
           quick_post:
             title: "Quick Post"
           rails_info:

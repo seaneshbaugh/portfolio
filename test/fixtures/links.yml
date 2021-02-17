@@ -1,0 +1,15 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+seaneshbaugh:
+  text: "seaneshbaugh.com"
+  url: "https://seaneshbaugh.com/"
+  description: "My own website."
+  published_at: 2021-02-09 23:52:22
+  visible: true
+
+cowboythecowdog:
+  text: "Cowboy the Cowdog"
+  url: "https://www.instagram.com/cowboythecowdog/"
+  description: "Cowboy's Instagram"
+  published_at: 2021-02-09 23:52:22
+  visible: true

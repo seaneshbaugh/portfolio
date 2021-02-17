@@ -1,0 +1,6 @@
+#page-links-all.page
+  %header.page-header
+    %h1= t('.title')
+  %ul
+    - @links.pluck(:published_at).map(&:year).uniq.each do |year|
+      %li= link_to(year, "#{links_path}/#{year}")

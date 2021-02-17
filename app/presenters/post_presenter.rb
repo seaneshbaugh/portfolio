@@ -79,7 +79,15 @@ class PostPresenter < ApplicationPresenter
 
   private
 
-  def base_path
-    '/posts/'
+  def link_text_method
+    :title
+  end
+
+  def link_url_method
+    :post_path
+  end
+
+  def post_path
+    @template.post_path(@post)
   end
 end

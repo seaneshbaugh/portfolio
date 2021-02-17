@@ -1,0 +1,49 @@
+%h2= t('.title')
+.row
+  = search_form_for @search, url: admin_links_path, html: { class: 'col s12', method: :get } do |f|
+    .row
+      .input-field.col.s3
+        = f.text_field :text_cont
+        = f.label :text_cont, t('activerecord.attributes.link.text')
+      .input-field.col.s3
+        = f.text_field :url_cont
+        = f.label :url_cont, t('activerecord.attributes.link.url')
+      .input-field.col.s3
+        = f.text_field :description_cont
+        = f.label :description_cont, t('activerecord.attributes.link.description')
+      .input-field.col.s3
+        = f.button search_icon, class: caution_button_class
+        = cancel_icon_link(admin_links_path)
+- if policy([:admin, Link]).create?
+  .row
+    .col.s12
+      = link_to t('.new_link'), new_admin_link_path, class: success_button_class
+- if @links.present?
+  .row
+    .col.s12
+      %table.links.responsive-table
+        %thead
+          %tr
+            %th.link-text= sort_link @search, :text
+            %th.link-url= sort_link @search, :url
+            %th.link-created-at= sort_link @search, :created_at
+            %th.edit
+            %th.delete
+        %tbody
+          - @links.each do |link|
+            - present link do |link_presenter|
+              %tr{ class: classnames('link', { 'inactive' => !link_presenter.published? }) }
+                %td.link-text= link_to(link_presenter.text, admin_link_path(link))
+                %td.link-user= link_to(link_presenter.url, link_presenter.url, target: '_blank')
+                %td.link-created-at= link_presenter.created_at
+                %td.edit
+                  - if policy([:admin, link]).edit?
+                    = edit_icon_link edit_admin_link_path(link)
+                %td.delete
+                  - if policy([:admin, link]).destroy?
+                    = delete_icon_link admin_link_path(link)
+  .row
+    .col.s12
+      = paginate @links
+- else
+  %p.no-items= t('.no_links')

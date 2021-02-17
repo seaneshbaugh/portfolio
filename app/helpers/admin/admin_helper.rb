@@ -3,7 +3,7 @@
 module Admin
   module AdminHelper
     def creatable_models
-      @creatable_models ||= [Post, Page, Picture, Gallery, User].select do |model|
+      @creatable_models ||= [Post, Page, Picture, Gallery, Link, User].select do |model|
         policy([:admin, model]).create?
       end
     end

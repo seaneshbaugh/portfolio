@@ -1,0 +1,20 @@
+en:
+  activerecord:
+    models:
+      link: "Link"
+    attributes:
+      link:
+        text: "Text"
+        url: "URL"
+        description: "Description"
+        published_at: "Published At"
+        visible: "Visible"
+        created_at: "Created At"
+        updated_at: "Updated At"
+        tag_list: "Tags"
+    errors:
+      models:
+        link:
+          attributes:
+            visible:
+              inclusion: "must be true or false"

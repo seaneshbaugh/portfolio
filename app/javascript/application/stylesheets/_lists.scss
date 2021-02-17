@@ -1,0 +1,24 @@
+.links {
+    .link {
+        list-style-type: disc;
+        margin: 0 0 1rem 1rem;
+
+        &:last-child {
+            margin: 0 0 0 1rem;
+        }
+
+        .link {
+            font-size: 1.25rem;
+            margin: 0;
+        }
+
+        .description {
+            margin: 0;
+        }
+
+        .tags {
+            font-size: 0.75rem;
+            margin: 0;
+        }
+    }
+}

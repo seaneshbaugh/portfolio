@@ -1,0 +1,10 @@
+en:
+  links:
+    index_all:
+      title: "Link Archive"
+      description: "Select a year..."
+    index_year:
+      title: "%{year} Link Archive"
+      description: "Select a month..."
+    index_month:
+      title: "%{month}, %{year} Link Arcive"

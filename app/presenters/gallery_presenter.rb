@@ -12,7 +12,7 @@ class GalleryPresenter < ApplicationPresenter
 
   # rubocop:disable Rails/OutputSafety
   def description_tag
-    tag.div(@object.description.html_safe, class: 'description')
+    tag.div(@gallery.description.html_safe, class: 'description')
   end
   # rubocop:enable Rails/OutputSafety
 
@@ -26,7 +26,15 @@ class GalleryPresenter < ApplicationPresenter
 
   private
 
-  def base_path
-    '/pictures/'
+  def gallery_path
+    @template.picture_path(@gallery)
+  end
+
+  def link_text_method
+    :title
+  end
+
+  def link_url_method
+    :gallery_path
   end
 end

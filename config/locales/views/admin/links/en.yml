@@ -1,0 +1,15 @@
+en:
+  admin:
+    links:
+      index:
+        title: "Links"
+        new_link: "New Link"
+        delete_confirmation: "Are you sure you want to delete this link?"
+        no_links: "There are no links yet. Click 'New Link' to get started."
+      show:
+        title: "Link"
+        back_to_links: "Back to Links"
+      new:
+        title: "New Link"
+      edit:
+        title: "Update Link"

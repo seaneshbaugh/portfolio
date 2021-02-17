@@ -100,6 +100,11 @@ Style/IfUnlessModifier:
 Style/NumericLiterals:
   MinDigits: 6
 
+Style/OptionalBooleanParameter:
+  Enabled: false
+  # AllowedMethods:
+  #   - respond_to_missing?
+
 Style/PerlBackrefs:
   Exclude:
     - db/migrate/20180427214039_convert_to_active_storage.rb
