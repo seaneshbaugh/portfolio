@@ -10,6 +10,12 @@ class LinkPresenter < ApplicationPresenter
   end
 
   # rubocop:disable Rails/OutputSafety
+  def description
+    @link.description.html_safe
+  end
+  # rubocop:enable Rails/OutputSafety
+
+  # rubocop:disable Rails/OutputSafety
   def tag_links(base_path)
     @link.tags.map { |tag| link_to(tag, "#{base_path}?tag=#{tag}") }.join(', ').html_safe
   end
@@ -18,6 +24,12 @@ class LinkPresenter < ApplicationPresenter
   def tag_list
     @link.tags.join(', ')
   end
+
+  # rubocop:disable Rails/OutputSafety
+  def text
+    @link.text.html_safe
+  end
+  # rubocop:enable Rails/OutputSafety
 
   private
 
