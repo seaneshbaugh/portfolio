@@ -12,7 +12,7 @@
       = f.ace_editor :description, mode: 'rhtml'
   .row
     .input-field.col.s12
-      = f.text_field :published_at, class: 'datepicker'
+      = f.text_field :published_at, class: 'datepicker', value: f.object.published_at&.strftime('%b %d, %Y')
       = f.label :published_at
   %p
     = f.label :visible do
@@ -21,7 +21,7 @@
   .row
     .input-field.taglist-input-field.col.s12
       =# f.tag_list :tag_list, suggestions: ActsAsTaggableOn::Tag.pluck(:name)
-      = f.text_field :tag_list
+      = f.text_field :tag_list, value: f.object.tag_list.join(', ')
       = f.label :tag_list
   .row
     .input-field.col.s12
