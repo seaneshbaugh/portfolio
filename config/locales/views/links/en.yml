@@ -1,5 +1,7 @@
 en:
   links:
+    index_tagged:
+      title_html: "Links tagged with &quot;%{tag}&quot;"
     index_all:
       title: "Link Archive"
       description: "Select a year..."

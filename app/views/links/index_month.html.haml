@@ -11,4 +11,4 @@
             - if link_presenter.description.present?
               %p.description= link_presenter.description
             - if link_presenter.tags.present?
-              %p.tags= link_presenter.tag_links([links_path, @year, @month].select(&:present?).join('/'))
+              %p.tags= link_presenter.tag_links(links_path)

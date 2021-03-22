@@ -7,6 +7,7 @@ class LinksController < ApplicationController
   def index
     @year = params[:year]
     @month = params[:month]
+    @tag = params[:tag]
 
     @links = find_links
 
@@ -17,7 +18,11 @@ class LinksController < ApplicationController
         render 'index_year'
       end
     else
-      render 'index_all'
+      if @tag.present?
+        render 'index_tagged'
+      else
+        render 'index_all'
+      end
     end
   end
 
@@ -32,8 +37,8 @@ class LinksController < ApplicationController
               Link.published.chronological
             end
 
-    if params[:tag].present?
-      links.tagged_with(params[:tag])
+    if @tag.present?
+      links.tagged_with(@tag)
     else
       links
     end
