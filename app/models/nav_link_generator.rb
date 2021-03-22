@@ -43,7 +43,7 @@ class NavLinkGenerator
 
   def link_classes
     if @html_options[:class]
-      @html_options[:class].split(' ').push(active_class).join(' ')
+      @html_options[:class].split.push(active_class).join(' ')
     elsif !@options[:wrapper]
       active_class
     end
@@ -58,7 +58,7 @@ class NavLinkGenerator
       if @options[:wrapper_class].blank?
         active_class
       else
-        @options[:wrapper_class].split(' ').push(active_class).join(' ')
+        @options[:wrapper_class].split.push(active_class).join(' ')
       end
     else
       @options[:wrapper_class]

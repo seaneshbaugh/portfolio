@@ -27,7 +27,7 @@ class AdminFormBuilder < ActionView::Helpers::FormBuilder
   def picture_inserter(method, options = {}, &block)
     button_class = options.delete(:class) || 'btn btn-flat waves-effect waves-light blue lighten-3'
 
-    button_text = if block_given?
+    button_text = if block
                     capture(&block)
                   else
                     I18n.t('admin.pages.new.insert_picture')

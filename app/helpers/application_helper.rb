@@ -16,7 +16,7 @@ module ApplicationHelper
   end
 
   def nav_link_to(*args, &block)
-    body = block_given? ? capture(&block) : args.shift
+    body = block ? capture(&block) : args.shift
 
     path = args[0]
 
