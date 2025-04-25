@@ -1,17 +1,18 @@
-version: "3"
 services:
   db:
-    image: "postgres"
+    image: "postgres:17.4"
     env_file:
       - ".env"
     volumes:
       - "./tmp/db:/var/lib/postgresql/data"
+    ports:
+      - "5432:5432"
   mail:
     image: "schickling/mailcatcher"
     ports:
       - "1080:1080"
   pgadmin:
-    image: "dpage/pgadmin4"
+    image: "dpage/pgadmin4:9.2"
     depends_on:
       - "db"
     ports:
