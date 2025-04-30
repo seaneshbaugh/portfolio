@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 # FriendlyId Global Configuration
 #
 # Use this to set up shared configuration options for your entire application.
@@ -22,6 +20,12 @@ FriendlyId.defaults do |config|
                              stylesheets assets javascripts images page pages posts posts picture
                              pictures user users contact]
 
+  # This adds an option to treat reserved words as conflicts rather than exceptions.
+  # When there is no good candidate, a UUID will be appended, matching the existing
+  # conflict behavior.
+
+  # config.treat_reserved_as_conflict = true
+
   #  ## Friendly Finders
   #
   # Uncomment this to use friendly finders in all models. By default, if
@@ -34,7 +38,7 @@ FriendlyId.defaults do |config|
   #    MyModel.find('foo')
   #
   # This is significantly more convenient but may not be appropriate for
-  # all applications, so you must explicity opt-in to this behavior. You can
+  # all applications, so you must explicitly opt-in to this behavior. You can
   # always also configure it on a per-model basis if you prefer.
   #
   # Something else to consider is that using the :finders addon boosts
@@ -79,6 +83,10 @@ FriendlyId.defaults do |config|
   # behavior by overriding the `should_generate_new_friendly_id?` method that
   # FriendlyId adds to your model. The change below makes FriendlyId 5.0 behave
   # more like 4.0.
+  # Note: Use(include) Slugged module in the config if using the anonymous module.
+  # If you have `friendly_id :name, use: slugged` in the model, Slugged module
+  # is included after the anonymous module defined in the initializer, so it
+  # overrides the `should_generate_new_friendly_id?` method from the anonymous module.
 
   config.use(Module.new do
     def should_generate_new_friendly_id?
