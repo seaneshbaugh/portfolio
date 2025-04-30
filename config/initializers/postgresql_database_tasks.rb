@@ -1,8 +1,8 @@
-# frozen_string_literal: true
-
 module ActiveRecord
   module Tasks
     class PostgreSQLDatabaseTasks
+      # Monkey patch PostgreSQLDatabaseTasks#drop to avoid the following error:
+      # PG::ObjectInUse: ERROR:  database "<database name>" is being accessed by other users
       def drop
         establish_master_connection
 
