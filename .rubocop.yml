@@ -1,18 +1,14 @@
-require:
+# Omakase Ruby styling for Rails
+inherit_gem: { rubocop-rails-omakase: rubocop.yml }
+
+plugins:
   - rubocop-minitest
   - rubocop-performance
   - rubocop-rails
 
 AllCops:
   Exclude:
-    - bin/bundle
-    - bin/rails
-    - bin/rake
-    - bin/setup
-    - bin/update
-    - bin/webpack
-    - bin/webpack-dev-server
-    - bin/yarn
+    - bin/*
     - db/schema.rb
     - node_modules/**/*
   NewCops: enable
