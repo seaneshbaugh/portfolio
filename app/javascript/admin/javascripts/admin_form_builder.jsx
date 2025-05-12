@@ -1,5 +1,5 @@
 import React from "react";
-import { render } from "react-dom";
+import { createRoot } from "react-dom/client";
 import AceEditor from "react-ace";
 import PictureSelector from "./components/picture_selector";
 // import TagList from "./components/tag_list";
@@ -14,6 +14,7 @@ import "ace-builds/src-noconflict/theme-github";
 const completed = () => {
   document.querySelectorAll(".ace-editor-field").forEach((aceEditorField, index) => {
     const aceEditor = aceEditorField.querySelector(".ace-editor");
+    const root = createRoot(aceEditor);
     const mode = aceEditor.dataset.mode;
     const theme = aceEditor.dataset.theme;
     const textArea = aceEditorField.querySelector("textarea.value");
@@ -24,7 +25,7 @@ const completed = () => {
 
     label.classList.remove("active");
 
-    render(
+    root.render(
       <AceEditor
         mode={mode}
         theme={theme}
@@ -35,12 +36,12 @@ const completed = () => {
         width="100%"
         wrapEnabled={true}
         value={textArea.value}
-      />,
-      aceEditor
-    );
+      />);
   });
 
   document.querySelectorAll(".picture-inserter").forEach((pictureInserter) => {
+    const root = createRoot(pictureInserter);
+
     const target = pictureInserter.dataset.target;
 
     const editor = document.querySelector(`#${target} .ace_editor`).env.editor;
@@ -57,14 +58,12 @@ const completed = () => {
       editor.insert(image);
     };
 
-    render(
+    root.render(
       <PictureSelector
         buttonClassName={pictureInserter.dataset.buttonclassname}
         buttonText={pictureInserter.dataset.buttontext}
         onSelect={insertPicture}
-      />,
-      pictureInserter
-    );
+      />);
   });
 
   // TODO: I18nize the placeholder text. Need to figure out how to make the Rails I18n
