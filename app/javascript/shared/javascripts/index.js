@@ -1,7 +1,7 @@
-import "materialize-css/dist/js/materialize.js";
+import { AutoInit } from "@materializecss/materialize";
 import "./flash_messages";
 
-const completed = () => (M.AutoInit());
+const completed = () => (AutoInit());
 
 if (document.readyState === "complete") {
   setTimeout(completed);
