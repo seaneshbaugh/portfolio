@@ -1,5 +1,5 @@
 import React from "react";
-import { render } from "react-dom";
+import { createRoot } from "react-dom/client";
 import { createStore } from "redux";
 import { Provider } from "react-redux";
 
@@ -15,11 +15,14 @@ const completed = () => {
     return;
   }
 
+  const imageUploaderRoot = createRoot(imageUploaderContainer);
+  const pictureListRoot = createRoot(pictureListRoot);
+
   window.picturesStore = createStore(picturesReducer, { "pictures": JSON.parse(pictureListContainer.dataset.pictures) });
 
-  render(<Provider store={window.picturesStore}><ImageUploader /></Provider>, imageUploaderContainer);
+  imageUploaderRoot.render(<Provider store={window.picturesStore}><ImageUploader /></Provider>);
 
-  render(<Provider store={window.picturesStore}><PictureList /></Provider>, pictureListContainer);
+  pictureListRoot.render(<Provider store={window.picturesStore}><PictureList /></Provider>);
 };
 
 if (document.readyState === "complete") {
