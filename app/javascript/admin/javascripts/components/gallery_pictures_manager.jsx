@@ -28,7 +28,9 @@ const GalleryPicturesManager = (props) => {
 
     setGalleryPictures(update(galleryPictures, { $push: [newGalleryPicture] }));
 
-    window.scrollTo({ top: document.querySelector(".gallery-picture:last-child").offsetTop, left: 0, behavior: "smooth" });
+    requestIdleCallback(() => {
+      window.scrollTo({ top: document.querySelector(".gallery-picture:last-child").offsetTop, left: 0, behavior: "smooth" });
+    });
   };
 
   const removeGalleryPicture = (index) => {

@@ -39,31 +39,33 @@ const completed = () => {
       />);
   });
 
-  document.querySelectorAll(".picture-inserter").forEach((pictureInserter) => {
-    const root = createRoot(pictureInserter);
+  requestIdleCallback(() => {
+    document.querySelectorAll(".picture-inserter").forEach((pictureInserter) => {
+      const root = createRoot(pictureInserter);
 
-    const target = pictureInserter.dataset.target;
+      const target = pictureInserter.dataset.target;
 
-    const editor = document.querySelector(`#${target} .ace_editor`).env.editor;
+      const editor = document.querySelector(`#${target} .ace_editor`).env.editor;
 
-    const insertPicture = (picture) => {
-      let image = `<img src="${picture.data.attributes.original_image_url}"`;
+      const insertPicture = (picture) => {
+        let image = `<img src="${picture.data.attributes.original_image_url}"`;
 
-      if (picture.data.attributes.alt_text) {
-        image += ` alt=${picture.data.attributes.alt_text}"`;
-      }
+        if (picture.data.attributes.alt_text) {
+          image += ` alt=${picture.data.attributes.alt_text}"`;
+        }
 
-      image += ">";
+        image += ">";
 
-      editor.insert(image);
-    };
+        editor.insert(image);
+      };
 
-    root.render(
-      <PictureSelector
-        buttonClassName={pictureInserter.dataset.buttonclassname}
-        buttonText={pictureInserter.dataset.buttontext}
-        onSelect={insertPicture}
-      />);
+      root.render(
+        <PictureSelector
+            buttonClassName={pictureInserter.dataset.buttonclassname}
+            buttonText={pictureInserter.dataset.buttontext}
+            onSelect={insertPicture}
+        />);
+    });
   });
 
   // TODO: I18nize the placeholder text. Need to figure out how to make the Rails I18n
