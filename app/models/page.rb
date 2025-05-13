@@ -26,6 +26,10 @@ class Page < ApplicationRecord
 
   resourcify
 
+  def self.ransackable_attributes(auth_object = nil)
+    %w[title body_or_style_or_script]
+  end
+
   def published?
     visible
   end

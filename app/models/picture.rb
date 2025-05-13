@@ -19,6 +19,10 @@ class Picture < ApplicationRecord
 
   resourcify
 
+  def self.ransackable_attributes(auth_object = nil)
+    %w[title  alt_text caption]
+  end
+
   def image_filename
     image.blob.filename.to_s if image.attached?
   end

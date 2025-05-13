@@ -24,6 +24,14 @@ class User < ApplicationRecord
 
   resourcify :other_users
 
+  def self.ransackable_associations(auth_object = nil)
+    %w[roles]
+  end
+
+  def self.ransackable_attributes(auth_object = nil)
+    %w[first_name_or_last_name email roles_name]
+  end
+
   def full_name
     "#{first_name} #{last_name}"
   end

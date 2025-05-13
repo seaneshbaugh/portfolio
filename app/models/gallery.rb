@@ -24,6 +24,10 @@ class Gallery < ApplicationRecord
 
   resourcify
 
+  def self.ransackable_attributes(auth_object = nil)
+    %w[name description]
+  end
+
   def featured_picture
     gallery_pictures.published.featured.by_order.chronological.joins(:picture).first&.picture
   end
