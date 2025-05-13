@@ -44,7 +44,8 @@ const GalleryPicture = ({ index, id, picture_id, order, featured, visible, pictu
   });
 
   const [{ isDragging }, drag] = useDrag({
-    item: { type: "GalleryPicture", id, index },
+    type: "GalleryPicture",
+    item: { id, index },
     collect: (monitor) => ({
       isDragging: monitor.isDragging()
     })
