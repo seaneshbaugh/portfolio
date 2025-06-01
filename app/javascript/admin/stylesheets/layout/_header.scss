@@ -1,4 +1,4 @@
-@import "~materialize-css/sass/components/variables";
+// @use "../../../../../node_modules/@materializecss/materialize/sass/components/variables" as materialize;
 
 .main-header {
     .main-header-title {
@@ -6,10 +6,19 @@
     }
 }
 
-// @media #{$small-and-down} {
-//     .main-header {
-//         .main-header-title {
-//             font-size: 1rem;
-//         }
-//     }
-// }
+// Manually determined break points. They don't quite line up with the default materalize break points.
+@media only screen and (min-width : 653px) and (max-width : 1303.99px) {
+    .main-header {
+        .main-header-title {
+            font-size: 2.7rem;
+        }
+    }
+}
+
+@media only screen and (max-width : 652.99px) {
+    .main-header {
+        .main-header-title {
+            font-size: 1.8rem;
+        }
+    }
+}
