@@ -4,6 +4,7 @@ import AceEditor from "react-ace";
 import PictureSelector from "./components/picture_selector";
 // import TagList from "./components/tag_list";
 
+import "ace-builds/webpack-resolver";
 import "ace-builds/src-noconflict/mode-css";
 import "ace-builds/src-noconflict/mode-html";
 import "ace-builds/src-noconflict/mode-javascript";
