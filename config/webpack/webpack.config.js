@@ -15,7 +15,7 @@ const webpackConfig = generateWebpackConfig(options);
 const sassRule = webpackConfig.module.rules.find((rule) => ".sass".match(rule.test));
 const sassLoader = sassRule.use.find((use) => use.loader && use.loader.match(/sass-loader/));
 const sassOptions = {
-  // TODO: Add node_modules to load path?
+  loadPaths: [require("path").resolve(__dirname, "../../node_modules")],
   quietDeps: true,
   silenceDeprecations: ["global-builtin"]
 };
