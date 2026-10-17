@@ -32,6 +32,17 @@ Start the Docker containers.
 
     $ docker-compose up -d --build
 
+The web and Shakapacker services share a Docker-managed `node_modules` volume.
+This keeps container dependencies visible when the source checkout is mounted
+over `/portfolio`. Docker initializes the volume from the image on first use.
+After changing `package.json` or `yarn.lock`, refresh the existing volume:
+
+    $ docker compose run --rm --no-deps shakapacker yarn install --frozen-lockfile
+    $ docker compose restart shakapacker
+
+Rebuilding an image does not refresh an existing dependency volume. Use the
+install command above; do not remove database volumes to refresh JavaScript.
+
 Create the development and test databases.
 
     $ docker-compose run --rm web rails db:create

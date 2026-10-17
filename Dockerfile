@@ -21,18 +21,18 @@ RUN apt-get update -qq && \
     rm -rf /var/lib/apt/lists /var/cache/apt/archives
 
 ARG NODE_VERSION=23.9.0
-ARG YARN_VERSION=latest
+ARG YARN_VERSION=1.22.22
 ENV PATH=/usr/local/node/bin:$PATH
 RUN curl -sL https://github.com/nodenv/node-build/archive/master.tar.gz | tar xz -C /tmp/ && \
     /tmp/node-build-master/bin/node-build "${NODE_VERSION}" /usr/local/node && \
     rm -rf /tmp/node-build-master
-RUN corepack enable && yarn set version $YARN_VERSION
+RUN corepack enable && corepack prepare yarn@$YARN_VERSION --activate
 
 COPY Gemfile Gemfile.lock .tool-versions ./
 RUN bundle install
 
 COPY package.json yarn.lock ./
-RUN yarn install --immutable --network-timeout 3600000
+RUN yarn install --frozen-lockfile --network-timeout 3600000
 
 COPY . .
 

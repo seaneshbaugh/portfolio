@@ -30,6 +30,7 @@ services:
     command: "./bin/shakapacker-dev-server"
     volumes:
       - ".:/portfolio"
+      - "node_modules:/portfolio/node_modules"
     ports:
       - "3035:3035"
     environment:
@@ -43,9 +44,13 @@ services:
     command: "bundle exec rails s -p 3000 -b '0.0.0.0'"
     volumes:
       - ".:/portfolio"
+      - "node_modules:/portfolio/node_modules"
     ports:
       - "3000:3000"
     depends_on:
       - "db"
     environment:
       - "SHAKAPACKER_DEV_SERVER_HOST=shakapacker"
+
+volumes:
+  node_modules:
