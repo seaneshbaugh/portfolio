@@ -1,12 +1,12 @@
-@import "../variables";
+@use "../variables";
 
 .main-footer {
-    background: $main-footer-background-color;
-    height: $main-footer-height;
+    background: variables.$main-footer-background-color;
+    height: variables.$main-footer-height;
 }
 
 .main-footer-credit {
-    color: $main-footer-color;
+    color: variables.$main-footer-color;
     margin: 0rem auto;
     max-width: 75rem;
     padding: 0.5rem 0rem;

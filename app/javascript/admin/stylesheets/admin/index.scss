@@ -1,12 +1,12 @@
-@import "./galleries/form";
-@import "./pages/show";
-@import "./pages/form";
-@import "./pictures/index";
-@import "./pictures/show";
-@import "./posts/show";
-@import "./posts/form";
-@import "./users/show";
-@import "./users/form";
+@use "./galleries/form" as galleries-form;
+@use "./pages/show" as pages-show;
+@use "./pages/form" as pages-form;
+@use "./pictures/index" as pictures-index;
+@use "./pictures/show" as pictures-show;
+@use "./posts/show" as posts-show;
+@use "./posts/form" as posts-form;
+@use "./users/show" as users-show;
+@use "./users/form" as users-form;
 
 .quick-links {
     .quick-link {

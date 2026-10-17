@@ -1,4 +1,4 @@
-@import "@materializecss/materialize/sass/components/color-variables";
-@import "@materializecss/materialize/sass/components/variables";
+@use "@materializecss/materialize/sass/components/color-variables" as colors;
+@use "@materializecss/materialize/sass/components/variables";
 
-$button-flat-color: colorFunc("shades", "white") !global;
+$button-flat-color: colors.colorFunc("shades", "white");

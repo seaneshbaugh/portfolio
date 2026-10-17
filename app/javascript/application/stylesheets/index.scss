@@ -14,20 +14,19 @@
 @use "@materializecss/materialize/sass/components/materialbox";
 @use "@materializecss/materialize/sass/components/forms/forms";
 
-@import "./variables";
-@import "@materializecss/materialize/sass/components/color-variables";
-@import "@materializecss/materialize/sass/components/variables";
-@import "./typography";
-@import "./layout";
-@import "./links";
-@import "./pages";
-@import "./pictures";
-@import "./posts";
+@use "./variables";
+@use "@materializecss/materialize/sass/components/color-variables" as palette;
+@use "./typography";
+@use "./layout";
+@use "./links";
+@use "./pages";
+@use "./pictures";
+@use "./posts";
 
 .hidden {
     display: none;
 }
 
 .waves-button-input {
-    color: $button-flat-color;
+    color: variables.$button-flat-color;
 }

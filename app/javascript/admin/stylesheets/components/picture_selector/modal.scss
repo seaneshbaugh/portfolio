@@ -1,8 +1,8 @@
-@import "@materializecss/materialize/sass/components/color-variables";
-@import "./modal/picture";
+@use "@materializecss/materialize/sass/components/color-variables" as colors;
+@use "./modal/picture";
 
 .picture-selector-modal {
-    background: colorFunc("shades", "white");
+    background: colors.colorFunc("shades", "white");
     box-shadow: 0 0 60px 10px rgba(0, 0, 0, 0.9);
     display: block;
     height: 400px;

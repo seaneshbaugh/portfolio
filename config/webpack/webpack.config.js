@@ -16,8 +16,7 @@ const sassRule = webpackConfig.module.rules.find((rule) => ".sass".match(rule.te
 const sassLoader = sassRule.use.find((use) => use.loader && use.loader.match(/sass-loader/));
 const sassOptions = {
   loadPaths: [require("path").resolve(__dirname, "../../node_modules")],
-  quietDeps: true,
-  silenceDeprecations: ["global-builtin"]
+  quietDeps: true
 };
 
 sassLoader.options.sassOptions = merge(sassLoader.options.sassOptions, sassOptions);

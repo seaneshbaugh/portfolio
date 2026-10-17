@@ -1,19 +1,19 @@
-@import "@materializecss/materialize/sass/components/color-variables";
+@use "@materializecss/materialize/sass/components/color-variables" as colors;
 
 .flash-messages {
     .flash-message {
         cursor: pointer;
 
         &.flash-message-success {
-            background: colorFunc("green", "lighten-4");
+            background: colors.colorFunc("green", "lighten-4");
         }
 
         &.flash-message-error {
-            background: colorFunc("red", "lighten-4");
+            background: colors.colorFunc("red", "lighten-4");
         }
 
         &.flash-message-debug {
-            background: colorFunc("blue", "lighten-4");
+            background: colors.colorFunc("blue", "lighten-4");
 
             pre {
                 white-space: pre-wrap;

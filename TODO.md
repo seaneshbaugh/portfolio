@@ -69,9 +69,13 @@ to 1.22.22 and switched to `--frozen-lockfile`; that image change still needs a
 rebuild verification. README documents dependency-volume refresh commands.
 Materialize Sass imports are now updated for the scoped package, its renamed
 `colorFunc` helper, and current component/module structure. Added the Sass
-`node_modules` load path and public theme tokens. Both packs compile successfully
-(21 warnings); the restarted asset server returns HTTP 200 for its manifest with
-admin/application entrypoints. Browser rendering remains unverified. Attempting
+`node_modules` load path and public theme tokens. Migrated application Sass to
+modules and removed unnecessary global assignments; both packs now compile without
+Sass warnings, with matching compiled CSS declarations and fewer duplicate rules.
+Removed the blanket global-builtin warning suppression and restarted Shakapacker.
+The asset server returns HTTP 200 for its manifest with admin/application
+entrypoints. The home page loads according to manual verification by the owner;
+full visual parity remains unverified. Attempting
 `bundle exec rails test` stops before tests run at the existing
 `Webpacker.compile` call in `test/test_helper.rb:26` (NameError).
 
@@ -82,19 +86,19 @@ installed in the image, which is the leading explanation for the reported missin
 `/portfolio/node_modules/.bin/webpack`. Webpack is already declared in
 `package.json` devDependencies; first verify dependency visibility and installation.
 
-- [ ] Inspect the running service mounts and check `node_modules/.bin/webpack`,
+- [x] Inspect the running service mounts and check `node_modules/.bin/webpack`,
       Node/Yarn versions, installation logs and devDependency inclusion inside
       the Compose service. Do not print `.env` contents or credentials.
-- [ ] For the immediate recovery, install the locked JS dependencies through the
+- [x] For the immediate recovery, install the locked JS dependencies through the
       Compose service into the mounted checkout, or implement a container-managed
       dependency volume shared by web and Shakapacker. Choose one documented model;
       account for volume initialization and refresh after lockfile changes.
-- [ ] Reconcile Yarn Classic's `packageManager` pin (`1.22.22`) with Dockerfile's
+- [x] Reconcile Yarn Classic's `packageManager` pin (`1.22.22`) with Dockerfile's
       `YARN_VERSION=latest`, `yarn set version`, and `--immutable` install option.
       Use install flags belonging to the selected Yarn version and preserve the lock.
-- [ ] Restart Shakapacker; verify webpack executable, successful compilation,
+- [x] Restart Shakapacker; verify webpack executable, successful compilation,
       browser access on port 3035 and web-container access via service DNS.
-- [ ] Verify `config/shakapacker.yml` host/WebSocket settings from the browser;
+- [x] Verify `config/shakapacker.yml` host/WebSocket settings from the browser;
       retain the current stack until parity is established.
 
 ### Rails, data and initial tests

@@ -1,5 +1,5 @@
-@import "./variables";
-@import "~glightbox/dist/css/glightbox";
+@use "./variables";
+@use "glightbox/dist/css/glightbox";
 
 .galleries {
     .gallery {
@@ -12,11 +12,11 @@
         }
 
         .gallery-name {
-            color: $black;
+            color: variables.$black;
             text-align: center;
 
             a {
-                color: $black;
+                color: variables.$black;
             }
         }
     }
@@ -39,11 +39,11 @@
     transition: all 0.5s ease-in-out;
 
     &.bordered {
-        column-rule: 1px solid $off-white;
+        column-rule: 1px solid variables.$off-white;
         column-gap: 3.125rem;
 
         .brick {
-            border-bottom: 1px solid $off-white;
+            border-bottom: 1px solid variables.$off-white;
             margin-bottom: 1.5625rem;
             padding-bottom: 1.5625rem;
         }
