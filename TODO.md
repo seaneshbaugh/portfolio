@@ -75,9 +75,13 @@ Sass warnings, with matching compiled CSS declarations and fewer duplicate rules
 Removed the blanket global-builtin warning suppression and restarted Shakapacker.
 The asset server returns HTTP 200 for its manifest with admin/application
 entrypoints. The home page loads according to manual verification by the owner;
-full visual parity remains unverified. Attempting
-`bundle exec rails test` stops before tests run at the existing
-`Webpacker.compile` call in `test/test_helper.rb:26` (NameError).
+full visual parity remains unverified. Test startup is now fixed by replacing
+`Webpacker.compile` with `Shakapacker.compile` in `test/test_helper.rb:26`.
+On 2026-10-17, `docker compose exec web bundle exec rails test` completed:
+156 tests, 285 assertions, 31 failures, 13 errors, 0 skips (seed 50011).
+These are individual test failures/errors rather than a suite startup exception.
+The run also reports a missing Node `css` module and a Pundit deprecation;
+investigating/fixing the remaining test results is separate follow-up work.
 
 `Dockerfile` installs JavaScript dependencies under `/portfolio`, but both `web`
 and `shakapacker` bind-mount `.:/portfolio` in `docker-compose.yml`. The checkout
@@ -116,7 +120,7 @@ installed in the image, which is the leading explanation for the reported missin
 - [ ] Check `bin/setup`'s dependency failure handling and selected package manager.
       Choose/document Compose as the initial launch path; reconcile `bin/dev`
       with its referenced but absent `Procfile.dev` when supporting that path.
-- [ ] Reconcile the legacy `Webpacker.compile` in `test/test_helper.rb` with the
+- [x] Reconcile the legacy `Webpacker.compile` in `test/test_helper.rb` with the
       installed Shakapacker interface and test pack preparation; run the suite.
 - [ ] Verify `/up`, `/`, a post, a CMS page, `/pictures`, picture detail, `/links`
       (all/year/month/tag variants), `/contact`, `/posts.rss`, `/sitemap.xml`,

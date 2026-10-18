@@ -55,6 +55,16 @@ Seed the database.
 
     $ docker-compose run --rm web rails db:seed_fu
 
+## Tests
+
+With the development containers running:
+
+    $ docker compose exec web bundle exec rails test
+
+The test helper compiles Shakapacker assets for the test environment before
+running the suite. The suite currently runs to completion with failures and
+errors; see TODO.md for the recorded upgrade baseline.
+
 ## Troubleshooting
 
 #### `Node Sass could not find a binding for your current environment: Linux 64-bit with Node.js 12.x`
