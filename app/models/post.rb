@@ -28,8 +28,12 @@ class Post < ApplicationRecord
 
   resourcify
 
+  def self.ransackable_associations(auth_object = nil)
+    %w[user]
+  end
+
   def self.ransackable_attributes(auth_object = nil)
-    %w[title body_or_style]
+    %w[title body style created_at]
   end
 
   def published?

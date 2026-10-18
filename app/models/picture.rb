@@ -19,8 +19,12 @@ class Picture < ApplicationRecord
 
   resourcify
 
+  def self.ransackable_associations(auth_object = nil)
+    []
+  end
+
   def self.ransackable_attributes(auth_object = nil)
-    %w[title  alt_text caption]
+    %w[title alt_text caption created_at]
   end
 
   def image_filename

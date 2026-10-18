@@ -26,8 +26,12 @@ class Page < ApplicationRecord
 
   resourcify
 
+  def self.ransackable_associations(auth_object = nil)
+    []
+  end
+
   def self.ransackable_attributes(auth_object = nil)
-    %w[title body_or_style_or_script]
+    %w[title body style script order created_at]
   end
 
   def published?

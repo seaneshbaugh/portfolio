@@ -17,8 +17,12 @@ class Link < ApplicationRecord
 
   resourcify
 
+  def self.ransackable_associations(auth_object = nil)
+    []
+  end
+
   def self.ransackable_attributes(auth_object = nil)
-    %w[text url description]
+    %w[text url description created_at]
   end
 
   def published?

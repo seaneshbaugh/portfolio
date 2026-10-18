@@ -24,8 +24,12 @@ class Gallery < ApplicationRecord
 
   resourcify
 
+  def self.ransackable_associations(auth_object = nil)
+    []
+  end
+
   def self.ransackable_attributes(auth_object = nil)
-    %w[name description]
+    %w[name description order created_at]
   end
 
   def featured_picture
