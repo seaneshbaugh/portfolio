@@ -5,5 +5,5 @@ en:
         success: "Page was successfully created."
       update:
         success: "Page was successfully updated."
-      delete:
+      destroy:
         success: "Page was successfully deleted."

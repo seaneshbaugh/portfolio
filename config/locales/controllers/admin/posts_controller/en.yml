@@ -5,5 +5,5 @@ en:
         success: "Post was successfully created."
       update:
         success: "Post was successfully updated."
-      delete:
+      destroy:
         success: "Post was successfully deleted."

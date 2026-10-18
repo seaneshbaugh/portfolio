@@ -5,5 +5,5 @@ en:
         success: "Link was successfully created."
       update:
         success: "Link was successfully updated."
-      delete:
+      destroy:
         success: "Link was successfully deleted."

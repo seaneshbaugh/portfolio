@@ -5,5 +5,5 @@ en:
         success: "Gallery was successfully created."
       update:
         success: "Gallery was successfully updated."
-      delete:
+      destroy:
         success: "Gallery was successfully deleted."

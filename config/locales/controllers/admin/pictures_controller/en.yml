@@ -5,5 +5,5 @@ en:
         success: "Picture was successfully created."
       update:
         success: "Picture was successfully updated."
-      delete:
+      destroy:
         success: "Picture was successfully deleted."

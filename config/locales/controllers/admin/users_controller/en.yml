@@ -5,5 +5,5 @@ en:
         success: "User was successfully created."
       update:
         success: "User was successfully updated."
-      delete:
+      destroy:
         success: "User was successfully deleted."
