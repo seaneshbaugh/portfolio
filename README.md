@@ -2,58 +2,102 @@
 
 This is the repository for my personal website.
 
-## Ruby Version
+## Runtime versions
 
-This application uses Ruby 2.7.1.
+This branch uses Ruby 3.4.2, Rails 8.0.2, Node.js 23.9.0, Yarn 1.22.22,
+Bundler 2.6.2, and PostgreSQL 17.4. Versions are pinned in `.tool-versions`,
+`.ruby-version`, the dependency manifests/lockfiles, and Dockerfile/Compose.
+The container includes libvips for Active Storage variants; no host installation
+is needed for the Compose workflow.
 
-## Rails Version
+## Local development setup
 
-This application uses Rails 6.0.3.3.
+Use Docker Compose as the primary development workflow. On a new checkout, copy
+`.env.example` to `.env`; keep existing `.env` values if already configured.
+The example uses separate development/test databases and the `db` hostname
+reachable inside Compose. PostgreSQL initialization credentials only apply to a
+new data directory. They do not change users/passwords in an existing database.
 
-## Node.js Version
+Start the database and local mail server, then build the app images:
 
-This application uses Node.js 14.9.0.
+```bash
+docker compose up -d db mail
+docker compose build web shakapacker
+docker compose run --rm --no-deps web bin/setup --skip-server
+docker compose up -d web shakapacker
+```
 
-## Dependencies
+If PostgreSQL is still starting, retry the setup command after it is ready.
+`bin/setup` installs locked dependencies and creates/migrates development and test
+databases without loading the historical seeds. It also clears local logs/temp
+files, so save diagnostic logs first if needed. It stops if dependency installation
+fails. Existing records are retained.
 
-* [vips](https://jcupitt.github.io/libvips/)
-
-## Local Development Setup
-
-Clone the repository.
-
-    $ git clone git@github.com:seaneshbaugh/portfolio.git
-
-cd into the project directory.
-
-    $ cd portfolio
-
-Start the Docker containers.
-
-    $ docker-compose up -d --build
+Visit the website at <http://localhost:3000> and Mailcatcher at
+<http://localhost:1080>. Optional pgAdmin: `docker compose up -d pgadmin`, then
+<http://localhost:5555> (credentials are in Compose).
 
 The web and Shakapacker services share a Docker-managed `node_modules` volume.
-This keeps container dependencies visible when the source checkout is mounted
-over `/portfolio`. Docker initializes the volume from the image on first use.
-After changing `package.json` or `yarn.lock`, refresh the existing volume:
+It initializes from the image on first use. After changing JS manifests/lockfiles,
+refresh it explicitly; rebuilding an image does not update an existing volume:
 
-    $ docker compose run --rm --no-deps shakapacker yarn install --frozen-lockfile
-    $ docker compose restart shakapacker
+```bash
+docker compose run --rm --no-deps shakapacker yarn install --frozen-lockfile
+docker compose restart shakapacker
+```
 
-Rebuilding an image does not refresh an existing dependency volume. Use the
-install command above; do not remove database volumes to refresh JavaScript.
+### Sample content and local admin
 
-Create the development and test databases.
+For representative content and a local image attachment, run:
 
-    $ docker-compose run --rm web rails db:create
+```bash
+docker compose exec web bundle exec rails development:sample_data
+```
 
-Load the database schema.
+This development-only task adds a sample author, page, post, gallery/picture and
+tagged link. Repeated runs reuse existing matching records without overwriting
+content. The sample author has an unknown random password and no admin role.
+Images come from tracked test fixtures, use local `storage/`, and need no S3 access.
+Visit `/local-demo-page`, `/posts/local-demo-post`, `/pictures/local-demo-gallery`,
+`/links/2025/5`, and `/links?tag=local-demo`.
 
-    $ docker-compose run --rm web rails db:schema:load
+The historical `db:seed` / `db:seed_fu` fixtures update fixed IDs, set a shared
+password and require untracked files under `db/fixtures/files/pictures`. They
+are opt-in; do not use them to initialize a normal development checkout.
+`db:reseed`, `db:truncate`, and `db:schema:load` can replace existing local data.
 
-Seed the database.
+To create your own local admin without a password in shell history, open:
 
-    $ docker-compose run --rm web rails db:seed_fu
+```bash
+docker compose exec web bundle exec rails console
+```
+
+Then enter the following in the console (choose your own local email if desired):
+
+```ruby
+raise 'Development only' unless Rails.env.development?
+require 'io/console'
+email = 'local-admin@example.test'
+raise 'Account already exists; choose another email' if User.exists?(email: email)
+password = IO.console.getpass('New local admin password (at least 6 characters): '); nil
+user = User.create!(email: email, first_name: 'Local', last_name: 'Admin', password: password, password_confirmation: password)
+user.add_role(:admin)
+password = nil
+nil
+```
+
+Sign in at `/login`. This creates a separate account and leaves existing users
+unchanged. Development SMTP points to the Compose Mailcatcher service (`mail:1025`).
+Contact submission is currently disabled in the controller: it renders thanks
+without validation or delivery. That behavior has been preserved.
+
+### Optional native process launcher
+
+`bin/dev` uses `Procfile.dev` to run Rails and Shakapacker with Foreman when
+running Ruby/Node on the host. Supply the database environment yourself (both
+hosts should be `localhost` when using Compose's published PostgreSQL port),
+install the pinned dependencies and libvips, and use `bin/setup --skip-server`
+first. Compose is the verified path; native setup is optional.
 
 ## Tests
 
@@ -67,13 +111,10 @@ errors; see TODO.md for the recorded upgrade baseline.
 
 ## Troubleshooting
 
-#### `Node Sass could not find a binding for your current environment: Linux 64-bit with Node.js 12.x`
+#### Missing webpack or JavaScript dependencies
 
-or
-
-#### `Module build failed: ModuleBuildError: Module build failed: Error: Node Sass does not yet support your current environment: Linux 64-bit with Unsupported runtime (72)`
-
-If you update `/package.json` and run `yarn install` on the host machine it will overwrite the contents of `/node_modules` and in the process will rebuild Node Sass for the host machine. If the host machine is not the same OS as the Docker container you will see this error. This can be fixed by running `docker-compose run --rm web yarn install --force` and then restarting the `web` and `webpacker` containers.
+Refresh the shared dependency volume with the locked Yarn install command above,
+then restart Shakapacker. Do not remove database volumes to refresh JavaScript.
 
 #### `no space left on device`
 
@@ -86,15 +127,15 @@ This happens from time to time. Dead containers and unused images can be cleaned
 
 ### Ruby
 
-    $ docker-compose run --rm web bundle exec rubocop
+    $ docker compose run --rm web bundle exec rubocop
 
 ### HAML
 
-    $ docker-compose run --rm web bundle exec haml-lint
+    $ docker compose run --rm web bundle exec haml-lint
 
 ### SCSS
 
-    $ docker-compose run --rm web  yarn run sass-lint --verbose --no-exit --config .sass-lint.yml
+    $ docker compose run --rm web  yarn run sass-lint --verbose --no-exit --config .sass-lint.yml
 
 ## Contacts
 

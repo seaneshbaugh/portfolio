@@ -1,8 +1,12 @@
 #forgot-password
-  %h1= t('devise.passwords.forgot_your_password')
-  = simple_form_for resource, :as => resource_name, :url => password_path(resource_name, :html => { :method => :post, :class => 'form-horizontal' }) do |f|
-    %fieldset
-      = f.input :email, :required => true
-    .form-actions
-      = f.button :submit, t('devise.passwords.new_button')
+  %h1= t('.title')
+  = form_for resource, as: resource_name, url: password_path(resource_name), html: { method: :post } do |f|
+    - if resource.errors.any?
+      .flash-messages
+        .flash-message.flash-message-error= resource.errors.full_messages.to_sentence
+    .input-field
+      = f.email_field :email, required: true, autocomplete: 'email'
+      = f.label :email
+    .input-field
+      = f.submit t('.submit'), class: success_button_class
   = render 'devise/shared/links'

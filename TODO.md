@@ -107,26 +107,58 @@ installed in the image, which is the leading explanation for the reported missin
 
 ### Rails, data and initial tests
 
-- [ ] Verify Ruby/Bundler/Node versions against `.tool-versions`, `.ruby-version`,
+- [x] Verify Ruby/Bundler/Node versions against `.tool-versions`, `.ruby-version`,
       `Gemfile.lock` and Dockerfile; build and boot web and supporting services.
-- [ ] Document required environment variable names from `config/database.yml`
+- [x] Document required environment variable names from `config/database.yml`
       and Compose in a safe example file. Confirm test DB host/user are valid
       from inside Docker (the fallback host is localhost).
-- [ ] Prepare development and isolated test databases without replacing existing
+- [x] Prepare development and isolated test databases without replacing existing
       local data. Inspect `db/seeds.rb` and `db/fixtures/` before using seeds;
       document a safe local admin account setup and representative content.
-- [ ] Confirm local Active Storage uses `storage/` and libvips can generate variants;
+- [x] Confirm local Active Storage uses `storage/` and libvips can generate variants;
       provide local sample attachments without depending on production S3.
-- [ ] Check `bin/setup`'s dependency failure handling and selected package manager.
+- [x] Check `bin/setup`'s dependency failure handling and selected package manager.
       Choose/document Compose as the initial launch path; reconcile `bin/dev`
       with its referenced but absent `Procfile.dev` when supporting that path.
 - [x] Reconcile the legacy `Webpacker.compile` in `test/test_helper.rb` with the
       installed Shakapacker interface and test pack preparation; run the suite.
-- [ ] Verify `/up`, `/`, a post, a CMS page, `/pictures`, picture detail, `/links`
+- [x] Verify `/up`, `/`, a post, a CMS page, `/pictures`, picture detail, `/links`
       (all/year/month/tag variants), `/contact`, `/posts.rss`, `/sitemap.xml`,
       and authentication pages. Use `config/routes.rb` as the route inventory.
 - [ ] Exercise contact submission and confirm mail in Mailcatcher; check
       invalid form redisplay. Record only encountered startup/upgrade failures.
+
+Verification on 2026-10-17:
+
+- Built and booted web/Shakapacker images; Ruby 3.4.2, Bundler 2.6.2,
+  Node 23.9.0 and Yarn 1.22.22 match the pins. Postgres/mail/pgAdmin remain up.
+- `.env.example` documents local settings; actual development/test connections
+  use separate databases (`portfolio_development` / `portfolio_test`) on `db`.
+  Both have no pending migrations; `bin/setup --skip-server` completes.
+- Setup uses create/migrate rather than automatically running historical SeedFu
+  seeds. Locked Yarn install now fails fast. `Procfile.dev` supplies the previously
+  missing native launcher configuration; Compose is the verified workflow.
+- Added and ran `development:sample_data`: one author (not admin), page, post,
+  picture, gallery/membership and tagged link. Repeated runs retain those counts.
+  Historical fixed-ID seeds were inspected but not executed; existing data was
+  not reset. README explains separate local admin creation with a prompted password.
+- Local disk storage and libvips 8.14.1 verified. Sample 100/500 px variants process
+  and the gallery image returns HTTP 200 (`image/jpeg`), without S3 access.
+- HTTP 200: `/up`, `/`, `/posts/local-demo-post`, `/local-demo-page`, `/pictures`,
+  `/pictures/local-demo-gallery`, `/links`, `/links/2025`, `/links/2025/5`,
+  `/links?tag=local-demo`, `/contact`, `/posts.rss`, `/sitemap.xml`, `/login`,
+  `/reset-password`, and `/update-password?reset_password_token=local-smoke`.
+  Password edit without a token redirects to login as expected.
+- Fixed an encountered auth-page loading blocker: legacy password views called
+  uninstalled Simple Form and missing translations. They now use Rails form helpers
+  and local translations; invalid submissions redisplay with HTTP 422.
+- Contact remains intentionally disabled in `ContactController#create`: valid and
+  invalid submissions both render thanks (HTTP 200), and Mailcatcher receives no
+  messages. Contact validation/delivery checkbox remains open pending the owner's
+  decision; do not treat it as verified working mail delivery.
+- Existing suite rerun: 156 tests, 285 assertions, 31 failures, 13 errors, 0 skips,
+  matching the previous baseline counts. Failures remain deferred. HTTP checks
+  do not establish browser interaction or visual parity.
 
 ## 2. Restore admin loading and current frontend parity
 

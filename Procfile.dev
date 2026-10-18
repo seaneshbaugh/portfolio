@@ -1,0 +1,2 @@
+web: bin/rails server
+shakapacker: bin/shakapacker-dev-server
