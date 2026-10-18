@@ -13,7 +13,14 @@ module Admin
     def update
       @account = current_user
 
-      if @account.update(account_params)
+      attributes = account_params
+
+      if attributes[:password].blank?
+        attributes.delete(:password)
+        attributes.delete(:password_confirmation)
+      end
+
+      if @account.update(attributes)
         bypass_sign_in(@account)
 
         flash[:success] = t('.success')

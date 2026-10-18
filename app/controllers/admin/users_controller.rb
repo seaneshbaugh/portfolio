@@ -49,7 +49,14 @@ module Admin
 
       authorize @user
 
-      if @user.update(user_params)
+      attributes = user_params
+
+      if attributes[:password].blank?
+        attributes.delete(:password)
+        attributes.delete(:password_confirmation)
+      end
+
+      if @user.update(attributes)
         flash[:success] = t('.success')
 
         redirect_to edit_admin_user_url(@user), status: :see_other
@@ -75,11 +82,11 @@ module Admin
     private
 
     def find_user
-      User.find(params[:id])
+      User.friendly.find(params[:id])
     end
 
     def user_params
-      params.required(:user).permit(:email, :password, :password_confirmation, :role, :first_name, :last_name)
+      params.required(:user).permit(:email, :password, :password_confirmation, :first_name, :last_name, role_ids: [])
     end
   end
 end
