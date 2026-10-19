@@ -16,7 +16,7 @@ const completed = () => {
   }
 
   const imageUploaderRoot = createRoot(imageUploaderContainer);
-  const pictureListRoot = createRoot(pictureListRoot);
+  const pictureListRoot = createRoot(pictureListContainer);
 
   window.picturesStore = createStore(picturesReducer, { "pictures": JSON.parse(pictureListContainer.dataset.pictures) });
 
