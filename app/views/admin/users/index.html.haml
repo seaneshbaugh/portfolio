@@ -23,9 +23,9 @@
       %table.users.responsive-table
         %thead
           %tr
-            %th.user-name= sort_link @search, :last_name_first_name, t('activerecord.attributes.user.full_name')
+            %th.user-name= sort_link @search, :last_name, [:last_name, :first_name], t('activerecord.attributes.user.full_name')
             %th.user-email= sort_link @search, :email
-            %th.user-role= sort_link @search, :role
+            %th.user-role= sort_link @search, :roles_name, t('activerecord.attributes.user.roles')
             %th.user-created-at= sort_link @search, :created_at
             %th.edit
             %th.delete

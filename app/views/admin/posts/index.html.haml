@@ -22,7 +22,7 @@
         %thead
           %tr
             %th.post-title= sort_link @search, :title
-            %th.post-user= sort_link @search, :user_last_name_first_name, t('activerecord.attributes.post.user')
+            %th.post-user= sort_link @search, :user_last_name, [:user_last_name, :user_first_name], t('activerecord.attributes.post.user')
             %th.post-created-at= sort_link @search, :created_at
             %th.edit
             %th.delete
