@@ -3,6 +3,7 @@
 @use "./color-variables";
 @use "./variables";
 @use "@materializecss/materialize/sass/materialize";
+@use "../../shared/stylesheets/materialize_compatibility";
 @use "./layout";
 @use "./admin/index";
 @use "./components/image_uploader";

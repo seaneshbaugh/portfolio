@@ -1,0 +1,7 @@
+@use "@materializecss/materialize/sass/components/color-variables" as colors;
+
+// Materialize 2's defaults still call the old, unqualified Sass color helper.
+@use "@materializecss/materialize/sass/components/variables" with (
+    $link-color: colors.colorFunc("light-blue", "darken-1"),
+    $success-color: colors.colorFunc("green", "base")
+);
