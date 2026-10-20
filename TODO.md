@@ -125,8 +125,9 @@ installed in the image, which is the leading explanation for the reported missin
 - [x] Verify `/up`, `/`, a post, a CMS page, `/pictures`, picture detail, `/links`
       (all/year/month/tag variants), `/contact`, `/posts.rss`, `/sitemap.xml`,
       and authentication pages. Use `config/routes.rb` as the route inventory.
-- [ ] Exercise contact submission and confirm mail in Mailcatcher; check
-      invalid form redisplay. Record only encountered startup/upgrade failures.
+- [x] Verify the intentionally disabled contact behavior: submissions render thanks
+      without validation or mail. Keep it disabled; any future re-enabling is a
+      separate decision after the low-priority spam-prevention investigation.
 
 Verification on 2026-10-17:
 
@@ -154,39 +155,78 @@ Verification on 2026-10-17:
   and local translations; invalid submissions redisplay with HTTP 422.
 - Contact remains intentionally disabled in `ContactController#create`: valid and
   invalid submissions both render thanks (HTTP 200), and Mailcatcher receives no
-  messages. Contact validation/delivery checkbox remains open pending the owner's
-  decision; do not treat it as verified working mail delivery.
+  messages. The owner confirmed this was intentional because of spam; preserve the disabled
+  form handling. Do not treat it as verified working mail delivery.
 - Existing suite rerun: 156 tests, 285 assertions, 31 failures, 13 errors, 0 skips,
   matching the previous baseline counts. Failures remain deferred. HTTP checks
   do not establish browser interaction or visual parity.
 
 ## 2. Restore admin loading and current frontend parity
 
-- [ ] Check `/login`, logout, reset-password flow, authenticated `/admin`, account
+- [x] Check `/login`, logout, reset-password flow, authenticated `/admin`, account
       show/edit and authorization-dependent navigation using local test accounts.
-- [ ] Visit index/show/new/edit screens exposed by routes for posts, pages,
-      pictures, galleries, links and users; exercise create/update/delete where
-      supported, search/sort/pagination, validation redisplay and version UI.
-- [ ] Verify JSON requests used by widgets: `/admin/pictures`, `/admin/tags.json`,
-      and relevant `/api/v1/*` routes. Preserve contracts during later replacements.
-- [ ] Capture reference screenshots from master in a separate checkout/environment
-      or from production for read-only public pages. Obtain safe admin references
-      locally or from supplied screenshots; do not modify production for comparison.
-- [ ] Compare identical content and viewport sizes, including narrow screens,
-      long text, empty lists, validation messages, logged-in public navigation,
-      and images. Record intentional differences before approving parity.
-- [ ] Follow `app/javascript/packs/{application,admin}.js` through application,
-      admin and shared entrypoints. Verify Sass import resolution against the
-      installed `@materializecss/materialize` fork: stylesheet entrypoints still
-      reference `~materialize-css/...`. Choose a consistent compatibility approach.
-- [ ] Inspect build output for Sass/import warnings; check variables, typography,
-      grid, headers, form labels, buttons, tables, pagination, dialogs and flashes
-      in `app/javascript/{application,admin,shared}/stylesheets/` and Haml views.
-- [ ] Verify pack paths in both layouts and helpers, icon/font URLs, GLightbox,
-      syntax highlighting and static images, including production compilation.
-- [ ] Include stored HTML/CSS/JavaScript in posts/pages in parity fixtures;
-      `app/presenters/concerns/front_end.rb` renders content-specific styling/scripts.
-      Preserve their behavior as CSS and navigation change later.
+- [x] Visit index/show/new/edit screens for posts, pages, pictures, galleries,
+      links and users; exercise create/update/delete, search/sort/pagination and
+      validation redisplay with temporary local records.
+- [x] Check version UI status: legacy partials exist in `app/views/shared/admin/versions/`
+      but are not rendered by the current admin views. There is no active version
+      UI to compare. Do not introduce a new restore/revert feature during parity work.
+- [x] Verify widget JSON requests (`/admin/pictures.json`, `/admin/tags.json`) and
+      `/api/v1/pictures`, `/api/v1/posts`, `/api/v1/tags` return successfully.
+- [ ] Finish full master/runtime reference screenshots. Initial same-content style
+      references are captured using master SCSS + its pinned Materialize 1.0.0 on
+      the current markup. This isolates CSS regressions but does not validate
+      master Ruby/JS behavior. No production/admin data was changed.
+- [ ] Finish visual comparison across every screen and state (long content, empty
+      results, validation, logged-in public navigation, images, responsive dialogs).
+      Initial 1440px/390px comparisons cover home, contact, post list/new and new
+      picture screens; full visual parity is not yet established.
+- [x] Trace public/admin/shared packs and resolve Sass against the installed
+      `@materializecss/materialize` fork. Legacy import paths are removed.
+- [ ] Complete the rendering checklist for all Materialize controls. Initial
+      compatibility styles restore legacy columns, form spacing/labels, button
+      sizing/colors, link colors, admin typography/navbar colors and white pages.
+      Keep the branch's responsive header sizing and cover wrapped mobile nav links.
+      Datepicker/select/dialog/focus states and remaining screen comparisons still
+      need broader review.
+- [x] Verify pack helpers, shared icon/font requests and GLightbox in the browser;
+      production-mode packs compile. Prism is a dependency but has no active
+      initialization in current application code; do not add new highlighting
+      behavior as part of restoring existing wiring.
+- [x] Check stored HTML/CSS/JavaScript with temporary page/post rendering fixtures
+      through `app/presenters/concerns/front_end.rb`; stored CSS applies and scripts
+      execute. This checks rendering, not the separate CSS/JS validators.
+
+Verification and changes on 2026-10-17:
+
+- Fixed the React picture-list mount target and slug-based admin user lookup.
+- Completed explicit Ransack attribute/association allowlists for existing form
+  filters and sorting, including user/role sorting; no credential fields exposed.
+- Corrected delete flash translation keys (`destroy` rather than `delete`).
+- Blank password fields no longer prevent account/user profile edits; admin role
+  checkbox selections are now permitted and covered by a regression test.
+- Browser CRUD checks pass for all six resource types, including 303 redirects,
+  persisted edits and deletion. Sorting/date ordering and second-page requests
+  return HTTP 200. Regression tests also assert compound filters/role filtering.
+- Browser checks confirm account edits, logout and signed-out redirects. Password
+  recovery is captured by local Mailcatcher, completed, and the new password works
+  in a fresh session. Ordinary members receive 403 on protected resource pages;
+  their navigation shows only Admin Home, Site Home, My Account and Logout.
+- Image selector opens and inserts an image; uploader and picture table mount;
+  gallery lightbox opens, icons load, and inspected pages have no unexpected
+  JavaScript/network errors. Deeper widget behavior remains in section 3.
+- Screenshots/metrics are in gitignored `tmp/upgrade-parity/`, including initial
+  master-style references and final desktop/mobile admin post screenshots. The
+  comparison uses the same local content and upgraded markup; it is not a full
+  boot of master. Temporary tooling/dependencies live only in the container.
+- Temporary browser-check accounts and content were removed afterward; the local
+  sample author, post, page, picture, gallery and link remain unchanged.
+- Development packs compile without Sass warnings. Production-mode compilation
+  passes with three webpack bundle-size/performance warnings. Development assets
+  were restored afterward (the manifest is shared even with a temporary output path).
+- Seven focused integration tests in `test/integration/admin_upgrade_test.rb`
+  pass (26 assertions). Full suite: 163 tests, 341 assertions, 31 failures,
+  7 errors, 0 skips. Remaining pre-existing test failures stay deferred.
 
 ## 3. Verify all existing React features
 
@@ -370,3 +410,18 @@ retained package requires bundling, resolve that before removing Shakapacker.
       browsers/devices, and any CMS content relying on global Materialize/JS APIs.
 - [ ] Desired Rails 8 minor target and deployment constraints. These choices do
       not block restoring the currently pinned application locally.
+
+## Low-priority follow-ups (after the upgrade)
+
+- [ ] Investigate the current state of spam prevention for contact forms, including
+      automated/LLM-assisted submissions, maintenance burden, accessibility, false
+      positives and alternatives to operating a form. Keep contact submission
+      disabled throughout this investigation; re-enabling it is optional and
+      requires a separate decision. Document the tradeoffs and
+      whether operating a form is worthwhile; do not re-enable it during research.
+- [ ] **Very low priority — manual work by the owner:** revisit/rework the historical
+      seeds in `db/seeds.rb`, `db/fixtures/*.rb` and their content/image files.
+      Decide which historical content to retain and how to provide it locally
+      without fixed-ID overwrites, shared passwords or untracked dependencies.
+      Keep this out of the current upgrade; the additive development sample task
+      is sufficient for now.
