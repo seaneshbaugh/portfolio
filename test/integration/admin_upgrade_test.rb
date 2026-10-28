@@ -84,4 +84,39 @@ class AdminUpgradeTest < ActionDispatch::IntegrationTest
     assert_redirected_to admin_links_path
     assert_equal 'Link was successfully deleted.', flash[:success]
   end
+
+  test 'new galleries save their nested picture selections' do
+    attach_images_to_pictures!
+    picture = Picture.first
+
+    assert_difference 'GalleryPicture.count', 1 do
+      post admin_galleries_path, params: { gallery: {
+        name: 'Nested picture check', order: 0, visible: true,
+        gallery_pictures_attributes: { '0' => { picture_id: picture.id, order: 0, featured: true, visible: true } }
+      } }
+    end
+
+    assert_response :see_other
+    gallery = Gallery.find_by!(name: 'Nested picture check')
+    assert_equal picture, gallery.gallery_pictures.first.picture
+  end
+
+  test 'invalid galleries redisplay unsaved picture selections' do
+    attach_images_to_pictures!
+
+    post admin_galleries_path, params: { gallery: {
+      name: '', order: 0, visible: true,
+      gallery_pictures_attributes: { '0' => { picture_id: Picture.first.id, order: 0, featured: false, visible: true } }
+    } }
+
+    assert_response :unprocessable_entity
+    assert_select '.gallery-pictures-container[data-gallerypictures]'
+  end
+
+  test 'picture creation exposes JSON validation errors without a success response' do
+    post admin_pictures_path, params: { picture: { title: 'Missing image' } }, as: :json
+
+    assert_response :unprocessable_entity
+    assert response.parsed_body.fetch('errors').first.fetch('title').present?
+  end
 end

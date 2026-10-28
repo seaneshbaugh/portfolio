@@ -26,11 +26,35 @@ const completed = () => {
 
     label.classList.remove("active");
 
+    const onLoad = (editor) => {
+      document.querySelectorAll(".picture-inserter").forEach((pictureInserter) => {
+        if (pictureInserter.dataset.target !== aceEditor.id) return;
+
+        const selectorRoot = createRoot(pictureInserter);
+        const insertPicture = (picture) => {
+          const image = document.createElement("img");
+          image.setAttribute("src", picture.data.attributes.original_image_url);
+          if (picture.data.attributes.alt_text) {
+            image.setAttribute("alt", picture.data.attributes.alt_text);
+          }
+          editor.insert(image.outerHTML);
+        };
+
+        selectorRoot.render(
+          <PictureSelector
+            buttonClassName={pictureInserter.dataset.buttonclassname}
+            buttonText={pictureInserter.dataset.buttontext}
+            onSelect={insertPicture}
+          />);
+      });
+    };
+
     root.render(
       <AceEditor
         mode={mode}
         theme={theme}
         onChange={onChange}
+        onLoad={onLoad}
         name={`ace-editor-${index}`}
         editorProps={{ "$blockScrolling": true }}
         height="300px"
@@ -38,35 +62,6 @@ const completed = () => {
         wrapEnabled={true}
         value={textArea.value}
       />);
-  });
-
-  requestIdleCallback(() => {
-    document.querySelectorAll(".picture-inserter").forEach((pictureInserter) => {
-      const root = createRoot(pictureInserter);
-
-      const target = pictureInserter.dataset.target;
-
-      const editor = document.querySelector(`#${target} .ace_editor`).env.editor;
-
-      const insertPicture = (picture) => {
-        let image = `<img src="${picture.data.attributes.original_image_url}"`;
-
-        if (picture.data.attributes.alt_text) {
-          image += ` alt=${picture.data.attributes.alt_text}"`;
-        }
-
-        image += ">";
-
-        editor.insert(image);
-      };
-
-      root.render(
-        <PictureSelector
-            buttonClassName={pictureInserter.dataset.buttonclassname}
-            buttonText={pictureInserter.dataset.buttontext}
-            onSelect={insertPicture}
-        />);
-    });
   });
 
   // TODO: I18nize the placeholder text. Need to figure out how to make the Rails I18n
@@ -102,8 +97,8 @@ const completed = () => {
   // });
 };
 
-if (document.readyState === "complete") {
-  window.setTimeout(completed);
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", completed, { once: true });
 } else {
-  document.addEventListener("DOMContentLoaded", completed, false);
+  completed();
 }

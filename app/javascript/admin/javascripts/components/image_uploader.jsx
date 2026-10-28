@@ -7,119 +7,87 @@ import { addPicture } from "../actions/pictures_actions";
 
 let fileInputId = 0;
 
-const getFileInputId = () => (fileInputId += 1);
-
 class ImageUploader extends React.Component {
   constructor(props) {
     super(props);
-
-    this.state = {
-      "border": "dotted",
-      "csrf_param": document.querySelector("meta[name='csrf-param']").content,
-      "csrf_token": document.querySelector("meta[name='csrf-token']").content
-    };
-
-    this.handleDragEnter = this.handleDragEnter.bind(this);
-    this.handleDragOver = this.handleDragOver.bind(this);
-    this.handleDragExit = this.handleDragExit.bind(this);
+    this.state = { hover: false, pending: 0, errors: [] };
+    this.fileInputId = `image-uploader-file-input-${++fileInputId}`;
     this.handleDrop = this.handleDrop.bind(this);
+    this.handleFileChange = this.handleFileChange.bind(this);
   }
 
-  UNSAFE_componentWillMount() {
-    const x = `image-uploader-file-input-${getFileInputId()}`;
-    console.log(x);
-    this.setState({ "fileInputId": x });
-  }
-
-  handleDragEnter() {
-    this.setState({ "border": "solid" });
-  }
-
-  handleDragOver(event) {
-    event.preventDefault();
-  }
-
-  handleDragExit() {
-    this.setState({ "border": "dotted" });
+  handleFileChange(event) {
+    const files = Array.from(event.target.files);
+    event.target.value = "";
+    files.forEach((file) => this.uploadFile(file));
   }
 
   handleDrop(event) {
     event.preventDefault();
     event.stopPropagation();
-    this.setState({ "border": "dotted" });
-    const files = event.dataTransfer.files;
-    Array.from(files).forEach(file => this.uploadFile(file));
+    this.setState({ hover: false });
+    Array.from(event.dataTransfer.files).forEach((file) => this.uploadFile(file));
   }
 
-  uploadFile(file) {
-    const url = "/rails/active_storage/direct_uploads";
-    const upload = new DirectUpload(file, url);
+  async uploadFile(file) {
+    if (!file.type.startsWith("image/")) {
+      this.setState((state) => ({ errors: [...state.errors, `${file.name}: Please choose an image.`] }));
+      return;
+    }
 
-    // TODO: Figure out the scoping of the below blocks, somewhere this is
-    // being lost. For now this will do.
-    const addPicture = this.props.addPicture;
-
-    upload.create((error, blob) => {
-      if (error) {
-        // TODO: Handle the error.
-      } else {
-        const action = "/admin/pictures";
-
-        const params = {
-          "utf8": "✓",
-          "picture": {
-            "image": blob.signed_id
-          }
-        };
-
-        params[this.state.csrf_param] = this.state.csrf_token;
-
-        window.fetch(action, {
-          "method": "POST",
-          "headers": {
-            "Accept": "application/json",
-            "Content-Type": "application/json"
-          },
-          "body": JSON.stringify(params)
-        }).then((response) => {
-          return response.json();
-        }).then((json) => {
-          addPicture(json);
+    this.setState((state) => ({ pending: state.pending + 1 }));
+    try {
+      const blob = await new Promise((resolve, reject) => {
+        new DirectUpload(file, "/rails/active_storage/direct_uploads").create((error, result) => {
+          if (error) reject(new Error("Unable to upload the image. Please try again."));
+          else resolve(result);
         });
+      });
+      const response = await window.fetch("/admin/pictures", {
+        method: "POST",
+        headers: {
+          "Accept": "application/json",
+          "Content-Type": "application/json",
+          "X-CSRF-Token": document.querySelector("meta[name='csrf-token']").content
+        },
+        body: JSON.stringify({ picture: { image: blob.signed_id } })
+      });
+      if (!response.headers.get("Content-Type")?.includes("application/json")) {
+        throw new Error("Unable to save the picture. Please try again.");
       }
-    });
+      const json = await response.json();
+      if (!response.ok || json.errors) {
+        throw new Error(json.errors?.map((error) => error.title).join(". ") || "Unable to save the picture. Please try again.");
+      }
+      this.props.addPicture(json);
+    } catch (error) {
+      const message = error instanceof TypeError || error instanceof SyntaxError ? "Upload failed. Please try again." : error.message;
+      this.setState((state) => ({ errors: [...state.errors, `${file.name}: ${message}`] }));
+    } finally {
+      this.setState((state) => ({ pending: state.pending - 1 }));
+    }
   }
 
   render() {
-    const imageUploaderClassName = classNames({
-      "image-uploader": true,
-      "hover": this.state.hover
-    });
-
-    const imageUploaderEventHandlers = {
-      "onDragEnter": this.handleDragEnter,
-      "onDragOver": this.handleDragOver,
-      "onDragExit": this.handleDragExit,
-      "onDrop": this.handleDrop
-    };
-
     return (
-      <div className={imageUploaderClassName} {...imageUploaderEventHandlers}>
-        <input type="file" id={this.state.fileInputId} />
-        <label htmlFor={this.state.fileInputId}>Drop Images Here</label>
+      <div
+        className={classNames({ "image-uploader": true, "hover": this.state.hover })}
+        onDragEnter={(event) => { event.preventDefault(); this.setState({ hover: true }); }}
+        onDragOver={(event) => event.preventDefault()}
+        onDragLeave={(event) => {
+          if (!event.currentTarget.contains(event.relatedTarget)) this.setState({ hover: false });
+        }}
+        onDrop={this.handleDrop}
+      >
+        <input type="file" id={this.fileInputId} multiple accept="image/*" onChange={this.handleFileChange} />
+        <label htmlFor={this.fileInputId}>Drop images here or choose files</label>
+        {this.state.pending > 0 && <p role="status">Uploading…</p>}
+        {this.state.errors.length > 0 && <ul role="alert">{this.state.errors.map((error, index) => <li key={index}>{error}</li>)}</ul>}
       </div>
     );
   }
 }
 
-ImageUploader.propTypes = {
-  "addPicture": PropTypes.func.isRequired
-};
-
-const mapStateToProps = (state) => ({});
-
-const mapDispatchToProps = (dispatch) => ({
-  "addPicture": (picture) => (dispatch(addPicture(picture)))
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(ImageUploader);
+ImageUploader.propTypes = { "addPicture": PropTypes.func.isRequired };
+const mapDispatchToProps = (dispatch) => ({ "addPicture": (picture) => dispatch(addPicture(picture)) });
+export default connect(null, mapDispatchToProps)(ImageUploader);

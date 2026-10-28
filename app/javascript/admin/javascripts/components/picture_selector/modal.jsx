@@ -18,7 +18,9 @@ class Modal extends React.Component {
 
     return (
       <div className="picture-selector-modal">
-        <i className="picture-selector-close-button material-icons">close</i>
+        <button type="button" className="picture-selector-close-button" aria-label="Close picture selector" onClick={this.props.onClose}>
+          <i className="material-icons">close</i>
+        </button>
         <div className="picture-selector-modal-body">
           <div className="row picture-selector-modal-pictures">
             {pictures}

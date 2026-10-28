@@ -18,8 +18,8 @@ const completed = () => {
   root.render(<DndProvider backend={HTML5Backend}><GalleryPicturesManager galleryPictures={galleryPictures} /></DndProvider>);
 };
 
-if (document.readyState === "complete") {
-  setTimeout(completed);
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", completed, { once: true });
 } else {
-  document.addEventListener("DOMContentLoaded", completed, false);
+  completed();
 }

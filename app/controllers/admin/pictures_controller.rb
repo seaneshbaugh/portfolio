@@ -56,7 +56,7 @@ module Admin
 
           format.json do
             # TODO: Maybe put this in a helper? See http://jsonapi.org/format/#error-objects.
-            render json: { errors: @picture.errors.map { |attribute, message| { title: "#{attribute.to_s.humanize} #{message}" } } }
+            render json: { errors: @picture.errors.full_messages.map { |message| { title: message } } }, status: :unprocessable_entity
           end
         end
       end

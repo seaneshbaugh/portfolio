@@ -1,13 +1,23 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect, useRef } from "react";
 import update from "immutability-helper";
 import PictureSelector from "./picture_selector";
 import GalleryPicture from "./gallery_picture";
 
 const GalleryPicturesManager = (props) => {
-  const [galleryPictures, setGalleryPictures] = useState(props.galleryPictures);
+  const [galleryPictures, setGalleryPictures] = useState(() => props.galleryPictures.map((picture, index) => ({ ...picture, clientKey: index })));
+  const nextClientKey = useRef(props.galleryPictures.length);
+  const scrollToAddedPicture = useRef(false);
+
+  useEffect(() => {
+    if (scrollToAddedPicture.current) {
+      document.querySelector(".gallery-picture:last-child")?.scrollIntoView({ behavior: "smooth", block: "nearest" });
+      scrollToAddedPicture.current = false;
+    }
+  }, [galleryPictures]);
 
   const addGalleryPicture = (picture) => {
     const newGalleryPicture = {
+      clientKey: nextClientKey.current++,
       data: {
         id: null,
         type: "gallery_picture",
@@ -26,11 +36,8 @@ const GalleryPicturesManager = (props) => {
       }
     };
 
-    setGalleryPictures(update(galleryPictures, { $push: [newGalleryPicture] }));
-
-    requestIdleCallback(() => {
-      window.scrollTo({ top: document.querySelector(".gallery-picture:last-child").offsetTop, left: 0, behavior: "smooth" });
-    });
+    scrollToAddedPicture.current = true;
+    setGalleryPictures((pictures) => update(pictures, { $push: [newGalleryPicture] }));
   };
 
   const removeGalleryPicture = (index) => {
@@ -67,7 +74,7 @@ const GalleryPicturesManager = (props) => {
       </div>
       {galleryPictures.map((galleryPicture, index) =>
                            <GalleryPicture
-                             key={galleryPicture.data.attributes.picture_id}
+                             key={galleryPicture.clientKey}
                              index={index}
                              id={galleryPicture.data.id}
                              removeGalleryPicture={removeGalleryPicture}

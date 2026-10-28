@@ -8,7 +8,7 @@ class GalleryPicture < ApplicationRecord
   belongs_to :gallery, inverse_of: :gallery_pictures
   belongs_to :picture, inverse_of: :gallery_pictures
 
-  validates :gallery_id, presence: true
+  validates :gallery, presence: true
   validates_associated :gallery
   validates :featured, inclusion: { in: [true, false] }
   validates :visible, inclusion: { in: [true, false] }

@@ -8,16 +8,32 @@ class PictureSelector extends React.Component {
     super(props);
 
     this.state = {
-      "modalOpen": false
+      "modalOpen": false,
+      "loading": false,
+      "error": null
     };
 
     this.openModal = this.openModal.bind(this);
     this.closeModal = this.closeModal.bind(this);
     this.handleSelect = this.handleSelect.bind(this);
+    this.handleKeyDown = this.handleKeyDown.bind(this);
+  }
+
+  componentDidMount() {
+    document.addEventListener("keydown", this.handleKeyDown);
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener("keydown", this.handleKeyDown);
+  }
+
+  handleKeyDown(event) {
+    if (event.key === "Escape" && this.state.modalOpen) this.closeModal(event);
   }
 
   openModal(event) {
     event.preventDefault();
+    this.setState({ loading: true, error: null });
 
     window.fetch("/admin/pictures", {
       "headers": {
@@ -25,12 +41,16 @@ class PictureSelector extends React.Component {
         "Content-Type": "application/json"
       }
     }).then((response) => {
+      if (!response.ok) throw new Error("Unable to load pictures. Please try again.");
       return response.json();
     }).then((json) => {
       this.setState({
         "modalOpen": true,
-        "pictures": json
+        "pictures": json,
+        "loading": false
       });
+    }).catch((error) => {
+      this.setState({ loading: false, error: error.message });
     });
   }
 
@@ -55,13 +75,14 @@ class PictureSelector extends React.Component {
     let overlay = null;
 
     if (this.state.modalOpen) {
-      modal = <Modal pictures={this.state.pictures} pictureOnClick={this.handleSelect} />;
+      modal = <Modal pictures={this.state.pictures} pictureOnClick={this.handleSelect} onClose={this.closeModal} />;
       overlay = <div className="picture-selector-modal-overlay" onClick={this.closeModal}></div>;
     }
 
     return(
       <div className="picture-selector">
-        <Button className={this.props.buttonClassName} text={this.props.buttonText} onClick={this.openModal} />
+        <Button className={this.props.buttonClassName} text={this.props.buttonText} disabled={this.state.loading} onClick={this.openModal} />
+        {this.state.error && <p role="alert">{this.state.error}</p>}
         {overlay}
         {modal}
       </div>

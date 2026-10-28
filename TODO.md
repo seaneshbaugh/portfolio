@@ -163,6 +163,11 @@ Verification on 2026-10-17:
 
 ## 2. Restore admin loading and current frontend parity
 
+The owner considers the current appearance close enough for this phase. Remaining
+unchecked visual/reference/control-state checks below are deferred to the owner
+for manual review; exact master parity is not a release requirement because
+Tailwind and markup changes are planned before merging/releasing.
+
 - [x] Check `/login`, logout, reset-password flow, authenticated `/admin`, account
       show/edit and authorization-dependent navigation using local test accounts.
 - [x] Visit index/show/new/edit screens for posts, pages, pictures, galleries,
@@ -230,24 +235,68 @@ Verification and changes on 2026-10-17:
 
 ## 3. Verify all existing React features
 
-- [ ] Inventory active mounts in `admin_form_builder.jsx`, `galleries/index.js`
+- [x] Inventory active mounts in `admin_form_builder.jsx`, `galleries/index.js`
       and `pictures/index.js`; identify inactive components separately (tag-list
       mounting is commented out). Do not reintroduce inactive features by default.
-- [ ] Picture selector (`components/picture_selector*`): open/close/reopen,
+- [x] Picture selector (`components/picture_selector*`): open/close/reopen,
       load pictures, select an image, overlay behavior, insertion into editors
       and selection in galleries.
-- [ ] Ace (`admin_form_builder.jsx`, `app/builders/admin_form_builder.rb`): check
+- [x] Ace (`admin_form_builder.jsx`, `app/builders/admin_form_builder.rb`): check
       every used mode/theme, initial values, editing, textarea synchronization,
       save/reload, validation redisplay, and inserted picture markup.
-- [ ] Verify Ace JS/CSS worker URLs and MIME types; retain the existing
+- [x] Verify Ace JS/CSS worker URLs and MIME types; retain the existing
       `ace-builds/webpack-resolver`/`file-loader` fix until its replacement works.
-- [ ] Image upload/list (`pictures/index.js`, components, actions and reducer):
+- [x] Image upload/list (`pictures/index.js`, components, actions and reducer):
       file selection/drop, Active Storage direct upload, list update and persisted
       picture; check visible validation/upload failures and CSRF behavior.
-- [ ] Gallery manager: add/remove/reorder, visibility/featured flags, submitted
+- [x] Gallery manager: add/remove/reorder, visibility/featured flags, submitted
       nested fields and persisted ordering after reload. Exercise React DnD.
-- [ ] Check mount timing, browser support for current deferred initialization,
+- [x] Check mount timing, browser support for current deferred initialization,
       duplicate initialization and console/network errors during these scenarios.
+
+Verified on 2026-10-19 using temporary local records and Chromium:
+
+- Active mounts: Ace + picture inserters in `admin_form_builder.jsx`, gallery
+  manager/DnD/checkboxes in `galleries/index.js`, and upload/list/Redux in
+  `pictures/index.js`. Tag-list mounting remains commented out and inactive.
+- Selector opens/reopens, loads images, closes with its button/Escape/overlay,
+  inserts valid HTML including alt text, and displays fetch failures. The close
+  control now has a real handler and sits above the modal body.
+- Ace selectors mount from the editor-ready callback rather than idle timing;
+  DOM readiness handles both already-loaded and loading documents, with one-shot
+  event listeners. Inserted HTML is serialized through a DOM image element.
+- Used modes are RHTML/CSS/JavaScript with the GitHub theme; loaded HTML/text modes
+  also switch successfully. Values synchronize with submitted textareas and survive
+  save/reload and invalid-form redisplay. CSS/JS worker scripts return HTTP 200 with
+  JavaScript MIME types; JavaScript syntax errors produce worker annotations.
+- File selection, multiple files and drag/drop upload successfully, update the
+  Redux picture table and persist on reload. Uploads send CSRF headers. Invalid
+  file types, direct-upload failure, server validation and network failure display
+  errors without adding invalid items to the list. JSON validation now returns 422.
+- Fixed new-gallery nested membership validation (association presence rather than
+  an ID that cannot exist before saving the parent), plus unsaved-membership
+  timestamp serialization so validation redisplay does not crash. Added regression
+  tests for valid/invalid nested gallery creation and JSON upload validation.
+- Real HTML5 drag reordering changes submitted picture order. Featured/visible
+  flags and order persist; removing saved and unsaved memberships works. Stable
+  client keys support repeated selections of the same image without React key errors.
+- Removed obsolete uploader lifecycle/debug logging and the idle-callback dependency.
+  With `requestIdleCallback` unavailable, all active pages initialize; repeated
+  DOM-ready events and back/forward navigation do not create duplicate roots.
+- Success-path console checks are clean. The in-container browser needed a temporary
+  TCP forward for localhost:3035 to the separate asset container; host-browser
+  Compose configuration was left unchanged. Chromium was exercised; other browser
+  engines and touch dragging remain candidates for later system-test coverage.
+- Editor saves exposed a missing runtime `css` parser dependency. Added its pin,
+  passed CSS through stdin instead of embedding it in a shell command, and added
+  a quoted-CSS regression test. Node/parser failures now produce validation errors.
+  Retain this Node runtime requirement when retiring Shakapacker, or replace the
+  validator separately; removing bundling alone will not remove it.
+- Focused checks: 13 tests, 38 assertions, no failures/errors. Full suite:
+  167 tests, 351 assertions, 30 failures, 7 errors, 0 skips. Existing remaining
+  failures stay deferred. Development packs compile successfully without Sass warnings.
+- Browser tooling remains temporary; the reusable Rails system-test harness is
+  still section 4. Temporary test accounts/content/uploads were cleaned up afterward.
 
 ## 4. Establish browser coverage and continuous checks
 

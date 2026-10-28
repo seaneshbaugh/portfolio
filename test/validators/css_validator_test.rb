@@ -29,4 +29,10 @@ class CssValidatorTest < ActiveSupport::TestCase
 
     assert_equal(["undefined:1:21: missing '{'"], dummy_object.errors[:style])
   end
+
+  test 'CSS containing quotes is parsed as source text' do
+    dummy_object = DummyClass.new(style: %q(.caption::before { content: "it's a picture"; }))
+
+    assert dummy_object.valid?
+  end
 end
