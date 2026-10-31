@@ -1,0 +1,41 @@
+#!/usr/bin/env ruby
+
+require "json"
+require "net/http"
+
+# Exercise the Rails -> Shakapacker proxy that static system-test packs bypass.
+app_url = ENV.fetch("APP_URL", "http://localhost:3000")
+manifest_path = File.expand_path("../public/packs/manifest.json", __dir__)
+deadline = Process.clock_gettime(Process::CLOCK_MONOTONIC) + 60
+
+loop do
+  begin
+    manifest = JSON.parse(File.read(manifest_path))
+    assets = %w[application admin].flat_map do |pack|
+      entrypoint = manifest.fetch("entrypoints").fetch(pack).fetch("assets")
+      %w[css js].flat_map do |type|
+        files = entrypoint.fetch(type)
+        raise "No #{type} files found for #{pack}" if files.empty?
+
+        files
+      end
+    end.uniq
+
+    assets.each do |asset|
+      uri = URI.join(app_url, asset)
+      response = Net::HTTP.start(uri.host, uri.port, use_ssl: uri.scheme == "https", open_timeout: 2, read_timeout: 5) do |http|
+        http.get(uri.request_uri)
+      end
+      expected_type = asset.end_with?(".css") ? "text/css" : "javascript"
+      unless response.code == "200" && response["content-type"].to_s.include?(expected_type) && !response.body.to_s.empty?
+        raise "#{uri}: HTTP #{response.code}, content type #{response['content-type'].inspect}"
+      end
+    end
+    puts "Development asset proxy: #{assets.length} CSS/JS files returned HTTP 200 with the expected content types."
+    break
+  rescue StandardError => error
+    abort error.message if Process.clock_gettime(Process::CLOCK_MONOTONIC) >= deadline
+
+    sleep 1
+  end
+end

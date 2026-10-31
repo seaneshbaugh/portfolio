@@ -16,7 +16,7 @@ class AuthenticationTest < ApplicationSystemTestCase
 
     find('input[type=submit]').click
 
-    assert_text 'Invalid Email or password.'
+    assert_text 'Invalid email or password.'
 
     fill_in 'Email', with: @admin.email
     fill_in 'Password', with: 'system-test-password'

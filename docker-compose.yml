@@ -1,6 +1,6 @@
 services:
   db:
-    image: "postgres:17.4"
+    image: "postgres:17.11-bookworm"
     env_file:
       - ".env"
     volumes:

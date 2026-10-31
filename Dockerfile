@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1
 # check=error=true
 
-ARG RUBY_VERSION=3.4.2
+ARG RUBY_VERSION=4.0.9
 FROM docker.io/library/ruby:$RUBY_VERSION-slim
 
 ENV APP_HOME="/portfolio"
@@ -14,22 +14,23 @@ RUN apt-get update -qq && \
     rm -rf /var/lib/apt/lists /var/cache/apt/archives
 
 ENV RAILS_ENV="development"
-ENV BUNDLER_VERSION="2.6.2"
+ENV BUNDLER_VERSION="4.0.23"
+RUN gem install bundler --version "$BUNDLER_VERSION" --no-document
 
 RUN apt-get update -qq && \
     apt-get install --no-install-recommends -y build-essential git libpq-dev libyaml-dev node-gyp pkg-config && \
     rm -rf /var/lib/apt/lists /var/cache/apt/archives
 
-ARG NODE_VERSION=23.9.0
+ARG NODE_VERSION=26.13.0
 ARG YARN_VERSION=1.22.22
 ENV PATH=/usr/local/node/bin:$PATH
 RUN curl -sL https://github.com/nodenv/node-build/archive/master.tar.gz | tar xz -C /tmp/ && \
     /tmp/node-build-master/bin/node-build "${NODE_VERSION}" /usr/local/node && \
     rm -rf /tmp/node-build-master
-RUN corepack enable && corepack prepare yarn@$YARN_VERSION --activate
+RUN npm install --global "yarn@$YARN_VERSION"
 
 COPY Gemfile Gemfile.lock .tool-versions ./
-RUN bundle install
+RUN BUNDLE_FROZEN=true bundle install
 
 COPY package.json yarn.lock ./
 RUN yarn install --frozen-lockfile --network-timeout 3600000

@@ -371,20 +371,80 @@ Implemented and verified on 2026-10-28:
 
 ## 5. Update retained dependencies in controlled groups
 
-- [ ] Inventory direct/transitive Ruby and JS dependencies from both manifests
+- [x] Inventory direct/transitive Ruby and JS dependencies from both manifests
       and lockfiles; classify retained, transitional and removal candidates.
-- [ ] At implementation time check official release notes/support requirements
+- [x] At implementation time check official release notes/support requirements
       for target Ruby, Rails, PostgreSQL, Node and Yarn, and resolve what “latest”
       means: latest stable compatible releases, with major upgrades called out.
-- [ ] Decide explicitly whether the target is Rails 8.0 or a later Rails 8 minor;
+- [x] Decide explicitly whether the target is Rails 8.0 or a later Rails 8 minor;
       use that same target for the generated configuration/Docker comparison.
-- [ ] Update Ruby/Rails and server-side gems in testable groups; update runtime
+- [x] Update Ruby/Rails and server-side gems in testable groups; update runtime
       pins, Docker images and lockfiles together. Check Devise, Haml, Ransack,
       PaperTrail, tagging, storage and test-tool compatibility as part of updates.
-- [ ] Keep Shakapacker gem/npm versions synchronized while used. Update React,
+- [x] Keep Shakapacker gem/npm versions synchronized while used. Update React,
       Materialize and loaders only as required for parity or the migration.
 - [ ] Repeat dependency currency checks after removals; retain lockfiles only
       for the package managers still used. Record commands and tested versions.
+      The current inventory/update pass is complete; repeat this check after the
+      planned React/Materialize/Shakapacker removals in sections 6–7.
+
+Implemented and verified on 2026-10-30:
+
+- [Dependency inventory and policy](docs/dependencies/README.md) documents direct
+  ownership, compatibility exceptions, upstream sources, update commands, and
+  retirement plans. Its Ruby/JavaScript CSVs include every before/after locked
+  package name, including transitive versions and removed packages.
+- Removed all exact active gem pins. Gemfile.lock supplies exact versions;
+  only Rails `~> 8.1.0` and transitional Shakapacker `~> 8.2.0` retain explicit
+  compatibility ranges. Most npm declarations now use compatible-major ranges
+  with yarn.lock providing exact installs. Kept the temporary UI stack's tested
+  versions instead of introducing another frontend major/minor migration.
+- Selected **Ruby 4.0.9, Rails 8.1.4, Bundler 4.0.23, Node 26.13.0 LTS, Yarn
+  1.22.22 and PostgreSQL 17.11-bookworm**. Rebuilt web/Shakapacker, refreshed the
+  stale dependency-only volume, and restarted services. PostgreSQL remains on
+  major 17 and its original Bookworm OS; existing data directories were retained.
+  Docker installs gems frozen and JS with `--frozen-lockfile`. Yarn is explicitly
+  installed with npm instead of relying on bundled Corepack.
+- Updated framework/runtime, CMS/authentication/search, and development/test gem
+  groups, then refreshed compatible transitives. Major changes include Devise 5,
+  PaperTrail 17 (required for Rails 8.1 support), Ransack 6, Haml 7, Git 6, Puma 8,
+  Image Processing 2, Solid Cable 4, Shoulda Matchers 8 and SimpleCov 1. Added
+  ruby-vips explicitly after the image backend stopped being a transitive gem.
+  Updated the Pundit include, SimpleCov grouping API and Devise message assertion.
+- Current `bundle outdated --parseable` reports only four explained exceptions:
+  Minitest 5 is required by minitest-matchers, Prism 1 by rubocop-ast, Marcel 1 by
+  Active Storage, and Shakapacker 8 is being retired. No extra direct Minitest
+  constraint was needed. All other direct gems resolve to current stable releases.
+- Updated compatible Babel 7, webpack 5, Sass 1, browser data and loader/tooling
+  releases. Rails' Active Storage npm package now matches Rails 8.1. Ace is an
+  explicit dependency because application code imports it directly. Removed unused
+  webpacker-react, form-serialize, @rails/actioncable and prismjs declarations.
+  Do not force Babel/Shakapacker/UI majors just to empty an outdated report.
+- `config.load_defaults 8.0` deliberately remains until section 8's configuration
+  review; that review now targets Rails 8.1. Solid Queue 1.7's optional batching
+  migration and recurring-schedule time zone behavior are recorded for that phase.
+  Production databases/queue workers were not migrated or exercised here.
+- Full `rails test:all`: **194 tests, 520 assertions, 30 failures, 7 errors,
+  0 skips**, matching the pre-upgrade baseline counts. All 27 system tests pass
+  within that run. Focused admin checks also passed after the framework group.
+  Development/test assets compile successfully without Sass warnings; production
+  `assets:precompile` succeeds with only webpack size/performance notices.
+
+Remaining deployment checks: preserve/verify production's Devise secret selection
+before release, rehearse Solid database/worker configuration, and verify this new
+image on hosted CI. Local password reset and asset tests are not substitutes for
+those deployment checks.
+
+Follow-up on 2026-10-31: rack-proxy 2's explicit-backend requirement caused
+development `/packs/` requests to return 502 with Shakapacker 8 despite successful
+compilation. Configured the backend from Shakapacker's dev-server settings in an
+ordered application initializer. Added `bin/check-development-assets` and a CI
+step that starts Shakapacker and checks both packs through Rails. Static system
+packs had not exercised this development-only proxy path. Remove the compatibility
+initializer/check when retiring Shakapacker.
+Verified after restarting both application services: all 10 public/admin CSS/JS
+entrypoint files return HTTP 200 with expected content types through Rails.
+System suite rerun: 27 tests, 169 assertions, no failures/errors/skips (seed 39676).
 
 ## 6. Replace React and migrate asset ownership incrementally
 
@@ -460,6 +520,10 @@ retained package requires bundling, resolve that before removing Shakapacker.
       in production; `config/cable.yml` currently still uses `async` there.
       Decide whether unused Cable needs a database/service rather than enabling
       everything solely because the template includes it.
+- [ ] Review Solid Queue 1.7's optional batching migration before using batching
+      (`solid_queue:update`, then review the generated migration for the queue DB).
+      Confirm recurring jobs' time zones after the 1.5 default changed to the
+      application's zone. Keep this with production queue/worker rehearsal.
 - [ ] Verify contact jobs run through the intended production worker and mail
       transport; verify migrations for existing production data, not only schema
       loading on a fresh database.

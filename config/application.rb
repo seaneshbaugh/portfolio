@@ -20,6 +20,17 @@ Bundler.require(*Rails.groups)
 
 module Portfolio
   class Application < Rails::Application
+    # Shakapacker 8 rewrites headers to select its upstream, but rack-proxy 2
+    # requires an explicit backend. Retire this adapter with Shakapacker.
+    initializer "portfolio.shakapacker_proxy", after: "shakapacker.proxy" do |app|
+      if Rails.env.development? && Shakapacker.config.dev_server.present?
+        dev_server = Shakapacker.dev_server
+        app.middleware.swap Shakapacker::DevServerProxy, Shakapacker::DevServerProxy,
+          backend: "#{dev_server.protocol}://#{dev_server.host_with_port}",
+          ssl_verify_none: true
+      end
+    end
+
     # Initialize configuration defaults for originally generated Rails version.
     config.load_defaults 8.0
 

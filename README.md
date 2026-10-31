@@ -4,9 +4,10 @@ This is the repository for my personal website.
 
 ## Runtime versions
 
-This branch uses Ruby 3.4.2, Rails 8.0.2, Node.js 23.9.0, Yarn 1.22.22,
-Bundler 2.6.2, and PostgreSQL 17.4. Versions are pinned in `.tool-versions`,
-`.ruby-version`, the dependency manifests/lockfiles, and Dockerfile/Compose.
+This branch uses Ruby 4.0.9, Rails 8.1.4, Node.js 26.13.0 LTS, Yarn 1.22.22,
+Bundler 4.0.23, and PostgreSQL 17.11 on Bookworm. Runtime versions are pinned in
+`.tool-versions`, `.ruby-version`, and Dockerfile/Compose; exact library versions
+belong in `Gemfile.lock` and `yarn.lock`.
 The container includes libvips for Active Storage variants; no host installation
 is needed for the Compose workflow.
 
@@ -45,6 +46,37 @@ refresh it explicitly; rebuilding an image does not update an existing volume:
 docker compose run --rm --no-deps shakapacker yarn install --frozen-lockfile
 docker compose restart shakapacker
 ```
+
+For a large dependency-tree change, Yarn can leave stale nested packages in an
+existing volume even after a forced install. To initialize a clean cache from the
+rebuilt image, stop/remove only the application containers and their dependency
+volume:
+
+```bash
+docker compose build web shakapacker
+docker compose stop web shakapacker
+docker compose rm -f web shakapacker
+docker volume ls --filter label=com.docker.compose.volume=node_modules
+# Verify the volume belongs to this project. With the default project name:
+docker volume rm portfolio_node_modules
+docker compose up -d web shakapacker
+```
+
+This refreshes cached JavaScript dependencies. Keep the database directory and
+uploaded files. A custom Compose project name changes the volume name.
+
+### Dependency updates
+
+The Gemfile generally omits versions; Rails and transitional Shakapacker retain
+documented compatibility ranges. `bundle install` uses the committed lockfile;
+use `bundle update <gem names>` for intentional updates. Docker installs gems in
+frozen mode so a build cannot silently rewrite the lockfile.
+
+Most JavaScript declarations use compatible version ranges, with exact installs
+provided by `yarn.lock` and `--frozen-lockfile`. The temporary React, Materialize,
+and Shakapacker UI stack retains its tested versions until replacement. See the
+[dependency inventory](docs/dependencies/README.md) for before/after versions,
+retained/transitional packages, compatibility exceptions and update commands.
 
 ### Sample content and local admin
 
@@ -111,6 +143,16 @@ docker compose exec web bundle exec rails test:system
 docker compose exec web bundle exec rails test:all
 ```
 
+To check the development asset connection separately, with web and Shakapacker
+running:
+
+```bash
+docker compose exec web ruby bin/check-development-assets
+```
+
+This checks public/admin CSS and JavaScript through Rails' development proxy.
+System tests use static packs and cannot detect a broken development proxy.
+
 Selenium connects to the test server at `http://web:3001`. Port 3001 does not
 need to be published to the host. Run only one system-test command at a time.
 Running `test:all` also makes the other tests sequential; use the separate
@@ -139,8 +181,8 @@ each `visit` and is limited to that document. Server exceptions are in
 `log/test.log`.
 
 `.github/workflows/ci.yml` uses the same Compose browser configuration with locked
-dependencies, an isolated database, separate existing/system test steps, and a
-production asset build. Existing suite failures keep CI red but do not prevent
+dependencies, an isolated database, a development asset proxy check, separate
+existing/system test steps, and a production asset build. Existing suite failures keep CI red but do not prevent
 the browser and build steps from reporting results. The legacy suite still has
 deferred failures/errors; see TODO.md for the recorded baseline.
 
