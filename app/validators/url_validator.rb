@@ -13,7 +13,7 @@ class UrlValidator < ActiveModel::EachValidator
     host = uri&.host
     scheme = uri&.scheme
 
-    valid_raw_url = scheme && value =~ /\A#{URI::DEFAULT_PARSER.make_regexp([scheme])}\z/
+    valid_raw_url = scheme && value =~ /\A#{URI::DEFAULT_PARSER.make_regexp([ scheme ])}\z/
     valid_scheme = host && scheme && valid_schemes.include?(scheme)
 
     record.errors.add(attribute, options[:message] || :url) unless valid_raw_url && valid_scheme

@@ -104,9 +104,9 @@ Rails.application.configure do
   # Fix logging in Docker container.
   logger = if ENV["RAILS_LOG_TO_STDOUT"].present?
              ActiveSupport::Logger.new($stdout)
-           else
+  else
              ActiveSupport::Logger.new("/proc/1/fd/1")
-           end
+  end
   logger.formatter = config.log_formatter
   config.logger    = ActiveSupport::TaggedLogging.new(logger)
 

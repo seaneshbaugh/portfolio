@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'test_helper'
+require "test_helper"
 
 class HtmlValidatorTest < ActiveSupport::TestCase
   class DummyClass
@@ -12,21 +12,21 @@ class HtmlValidatorTest < ActiveSupport::TestCase
     validates :body, html: true
   end
 
-  test 'valid HTML' do
+  test "valid HTML" do
     dummy_object = DummyClass.new
 
-    dummy_object.body = '<h1>Hello, world!</h1>'
+    dummy_object.body = "<h1>Hello, world!</h1>"
 
     assert dummy_object.valid?
   end
 
-  test 'invalid HTML' do
+  test "invalid HTML" do
     dummy_object = DummyClass.new
 
-    dummy_object.body = '<h1>Hello, world!</h1'
+    dummy_object.body = "<h1>Hello, world!</h1"
 
     assert_not dummy_object.valid?
 
-    assert_equal(["1:22: ERROR: End of input in tag.\n<h1>Hello, world!</h1\n                     ^"], dummy_object.errors[:body])
+    assert_equal([ "1:22: ERROR: End of input in tag.\n<h1>Hello, world!</h1\n                     ^" ], dummy_object.errors[:body])
   end
 end

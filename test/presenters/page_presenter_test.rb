@@ -1,26 +1,26 @@
 # frozen_string_literal: true
 
-require 'test_helper'
+require "test_helper"
 
 class PagePresenterTest < ActiveSupport::TestCase
-  test '#color_text returns a span with style' do
+  test "#color_text returns a span with style" do
     page = Page.new
 
-    page.color = '#ffffff'
+    page.color = "#ffffff"
 
     page_presenter = PagePresenter.new(page, view_context)
 
     assert_equal('<span style="background: #ffffff; color: #000000; padding: 3px;">#ffffff</span>', page_presenter.color_text)
   end
 
-  test '#header_style returns the color style for page headers' do
+  test "#header_style returns the color style for page headers" do
     page = Page.new
 
-    page.color = '#ffffff'
+    page.color = "#ffffff"
 
     page_presenter = PagePresenter.new(page, view_context)
 
-    assert_equal('color: #ffffff', page_presenter.header_style)
+    assert_equal("color: #ffffff", page_presenter.header_style)
   end
 
   private

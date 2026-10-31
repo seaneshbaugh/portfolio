@@ -4,7 +4,7 @@ module SystemTestDiagnostics
   included do
     teardown do
       unless passed?
-        directory = Rails.root.join('tmp/screenshots')
+        directory = Rails.root.join("tmp/screenshots")
         FileUtils.mkdir_p(directory)
         File.write(directory.join("#{name.parameterize}-console.json"), JSON.pretty_generate(captured_logs))
       end

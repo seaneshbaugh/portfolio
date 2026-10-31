@@ -4,7 +4,7 @@ module ApplicationHelper
   include ClassNames
 
   def caution_button_class
-    'btn btn-flat waves-effect waves-light yellow darken-3'
+    "btn btn-flat waves-effect waves-light yellow darken-3"
   end
 
   def error_messages_for(object)
@@ -12,7 +12,7 @@ module ApplicationHelper
   end
 
   def info_button_class
-    'btn btn-flat waves-effect waves-light blue darken-3'
+    "btn btn-flat waves-effect waves-light blue darken-3"
   end
 
   def nav_link_to(*args, &block)
@@ -28,13 +28,13 @@ module ApplicationHelper
   end
 
   def page_title(title)
-    return t('.title') if title.blank?
+    return t(".title") if title.blank?
 
     title.strip
   end
 
   def page_meta_description(meta_description)
-    return t('.meta_description') if meta_description.blank?
+    return t(".meta_description") if meta_description.blank?
 
     meta_description.strip
   end
@@ -50,14 +50,14 @@ module ApplicationHelper
   end
 
   def success_button_class
-    'btn btn-flat waves-effect waves-light green darken-3'
+    "btn btn-flat waves-effect waves-light green darken-3"
   end
 
   def warning_button_class
-    'btn btn-flat waves-effect waves-light red darken-3'
+    "btn btn-flat waves-effect waves-light red darken-3"
   end
 
   def flash_messages
-    render partial: 'shared/flash_messages'
+    render partial: "shared/flash_messages"
   end
 end

@@ -9,7 +9,7 @@ class Link < ApplicationRecord
   validates :text, presence: true, length: { minimum: 4, maximum: 255 }
   validates :url, presence: true, url: { allow_blank: true }
   validates :description, length: { maximum: 2047 }
-  validates :visible, inclusion: { in: [true, false] }
+  validates :visible, inclusion: { in: [ true, false ] }
 
   acts_as_taggable
 

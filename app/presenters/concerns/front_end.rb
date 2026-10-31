@@ -5,7 +5,7 @@ module FrontEnd
 
   # rubocop:disable Rails/OutputSafety
   def body_tag
-    tag.div(@object.body.html_safe, class: 'body-content')
+    tag.div(@object.body.html_safe, class: "body-content")
   end
 
   def script_tag

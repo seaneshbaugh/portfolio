@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'test_helper'
+require "test_helper"
 
 module Api
   module V1
@@ -9,13 +9,13 @@ module Api
         attach_images_to_pictures!
       end
 
-      test 'should get pictures index' do
+      test "should get pictures index" do
         get api_v1_pictures_url
 
         assert_response :ok
       end
 
-      test 'should show a picture' do
+      test "should show a picture" do
         picture = pictures(:conney)
 
         get api_v1_picture_url(picture)
@@ -25,9 +25,9 @@ module Api
         assert_equal(PictureSerializer.new(picture).to_json, response.body)
       end
 
-      test 'should not show a picture that does not exist' do
+      test "should not show a picture that does not exist" do
         assert_raises(ActiveRecord::RecordNotFound) do
-          get api_v1_picture_url(id: 'does-not-exist')
+          get api_v1_picture_url(id: "does-not-exist")
         end
       end
     end

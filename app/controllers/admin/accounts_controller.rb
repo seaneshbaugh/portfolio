@@ -23,13 +23,13 @@ module Admin
       if @account.update(attributes)
         bypass_sign_in(@account)
 
-        flash[:success] = t('.success')
+        flash[:success] = t(".success")
 
         redirect_to edit_admin_account_url, status: :see_other
       else
         flash.now[:error] = helpers.error_messages_for(@account)
 
-        render 'edit', status: :unprocessable_entity
+        render "edit", status: :unprocessable_entity
       end
     end
 

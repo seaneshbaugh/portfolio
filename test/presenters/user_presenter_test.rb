@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
-require 'test_helper'
+require "test_helper"
 
 class UserPresenterTest < ActiveSupport::TestCase
-  test '#email_link returns a mailto link' do
+  test "#email_link returns a mailto link" do
     user = users(:sean_eshbaugh)
 
     user_presenter = UserPresenter.new(user, view_context)

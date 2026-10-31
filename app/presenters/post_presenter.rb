@@ -22,17 +22,17 @@ class PostPresenter < ApplicationPresenter
   end
 
   def first_image
-    images = Nokogiri::HTML(@post.body).xpath('//img')
+    images = Nokogiri::HTML(@post.body).xpath("//img")
 
-    images[0]['src'] unless images.empty?
+    images[0]["src"] unless images.empty?
   end
 
   # rubocop:disable Rails/OutputSafety
   def more(truncate = true)
     if truncate && truncated?
-      body_content = @post.body[0..@post.body.index('<!--more-->') - 1]
+      body_content = @post.body[0..@post.body.index("<!--more-->") - 1]
 
-      body_content_class = 'body-content truncated'
+      body_content_class = "body-content truncated"
 
       body_content_tag = tag.div(body_content.html_safe, class: body_content_class)
 
@@ -46,21 +46,21 @@ class PostPresenter < ApplicationPresenter
   def more_link
     return unless truncated?
 
-    tag.div(link_to(t('posts.index.read_more'), @post), class: 'read-more')
+    tag.div(link_to(t("posts.index.read_more"), @post), class: "read-more")
   end
 
   # rubocop:disable Rails/OutputSafety
   def tag_links
-    @post.tag_list.map { |tag| link_to(tag, root_path(tag: tag)) }.join(', ').html_safe
+    @post.tag_list.map { |tag| link_to(tag, root_path(tag: tag)) }.join(", ").html_safe
   end
   # rubocop:enable Rails/OutputSafety
 
   def tag_list
-    @post.tag_list.join(', ')
+    @post.tag_list.join(", ")
   end
 
   def truncated?
-    @post.body.include?('<!--more-->')
+    @post.body.include?("<!--more-->")
   end
 
   def updated_at(format = nil)

@@ -33,11 +33,11 @@ class Picture < ApplicationRecord
 
   # TODO: Consider DRYing this?
   def medium_image_path
-    rails_representation_url(image.variant(resize_to_limit: [500, nil]), only_path: true)
+    rails_representation_url(image.variant(resize_to_limit: [ 500, nil ]), only_path: true)
   end
 
   def medium_image_url
-    rails_representation_url(image.variant(resize_to_limit: [500, nil]))
+    rails_representation_url(image.variant(resize_to_limit: [ 500, nil ]))
   end
 
   def original_image_path
@@ -49,17 +49,17 @@ class Picture < ApplicationRecord
   end
 
   def thumbnail_image_path
-    rails_representation_url(image.variant(resize_to_limit: [100, nil]), only_path: true)
+    rails_representation_url(image.variant(resize_to_limit: [ 100, nil ]), only_path: true)
   end
 
   def thumbnail_image_url
-    rails_representation_url(image.variant(resize_to_limit: [100, nil]))
+    rails_representation_url(image.variant(resize_to_limit: [ 100, nil ]))
   end
 
   private
 
   def default_title
-    File.basename(image_filename, '.*').to_s
+    File.basename(image_filename, ".*").to_s
   end
 
   def ensure_title
@@ -69,6 +69,6 @@ class Picture < ApplicationRecord
   def timestamp
     current_time = Time.now.utc
 
-    "#{current_time.to_i}#{current_time.usec}".ljust(16, '0')
+    "#{current_time.to_i}#{current_time.usec}".ljust(16, "0")
   end
 end

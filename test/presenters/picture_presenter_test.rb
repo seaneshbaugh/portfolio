@@ -1,13 +1,13 @@
 # frozen_string_literal: true
 
-require 'test_helper'
+require "test_helper"
 
 class PicturePresenterTest < ActiveSupport::TestCase
   setup do
     attach_images_to_pictures!
   end
 
-  test '#medium_image_tag returns an img tag for the medium image variant' do
+  test "#medium_image_tag returns an img tag for the medium image variant" do
     picture = pictures(:cowboy)
 
     path = picture.medium_image_path
@@ -17,7 +17,7 @@ class PicturePresenterTest < ActiveSupport::TestCase
     assert_equal("<img alt=\"Cowboy the Cowdog\" class=\"medium-image\" title=\"Cowboy the Cowdog\" src=\"#{path}\" />", picture_presenter.medium_image_tag)
   end
 
-  test '#original_image_tag returns an img tag for the original image variant' do
+  test "#original_image_tag returns an img tag for the original image variant" do
     picture = pictures(:cowboy)
 
     path = picture.original_image_path
@@ -27,7 +27,7 @@ class PicturePresenterTest < ActiveSupport::TestCase
     assert_equal("<img alt=\"Cowboy the Cowdog\" class=\"original-image\" title=\"Cowboy the Cowdog\" src=\"#{path}\" />", picture_presenter.original_image_tag)
   end
 
-  test '#thumbnail_image_tag returns an img tag for the thumbnail image variant' do
+  test "#thumbnail_image_tag returns an img tag for the thumbnail image variant" do
     picture = pictures(:cowboy)
 
     path = picture.thumbnail_image_path

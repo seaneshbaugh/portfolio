@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
-require 'test_helper'
+require "test_helper"
 
 class PostPresenterTest < ActiveSupport::TestCase
-  test '#first_image returns the first image in the post body' do
+  test "#first_image returns the first image in the post body" do
     post = Post.new
 
     post.body = <<~HTML
@@ -13,6 +13,6 @@ class PostPresenterTest < ActiveSupport::TestCase
 
     post_presenter = PostPresenter.new(post, view_context)
 
-    assert_equal('http://test/first-image.jpg', post_presenter.first_image)
+    assert_equal("http://test/first-image.jpg", post_presenter.first_image)
   end
 end

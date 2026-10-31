@@ -25,9 +25,9 @@ class Contact
 
     @email = email.downcase.strip
 
-    @subject = Sanitize.clean(subject).gsub(/\n|\r|\t/, '').strip
+    @subject = Sanitize.clean(subject).gsub(/\n|\r|\t/, "").strip
 
-    @body = Sanitize.clean(body).gsub(/\r|\t/, '').split("\n").reject(&:empty?).join("\n").strip
+    @body = Sanitize.clean(body).gsub(/\r|\t/, "").split("\n").reject(&:empty?).join("\n").strip
 
     self
   end

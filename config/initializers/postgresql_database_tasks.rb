@@ -8,7 +8,7 @@ module ActiveRecord
 
         connection.select_all "SELECT pg_terminate_backend(pg_stat_activity.pid) FROM pg_stat_activity WHERE datname='#{configuration['database']}' AND state='idle';"
 
-        connection.drop_database configuration['database']
+        connection.drop_database configuration["database"]
       end
     end
   end

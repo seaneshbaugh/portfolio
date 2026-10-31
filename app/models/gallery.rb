@@ -16,7 +16,7 @@ class Gallery < ApplicationRecord
   validates :name, presence: true, length: { maximum: 255 }, uniqueness: true
   validates :description, length: { maximum: 16_777_215 }, html: { allow_blank: true }
   validates :order, numericality: { only_integer: true, greater_than_or_equal_to: 0 }
-  validates :visible, inclusion: { in: [true, false] }
+  validates :visible, inclusion: { in: [ true, false ] }
 
   friendly_id :name
 

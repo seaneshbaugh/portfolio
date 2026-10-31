@@ -11,11 +11,11 @@ class CssValidator < ActiveModel::EachValidator
       });
     JS
 
-    errors, stderr, status = Open3.capture3('node', '-e', validation_script, stdin_data: value)
+    errors, stderr, status = Open3.capture3("node", "-e", validation_script, stdin_data: value)
 
     unless status.success?
       Rails.logger.error("CSS validation failed: #{stderr}")
-      record.errors.add(attribute, 'could not be validated')
+      record.errors.add(attribute, "could not be validated")
       return
     end
 

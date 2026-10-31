@@ -12,7 +12,7 @@ class SitemapController < ApplicationController
       format.xml do
         render layout: false
 
-        headers['Content-Type'] = 'application/xml'
+        headers["Content-Type"] = "application/xml"
       end
     end
   end

@@ -39,7 +39,7 @@ module Admin
       respond_to do |format|
         if @picture.save
           format.html do
-            flash[:success] = t('.success')
+            flash[:success] = t(".success")
 
             redirect_to admin_picture_url(@picture), status: :see_other
           end
@@ -51,7 +51,7 @@ module Admin
           format.html do
             flash.now[:error] = helpers.error_messages_for(@picture)
 
-            render 'new', status: :unprocessable_entity
+            render "new", status: :unprocessable_entity
           end
 
           format.json do
@@ -74,13 +74,13 @@ module Admin
       authorize @picture
 
       if @picture.update(picture_params)
-        flash[:success] = t('.success')
+        flash[:success] = t(".success")
 
         redirect_to edit_admin_picture_url(@picture), status: :see_other
       else
         flash.now[:error] = helpers.error_messages_for(@picture)
 
-        render 'edit', status: :unprocessable_entity
+        render "edit", status: :unprocessable_entity
       end
     end
 
@@ -91,7 +91,7 @@ module Admin
 
       @picture.destroy
 
-      flash[:success] = t('.success')
+      flash[:success] = t(".success")
 
       redirect_to admin_pictures_url, status: :see_other
     end

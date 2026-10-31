@@ -34,13 +34,13 @@ module Admin
       @link = Link.new(link_params)
 
       if @link.save
-        flash[:success] = t('.success')
+        flash[:success] = t(".success")
 
         redirect_to admin_link_url(@link), status: :see_other
       else
         flash[:error] = helpers.error_messages_for(@link)
 
-        render 'new', status: :unprocessable_entity
+        render "new", status: :unprocessable_entity
       end
     end
 
@@ -50,13 +50,13 @@ module Admin
       authorize @link
 
       if @link.update(link_params)
-        flash[:success] = t('.success')
+        flash[:success] = t(".success")
 
         redirect_to edit_admin_link_url(@link), status: :see_other
       else
         flash[:error] = helpers.error_messages_for(@link)
 
-        render 'edit', status: :unprocessable_entity
+        render "edit", status: :unprocessable_entity
       end
     end
 
@@ -67,7 +67,7 @@ module Admin
 
       @link.destroy
 
-      flash[:success] = t('.success')
+      flash[:success] = t(".success")
 
       redirect_to admin_links_url, status: :see_other
     end

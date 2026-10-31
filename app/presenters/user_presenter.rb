@@ -11,24 +11,24 @@ class UserPresenter < ApplicationPresenter
     if @user.current_sign_in_at.present?
       @user.current_sign_in_at.strftime(time_format)
     else
-      t('na')
+      t("na")
     end
   end
 
   def email_link
-    link_to(tag.i('email', class: 'material-icons'), "mailto:#{@user.email}")
+    link_to(tag.i("email", class: "material-icons"), "mailto:#{@user.email}")
   end
 
   def last_sign_in_at
     if @user.last_sign_in_at.present?
       @user.last_sign_in_at.strftime(time_format)
     else
-      t('na')
+      t("na")
     end
   end
 
   def roles
-    @user.roles.pluck(:name).map(&:titleize).join(', ')
+    @user.roles.pluck(:name).map(&:titleize).join(", ")
   end
 
   def short_name

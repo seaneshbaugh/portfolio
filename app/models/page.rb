@@ -17,8 +17,8 @@ class Page < ApplicationRecord
   validates :meta_keywords, length: { maximum: 65535 }
   validates :order, numericality: { only_integer: true, greater_than_or_equal_to: 0 }
   validates :color, presence: true, css_color: true
-  validates :show_in_menu, inclusion: { in: [true, false] }
-  validates :visible, inclusion: { in: [true, false] }
+  validates :show_in_menu, inclusion: { in: [ true, false ] }
+  validates :visible, inclusion: { in: [ true, false ] }
 
   friendly_id :title
 

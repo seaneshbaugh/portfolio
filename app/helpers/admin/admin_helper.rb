@@ -3,49 +3,49 @@
 module Admin
   module AdminHelper
     def creatable_models
-      @creatable_models ||= [Post, Page, Picture, Gallery, Link, User].select do |model|
-        policy([:admin, model]).create?
+      @creatable_models ||= [ Post, Page, Picture, Gallery, Link, User ].select do |model|
+        policy([ :admin, model ]).create?
       end
     end
 
     def cancel_icon(options = {})
-      tag.i('clear', class: classnames('material-icons', options[:class]))
+      tag.i("clear", class: classnames("material-icons", options[:class]))
     end
 
     def cancel_icon_link(url_or_path, options = {})
       link_to(url_or_path, class: warning_button_class) do
         label = options[:label].to_s if options[:label]
 
-        cancel_icon(class: { 'left' => label }) + label
+        cancel_icon(class: { "left" => label }) + label
       end
     end
 
     def delete_icon(options = {})
-      tag.i('delete_forever', class: classnames('material-icons', options[:class]))
+      tag.i("delete_forever", class: classnames("material-icons", options[:class]))
     end
 
     def delete_icon_link(url_or_path, options = {})
-      link_to(url_or_path, class: warning_button_class, rel: 'nofollow', method: :delete, data: { confirm: t('confirm_delete') }) do
+      link_to(url_or_path, class: warning_button_class, rel: "nofollow", method: :delete, data: { confirm: t("confirm_delete") }) do
         label = options[:label].to_s if options[:label]
 
-        delete_icon(class: { 'left' => label }) + label
+        delete_icon(class: { "left" => label }) + label
       end
     end
 
     def edit_icon(options = {})
-      tag.i('edit', class: classnames('material-icons', options[:class]))
+      tag.i("edit", class: classnames("material-icons", options[:class]))
     end
 
     def edit_icon_link(url_or_path, options = {})
       link_to(url_or_path, class: success_button_class) do
         label = options[:label].to_s if options[:label]
 
-        edit_icon(class: { 'left' => label }) + label
+        edit_icon(class: { "left" => label }) + label
       end
     end
 
     def gem_dependencies
-      lockfile = Bundler::LockfileParser.new(Bundler.read_file(Rails.root.join('Gemfile.lock')))
+      lockfile = Bundler::LockfileParser.new(Bundler.read_file(Rails.root.join("Gemfile.lock")))
 
       lockfile.specs.map do |spec|
         {
@@ -81,7 +81,7 @@ module Admin
     end
 
     def search_icon(options = {})
-      tag.i('search', class: classnames('material-icons', options[:class]))
+      tag.i("search", class: classnames("material-icons", options[:class]))
     end
 
     def yarn_version

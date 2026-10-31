@@ -28,13 +28,13 @@ module Admin
       @user = User.new(user_params)
 
       if @user.save
-        flash[:success] = t('.success')
+        flash[:success] = t(".success")
 
         redirect_to admin_user_url(@user), status: :see_other
       else
         flash.now[:error] = helpers.error_messages_for(@user)
 
-        render 'new', status: :unprocessable_entity
+        render "new", status: :unprocessable_entity
       end
     end
 
@@ -57,13 +57,13 @@ module Admin
       end
 
       if @user.update(attributes)
-        flash[:success] = t('.success')
+        flash[:success] = t(".success")
 
         redirect_to edit_admin_user_url(@user), status: :see_other
       else
         flash.now[:error] = helpers.error_messages_for(@user)
 
-        render 'edit', status: :unprocessable_entity
+        render "edit", status: :unprocessable_entity
       end
     end
 
@@ -74,7 +74,7 @@ module Admin
 
       @user.destroy
 
-      flash[:success] = t('.success')
+      flash[:success] = t(".success")
 
       redirect_to admin_users_url, status: :see_other
     end

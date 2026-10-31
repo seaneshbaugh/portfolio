@@ -13,15 +13,15 @@ class LinksController < ApplicationController
 
     if @year
       if @month
-        render 'index_month'
+        render "index_month"
       else
-        render 'index_year'
+        render "index_year"
       end
     else
       if @tag.present?
-        render 'index_tagged'
+        render "index_tagged"
       else
-        render 'index_all'
+        render "index_all"
       end
     end
   end
@@ -30,12 +30,12 @@ class LinksController < ApplicationController
 
   def find_links
     links = if @year.present?
-              raise ActionController::RoutingError, 'Not Found' if selected_date.year < MINIMUM_YEAR || selected_date.year > MAXIMUM_YEAR
+              raise ActionController::RoutingError, "Not Found" if selected_date.year < MINIMUM_YEAR || selected_date.year > MAXIMUM_YEAR
 
               Link.published.chronological.where(published_at: start_date..end_date)
-            else
+    else
               Link.published.chronological
-            end
+    end
 
     if @tag.present?
       links.tagged_with(@tag)
@@ -43,7 +43,7 @@ class LinksController < ApplicationController
       links
     end
   rescue ArgumentError, TypeError
-    raise ActionController::RoutingError, 'Not Found'
+    raise ActionController::RoutingError, "Not Found"
   end
 
   def end_date
@@ -51,9 +51,9 @@ class LinksController < ApplicationController
 
     @end_date ||= if @month.present?
                     selected_date.end_of_month
-                  else
+    else
                     selected_date.end_of_year
-                  end
+    end
   end
 
   def start_date
@@ -61,9 +61,9 @@ class LinksController < ApplicationController
 
     @start_date ||= if @month.present?
                       selected_date.beginning_of_month
-                    else
+    else
                       selected_date.beginning_of_year
-                    end
+    end
   end
 
   def selected_date
@@ -71,8 +71,8 @@ class LinksController < ApplicationController
 
     @selected_date ||= if @month.present?
                          Time.zone.parse("#{@year}-#{@month}-01")
-                       else
+    else
                          Time.zone.parse("#{@year}-01-01")
-                       end
+    end
   end
 end

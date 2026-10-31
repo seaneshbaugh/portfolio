@@ -10,6 +10,6 @@ class GalleryPicture < ApplicationRecord
 
   validates :gallery, presence: true
   validates_associated :gallery
-  validates :featured, inclusion: { in: [true, false] }
-  validates :visible, inclusion: { in: [true, false] }
+  validates :featured, inclusion: { in: [ true, false ] }
+  validates :visible, inclusion: { in: [ true, false ] }
 end

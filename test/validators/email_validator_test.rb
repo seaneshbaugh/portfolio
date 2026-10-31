@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'test_helper'
+require "test_helper"
 
 class EmailValidatorTest < ActiveSupport::TestCase
   class DummyClass
@@ -12,21 +12,21 @@ class EmailValidatorTest < ActiveSupport::TestCase
     validates :email, email: true
   end
 
-  test 'valid email address' do
+  test "valid email address" do
     dummy_object = DummyClass.new
 
-    dummy_object.email = 'test@test.com'
+    dummy_object.email = "test@test.com"
 
     assert dummy_object.valid?
   end
 
-  test 'invalid email address' do
+  test "invalid email address" do
     dummy_object = DummyClass.new
 
-    dummy_object.email = 'test'
+    dummy_object.email = "test"
 
     assert_not dummy_object.valid?
 
-    assert_equal(['is invalid'], dummy_object.errors[:email])
+    assert_equal([ "is invalid" ], dummy_object.errors[:email])
   end
 end

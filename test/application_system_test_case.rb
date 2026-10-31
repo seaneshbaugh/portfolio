@@ -1,5 +1,5 @@
 require "test_helper"
-require_relative 'support/system_test_diagnostics'
+require_relative "support/system_test_diagnostics"
 
 Capybara.server = :puma, { Silent: true }
 Capybara.server_host = "0.0.0.0"

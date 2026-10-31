@@ -23,17 +23,17 @@ class PagePresenter < ApplicationPresenter
 
   def show_in_menu
     if @page.show_in_menu
-      t('yes')
+      t("yes")
     else
-      t('no')
+      t("no")
     end
   end
 
   def visible
     if @page.visible
-      t('yes')
+      t("yes")
     else
-      t('no')
+      t("no")
     end
   end
 

@@ -4,7 +4,7 @@ module Linkable
   extend ActiveSupport::Concern
 
   def base_path
-    '/'
+    "/"
   end
 
   def link(options = {})
@@ -12,6 +12,6 @@ module Linkable
   end
 
   def share_link(options = {})
-    link_to(tag.i('open_in_browser', class: 'material-icons'), send(link_url_method), options)
+    link_to(tag.i("open_in_browser", class: "material-icons"), send(link_url_method), options)
   end
 end

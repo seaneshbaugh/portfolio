@@ -28,13 +28,13 @@ module Admin
       @page = Page.new(page_params)
 
       if @page.save
-        flash[:success] = t('.success')
+        flash[:success] = t(".success")
 
         redirect_to admin_page_url(@page), status: :see_other
       else
         flash.now[:error] = helpers.error_messages_for(@page)
 
-        render 'new', status: :unprocessable_entity
+        render "new", status: :unprocessable_entity
       end
     end
 
@@ -50,13 +50,13 @@ module Admin
       authorize @page
 
       if @page.update(page_params)
-        flash[:success] = t('.success')
+        flash[:success] = t(".success")
 
         redirect_to edit_admin_page_url(@page), status: :see_other
       else
         flash.now[:error] = helpers.error_messages_for(@page)
 
-        render 'edit', status: :unprocessable_entity
+        render "edit", status: :unprocessable_entity
       end
     end
 
@@ -67,7 +67,7 @@ module Admin
 
       @page.destroy
 
-      flash[:success] = t('.success')
+      flash[:success] = t(".success")
 
       redirect_to admin_pages_url, status: :see_other
     end

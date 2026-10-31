@@ -6,7 +6,7 @@ class PostSerializerTest < ActiveSupport::TestCase
 
     serializer = PostSerializer.new(post)
 
-    assert_equal('First Post', serializer.serializable_hash.dig(:data, :attributes, :title))
+    assert_equal("First Post", serializer.serializable_hash.dig(:data, :attributes, :title))
   end
 
   test "it serializes the post's body" do
@@ -14,6 +14,6 @@ class PostSerializerTest < ActiveSupport::TestCase
 
     serializer = PostSerializer.new(post)
 
-    assert_equal('<p>My first post.</p>', serializer.serializable_hash.dig(:data, :attributes, :body))
+    assert_equal("<p>My first post.</p>", serializer.serializable_hash.dig(:data, :attributes, :body))
   end
 end

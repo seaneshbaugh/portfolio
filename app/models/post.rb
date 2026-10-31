@@ -18,7 +18,7 @@ class Post < ApplicationRecord
   validates :script, length: { maximum: 4_194_303 }, javascript: { allow_blank: true }
   validates :meta_description, length: { maximum: 65535 }
   validates :meta_keywords, length: { maximum: 65535 }
-  validates :visible, inclusion: { in: [true, false] }
+  validates :visible, inclusion: { in: [ true, false ] }
 
   acts_as_taggable
 

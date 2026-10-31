@@ -13,7 +13,7 @@ class ContactController < ApplicationController
 
     #   render 'thanks'
     # elsif @contact.errors[:body].include?('is spam')
-    render 'thanks'
+    render "thanks"
     # else
     #   flash.now[:error] = helpers.error_messages_for(@contact)
 

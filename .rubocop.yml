@@ -1,113 +1,113 @@
 # Omakase Ruby styling for Rails
 inherit_gem: { rubocop-rails-omakase: rubocop.yml }
 
-plugins:
-  - rubocop-minitest
-  - rubocop-performance
-  - rubocop-rails
+# plugins:
+#   - rubocop-minitest
+#   - rubocop-performance
+#   - rubocop-rails
 
-AllCops:
-  Exclude:
-    - bin/*
-    - db/schema.rb
-    - node_modules/**/*
-  NewCops: enable
+# AllCops:
+#   Exclude:
+#     - bin/*
+#     - db/schema.rb
+#     - node_modules/**/*
+#   NewCops: enable
 
-Layout/DotPosition:
-  Exclude:
-    - db/migrate/20180427214039_convert_to_active_storage.rb
+# Layout/DotPosition:
+#   Exclude:
+#     - db/migrate/20180427214039_convert_to_active_storage.rb
 
-Layout/LineLength:
-  Max: 256
+# Layout/LineLength:
+#   Max: 256
 
-Lint/BinaryOperatorWithIdenticalOperands:
-  Enabled: false
-
-Lint/UnusedMethodArgument:
-  Exclude:
-    - db/migrate/20180427214039_convert_to_active_storage.rb
-
-Metrics/AbcSize:
-  Exclude:
-    - db/migrate/20180427214039_convert_to_active_storage.rb
-  Max: 34
-
-Metrics/BlockLength:
-  Exclude:
-    - app/views/sitemap/index.xml.builder
-    - config/environments/*
-    - config/routes.rb
-
-# Metrics/ClassLength:
+# Lint/BinaryOperatorWithIdenticalOperands:
 #   Enabled: false
 
-Metrics/CyclomaticComplexity:
-  Max: 21
+# Lint/UnusedMethodArgument:
+#   Exclude:
+#     - db/migrate/20180427214039_convert_to_active_storage.rb
 
-Metrics/MethodLength:
-  Exclude:
-    - db/migrate/20121031160028_devise_create_users.rb
-    - db/migrate/20180427214039_convert_to_active_storage.rb
-  Max: 24
+# Metrics/AbcSize:
+#   Exclude:
+#     - db/migrate/20180427214039_convert_to_active_storage.rb
+#   Max: 34
 
-Metrics/PerceivedComplexity:
-  Max: 24
+# Metrics/BlockLength:
+#   Exclude:
+#     - app/views/sitemap/index.xml.builder
+#     - config/environments/*
+#     - config/routes.rb
 
-Rails/BulkChangeTable:
-  Exclude:
-    - db/migrate/20180615203747_remove_paperclip_columns_from_pictures.rb
+# # Metrics/ClassLength:
+# #   Enabled: false
 
-Rails/CreateTableWithTimestamps:
-  Exclude:
-    - db/migrate/20180304103412_rolify_create_roles.rb
-    - db/migrate/20131015151146_acts_as_taggable_on_migration.rb
+# Metrics/CyclomaticComplexity:
+#   Max: 21
 
-Rails/FilePath:
-  EnforcedStyle: arguments
+# Metrics/MethodLength:
+#   Exclude:
+#     - db/migrate/20121031160028_devise_create_users.rb
+#     - db/migrate/20180427214039_convert_to_active_storage.rb
+#   Max: 24
 
-Rails/HasAndBelongsToMany:
-  Enabled: false
+# Metrics/PerceivedComplexity:
+#   Max: 24
 
-Rails/SquishedSQLHeredocs:
-  Exclude:
-    - db/migrate/20180427214039_convert_to_active_storage.rb
+# Rails/BulkChangeTable:
+#   Exclude:
+#     - db/migrate/20180615203747_remove_paperclip_columns_from_pictures.rb
 
-Style/AccessorGrouping:
-  EnforcedStyle: separated
+# Rails/CreateTableWithTimestamps:
+#   Exclude:
+#     - db/migrate/20180304103412_rolify_create_roles.rb
+#     - db/migrate/20131015151146_acts_as_taggable_on_migration.rb
 
-Style/Documentation:
-  Enabled: false
+# Rails/FilePath:
+#   EnforcedStyle: arguments
 
-Style/EmptyMethod:
-  Exclude:
-    - db/migrate/20180427214039_convert_to_active_storage.rb
+# Rails/HasAndBelongsToMany:
+#   Enabled: false
 
-Style/GuardClause:
-  Exclude:
-    - db/migrate/20180302074916_change_collation_for_tag_names.acts_as_taggable_on_engine.rb
-    - db/migrate/20180302074917_add_missing_indexes_on_taggings.acts_as_taggable_on_engine.rb
+# Rails/SquishedSQLHeredocs:
+#   Exclude:
+#     - db/migrate/20180427214039_convert_to_active_storage.rb
 
-Style/IfUnlessModifier:
-  Exclude:
-    - db/migrate/20180302074916_change_collation_for_tag_names.acts_as_taggable_on_engine.rb
-    - db/migrate/20180302074917_add_missing_indexes_on_taggings.acts_as_taggable_on_engine.rb
-    - db/migrate/20180427214039_convert_to_active_storage.rb
+# Style/AccessorGrouping:
+#   EnforcedStyle: separated
 
-Style/NumericLiterals:
-  MinDigits: 6
+# Style/Documentation:
+#   Enabled: false
 
-Style/OptionalBooleanParameter:
-  Enabled: false
-  # AllowedMethods:
-  #   - respond_to_missing?
+# Style/EmptyMethod:
+#   Exclude:
+#     - db/migrate/20180427214039_convert_to_active_storage.rb
 
-Style/PerlBackrefs:
-  Exclude:
-    - db/migrate/20180427214039_convert_to_active_storage.rb
+# Style/GuardClause:
+#   Exclude:
+#     - db/migrate/20180302074916_change_collation_for_tag_names.acts_as_taggable_on_engine.rb
+#     - db/migrate/20180302074917_add_missing_indexes_on_taggings.acts_as_taggable_on_engine.rb
 
-Style/RedundantFetchBlock:
-  Enabled: false
+# Style/IfUnlessModifier:
+#   Exclude:
+#     - db/migrate/20180302074916_change_collation_for_tag_names.acts_as_taggable_on_engine.rb
+#     - db/migrate/20180302074917_add_missing_indexes_on_taggings.acts_as_taggable_on_engine.rb
+#     - db/migrate/20180427214039_convert_to_active_storage.rb
 
-Style/SymbolProc:
-  Exclude:
-    - config/initializers/rolify.rb
+# Style/NumericLiterals:
+#   MinDigits: 6
+
+# Style/OptionalBooleanParameter:
+#   Enabled: false
+#   # AllowedMethods:
+#   #   - respond_to_missing?
+
+# Style/PerlBackrefs:
+#   Exclude:
+#     - db/migrate/20180427214039_convert_to_active_storage.rb
+
+# Style/RedundantFetchBlock:
+#   Enabled: false
+
+# Style/SymbolProc:
+#   Exclude:
+#     - config/initializers/rolify.rb

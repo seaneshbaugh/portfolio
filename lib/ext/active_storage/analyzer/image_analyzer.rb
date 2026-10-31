@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'exifr/jpeg'
+require "exifr/jpeg"
 
 module ActiveStorage
   class Analyzer
@@ -8,7 +8,7 @@ module ActiveStorage
       private
 
       def exif_data(image)
-        return unless image.type == 'JPEG'
+        return unless image.type == "JPEG"
 
         exif = EXIFR::JPEG.new(image.path).exif
 

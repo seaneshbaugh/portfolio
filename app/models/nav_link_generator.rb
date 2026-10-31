@@ -38,19 +38,19 @@ class NavLinkGenerator
   def active?
     segments = @options[:segments] || 1
 
-    @request.path.split('/').reject(&:blank?).first(segments) == @path.split('/').reject(&:blank?).first(segments)
+    @request.path.split("/").reject(&:blank?).first(segments) == @path.split("/").reject(&:blank?).first(segments)
   end
 
   def link_classes
     if @html_options[:class]
-      @html_options[:class].split.push(active_class).join(' ')
+      @html_options[:class].split.push(active_class).join(" ")
     elsif !@options[:wrapper]
       active_class
     end
   end
 
   def active_class
-    @options[:active_class] || 'active'
+    @options[:active_class] || "active"
   end
 
   def wrapper_classes
@@ -58,7 +58,7 @@ class NavLinkGenerator
       if @options[:wrapper_class].blank?
         active_class
       else
-        @options[:wrapper_class].split.push(active_class).join(' ')
+        @options[:wrapper_class].split.push(active_class).join(" ")
       end
     else
       @options[:wrapper_class]

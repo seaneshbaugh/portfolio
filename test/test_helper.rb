@@ -1,24 +1,24 @@
 # frozen_string_literal: true
 
-require 'simplecov'
+require "simplecov"
 
-SimpleCov.start 'rails' do
-  group 'Builders', 'app/builders'
-  group 'Policies', 'app/policies'
-  group 'Presenters', 'app/presenters'
-  group 'Serializers', 'app/serializers'
-  group 'Validators', 'app/validators'
+SimpleCov.start "rails" do
+  group "Builders", "app/builders"
+  group "Policies", "app/policies"
+  group "Presenters", "app/presenters"
+  group "Serializers", "app/serializers"
+  group "Validators", "app/validators"
 end
 
-ENV['RAILS_ENV'] ||= 'test'
+ENV["RAILS_ENV"] ||= "test"
 
-require File.expand_path('../config/environment', __dir__)
-require 'rails/test_help'
-require 'minitest/reporters'
+require File.expand_path("../config/environment", __dir__)
+require "rails/test_help"
+require "minitest/reporters"
 
 mean_time_reporter_options = {
-  previous_runs_filename: Rails.root.join('tmp', 'minitest_reporters_previous_run'),
-  report_filename: Rails.root.join('tmp', 'minitest_reporters_report')
+  previous_runs_filename: Rails.root.join("tmp", "minitest_reporters_previous_run"),
+  report_filename: Rails.root.join("tmp", "minitest_reporters_report")
 }
 
 Minitest::Reporters.use! Minitest::Reporters::MeanTimeReporter.new(mean_time_reporter_options)
@@ -52,7 +52,7 @@ module ActiveSupport
     end
 
     def fixture_file_path(filename)
-      Rails.root.join('test', 'fixtures', 'files', filename)
+      Rails.root.join("test", "fixtures", "files", filename)
     end
 
     def view_context

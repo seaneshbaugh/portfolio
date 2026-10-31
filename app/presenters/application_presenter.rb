@@ -18,7 +18,7 @@ class ApplicationPresenter
     if @object.respond_to?(:created_at) && @object.created_at.present?
       @object.created_at.strftime(time_format)
     else
-      t('na')
+      t("na")
     end
   end
 
@@ -44,17 +44,17 @@ class ApplicationPresenter
     if @object.respond_to?(:updated_at) && @object.updated_at.present?
       @object.updated_at.strftime(time_format)
     else
-      'N/A'
+      "N/A"
     end
   end
 
   private
 
   def date_format
-    '%Y-%m-%d'
+    "%Y-%m-%d"
   end
 
   def time_format
-    '%Y-%m-%d %H:%M:%S'
+    "%Y-%m-%d %H:%M:%S"
   end
 end
