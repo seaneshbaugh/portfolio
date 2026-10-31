@@ -101,13 +101,48 @@ first. Compose is the verified path; native setup is optional.
 
 ## Tests
 
-With the development containers running:
+Start the remote Firefox service alongside the development containers:
 
-    $ docker compose exec web bundle exec rails test
+```bash
+docker compose up -d selenium
+docker compose exec web bundle exec rails test
+docker compose exec web bundle exec rails test:system
+# Or run everything together (sequentially):
+docker compose exec web bundle exec rails test:all
+```
 
-The test helper compiles Shakapacker assets for the test environment before
-running the suite. The suite currently runs to completion with failures and
-errors; see TODO.md for the recorded upgrade baseline.
+Selenium connects to the test server at `http://web:3001`. Port 3001 does not
+need to be published to the host. Run only one system-test command at a time.
+Running `test:all` also makes the other tests sequential; use the separate
+commands when you want to retain the non-system suite's independent execution
+settings.
+
+The test helper compiles static assets into `public/packs-test`, so system tests
+do not need the Shakapacker development server. Fixtures use a separate test
+database, local `tmp/storage` attachments, and Rails' in-memory mail delivery;
+they do not use development content, S3, or Mailcatcher. The upload helper purges
+attachments created by each system test, since transaction rollback alone cannot
+remove files from disk.
+
+Use `fill_in_ace 'page_body', with: '<p>Content.</p>'` from
+`test/support/editor_system_test_helpers.rb` for Ace fields. It sets the Ace
+editor's value, exercises its change callback, and checks the hidden Rails field.
+This avoids Ace's automatic tag/bracket insertion when typing complete source.
+Image chooser tests transfer real fixture files to Firefox; the drop test supplies
+a browser `File`/`DataTransfer`. Gallery ordering uses a pointer gesture plus an
+explicit `dragend` event because the remote Firefox gesture leaves the relocated
+source in its dragging state. Neither helper changes React state directly.
+
+Rails saves failure screenshots under `tmp/screenshots`. The application-specific
+diagnostics mixin also saves captured console output there; capture starts after
+each `visit` and is limited to that document. Server exceptions are in
+`log/test.log`.
+
+`.github/workflows/ci.yml` uses the same Compose browser configuration with locked
+dependencies, an isolated database, separate existing/system test steps, and a
+production asset build. Existing suite failures keep CI red but do not prevent
+the browser and build steps from reporting results. The legacy suite still has
+deferred failures/errors; see TODO.md for the recorded baseline.
 
 ## Troubleshooting
 

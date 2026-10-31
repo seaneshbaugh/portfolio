@@ -34,7 +34,7 @@ Retain those changes as the starting point.
 | Rails configuration | load_defaults 8.0, autoload_lib, environments, Puma, health route and Solid config/schema files added | Compare with selected Rails template; complete runtime wiring and preserve intentional customizations |
 | Development Docker | Ruby/Node/Postgres images and Compose services updated | Fix dependency visibility now; later align with wishlist setup |
 | Production Docker | Dockerfile partly resembles generated template but still builds/runs development | Create production build/runtime path and verify assets, services, storage, migration and release workflow |
-| System tests | Existing Minitest unit/controller/integration-style coverage; no system test harness | Add browser infrastructure and progressively cover public/admin behavior before replacing it |
+| System tests | Wishlist-compatible remote Firefox harness and 27 system tests now cover principal public/admin flows and React widgets | Expand remaining validation/error cases and verify the new CI workflow on GitHub |
 
 ## Sequence and acceptance rules
 
@@ -300,22 +300,74 @@ Verified on 2026-10-19 using temporary local records and Chromium:
 
 ## 4. Establish browser coverage and continuous checks
 
-- [ ] Add Capybara/Selenium dependencies, `test/application_system_test_case.rb`
+- [x] Add Capybara/Selenium dependencies, `test/application_system_test_case.rb`
       and `test/system/`; choose browser placement and driver/app-host settings
       compatible with Compose and later CI. Provide test assets and libvips.
-- [ ] Start with public navigation, login, an admin edit/save, image selection and
+- [x] Start with public navigation, login, an admin edit/save, image selection and
       Ace persistence; add upload and gallery reordering before replacing React.
-- [ ] Expand to all public route behaviors in phase 1 and all supported admin
-      actions in phase 2, including permission denial, invalid input, session and
-      password flows. Keep API/feed assertions in request tests where appropriate.
-- [ ] Use deterministic local fixtures and attachments, test mail delivery and
+- [x] Cover principal public navigation, post tag filtering/pagination, links
+      year/month/tag views, gallery/lightbox, disabled contact submission, login/
+      logout/password reset, permission denial, account editing, and CRUD for all
+      six admin resources. Check page/gallery invalid-form recovery and user search.
+- [ ] Expand remaining boundary/error cases: validation on posts/links/users/
+      pictures, selector/network/direct-upload failures, password reset invalid
+      inputs, permissions across resource types, and admin pagination/sort variants.
+      Keep API/feed assertions in request tests. The pagination test encountered
+      `/posts.rss` failing with populated posts because `index.rss.builder` still
+      calls `created_at.to_s(:rfc822)`; address that alongside feed request coverage.
+- [x] Use deterministic local fixtures and attachments, test mail delivery and
       isolated databases/storage; keep external SMTP/S3 out of routine tests.
-- [ ] Assert meaningful persisted results, not only rendered elements. Capture
+- [x] Assert meaningful persisted results, not only rendered elements. Capture
       screenshots and browser logs on failure; keep visual parity review separate
       from functional assertions.
-- [ ] Add CI (no `.github` workflow exists in this checkout) for locked installs,
+- [x] Add CI in `.github/workflows/ci.yml` for locked installs,
       database preparation, existing tests, system tests and production asset build.
       Define one documented command set for each upgrade gate.
+- [ ] Verify the workflow on GitHub after pushing. The local checks below verify
+      its test/build commands, not GitHub runner provisioning. Existing suite
+      failures intentionally keep the job red; browser/build steps still execute.
+
+Implemented and verified on 2026-10-28:
+
+- Retained the owner's Wishlist remote Firefox configuration, Compose service,
+  networking, sequential execution, and existing helper methods. The only addition
+  to `test/application_system_test_case.rb` is requiring/including an application
+  diagnostics mixin; driver configuration is unchanged. README documents startup,
+  separate `test` / `test:system` commands and sequential `test:all`.
+- `test/support/editor_system_test_helpers.rb` sets Ace's value through its editor
+  API and asserts the synchronized Rails textarea. Complete-source typing triggers
+  Ace's automatic tag completion, so setting the editor value gives exact fixtures
+  while exercising its change callback. Tests persist/reopen body, CSS, JavaScript,
+  gallery/link descriptions and inserted image attributes, including quoted alt text.
+- `test/system/admin/` covers all resource types, dashboard navigation, account
+  changes, combined-name search, filtering/sorting/empty results, delete confirmation,
+  image selection, chooser uploads, drop uploads, rejected files, and simulated save
+  validation responses. The normal upload requests and storage writes are real.
+- Gallery coverage checks nested creation/validation, saved/unsaved removal, real
+  pointer reordering, featured exclusivity and visibility persistence. Remote Firefox
+  leaves the relocated source in its dragging state after the WebDriver gesture;
+  the test completes the `dragend` DOM event explicitly, without modifying React state.
+- Public/authentication coverage is in `public_navigation_test.rb` and
+  `authentication_test.rb`. Password reset follows the delivered test email, updates
+  the password and verifies login. Contact still sends no mail and enqueues no jobs.
+- System tests use fixture images, the isolated test database/local storage and
+  in-memory mail. `SystemTestUploads` removes blobs/attachments created by each test,
+  including unattached failed uploads. Screenshots and captured console output are
+  saved under `tmp/screenshots`; console capture starts after `visit`, so it is not
+  a complete record of initial page-load errors. Server logs remain in `log/test.log`.
+- Fixed blockers encountered by these tests: home pagination now explicitly uses
+  the root route rather than generating RSS links; uploads tolerate Rails omitting
+  CSRF meta tags when test forgery protection is disabled; role checkboxes are outside
+  Materialize's floating text-input wrapper so labels no longer overlap.
+- `rails test:system`: **27 tests, 169 assertions, no failures/errors/skips**
+  (seed 10776). `rails test:all`: **194 tests, 520 assertions, 30 failures, 7 errors,
+  0 skips**. The combined run retains the prior legacy failure/error counts; all
+  new system tests pass together with the existing suite. Legacy repairs remain
+  deferred. Hosted CI and the additional error cases above remain unverified.
+- Production `assets:precompile` succeeds with the CI command and no Sass warnings.
+  Existing Node/Browserslist currency and webpack bundle-size notices remain for
+  the dependency/asset migration phases. Restarted Shakapacker afterward to restore
+  the development manifest. The workflow YAML parses successfully.
 
 ## 5. Update retained dependencies in controlled groups
 

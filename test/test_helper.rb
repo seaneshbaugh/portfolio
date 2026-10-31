@@ -69,6 +69,10 @@ module ActionDispatch
       super(fixture_file_path(filename), mime_type, binary)
     end
   end
+
+  class SystemTestCase
+    include Devise::Test::IntegrationHelpers
+  end
 end
 
 Shoulda::Matchers.configure do |config|

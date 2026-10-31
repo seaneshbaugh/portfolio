@@ -1,4 +1,4 @@
 #posts
   - @posts.each do |post|
     = render 'post', post: post
-  = paginate @posts, route: :root_path
+  = paginate @posts, params: { use_route: :root }

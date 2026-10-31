@@ -87,10 +87,12 @@ group :development do
 end
 
 group :test do
+  gem "capybara"
   gem "minitest", "5.25.5"
   gem "minitest-matchers", "1.4.1"
   gem "minitest-reporters", "1.7.1"
   gem "minitest-spec-rails", "7.4.1"
+  gem "selenium-webdriver"
   gem "shoulda-matchers", "6.4.0"
   gem "simplecov", "0.22.0", require: false
 end

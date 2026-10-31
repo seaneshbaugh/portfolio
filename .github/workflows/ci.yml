@@ -1,0 +1,79 @@
+name: Upgrade checks
+
+on:
+  push:
+    branches: [master, rails_8_upgrade]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Build the locked application dependencies
+        run: |
+          cp .env.example .env
+          docker compose build web
+          docker compose up -d db selenium
+
+      - name: Prepare the isolated test services and database
+        id: prepare
+        run: |
+          for attempt in $(seq 1 60); do
+            if docker compose exec -T db pg_isready -U portfolio; then break; fi
+            sleep 1
+          done
+          docker compose exec -T db pg_isready -U portfolio
+          docker compose up -d web
+          docker compose exec -T web bundle check
+          docker compose exec -T web yarn install --frozen-lockfile
+          docker compose exec -T -e RAILS_ENV=test web bundle exec rails db:create db:migrate
+          docker compose exec -T web ruby -rnet/http -rjson -e '
+            60.times do
+              begin
+                status = JSON.parse(Net::HTTP.get(URI("http://selenium:4444/status")))
+                exit 0 if status.dig("value", "ready")
+              rescue StandardError
+              end
+              sleep 1
+            end
+            abort "Selenium did not become ready"
+          '
+
+      # Existing suite failures remain visible, but must not prevent the browser
+      # and asset checks from running and reporting their own results.
+      - name: Existing tests
+        run: docker compose exec -T web bundle exec rails test
+
+      - name: System tests (sequential)
+        if: ${{ !cancelled() && steps.prepare.outcome == 'success' }}
+        run: docker compose exec -T web bundle exec rails test:system
+
+      - name: Production asset build
+        if: ${{ !cancelled() && steps.prepare.outcome == 'success' }}
+        run: docker compose exec -T -e RAILS_ENV=production -e NODE_ENV=production -e SECRET_KEY_BASE_DUMMY=1 web bundle exec rails assets:precompile
+
+      - name: Collect service logs
+        if: failure()
+        run: docker compose logs --no-color > compose-test.log
+
+      - name: Keep failure diagnostics
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-diagnostics
+          path: |
+            tmp/screenshots
+            log/test.log
+            compose-test.log
+          if-no-files-found: ignore
+
+      - name: Stop services
+        if: always()
+        run: docker compose down

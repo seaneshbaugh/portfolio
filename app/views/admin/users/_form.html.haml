@@ -20,12 +20,13 @@
       = f.password_field :password_confirmation
       = f.label :password_confirmation
   .row
-    .input-field.col.s12
+    .col.s12
       = f.label :roles
       = f.collection_check_boxes(:role_ids, Role.all, :id, :name) do |c|
-        = c.label do
-          = c.check_box
-          %span= c.text.titleize
+        %p
+          = c.label do
+            = c.check_box
+            %span= c.text.titleize
   .row
     .input-field.col.s12
       = f.submit t('submit'), class: success_button_class

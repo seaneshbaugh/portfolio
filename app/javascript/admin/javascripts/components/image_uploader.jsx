@@ -43,13 +43,12 @@ class ImageUploader extends React.Component {
           else resolve(result);
         });
       });
+      const headers = { "Accept": "application/json", "Content-Type": "application/json" };
+      const csrfToken = document.querySelector("meta[name='csrf-token']")?.content;
+      if (csrfToken) headers["X-CSRF-Token"] = csrfToken;
       const response = await window.fetch("/admin/pictures", {
         method: "POST",
-        headers: {
-          "Accept": "application/json",
-          "Content-Type": "application/json",
-          "X-CSRF-Token": document.querySelector("meta[name='csrf-token']").content
-        },
+        headers,
         body: JSON.stringify({ picture: { image: blob.signed_id } })
       });
       if (!response.headers.get("Content-Type")?.includes("application/json")) {

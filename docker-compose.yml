@@ -21,6 +21,11 @@ services:
       PGADMIN_DEFAULT_EMAIL: "pgadmin4@pgadmin.org"
       PGADMIN_DEFAULT_PASSWORD: "admin"
     restart: "unless-stopped"
+  selenium:
+    image: selenium/standalone-firefox:latest
+    shm_size: 2gb
+    profiles:
+      - system-test
   shakapacker:
     build:
       context: .
