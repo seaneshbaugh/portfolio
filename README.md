@@ -84,14 +84,21 @@ The admin pack starts Stimulus from `app/javascript/controllers/`. The first
 replacement is the picture selector: Rails renders its controls in
 `shared/admin/_picture_selector.html.haml`, and Stimulus loads the existing JSON
 picture list and dispatches `picture-selector:select` with the selected picture.
-The Ace forms and gallery manager currently consume that event through small
-React bridges. Their readiness flag keeps selection disabled until the consumer
-is connected.
+The Ace Stimulus controller and a temporary React bridge in the gallery manager
+consume that event. Their readiness flag keeps selection disabled until the
+consumer is connected.
 
-React still owns Ace, the uploader/list and gallery fields. Shakapacker still
-owns the current JS/CSS build and Ace workers. The next slice is direct Ace through
-Stimulus; TODO section 6 tracks the remaining replacements and import-map/asset
-migration. New controllers should clean up pending requests and UI on disconnect.
+`controllers/ace_editor_controller.js` owns Ace setup, textarea synchronization,
+picture insertion and editor/worker destruction on disconnect. `lib/ace.js` imports
+the supported modes and GitHub theme and declares three explicit worker assets;
+these webpack URLs must move to the Rails asset pipeline during the import-map
+migration. RHTML inherits HTML highlighting but intentionally has no validation
+worker; CSS and JavaScript validation remain enabled.
+
+React still owns the uploader/list and gallery fields. Shakapacker still owns
+the current JS/CSS build and Ace workers. TODO section 6 tracks the remaining
+replacements and import-map/asset migration. New controllers should clean up
+pending requests and UI on disconnect.
 
 ### Sample content and local admin
 

@@ -456,7 +456,7 @@ retained package requires bundling, resolve that before removing Shakapacker.
       if that gives the smallest working step. Keep old/new ownership explicit.
 - [x] Replace picture selector with a Stimulus controller and server-rendered
       HTML/partial or existing JSON contract; preserve editor/gallery callbacks.
-- [ ] Replace React Ace with direct Ace integration in a Stimulus controller.
+- [x] Replace React Ace with direct Ace integration in a Stimulus controller.
       Plan explicit module/theme/worker URLs; the webpack resolver cannot survive
       bundler removal. Test worker loading in production as well as development.
 - [ ] Replace uploader/list Redux state with Stimulus + Active Storage and Rails
@@ -525,10 +525,33 @@ First migration slice (2026-10-31):
   Shakapacker, the development proxy check returns HTTP 200 for all 10 public/admin
   CSS/JS entrypoint files; the rebuilt image also passes frozen `bundle check`.
 
-Next slice: replace React Ace with direct Ace in a Stimulus controller, preserving
-textarea synchronization and the new selection event. Resolve explicit mode,
-theme and worker asset URLs before retiring webpack; then migrate uploader/list
-and gallery fields. Keep Shakapacker until those consumers and CSS have moved.
+Direct Ace migration (2026-10-31):
+
+- `controllers/ace_editor_controller.js` now initializes Ace directly from the
+  builder's Stimulus targets/values, preserves the submitted textarea, modes,
+  GitHub theme, wrapping and 300px height, and consumes picture selection events.
+  Disconnect synchronizes the draft, removes selection/change listeners and
+  destroys the editor/session (including workers); reconnect restores the draft.
+- `lib/ace.js` imports the supported modes/theme and declares only CSS, HTML and
+  JavaScript worker URLs using webpack asset modules. Removed the catch-all
+  `webpack-resolver`, obsolete `admin_form_builder.jsx`, `react-ace` and its unused
+  transitive dependencies. Ace now consistently uses the direct 1.45.2 dependency.
+  These worker URLs still need Rails asset helpers/URLs when Shakapacker retires.
+- Updated the builder contract and shared Ace system-test helper. Added browser
+  checks for mode/theme setup, real CSS/JavaScript worker annotations and editor
+  disconnect/reconnect with draft preservation and exactly one picture insertion.
+  RHTML intentionally has no validation worker in Ace; keep that existing behavior.
+- Full `rails test:all`: **199 tests, 563 assertions, 30 failures, 7 errors,
+  0 skips**; all 32 system tests pass and the legacy failure/error counts are
+  unchanged. The two new editor tests also pass against the minified production
+  bundles using a temporary manifest override in the test process; the shared
+  system-test configuration remains unchanged. Production compilation succeeds
+  with the same three webpack size/performance warnings. Development entrypoint
+  proxy checks and all three worker URL/MIME checks pass. Targeted Ruby formatting
+  and `git diff --check` pass.
+
+Next slice: migrate uploader/list, then gallery fields. Keep Shakapacker until
+those consumers and CSS have moved.
 
 ## 7. Replace Materialize with Tailwind
 

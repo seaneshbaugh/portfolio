@@ -13,12 +13,12 @@ class AdminFormBuilder < ActionView::Helpers::FormBuilder
 
     theme = options.delete(:theme) || "github"
 
-    tag.div(class: "ace-editor-field input-field") do
+    tag.div(class: "ace-editor-field input-field", data: { controller: "ace-editor", ace_editor_mode_value: mode, ace_editor_theme_value: theme }) do
       label = label(method)
 
-      ace_editor = tag.div("", id: ace_editor_id_for(method), class: "ace-editor", data: { "mode" => mode, "theme" => theme })
+      ace_editor = tag.div("", id: ace_editor_id_for(method), class: "ace-editor", data: { ace_editor_target: "editor" })
 
-      text_area = text_area(method, options.merge(class: "value"))
+      text_area = text_area(method, options.merge(class: "value", data: (options[:data] || {}).merge(ace_editor_target: "input")))
 
       label + ace_editor + text_area
     end
