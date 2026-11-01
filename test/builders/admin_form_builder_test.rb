@@ -21,29 +21,24 @@ class AdminFormBuilderTest < ActionView::TestCase
     assert_dom_equal(expected, ace_editor)
   end
 
-  test "picture_inserter renders a div" do
-    post = posts(:first_post)
+  test "picture_inserter renders a selector targeting the editor" do
+    builder = AdminFormBuilder.new(:post, posts(:first_post), self, {})
+    selector = Nokogiri::HTML.fragment(builder.picture_inserter(:body)).at_css(".picture-inserter")
 
-    builder = AdminFormBuilder.new(:post, post, self, {})
-
-    picture_inserter = builder.picture_inserter(:body)
-
-    expected = '<div class="picture-inserter" data-buttonclassname="btn btn-flat waves-effect waves-light blue lighten-3" data-buttontext="Insert Picture" data-target="post_body-editor"></div>'
-
-    assert_dom_equal(expected, picture_inserter)
+    assert_equal "post_body-editor", selector["data-target"]
+    assert_equal "picture-selector", selector["data-controller"]
+    assert_equal "false", selector["data-picture-selector-ready-value"]
+    assert selector.at_css("button").key?("disabled")
+    assert_equal admin_pictures_path(format: :json), selector["data-picture-selector-url-value"]
+    assert_equal "Insert Picture", selector.at_css("button").text
+    assert_equal "button", selector.at_css("button")["type"]
+    assert_equal "dialog", selector.at_css(".picture-selector-modal")["role"]
   end
 
-  test "picture_inserter renders a div using block content as text" do
-    post = posts(:first_post)
+  test "picture_inserter uses block content as the button text" do
+    builder = AdminFormBuilder.new(:post, posts(:first_post), self, {})
+    selector = builder.picture_inserter(:body) { "TESTING 1 2 3" }
 
-    builder = AdminFormBuilder.new(:post, post, self, {})
-
-    picture_inserter = builder.picture_inserter(:body) do
-      "TESTING 1 2 3"
-    end
-
-    expected = '<div class="picture-inserter" data-buttonclassname="btn btn-flat waves-effect waves-light blue lighten-3" data-buttontext="TESTING 1 2 3" data-target="post_body-editor"></div>'
-
-    assert_dom_equal(expected, picture_inserter)
+    assert_equal "TESTING 1 2 3", Nokogiri::HTML.fragment(selector).at_css("button").text
   end
 end

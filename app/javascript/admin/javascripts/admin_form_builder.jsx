@@ -1,7 +1,6 @@
 import React from "react";
 import { createRoot } from "react-dom/client";
 import AceEditor from "react-ace";
-import PictureSelector from "./components/picture_selector";
 // import TagList from "./components/tag_list";
 
 import "ace-builds/webpack-resolver";
@@ -30,8 +29,8 @@ const completed = () => {
       document.querySelectorAll(".picture-inserter").forEach((pictureInserter) => {
         if (pictureInserter.dataset.target !== aceEditor.id) return;
 
-        const selectorRoot = createRoot(pictureInserter);
-        const insertPicture = (picture) => {
+        const insertPicture = (event) => {
+          const picture = event.detail.picture;
           const image = document.createElement("img");
           image.setAttribute("src", picture.data.attributes.original_image_url);
           if (picture.data.attributes.alt_text) {
@@ -40,12 +39,8 @@ const completed = () => {
           editor.insert(image.outerHTML);
         };
 
-        selectorRoot.render(
-          <PictureSelector
-            buttonClassName={pictureInserter.dataset.buttonclassname}
-            buttonText={pictureInserter.dataset.buttontext}
-            onSelect={insertPicture}
-          />);
+        pictureInserter.addEventListener("picture-selector:select", insertPicture);
+        pictureInserter.dataset.pictureSelectorReadyValue = "true";
       });
     };
 

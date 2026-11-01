@@ -1,0 +1,13 @@
+.picture-selector{ id: local_assigns[:id], class: ('picture-inserter' if local_assigns[:editor_target]), data: { controller: 'picture-selector', action: 'keydown@window->picture-selector#keydown', 'picture-selector-url-value' => admin_pictures_path(format: :json), 'picture-selector-ready-value' => local_assigns.fetch(:ready, true).to_s, target: local_assigns[:editor_target] } }
+  %button{ type: 'button', class: button_class, disabled: !local_assigns.fetch(:ready, true), data: { action: 'picture-selector#open', 'picture-selector-target' => 'button' } }= button_text
+  %p{ role: 'alert', hidden: true, data: { 'picture-selector-target' => 'error' } }
+  .picture-selector-modal-overlay{ hidden: true, data: { action: 'click->picture-selector#close', 'picture-selector-target' => 'overlay' } }
+  .picture-selector-modal{ role: 'dialog', 'aria-modal' => 'true', 'aria-label' => 'Picture selector', hidden: true, data: { 'picture-selector-target' => 'modal' } }
+    %button.picture-selector-close-button{ type: 'button', 'aria-label' => 'Close picture selector', data: { action: 'picture-selector#close', 'picture-selector-target' => 'closeButton' } }
+      %i.material-icons close
+    .picture-selector-modal-body
+      .row.picture-selector-modal-pictures{ data: { 'picture-selector-target' => 'pictures' } }
+  %template{ data: { 'picture-selector-target' => 'pictureTemplate' } }
+    %button.picture-selector-modal-picture.col.s4{ type: 'button', data: { action: 'picture-selector#select' } }
+      %img
+      %span.title

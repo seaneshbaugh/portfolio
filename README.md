@@ -78,6 +78,21 @@ and Shakapacker UI stack retains its tested versions until replacement. See the
 [dependency inventory](docs/dependencies/README.md) for before/after versions,
 retained/transitional packages, compatibility exceptions and update commands.
 
+### Frontend migration
+
+The admin pack starts Stimulus from `app/javascript/controllers/`. The first
+replacement is the picture selector: Rails renders its controls in
+`shared/admin/_picture_selector.html.haml`, and Stimulus loads the existing JSON
+picture list and dispatches `picture-selector:select` with the selected picture.
+The Ace forms and gallery manager currently consume that event through small
+React bridges. Their readiness flag keeps selection disabled until the consumer
+is connected.
+
+React still owns Ace, the uploader/list and gallery fields. Shakapacker still
+owns the current JS/CSS build and Ace workers. The next slice is direct Ace through
+Stimulus; TODO section 6 tracks the remaining replacements and import-map/asset
+migration. New controllers should clean up pending requests and UI on disconnect.
+
 ### Sample content and local admin
 
 For representative content and a local image attachment, run:

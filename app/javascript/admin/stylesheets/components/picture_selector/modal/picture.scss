@@ -3,6 +3,10 @@
         .picture-selector-modal-picture {
             cursor: pointer;
             text-align: center;
+            background: transparent;
+            border: 0;
+            color: inherit;
+            font: inherit;
 
             img {
                 max-width: 100%;

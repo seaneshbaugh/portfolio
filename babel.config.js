@@ -28,7 +28,7 @@ module.exports = function(api) {
       (isProductionEnv || isDevelopmentEnv) && [
         require('@babel/preset-env').default,
         {
-          forceAllTransforms: true,
+          // Preserve native classes for Stimulus; use the configured browser targets.
           useBuiltIns: 'entry',
           corejs: 3,
           modules: false,

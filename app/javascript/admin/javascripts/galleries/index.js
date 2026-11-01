@@ -15,7 +15,8 @@ const completed = () => {
 
   const galleryPictures = JSON.parse(galleryPicturesContainer.dataset.gallerypictures);
 
-  root.render(<DndProvider backend={HTML5Backend}><GalleryPicturesManager galleryPictures={galleryPictures} /></DndProvider>);
+  const pictureSelector = document.getElementById("gallery-picture-selector");
+  root.render(<DndProvider backend={HTML5Backend}><GalleryPicturesManager galleryPictures={galleryPictures} pictureSelector={pictureSelector} /></DndProvider>);
 };
 
 if (document.readyState === "loading") {

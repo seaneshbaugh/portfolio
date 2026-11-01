@@ -35,7 +35,8 @@ class AdminFormBuilder < ActionView::Helpers::FormBuilder
 
     target = options.delete(:target) || ace_editor_id_for(method)
 
-    tag.div("", class: "picture-inserter", data: { "buttonclassname" => button_class, "buttontext" => button_text, "target" => target })
+    @template.render "shared/admin/picture_selector", button_class: button_class,
+      button_text: button_text, editor_target: target, ready: false
   end
 
   # def tag_list(method, options = {})

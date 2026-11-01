@@ -15,6 +15,9 @@
       = f.check_box :visible
       %span= t('activerecord.attributes.gallery.visible')
   %h2 Pictures
+  .row
+    .col.s12
+      = render 'shared/admin/picture_selector', id: 'gallery-picture-selector', button_class: 'btn btn-flat waves-effect waves-light blue lighten-3', button_text: 'Add Picture', ready: false
   .gallery-pictures-container{ 'data-gallerypictures' => @gallery.gallery_pictures.map { |gallery_picture| GalleryPictureSerializer.new(gallery_picture) }.to_json }
   .row
     .input-field.col.s12

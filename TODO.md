@@ -452,9 +452,9 @@ Recommended order: add Stimulus with Shakapacker still compiling it; replace
 widgets one at a time; then finish import maps and remove the bundler. If a
 retained package requires bundling, resolve that before removing Shakapacker.
 
-- [ ] Add `stimulus-rails` and controllers; mount through existing packs initially
+- [x] Add `stimulus-rails` and controllers; mount through existing packs initially
       if that gives the smallest working step. Keep old/new ownership explicit.
-- [ ] Replace picture selector with a Stimulus controller and server-rendered
+- [x] Replace picture selector with a Stimulus controller and server-rendered
       HTML/partial or existing JSON contract; preserve editor/gallery callbacks.
 - [ ] Replace React Ace with direct Ace integration in a Stimulus controller.
       Plan explicit module/theme/worker URLs; the webpack resolver cannot survive
@@ -485,6 +485,50 @@ retained package requires bundling, resolve that before removing Shakapacker.
 - [ ] Remove Shakapacker gem/npm package, pack helpers, webpack/Babel/PostCSS
       configs and binstubs, service/port 3035 and obsolete generated packs only
       after all consumers and production builds pass through the new pipeline.
+
+First migration slice (2026-10-31):
+
+- Added stimulus-rails 1.3.4 and @hotwired/stimulus 3.2.2 without running an
+  installer over existing entrypoints. `app/javascript/controllers/application.js`
+  starts the application; `controllers/index.js` explicitly registers controllers.
+  Only the admin pack imports this entrypoint for now.
+- Replaced the React picture selector and its button/modal/picture components
+  with `shared/admin/_picture_selector.html.haml` and
+  `controllers/picture_selector_controller.js`. The existing `/admin/pictures.json`
+  contract supplies the list; thumbnail requests use its same-origin path field.
+  Native buttons support keyboard selection; modal Escape/button/backdrop close,
+  focus restoration, Tab wrapping, disabled/loading state and visible retry errors
+  remain in the controller. Disconnect aborts pending fetches and closes the UI.
+- `AdminFormBuilder#picture_inserter` renders the shared partial. React Ace's
+  existing ready callback and the gallery manager consume `picture-selector:select`
+  events. The selector's readiness value is enabled only after those temporary
+  consumers attach their listeners. The gallery selector sits outside its React
+  root; its selection listener is removed when React cleans up the effect.
+- Removed four obsolete selector JSX components. React Ace, gallery nested fields,
+  React DnD and uploader/Redux remain for their own slices. No Turbo navigation or
+  import-map/asset ownership changes have been introduced yet.
+- Removed Babel's legacy `forceAllTransforms` setting: its loose class transform
+  called Stimulus's native superclass as a function, preventing controller startup.
+  Babel now follows the existing Browserslist targets; React remains covered by the
+  same browser tests. Recompiled test assets explicitly after the config change.
+- Expanded browser coverage for selector load failure/retry, actual thumbnail
+  loading, keyboard selection, backdrop dismissal/focus, and cancelling a pending
+  load across removal/reconnection without duplicate insertion. Existing post/page
+  insertion and gallery add/reorder/remove persistence checks exercise both bridges.
+  Updated builder assertions for the server-rendered control/target contract.
+- Full `rails test:all`: **197 tests, 546 assertions, 30 failures, 7 errors,
+  0 skips**. All 30 system tests pass within that run; legacy failure/error counts
+  remain unchanged. Production assets compile successfully with the existing
+  webpack size/performance notices and no Sass warnings. Targeted Ruby formatting
+  checks passed after applying the repository's quote style.
+- Both Docker images rebuild with frozen dependencies. After recreating web and
+  Shakapacker, the development proxy check returns HTTP 200 for all 10 public/admin
+  CSS/JS entrypoint files; the rebuilt image also passes frozen `bundle check`.
+
+Next slice: replace React Ace with direct Ace in a Stimulus controller, preserving
+textarea synchronization and the new selection event. Resolve explicit mode,
+theme and worker asset URLs before retiring webpack; then migrate uploader/list
+and gallery fields. Keep Shakapacker until those consumers and CSS have moved.
 
 ## 7. Replace Materialize with Tailwind
 

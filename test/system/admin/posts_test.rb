@@ -83,5 +83,101 @@ module Admin
       assert_no_selector ".picture-selector-modal"
       assert_field "post_body", with: "<p>Unchanged.</p>", visible: :all
     end
+
+    test "picture selector reports a failed load and can retry" do
+      visit new_admin_post_path
+
+      page.execute_script(<<~JS)
+        const originalFetch = window.fetch.bind(window);
+        window.fetch = (...args) => {
+          window.fetch = originalFetch;
+          return Promise.reject(new TypeError('Simulated network failure'));
+        };
+      JS
+
+      click_button "Insert Picture"
+
+      assert_selector ".picture-inserter [role=alert]", text: "Unable to load pictures. Please try again."
+      assert_button "Insert Picture", disabled: false
+
+      click_button "Insert Picture"
+
+      assert_selector ".picture-selector-modal"
+
+      overlay = find(".picture-selector-modal-overlay")
+
+      assert_selector ".picture-selector-modal-picture img", count: 2 do |image|
+        image.evaluate_script("this.complete && this.naturalWidth > 0")
+      end
+
+      # Move off its covered center before clicking the backdrop.
+      page.driver.browser.action.move_to(overlay.native).move_by(-(overlay.native.size.width / 2) + 10, 0).click.perform
+
+      assert_no_selector ".picture-selector-modal"
+      assert_selector ".picture-inserter button[data-picture-selector-target=button]:focus"
+    end
+
+    test "picture selection works from the keyboard without submitting the form" do
+      visit new_admin_post_path
+
+      fill_in_ace "post_body", with: "<p>Keyboard selection.</p>"
+
+      click_button "Insert Picture"
+
+      assert_selector ".picture-selector-close-button:focus"
+
+      page.send_keys :tab
+
+      assert_selector ".picture-selector-modal-picture:focus"
+
+      page.send_keys :enter
+
+      assert_no_selector ".picture-selector-modal"
+      assert_current_path new_admin_post_path
+
+      body = find_field("post_body", visible: :all).value
+
+      assert_equal 1, Nokogiri::HTML.fragment(body).css("img").length
+    end
+
+    test "disconnect cancels a pending selector load and reconnect selects only once" do
+      visit new_admin_post_path
+
+      fill_in_ace "post_body", with: "<p>Reconnect selection.</p>"
+
+      page.execute_script(<<~JS)
+        const originalFetch = window.fetch.bind(window);
+        window.fetch = (url, options) => {
+          window.fetch = originalFetch;
+          return new Promise((resolve, reject) => {
+            options.signal.addEventListener('abort', () => reject(new DOMException('Aborted', 'AbortError')));
+          });
+        };
+      JS
+
+      click_button "Insert Picture"
+
+      assert_button "Insert Picture", disabled: true
+
+      page.execute_script(<<~JS)
+        window.detachedSelector = document.querySelector('.picture-inserter');
+        window.selectorParent = window.detachedSelector.parentElement;
+        window.detachedSelector.remove();
+      JS
+
+      assert_no_selector ".picture-inserter"
+
+      page.execute_script("window.selectorParent.append(window.detachedSelector)")
+
+      assert_button "Insert Picture", disabled: false
+
+      select_picture pictures(:conney)
+
+      assert_no_selector ".picture-inserter [role=alert]"
+
+      body = find_field("post_body", visible: :all).value
+
+      assert_equal 1, Nokogiri::HTML.fragment(body).css("img").length
+    end
   end
 end

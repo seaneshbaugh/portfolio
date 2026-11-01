@@ -1,6 +1,5 @@
 import React, { useState, useCallback, useEffect, useRef } from "react";
 import update from "immutability-helper";
-import PictureSelector from "./picture_selector";
 import GalleryPicture from "./gallery_picture";
 
 const GalleryPicturesManager = (props) => {
@@ -44,6 +43,17 @@ const GalleryPicturesManager = (props) => {
     setGalleryPictures(update(galleryPictures, { $splice: [[index, 1]] }));
   };
 
+  // Temporary bridge while the nested gallery fields still belong to React.
+  useEffect(() => {
+    const select = (event) => addGalleryPicture(event.detail.picture);
+    props.pictureSelector.addEventListener("picture-selector:select", select);
+    props.pictureSelector.dataset.pictureSelectorReadyValue = "true";
+    return () => {
+      props.pictureSelector.removeEventListener("picture-selector:select", select);
+      props.pictureSelector.dataset.pictureSelectorReadyValue = "false";
+    };
+  }, [props.pictureSelector, galleryPictures]);
+
   const moveGalleryPicture = useCallback((dragIndex, hoverIndex) => {
     const dragGalleryPicture = galleryPictures[dragIndex];
 
@@ -67,11 +77,6 @@ const GalleryPicturesManager = (props) => {
 
   return (
     <div className="gallery-pictures-manager">
-      <div className="row">
-        <div className="col s12">
-          <PictureSelector buttonClassName="btn btn-flat waves-effect waves-light blue lighten-3" buttonText="Add Picture" onSelect={addGalleryPicture} />
-        </div>
-      </div>
       {galleryPictures.map((galleryPicture, index) =>
                            <GalleryPicture
                              key={galleryPicture.clientKey}
