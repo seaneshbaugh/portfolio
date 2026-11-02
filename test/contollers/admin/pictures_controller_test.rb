@@ -60,6 +60,48 @@ module Admin
       assert_redirected_to admin_picture_path(Picture.chronological.last)
     end
 
+    test "XHR picture creation returns an escaped row with working actions" do
+      post admin_pictures_url,
+        params: { picture: { title: "<b>Uploaded photograph</b>", image: fixture_file_upload("conney-the-corgi.jpg", "image/jpeg", true) } },
+        headers: { "Accept" => "text/html", "X-Requested-With" => "XMLHttpRequest" }
+
+      picture = Picture.chronological.last
+
+      assert_response :ok
+      assert_equal "text/html", response.media_type
+
+      # A standalone table row needs table context when parsed as an HTML document.
+      fragment = Nokogiri::HTML.fragment("<table>#{response.body}</table>")
+
+      assert_select fragment, "tr.picture", count: 1 do
+        assert_select ".picture-title a[href=?]", admin_picture_path(picture), text: "<b>Uploaded photograph</b>"
+        assert_select ".picture-title b", count: 0
+        assert_select ".edit a[href=?]", edit_admin_picture_path(picture)
+        assert_select ".delete a[data-method=delete][href=?]", admin_picture_path(picture)
+      end
+    end
+
+    test "XHR picture validation returns JSON errors" do
+      assert_no_difference("Picture.count") do
+        post admin_pictures_url, params: { picture: { title: "Missing image" } },
+          headers: { "Accept" => "text/html", "X-Requested-With" => "XMLHttpRequest" }
+      end
+
+      assert_response :unprocessable_entity
+      assert_equal "application/json", response.media_type
+      assert response.parsed_body.fetch("errors").any? { |error| error.fetch("title").include?("Image") }
+    end
+
+    test "JSON picture creation retains the serializer response" do
+      post admin_pictures_url,
+        params: { picture: { image: fixture_file_upload("conney-the-corgi.jpg", "image/jpeg", true) } },
+        headers: { "Accept" => "application/json" }
+
+      assert_response :ok
+      assert_equal "application/json", response.media_type
+      assert_equal Picture.chronological.last.id.to_s, response.parsed_body.dig("data", "id")
+    end
+
     test "should not create an invalid picture" do
       assert_no_difference("Picture.count") do
         post admin_pictures_url, params: { picture: { title: "Image Intentionally Left Blank" } }

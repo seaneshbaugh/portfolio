@@ -14,14 +14,30 @@
       .input-field.col.s3
         = f.button search_icon, class: caution_button_class
         = cancel_icon_link(admin_pictures_path)
-- if policy([:admin, Picture]).create?
+.pictures-manager{ data: { controller: 'picture-uploads', 'picture-uploads-url-value' => admin_pictures_path, 'picture-uploads-direct-upload-url-value' => rails_direct_uploads_path } }
+  - if policy([:admin, Picture]).create?
+    .row
+      .image-uploader-container.col.s12
+        .image-uploader{ data: { 'picture-uploads-target' => 'dropzone', action: 'dragenter->picture-uploads#dragenter dragover->picture-uploads#dragover dragleave->picture-uploads#dragleave drop->picture-uploads#drop' } }
+          %input#picture-upload-files{ type: 'file', multiple: true, accept: 'image/*', data: { 'picture-uploads-target' => 'input', action: 'change->picture-uploads#choose' } }
+          %label{ for: 'picture-upload-files' }= t('.upload_hint')
+          %p{ role: 'status', hidden: true, data: { 'picture-uploads-target' => 'status' } }= t('.uploading')
+          %ul{ role: 'alert', hidden: true, data: { 'picture-uploads-target' => 'errors' } }
   .row
-    .image-uploader-container.col.s12
-.row
-  .picture-list-container.col.s12{ 'data-pictures' => @pictures.map { |picture| PictureSerializer.new(picture) }.to_json }
-- if @pictures.present?
-  .row
-    .col.s12
-      = paginate @pictures
-- else
-  %p.no-items= t('.no_pictures')
+    .picture-list-container.col.s12
+      %table.pictures.responsive-table
+        %thead
+          %tr
+            %th.picture-thumbnail= t('activerecord.attributes.picture.image')
+            %th.picture-title= t('activerecord.attributes.picture.title')
+            %th.picture-created-at= t('activerecord.attributes.picture.created_at')
+            %th.edit
+            %th.delete
+        %tbody{ data: { 'picture-uploads-target' => 'rows' } }
+          = render partial: 'picture', collection: @pictures
+  - if @pictures.present?
+    .row
+      .col.s12
+        = paginate @pictures
+  - else
+    %p.no-items{ data: { 'picture-uploads-target' => 'empty' } }= t('.no_pictures')

@@ -95,8 +95,19 @@ these webpack URLs must move to the Rails asset pipeline during the import-map
 migration. RHTML inherits HTML highlighting but intentionally has no validation
 worker; CSS and JavaScript validation remain enabled.
 
-React still owns the uploader/list and gallery fields. Shakapacker still owns
-the current JS/CSS build and Ace workers. TODO section 6 tracks the remaining
+The pictures index is server rendered, including its table rows and upload
+controls. `controllers/picture_uploads_controller.js` handles file selection/drop,
+Active Storage direct uploads, pending status and per-file errors. Successful
+HTML/XHR creates return the same `_picture.html.haml` partial used by the index;
+JSON creates keep their serializer response. New rows are prepended to the
+current page with the existing 25-row limit; reload reapplies server search and
+pagination. Disconnect aborts active uploads/saves and ignores late responses.
+An aborted save may already have committed; reload reconciles the list with Rails.
+
+React now owns only the gallery fields and drag-and-drop ordering. The uploader's
+Redux store, React Redux, React Ace and Moment have been removed. React DnD still
+has its own transitive Redux dependency until the gallery migration. Shakapacker still owns the
+current JS/CSS build and Ace workers. TODO section 6 tracks the remaining
 replacements and import-map/asset migration. New controllers should clean up
 pending requests and UI on disconnect.
 

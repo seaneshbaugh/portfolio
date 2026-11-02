@@ -1,0 +1,13 @@
+- present picture do |picture_presenter|
+  %tr.picture{ id: dom_id(picture) }
+    %td.picture-thumbnail
+      = link_to admin_picture_path(picture) do
+        = picture_presenter.thumbnail_image_tag
+    %td.picture-title= link_to picture.title, admin_picture_path(picture)
+    %td.picture-created-at= picture_presenter.created_at
+    %td.edit
+      - if policy([:admin, picture]).edit?
+        = edit_icon_link edit_admin_picture_path(picture)
+    %td.delete
+      - if policy([:admin, picture]).destroy?
+        = delete_icon_link admin_picture_path(picture)

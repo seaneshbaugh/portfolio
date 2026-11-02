@@ -103,7 +103,7 @@ password-reset tests cannot establish production token compatibility.
 | Group | Packages | Plan |
 | --- | --- | --- |
 | Retained functionality | ace-builds, @rails/activestorage, glightbox, normalize.css, css | Keep through migration. Ace is now explicit rather than borrowed from react-ace; `css` remains a server-side Node requirement for CSS validation |
-| React widgets | react, react-dom, react-dnd, react-dnd-html5-backend, react-redux, redux, prop-types, immutability-helper, classnames, moment | Remove after Stimulus replacements pass their system tests |
+| React widgets | react, react-dom, react-dnd, react-dnd-html5-backend, prop-types, immutability-helper, classnames | Remove after Stimulus replacements pass their system tests |
 | Materialize/design | @materializecss/materialize, material-design-icons, animate.css | Retire or deliberately retain effects/icons during Tailwind work; do not couple a visual-library minor upgrade to this dependency batch |
 | Bundling/transpilation | shakapacker, webpack, webpack-cli, webpack-dev-server, webpack-assets-manifest, webpack-merge, Babel packages/loaders/plugins, @types/babel__core, @types/webpack, compression-webpack-plugin, terser-webpack-plugin, file-loader | Transitional; preserve compatible majors and remove when the last webpack consumer moves |
 | CSS build | sass, sass-loader, css-loader, style-loader, resolve-url-loader, mini-css-extract-plugin, css-minimizer-webpack-plugin, caniuse-lite | Transitional; remove only after stylesheet ownership changes |
@@ -113,6 +113,10 @@ password-reset tests cannot establish production token compatibility.
 Ace/Stimulus migration. Ace modes/theme and explicit worker URLs live in
 `app/javascript/lib/ace.js`; the worker URLs still use webpack asset modules until
 the Rails asset pipeline migration.
+The direct Redux dependency, React Redux and Moment were removed with the
+uploader/list replacement; Rails now renders picture rows and timestamps, while
+Stimulus handles uploads. The gallery manager is the remaining active React
+consumer; React DnD retains its own transitive Redux dependency until it is removed.
 
 JavaScript does not support omitting a dependency's value as Gemfile does. Caret
 ranges are the normal compatible-major equivalent; Yarn still installs exact

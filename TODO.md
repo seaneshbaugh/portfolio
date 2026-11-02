@@ -459,7 +459,7 @@ retained package requires bundling, resolve that before removing Shakapacker.
 - [x] Replace React Ace with direct Ace integration in a Stimulus controller.
       Plan explicit module/theme/worker URLs; the webpack resolver cannot survive
       bundler removal. Test worker loading in production as well as development.
-- [ ] Replace uploader/list Redux state with Stimulus + Active Storage and Rails
+- [x] Replace uploader/list Redux state with Stimulus + Active Storage and Rails
       responses/Turbo updates. Preserve upload validation and list persistence.
 - [ ] Replace gallery manager with server-rendered nested fields and Stimulus;
       choose an import-map-compatible ordering approach with keyboard/touch
@@ -550,8 +550,44 @@ Direct Ace migration (2026-10-31):
   proxy checks and all three worker URL/MIME checks pass. Targeted Ruby formatting
   and `git diff --check` pass.
 
-Next slice: migrate uploader/list, then gallery fields. Keep Shakapacker until
-those consumers and CSS have moved.
+Uploader/list migration (2026-11-01):
+
+- `controllers/picture_uploads_controller.js` handles chooser/multiple-file/drop
+  uploads through Active Storage, per-file validation/errors, pending status and
+  the existing 25-row limit. Each connection owns its requests: disconnect aborts
+  both Active Storage XHRs and picture-save fetches, resets pending UI, and ignores
+  late callbacks even after reconnect. Already-committed saves remain in Rails;
+  refresh reconciles the list. Unattached-blob retention/cleanup remains a separate
+  operational decision; aborting a browser request cannot roll back a completed upload.
+- `admin/pictures/index.html.haml` renders upload controls and the initial table
+  using `_picture.html.haml`. The partial uses existing route/policy/icon/presenter
+  helpers and same-origin thumbnail paths. Timestamps now follow the existing Rails
+  presenter used by other admin indexes instead of browser-local Moment formatting.
+  Successful HTML/XHR picture creates return one row; validation failures return
+  JSON errors. Regular HTML redirects and JSON serializer responses are preserved.
+- New rows prepend to the current page, matching the old uploader. Search and
+  pagination remain server-owned and refresh applies their current query/counts;
+  the first upload hides the empty-list message. No Turbo dependency or system-test
+  configuration changes were introduced; Turbo navigation remains a later task.
+- Removed the React uploader/list components, mount, Redux actions/reducer/store,
+  and now-unused direct `redux`, `react-redux`, `moment` dependencies. React/DnD
+  and their remaining helpers stay for the gallery migration; DnD still brings
+  its own transitive Redux dependency until then.
+- Expanded picture browser coverage from five to eleven tests: thumbnails and row
+  actions, direct-upload failure/retry with the same file, empty-list updates,
+  page-size/search/pagination, aborting Active Storage, and rejecting stale save
+  callbacks across reconnect. Added controller tests for escaped row HTML, JSON
+  validation errors, and preserving JSON create responses.
+- Full `rails test:all`: **208 tests, 622 assertions, 30 failures, 7 errors,
+  0 skips**; all 38 system tests pass, preserving the legacy failure/error counts.
+  All eleven picture tests also pass against the minified production bundles
+  (64 assertions), using only a process-local manifest override. Production assets
+  compile with the existing three webpack size/performance warnings; the restored
+  development proxy returns HTTP 200 for all ten CSS/JS entrypoint assets. Yarn
+  integrity, targeted Ruby formatting and `git diff --check` pass.
+
+Next slice: migrate gallery fields and ordering, then remove the remaining React
+packages. Keep Shakapacker until those consumers and CSS have moved.
 
 ## 7. Replace Materialize with Tailwind
 

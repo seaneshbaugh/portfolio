@@ -39,9 +39,13 @@ module Admin
       respond_to do |format|
         if @picture.save
           format.html do
-            flash[:success] = t(".success")
+            if request.xhr?
+              render partial: "picture", locals: { picture: @picture }
+            else
+              flash[:success] = t(".success")
 
-            redirect_to admin_picture_url(@picture), status: :see_other
+              redirect_to admin_picture_url(@picture), status: :see_other
+            end
           end
 
           format.json do
@@ -49,14 +53,17 @@ module Admin
           end
         else
           format.html do
-            flash.now[:error] = helpers.error_messages_for(@picture)
+            if request.xhr?
+              render json: picture_errors, status: :unprocessable_entity, content_type: "application/json"
+            else
+              flash.now[:error] = helpers.error_messages_for(@picture)
 
-            render "new", status: :unprocessable_entity
+              render "new", status: :unprocessable_entity
+            end
           end
 
           format.json do
-            # TODO: Maybe put this in a helper? See http://jsonapi.org/format/#error-objects.
-            render json: { errors: @picture.errors.full_messages.map { |message| { title: message } } }, status: :unprocessable_entity
+            render json: picture_errors, status: :unprocessable_entity
           end
         end
       end
@@ -108,6 +115,10 @@ module Admin
 
     def find_picture
       Picture.friendly.find(params[:id])
+    end
+
+    def picture_errors
+      { errors: @picture.errors.full_messages.map { |message| { title: message } } }
     end
 
     def picture_params
