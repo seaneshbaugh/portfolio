@@ -110,7 +110,11 @@ class AdminUpgradeTest < ActionDispatch::IntegrationTest
     } }
 
     assert_response :unprocessable_entity
-    assert_select ".gallery-pictures-container[data-gallerypictures]"
+    assert_select ".gallery-pictures-container[data-controller=gallery-pictures]"
+
+    assert_select ".gallery-pictures-manager .gallery-picture", count: 1 do
+      assert_select "input[name$='[picture_id]'][value=?]", Picture.first.id.to_s
+    end
   end
 
   test "picture creation exposes JSON validation errors without a success response" do

@@ -461,10 +461,10 @@ retained package requires bundling, resolve that before removing Shakapacker.
       bundler removal. Test worker loading in production as well as development.
 - [x] Replace uploader/list Redux state with Stimulus + Active Storage and Rails
       responses/Turbo updates. Preserve upload validation and list persistence.
-- [ ] Replace gallery manager with server-rendered nested fields and Stimulus;
+- [x] Replace gallery manager with server-rendered nested fields and Stimulus;
       choose an import-map-compatible ordering approach with keyboard/touch
       behavior, persisted order and visibility/featured controls.
-- [ ] Remove React, ReactDOM, react-ace, React DnD, Redux, React Redux and related
+- [x] Remove React, ReactDOM, react-ace, React DnD, Redux, React Redux and related
       helpers only after checking remaining imports and passing widget tests.
 - [ ] Add Propshaft/importmap-rails; create `app/assets` structure,
       `config/importmap.rb`, JS entrypoints and appropriate asset paths. Migrate
@@ -586,8 +586,49 @@ Uploader/list migration (2026-11-01):
   development proxy returns HTTP 200 for all ten CSS/JS entrypoint assets. Yarn
   integrity, targeted Ruby formatting and `git diff --check` pass.
 
-Next slice: migrate gallery fields and ordering, then remove the remaining React
-packages. Keep Shakapacker until those consumers and CSS have moved.
+Gallery migration and remaining React removal (2026-11-01):
+
+- `controllers/gallery_pictures_controller.js` manages Rails nested fields from
+  `admin/galleries/_gallery_picture_fields.html.haml`. New selections clone a
+  server-rendered template and replace its field-index placeholder; membership
+  IDs, picture IDs and checkbox names remain stable through reordering. Hidden
+  order values are recomputed from active rows after adding, removing or moving.
+- Saved removals retain hidden `_destroy` fields, including after validation
+  errors; unsaved removals delete their fields. Template defaults preserve visible
+  and unfeatured selections, repeated selections have unique input/label IDs, and
+  selecting Featured clears that flag on other active rows. Existing thumbnails
+  and newly selected thumbnails both use same-origin paths.
+- Native drag-and-drop replaces React DnD. Move up/Move down buttons provide
+  keyboard and touch activation without another sorting dependency, keep focus
+  on the moved control and announce position through a live status. Touch ordering
+  uses buttons; native touch dragging is not required. Disconnect disables the
+  selector and clears drag state; reconnect preserves draft fields and unique keys.
+- Removed the final React mount, gallery components, checkbox and long-inactive
+  commented tag-list component. Removed React/ReactDOM, DnD/backends, prop-types,
+  immutability-helper and classnames, plus React-only Babel presets/plugins and
+  JSX resolution entries. The transitive DnD Redux dependency is gone as well.
+  Shakapacker/Babel remain for the current assets; no Turbo or import maps yet.
+- Expanded gallery browser tests from three to seven: native drag events and
+  persistence, keyboard/button moves and focus, featured exclusivity, duplicate
+  selections/unique fields, validation recovery with saved removals and reordered
+  additions, loaded thumbnails, and selection across reconnect. Remote Firefox
+  WebDriver omits drop/drag-end after its real pointer drag-over; the test completes
+  the DOM drop event, without modifying controller state or hidden fields. The
+  shared Wishlist-style system-test configuration remains unchanged.
+- Updated `AdminUpgradeTest` to assert the retained server-rendered nested fields
+  after validation instead of the removed React JSON data attribute.
+- Full `rails test:all`: **212 tests, 659 assertions, 30 failures, 7 errors,
+  0 skips**; all 42 system tests pass, preserving the legacy failure/error counts.
+  All seven gallery tests also pass against minified production bundles (63
+  assertions), using a process-local manifest override. Production assets compile
+  with the same three webpack size/performance warnings. Yarn integrity, Ruby
+  formatting and `git diff --check` pass. After restoring/restarting development
+  services, all ten public/admin CSS/JS entrypoint assets return HTTP 200 through
+  the proxy. No React imports, dependencies or JSX entrypoints remain.
+
+Next slice: add Propshaft/import maps and migrate asset ownership. Resolve Ace
+worker delivery, CSS compilation and retained browser libraries before retiring
+Shakapacker; then introduce Turbo with navigation/cache lifecycle coverage.
 
 ## 7. Replace Materialize with Tailwind
 

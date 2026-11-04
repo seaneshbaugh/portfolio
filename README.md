@@ -73,8 +73,8 @@ use `bundle update <gem names>` for intentional updates. Docker installs gems in
 frozen mode so a build cannot silently rewrite the lockfile.
 
 Most JavaScript declarations use compatible version ranges, with exact installs
-provided by `yarn.lock` and `--frozen-lockfile`. The temporary React, Materialize,
-and Shakapacker UI stack retains its tested versions until replacement. See the
+provided by `yarn.lock` and `--frozen-lockfile`. Transitional Materialize and
+Shakapacker retain their tested versions until replacement. See the
 [dependency inventory](docs/dependencies/README.md) for before/after versions,
 retained/transitional packages, compatibility exceptions and update commands.
 
@@ -84,9 +84,8 @@ The admin pack starts Stimulus from `app/javascript/controllers/`. The first
 replacement is the picture selector: Rails renders its controls in
 `shared/admin/_picture_selector.html.haml`, and Stimulus loads the existing JSON
 picture list and dispatches `picture-selector:select` with the selected picture.
-The Ace Stimulus controller and a temporary React bridge in the gallery manager
-consume that event. Their readiness flag keeps selection disabled until the
-consumer is connected.
+The Ace and gallery Stimulus controllers consume that event. Their readiness flag
+keeps selection disabled until the consumer is connected.
 
 `controllers/ace_editor_controller.js` owns Ace setup, textarea synchronization,
 picture insertion and editor/worker destruction on disconnect. `lib/ace.js` imports
@@ -104,12 +103,20 @@ current page with the existing 25-row limit; reload reapplies server search and
 pagination. Disconnect aborts active uploads/saves and ignores late responses.
 An aborted save may already have committed; reload reconciles the list with Rails.
 
-React now owns only the gallery fields and drag-and-drop ordering. The uploader's
-Redux store, React Redux, React Ace and Moment have been removed. React DnD still
-has its own transitive Redux dependency until the gallery migration. Shakapacker still owns the
-current JS/CSS build and Ace workers. TODO section 6 tracks the remaining
-replacements and import-map/asset migration. New controllers should clean up
-pending requests and UI on disconnect.
+`controllers/gallery_pictures_controller.js` owns gallery nested fields rendered
+by `admin/galleries/_gallery_picture_fields.html.haml`. New selections clone a
+Rails-rendered template with unique field indices; ordering changes hidden order
+values without renaming fields. Saved removals keep hidden destruction fields,
+while unsaved removals delete their fields. Featured selection is exclusive.
+Native drag-and-drop supports desktop ordering; Move up/Move down buttons support
+keyboard and touch activation, preserve focus, and announce the new position.
+Disconnect clears drag state and disables selection until reconnect.
+
+React, ReactDOM, React Ace, React DnD, Redux/React Redux, Moment and their unused
+helpers have been removed, together with the React Babel configuration. Shakapacker
+still owns the current JS/CSS build and Ace workers. TODO section 6 tracks the
+remaining import-map/asset migration. New controllers should clean up pending
+requests and UI on disconnect.
 
 ### Sample content and local admin
 
@@ -205,8 +212,10 @@ editor's value, exercises its change callback, and checks the hidden Rails field
 This avoids Ace's automatic tag/bracket insertion when typing complete source.
 Image chooser tests transfer real fixture files to Firefox; the drop test supplies
 a browser `File`/`DataTransfer`. Gallery ordering uses a pointer gesture plus an
-explicit `dragend` event because the remote Firefox gesture leaves the relocated
-source in its dragging state. Neither helper changes React state directly.
+explicit DOM `drop` event because remote Firefox WebDriver sends drag-start and
+drag-over but omits drop/drag-end. This exercises the controller's drop handler
+without directly changing its state or form fields. Separate tests use the native
+Move up/Move down buttons, including Enter activation and focus preservation.
 
 Rails saves failure screenshots under `tmp/screenshots`. The application-specific
 diagnostics mixin also saves captured console output there; capture starts after

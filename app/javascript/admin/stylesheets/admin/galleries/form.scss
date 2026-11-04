@@ -1,5 +1,8 @@
 .gallery-pictures-manager {
     .gallery-picture {
+        &[hidden] {
+            display: none !important;
+        }
         cursor: move;
         margin-bottom: 0.5rem;
         margin-left: 0rem;
@@ -12,7 +15,7 @@
         }
 
         &.dragging {
-            opacity: 0;
+            opacity: 0.35;
         }
     }
 }

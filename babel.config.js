@@ -36,14 +36,6 @@ module.exports = function(api) {
           loose: true
         }
       ],
-      [
-        require('@babel/preset-react').default,
-        {
-          development: isDevelopmentEnv || isTestEnv,
-          useBuiltIns: true,
-          runtime: 'automatic'
-        }
-      ]
     ].filter(Boolean),
     plugins: [
       require('babel-plugin-macros'),
@@ -76,12 +68,6 @@ module.exports = function(api) {
           async: false
         }
       ],
-      isProductionEnv && [
-        require('babel-plugin-transform-react-remove-prop-types').default,
-        {
-          removeImport: true
-        }
-      ]
     ].filter(Boolean)
   }
 }

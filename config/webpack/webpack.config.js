@@ -4,7 +4,7 @@ const { generateWebpackConfig, merge } = require("shakapacker");
 const options = {
   resolve: {
     // Not gonna lie, I'm still not 100% sure why this is needed if shakapacker.yml defines extensions.
-    extensions: [".jpg", ".jpeg", ".gif", ".js", ".jsx", ".png", ".scss"]
+    extensions: [".jpg", ".jpeg", ".gif", ".js", ".png", ".scss"]
   }
 };
 

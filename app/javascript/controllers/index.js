@@ -3,7 +3,9 @@ import { application } from "./application";
 import PictureSelectorController from "./picture_selector_controller";
 import AceEditorController from "./ace_editor_controller";
 import PictureUploadsController from "./picture_uploads_controller";
+import GalleryPicturesController from "./gallery_pictures_controller";
 
 application.register("picture-selector", PictureSelectorController);
 application.register("ace-editor", AceEditorController);
 application.register("picture-uploads", PictureUploadsController);
+application.register("gallery-pictures", GalleryPicturesController);

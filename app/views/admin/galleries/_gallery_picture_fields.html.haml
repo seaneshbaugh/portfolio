@@ -1,0 +1,24 @@
+- membership = f.object
+.gallery-picture.row{ hidden: membership.marked_for_destruction?, draggable: true, data: { 'gallery-index' => f.index, action: 'dragstart->gallery-pictures#dragstart dragover->gallery-pictures#dragover drop->gallery-pictures#drop dragend->gallery-pictures#dragend' } }
+  %button.btn.btn-flat.red.lighten-1.right{ type: 'button', 'aria-label' => 'Remove picture', data: { action: 'gallery-pictures#remove' } }
+    %i.material-icons delete_forever
+  - if membership.persisted?
+    = f.hidden_field :id, data: { 'gallery-picture-field' => 'id' }
+  = f.hidden_field :picture_id, data: { 'gallery-picture-field' => 'picture_id' }
+  = f.hidden_field :_destroy, value: membership.marked_for_destruction? ? '1' : '0', data: { 'gallery-picture-field' => '_destroy' }
+  = f.hidden_field :order, data: { 'gallery-picture-field' => 'order' }
+  %img{ src: membership.picture&.thumbnail_image_path, alt: membership.picture&.alt_text }
+  %span.gallery-picture-title= membership.picture&.title
+  .gallery-picture-ordering
+    %button.gallery-picture-drag.btn.btn-flat.blue.lighten-3{ type: 'button', draggable: true, 'aria-label' => 'Drag picture to reorder' }
+      %i.material-icons drag_handle
+    %button.btn.btn-flat.blue.lighten-3{ type: 'button', data: { action: 'gallery-pictures#up' } } Move up
+    %button.btn.btn-flat.blue.lighten-3{ type: 'button', data: { action: 'gallery-pictures#down' } } Move down
+  %p
+    = f.label :featured do
+      = f.check_box :featured, data: { 'gallery-picture-field' => 'featured', action: 'gallery-pictures#feature' }
+      %span Featured
+  %p
+    = f.label :visible do
+      = f.check_box :visible
+      %span Visible
