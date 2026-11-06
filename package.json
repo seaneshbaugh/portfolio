@@ -60,5 +60,9 @@
   "engines": {
     "node": ">=26 <27",
     "yarn": "1.22.x"
+  },
+  "scripts": {
+    "build:css": "sass --load-path=node_modules --quiet-deps --no-source-map app/assets/stylesheets/application.scss:app/assets/builds/application.css app/assets/stylesheets/admin.scss:app/assets/builds/admin.css",
+    "watch:css": "yarn build:css --watch"
   }
 }

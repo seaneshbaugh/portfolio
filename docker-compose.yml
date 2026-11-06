@@ -26,7 +26,16 @@ services:
     shm_size: 2gb
     profiles:
       - system-test
+  css:
+    build:
+      context: .
+      dockerfile: "./Dockerfile"
+    command: "yarn watch:css"
+    volumes:
+      - ".:/portfolio"
+      - "node_modules:/portfolio/node_modules"
   shakapacker:
+    profiles: [legacy-webpack]
     build:
       context: .
       dockerfile: "./Dockerfile"

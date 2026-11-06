@@ -1,0 +1,26 @@
+#!/usr/bin/env node
+// Copy only browser assets used by import maps; never expose node_modules.
+const fs = require('node:fs');
+const path = require('node:path');
+const packages = {
+  '@materializecss/materialize': { 'dist/js/materialize.mjs': 'vendor/javascript/materialize.js' },
+  glightbox: { 'dist/js/glightbox.min.js': 'vendor/javascript/glightbox.js' },
+  'ace-builds': Object.fromEntries(['ace', 'mode-css', 'mode-html', 'mode-javascript', 'mode-text', 'mode-rhtml', 'theme-github', 'worker-css', 'worker-html', 'worker-javascript'].map(name => [`src-noconflict/${name}.js`, `vendor/javascript/ace/${name === 'ace' ? 'core' : name}.js`])),
+  'material-design-icons': Object.fromEntries(['woff2', 'woff', 'ttf'].map(ext => [`iconfont/MaterialIcons-Regular.${ext}`, `app/assets/fonts/material-icons/MaterialIcons-Regular.${ext}`]))
+};
+const versions = {};
+for (const [name, files] of Object.entries(packages)) {
+  const base = path.join('node_modules', name);
+  versions[name] = JSON.parse(fs.readFileSync(path.join(base, 'package.json'))).version;
+  for (const [source, target] of Object.entries(files)) {
+    fs.mkdirSync(path.dirname(target), { recursive: true });
+    fs.copyFileSync(path.join(base, source), target);
+  }
+  const license = ['LICENSE', 'LICENSE.txt', 'LICENSE.md', 'LICENSE.TXT'].find(file => fs.existsSync(path.join(base, file)));
+  if (license) {
+    const target = path.join('vendor/licenses', name.replaceAll('/', '-'));
+    fs.mkdirSync(target, { recursive: true });
+    fs.copyFileSync(path.join(base, license), path.join(target, 'LICENSE'));
+  }
+}
+fs.writeFileSync('vendor/javascript/versions.json', JSON.stringify(versions, null, 2) + '\n');

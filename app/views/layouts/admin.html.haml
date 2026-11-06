@@ -7,13 +7,13 @@
     %meta{ content: page_meta_description(yield(:meta_description)), name: 'description' }
     %meta{ content: t('.author'), name: 'author' }
     %meta{ content: 'telephone=no', name: 'format-detection' }
-    = stylesheet_pack_tag 'admin', media: 'all'
-    = javascript_pack_tag 'admin'
+    = stylesheet_link_tag 'admin', media: 'all'
+    = javascript_importmap_tags 'admin'
     %link{ href: '/favicon.ico', rel: 'shortcut icon' }
-    %link{ href: asset_pack_path('static/shared/images/apple-touch-icon-iphone.png'), rel: 'apple-touch-icon', sizes: '57x57' }
-    %link{ href: asset_pack_path('static/shared/images/apple-touch-icon-ipad.png'), rel: 'apple-touch-icon', sizes: '72x72' }
-    %link{ href: asset_pack_path('static/shared/images/apple-touch-icon-iphone-retina.png'), rel: 'apple-touch-icon', sizes: '114x114' }
-    %link{ href: asset_pack_path('static/shared/images/apple-touch-icon-ipad-retina.png'), rel: 'apple-touch-icon', sizes: '144x144' }
+    %link{ href: asset_path('shared/apple-touch-icon-iphone.png'), rel: 'apple-touch-icon', sizes: '57x57' }
+    %link{ href: asset_path('shared/apple-touch-icon-ipad.png'), rel: 'apple-touch-icon', sizes: '72x72' }
+    %link{ href: asset_path('shared/apple-touch-icon-iphone-retina.png'), rel: 'apple-touch-icon', sizes: '114x114' }
+    %link{ href: asset_path('shared/apple-touch-icon-ipad-retina.png'), rel: 'apple-touch-icon', sizes: '144x144' }
     %link{ href: '/humans.txt', rel: 'author' }
     = csrf_meta_tags
   %body

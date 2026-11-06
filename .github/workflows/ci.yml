@@ -19,7 +19,7 @@ jobs:
       - name: Build the locked application dependencies
         run: |
           cp .env.example .env
-          docker compose build web shakapacker
+          docker compose build web css
           docker compose up -d db selenium
 
       - name: Prepare the isolated test services and database
@@ -30,7 +30,7 @@ jobs:
             sleep 1
           done
           docker compose exec -T db pg_isready -U portfolio
-          docker compose up -d web shakapacker
+          docker compose up -d web css
           docker compose exec -T web bundle check
           docker compose exec -T web yarn install --frozen-lockfile
           docker compose exec -T -e RAILS_ENV=test web bundle exec rails db:create db:migrate
@@ -46,7 +46,7 @@ jobs:
             abort "Selenium did not become ready"
           '
 
-      - name: Development asset proxy
+      - name: Development assets
         run: docker compose exec -T web ruby bin/check-development-assets
 
       # Existing suite failures remain visible, but must not prevent the browser

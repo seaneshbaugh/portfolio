@@ -466,14 +466,14 @@ retained package requires bundling, resolve that before removing Shakapacker.
       behavior, persisted order and visibility/featured controls.
 - [x] Remove React, ReactDOM, react-ace, React DnD, Redux, React Redux and related
       helpers only after checking remaining imports and passing widget tests.
-- [ ] Add Propshaft/importmap-rails; create `app/assets` structure,
+- [x] Add Propshaft/importmap-rails; create `app/assets` structure,
       `config/importmap.rb`, JS entrypoints and appropriate asset paths. Migrate
       shared/public/admin images and fonts and replace layout pack helpers with
       Rails asset helpers/import-map tags. Preserve admin/public load boundaries.
-- [ ] Resolve browser-compatible imports for Materialize (if still present),
+- [x] Resolve browser-compatible imports for Materialize (if still present),
       GLightbox, Prism, Ace and Active Storage; pin or vendor explicit versions.
       Import maps handle JavaScript, not Sass compilation or webpack loaders.
-- [ ] Keep a temporary CSS build while Sass/Materialize remains, or complete
+- [x] Keep a temporary CSS build while Sass/Materialize remains, or complete
       Tailwind conversion before retiring that build. Test font/image URLs and
       content-specific assets after each move.
 - [ ] Add Turbo after controllers/widgets tolerate reconnects. Replace Rails UJS
@@ -626,9 +626,52 @@ Gallery migration and remaining React removal (2026-11-01):
   services, all ten public/admin CSS/JS entrypoint assets return HTTP 200 through
   the proxy. No React imports, dependencies or JSX entrypoints remain.
 
-Next slice: add Propshaft/import maps and migrate asset ownership. Resolve Ace
-worker delivery, CSS compilation and retained browser libraries before retiring
-Shakapacker; then introduce Turbo with navigation/cache lifecycle coverage.
+Propshaft/import-map migration (2026-11-03):
+
+- Added unpinned `propshaft` 1.3.2, `importmap-rails` 2.2.3 and transitional
+  `cssbundling-rails` 1.4.3; lockfile changes add only these gems. Public/admin
+  layouts now use Rails stylesheet helpers and their own import-map entrypoints.
+  Shared initialization loads Rails UJS, Materialize and flash handlers; public
+  modules load GLightbox, while admin modules load Stimulus and Ace. Pins disable
+  preloading so a public page does not fetch admin controllers or Ace.
+- Moved images/fonts to `app/assets`, Sass to `app/assets/stylesheets`, and kept
+  generated CSS in ignored `app/assets/builds`. Replaced webpack font URLs with
+  Propshaft-resolved URLs, preserved shared/theme styling, and made the public
+  GLightbox stylesheet explicit. Sass sources are excluded from served assets.
+- `config/importmap.rb` maps Rails-gem Stimulus/Active Storage/UJS modules and
+  locally vendored Materialize 2.2.2, GLightbox 3.3.1 and Ace 1.45.2 browser builds.
+  `bin/vendor-assets` copies a reviewed subset from locked npm dependencies and
+  records versions/licenses; fonts come from material-design-icons 3.0.1. There
+  are no CDN imports. There is no active Prism import/package to migrate.
+- Ace core/modes/theme load as native modules through a small global adapter.
+  Root-relative `RAILS_ASSET_URL` worker references are compiled by Propshaft.
+  The CSS and JavaScript syntax-checking workers execute successfully in Firefox.
+  Connect/disconnect behavior and the Rails UJS transition remain covered.
+- `cssbundling-rails` builds CSS for precompilation, using a frozen Yarn install
+  task. `bin/setup` builds initial CSS; `Procfile.dev` and the new `css` Compose
+  service watch it. CI builds/starts web + css. Test helper CSS preparation replaces
+  Shakapacker compilation; the shared system-test configuration is unchanged.
+- Removed obsolete pack entrypoints and JS/image/Sass import wrappers. Disabled
+  Shakapacker precompilation, removed the unused proxy adapter, and moved its old
+  service behind `legacy-webpack`; normal development needs no port 3035. The
+  Shakapacker gem/npm packages, configs/binstubs and generated pack cleanup remain
+  for the explicit removal task, together with their obsolete CSP exception.
+- `bin/check-development-assets` now resolves and fetches all 43 import-map,
+  stylesheet, worker, image and font assets through Rails, checking HTTP/MIME/body.
+  Added system coverage for loaded fonts/local imports and public/admin module
+  boundaries. Development docs explain vendoring, CSS watch/build and clearing a
+  precompiled manifest before source-based development.
+- Full `rails test:all`: **214 tests, 667 assertions, 30 failures, 7 errors,
+  0 skips**; all 44 system tests pass, preserving the legacy failure/error counts.
+  All 44 system tests also pass against the production manifest's static resolver
+  (**292 assertions, no failures/errors**). Production precompilation succeeds
+  without webpack or Sass warnings. Both images rebuild with frozen dependencies;
+  Ruby formatting and `git diff --check` pass. After clearing generated production
+  assets, rebuilding the CSS outputs cleared by clobber, and restarting Rails, the 43-asset HTTP/MIME check passes again in source
+  development mode. Hosted GitHub CI remains unverified locally.
+
+Next slice: introduce Turbo with navigation/cache lifecycle coverage, then remove
+unused Shakapacker tooling once the retained widgets and CSS pass those checks.
 
 ## 7. Replace Materialize with Tailwind
 

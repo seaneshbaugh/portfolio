@@ -1,0 +1,34 @@
+@charset "UTF-8";
+
+@use "../shared/materialize_settings";
+@use "@materializecss/materialize/sass/components/tokens.module";
+@use "@materializecss/materialize/sass/components/theme.module";
+@use "@materializecss/materialize/sass/components/colors.module";
+@use "@materializecss/materialize/sass/components/normalize";
+@use "@materializecss/materialize/sass/components/global";
+@use "@materializecss/materialize/sass/components/badges";
+@use "@materializecss/materialize/sass/components/grid";
+@use "@materializecss/materialize/sass/components/transitions";
+@use "@materializecss/materialize/sass/components/cards";
+@use "@materializecss/materialize/sass/components/buttons";
+@use "@materializecss/materialize/sass/components/dropdown";
+@use "@materializecss/materialize/sass/components/materialbox";
+@use "@materializecss/materialize/sass/components/forms/forms";
+@use "../shared/materialize_compatibility";
+
+@use "./variables";
+@use "@materializecss/materialize/sass/components/color-variables" as palette;
+@use "./typography";
+@use "./layout";
+@use "./links";
+@use "./pages";
+@use "./pictures";
+@use "./posts";
+
+.hidden {
+    display: none;
+}
+
+.waves-button-input {
+    color: variables.$button-flat-color;
+}

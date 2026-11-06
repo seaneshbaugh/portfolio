@@ -12,3 +12,10 @@ yarn-error.log
 coverage/
 fixtures/files/
 storage/
+
+# Build assets from source rather than copying a host precompile/cache.
+public/assets/
+public/packs/
+public/packs-test/
+app/assets/builds/*
+!app/assets/builds/.keep

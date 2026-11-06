@@ -171,3 +171,22 @@ the asset compiler or tests are reading them.
 CI retains separate legacy and system-test steps so the known legacy failures do
 not hide browser/build results. The passing system suite is the frontend migration
 gate; remaining legacy test repairs are still recorded separately in TODO.md.
+
+## Propshaft and import maps (2026-11-03)
+
+Propshaft 1.3.2 and importmap-rails 2.2.3 now deliver application assets. The
+transitional cssbundling-rails 1.4.3 build compiles the existing Sass/Materialize
+styles separately. All three gems remain unpinned in Gemfile and locked normally.
+
+Browser dependency delivery is local: import-map pins use Rails-gem modules for
+Stimulus, Active Storage and UJS, plus checked-in npm browser distributions for
+Materialize/GLightbox/Ace. `vendor/javascript/versions.json` records exact browser
+versions, `vendor/licenses` retains licenses, and `node bin/vendor-assets` updates
+the reviewed subset after an intentional lockfile update. JavaScript/font changes
+must be committed with their matching metadata. No CDN resolution runs at runtime.
+
+Node/Yarn remain for Sass and the server-side `css` validator. Webpack/Shakapacker
+and their dependency tree remain installed for the explicit cleanup TODO, but
+application layouts, tests, development watch and production precompilation no
+longer use them. The old service requires the `legacy-webpack` profile. The dated
+CSV snapshots above intentionally describe the earlier dependency-upgrade batch.

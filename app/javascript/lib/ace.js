@@ -1,15 +1,15 @@
-import ace from "ace-builds/src-noconflict/ace";
-import "ace-builds/src-noconflict/mode-css";
-import "ace-builds/src-noconflict/mode-html";
-import "ace-builds/src-noconflict/mode-javascript";
-import "ace-builds/src-noconflict/mode-text";
-import "ace-builds/src-noconflict/mode-rhtml";
-import "ace-builds/src-noconflict/theme-github";
+import "ace/core";
+import "ace/mode-css";
+import "ace/mode-html";
+import "ace/mode-javascript";
+import "ace/mode-text";
+import "ace/mode-rhtml";
+import "ace/theme-github";
 
-// Keep asset delivery separate from the controller. When webpack is retired,
-// these URLs must come from the Rails asset pipeline instead.
-ace.config.setModuleUrl("ace/mode/css_worker", new URL("ace-builds/src-noconflict/worker-css.js", import.meta.url).href);
-ace.config.setModuleUrl("ace/mode/html_worker", new URL("ace-builds/src-noconflict/worker-html.js", import.meta.url).href);
-ace.config.setModuleUrl("ace/mode/javascript_worker", new URL("ace-builds/src-noconflict/worker-javascript.js", import.meta.url).href);
+// Propshaft rewrites these explicit worker URLs to fingerprinted assets.
+const ace = window.ace;
+ace.config.setModuleUrl("ace/mode/css_worker", RAILS_ASSET_URL("/ace/worker-css.js"));
+ace.config.setModuleUrl("ace/mode/html_worker", RAILS_ASSET_URL("/ace/worker-html.js"));
+ace.config.setModuleUrl("ace/mode/javascript_worker", RAILS_ASSET_URL("/ace/worker-javascript.js"));
 
 export default ace;

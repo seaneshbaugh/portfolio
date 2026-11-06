@@ -23,7 +23,7 @@ mean_time_reporter_options = {
 
 Minitest::Reporters.use! Minitest::Reporters::MeanTimeReporter.new(mean_time_reporter_options)
 
-Shakapacker.compile
+system("yarn build:css", exception: true)
 
 module ActiveSupport
   self.test_order = :random

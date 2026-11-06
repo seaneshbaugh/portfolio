@@ -23,9 +23,9 @@ Start the database and local mail server, then build the app images:
 
 ```bash
 docker compose up -d db mail
-docker compose build web shakapacker
+docker compose build web css
 docker compose run --rm --no-deps web bin/setup --skip-server
-docker compose up -d web shakapacker
+docker compose up -d web css
 ```
 
 If PostgreSQL is still starting, retry the setup command after it is ready.
@@ -38,13 +38,13 @@ Visit the website at <http://localhost:3000> and Mailcatcher at
 <http://localhost:1080>. Optional pgAdmin: `docker compose up -d pgadmin`, then
 <http://localhost:5555> (credentials are in Compose).
 
-The web and Shakapacker services share a Docker-managed `node_modules` volume.
+The web and CSS services share a Docker-managed `node_modules` volume.
 It initializes from the image on first use. After changing JS manifests/lockfiles,
 refresh it explicitly; rebuilding an image does not update an existing volume:
 
 ```bash
-docker compose run --rm --no-deps shakapacker yarn install --frozen-lockfile
-docker compose restart shakapacker
+docker compose run --rm --no-deps css yarn install --frozen-lockfile
+docker compose restart css
 ```
 
 For a large dependency-tree change, Yarn can leave stale nested packages in an
@@ -53,13 +53,13 @@ rebuilt image, stop/remove only the application containers and their dependency
 volume:
 
 ```bash
-docker compose build web shakapacker
-docker compose stop web shakapacker
-docker compose rm -f web shakapacker
+docker compose build web css
+docker compose stop web css
+docker compose rm -f web css
 docker volume ls --filter label=com.docker.compose.volume=node_modules
 # Verify the volume belongs to this project. With the default project name:
 docker volume rm portfolio_node_modules
-docker compose up -d web shakapacker
+docker compose up -d web css
 ```
 
 This refreshes cached JavaScript dependencies. Keep the database directory and
@@ -78,45 +78,57 @@ Shakapacker retain their tested versions until replacement. See the
 [dependency inventory](docs/dependencies/README.md) for before/after versions,
 retained/transitional packages, compatibility exceptions and update commands.
 
-### Frontend migration
+### Asset pipeline and frontend
 
-The admin pack starts Stimulus from `app/javascript/controllers/`. The first
-replacement is the picture selector: Rails renders its controls in
-`shared/admin/_picture_selector.html.haml`, and Stimulus loads the existing JSON
-picture list and dispatches `picture-selector:select` with the selected picture.
-The Ace and gallery Stimulus controllers consume that event. Their readiness flag
-keeps selection disabled until the consumer is connected.
+Propshaft serves fingerprinted assets under `/assets`. The public layout loads
+`application.js`; the admin layout loads `admin.js` through import maps. Both use
+`shared.js` for Rails UJS, Materialize initialization and flash messages. Public
+pages load GLightbox; admin pages load Stimulus controllers and Ace. Admin modules
+are mapped but not preloaded or fetched by public pages. Turbo is a later step.
 
-`controllers/ace_editor_controller.js` owns Ace setup, textarea synchronization,
-picture insertion and editor/worker destruction on disconnect. `lib/ace.js` imports
-the supported modes and GitHub theme and declares three explicit worker assets;
-these webpack URLs must move to the Rails asset pipeline during the import-map
-migration. RHTML inherits HTML highlighting but intentionally has no validation
-worker; CSS and JavaScript validation remain enabled.
+`app/assets/stylesheets` contains the retained Sass/Materialize sources. The
+`css` Compose service runs `yarn watch:css` and writes public/admin CSS into
+`app/assets/builds`; `yarn build:css` performs one build. cssbundling-rails also
+builds CSS for production precompilation, respecting `yarn.lock` through a frozen
+install task. Node is still required for Sass and server-side CSS validation.
 
-The pictures index is server rendered, including its table rows and upload
-controls. `controllers/picture_uploads_controller.js` handles file selection/drop,
-Active Storage direct uploads, pending status and per-file errors. Successful
-HTML/XHR creates return the same `_picture.html.haml` partial used by the index;
-JSON creates keep their serializer response. New rows are prepended to the
-current page with the existing 25-row limit; reload reapplies server search and
-pagination. Disconnect aborts active uploads/saves and ignores late responses.
-An aborted save may already have committed; reload reconciles the list with Rails.
+Images live in `app/assets/images` and icon fonts in `app/assets/fonts`.
+Materialize, GLightbox and the supported Ace modes/theme/workers are vendored
+locally in `vendor/javascript`; import maps have no CDN dependency. Their exact
+versions are recorded in `vendor/javascript/versions.json`, with licenses under
+`vendor/licenses`. Rails supplies UJS, Active Storage and Stimulus browser modules.
+After an intentional npm upgrade, regenerate and review the browser assets with:
 
-`controllers/gallery_pictures_controller.js` owns gallery nested fields rendered
-by `admin/galleries/_gallery_picture_fields.html.haml`. New selections clone a
-Rails-rendered template with unique field indices; ordering changes hidden order
-values without renaming fields. Saved removals keep hidden destruction fields,
-while unsaved removals delete their fields. Featured selection is exclusive.
-Native drag-and-drop supports desktop ordering; Move up/Move down buttons support
-keyboard and touch activation, preserve focus, and announce the new position.
-Disconnect clears drag state and disables selection until reconnect.
+```bash
+docker compose exec web node bin/vendor-assets
+```
 
-React, ReactDOM, React Ace, React DnD, Redux/React Redux, Moment and their unused
-helpers have been removed, together with the React Babel configuration. Shakapacker
-still owns the current JS/CSS build and Ace workers. TODO section 6 tracks the
-remaining import-map/asset migration. New controllers should clean up pending
-requests and UI on disconnect.
+Ace's worker URLs use Propshaft's `RAILS_ASSET_URL` transformation; validation
+runs in the CSS/JavaScript workers. RHTML intentionally has no validation worker.
+Stimulus owns the editor, selector, uploader and gallery nested fields, with
+connect/disconnect cleanup. Rails renders picture rows and gallery field
+partials; uploads and selection preserve the existing endpoints and nested params.
+Native gallery dragging has Move up/Move down alternatives for keyboard/touch.
+
+The unused Shakapacker tooling remains for its explicit cleanup TODO. Its service
+is behind the `legacy-webpack` profile and is not part of normal startup or asset
+precompilation. React and its associated state/drag libraries have been removed.
+
+To compile production assets locally:
+
+```bash
+docker compose exec -e RAILS_ENV=production -e SECRET_KEY_BASE_DUMMY=1 web bundle exec rails assets:precompile
+```
+
+Before continuing source-based development, clear the generated production
+manifest, rebuild CSS (clobber clears those outputs too), and restart Rails so
+Propshaft resolves edited source files:
+
+```bash
+docker compose exec web bundle exec rails assets:clobber
+docker compose exec web yarn build:css
+docker compose restart web
+```
 
 ### Sample content and local admin
 
@@ -165,7 +177,7 @@ without validation or delivery. That behavior has been preserved.
 
 ### Optional native process launcher
 
-`bin/dev` uses `Procfile.dev` to run Rails and Shakapacker with Foreman when
+`bin/dev` uses `Procfile.dev` to run Rails and the Sass watcher with Foreman when
 running Ruby/Node on the host. Supply the database environment yourself (both
 hosts should be `localhost` when using Compose's published PostgreSQL port),
 install the pinned dependencies and libvips, and use `bin/setup --skip-server`
@@ -183,15 +195,14 @@ docker compose exec web bundle exec rails test:system
 docker compose exec web bundle exec rails test:all
 ```
 
-To check the development asset connection separately, with web and Shakapacker
-running:
+To check asset delivery separately, with web and the CSS watcher running:
 
 ```bash
 docker compose exec web ruby bin/check-development-assets
 ```
 
-This checks public/admin CSS and JavaScript through Rails' development proxy.
-System tests use static packs and cannot detect a broken development proxy.
+This resolves the current import-map and asset-helper URLs and checks all modules,
+stylesheets, Ace workers, images and fonts over HTTP through Rails.
 
 Selenium connects to the test server at `http://web:3001`. Port 3001 does not
 need to be published to the host. Run only one system-test command at a time.
@@ -199,8 +210,8 @@ Running `test:all` also makes the other tests sequential; use the separate
 commands when you want to retain the non-system suite's independent execution
 settings.
 
-The test helper compiles static assets into `public/packs-test`, so system tests
-do not need the Shakapacker development server. Fixtures use a separate test
+The test helper builds CSS, and system tests load assets through Propshaft;
+no webpack server is needed. Fixtures use a separate test
 database, local `tmp/storage` attachments, and Rails' in-memory mail delivery;
 they do not use development content, S3, or Mailcatcher. The upload helper purges
 attachments created by each system test, since transaction rollback alone cannot
@@ -223,17 +234,20 @@ each `visit` and is limited to that document. Server exceptions are in
 `log/test.log`.
 
 `.github/workflows/ci.yml` uses the same Compose browser configuration with locked
-dependencies, an isolated database, a development asset proxy check, separate
+dependencies, an isolated database, a Propshaft HTTP asset check, separate
 existing/system test steps, and a production asset build. Existing suite failures keep CI red but do not prevent
 the browser and build steps from reporting results. The legacy suite still has
 deferred failures/errors; see TODO.md for the recorded baseline.
 
 ## Troubleshooting
 
-#### Missing webpack or JavaScript dependencies
+#### Missing JavaScript or CSS assets
 
-Refresh the shared dependency volume with the locked Yarn install command above,
-then restart Shakapacker. Do not remove database volumes to refresh JavaScript.
+Run the asset check above to identify the missing URL. Refresh npm dependencies
+with the locked Yarn install if needed, then run `yarn build:css` and restart the
+CSS watcher. After an intentional browser-library upgrade, regenerate and review
+`bin/vendor-assets` output. Clear a stale production manifest using the documented
+clobber/rebuild/restart sequence.
 
 #### `no space left on device`
 

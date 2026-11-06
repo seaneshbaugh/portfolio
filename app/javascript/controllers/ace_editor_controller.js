@@ -1,5 +1,5 @@
 import { Controller } from "@hotwired/stimulus";
-import ace from "../lib/ace";
+import ace from "lib/ace";
 
 export default class extends Controller {
   static targets = ["editor", "input"];
