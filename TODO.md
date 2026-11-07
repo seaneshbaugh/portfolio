@@ -482,7 +482,7 @@ retained package requires bundling, resolve that before removing Shakapacker.
 - [x] Implement connect/disconnect cleanup for Ace, dialogs, lightboxes and other
       widgets; test navigation/back/forward, Turbo cache restoration and stored
       CMS scripts. Decide explicit opt-outs for incompatible content.
-- [ ] Remove Shakapacker gem/npm package, pack helpers, webpack/Babel/PostCSS
+- [x] Remove Shakapacker gem/npm package, pack helpers, webpack/Babel/PostCSS
       configs and binstubs, service/port 3035 and obsolete generated packs only
       after all consumers and production builds pass through the new pipeline.
 
@@ -710,9 +710,37 @@ Turbo Drive and UJS replacement (2026-11-06):
   rebuilding CSS and recreating web/css, all 43 asset URLs pass the development
   HTTP/MIME check with Turbo in place of UJS.
 
-Next slice: remove unused Shakapacker tooling and dependencies, configs/binstubs,
-legacy service/port/CSP exceptions and obsolete generated assets. Keep the Sass
-build until the Materialize/Tailwind phase replaces it.
+Shakapacker removal (2026-11-06):
+
+- Removed Shakapacker from Gemfile/lock along with its unused `package_json`,
+  `rack-proxy` and `semantic_range` dependencies; retained gem versions are unchanged.
+- Removed 29 direct npm webpack/Babel/PostCSS build-tool dependencies, including
+  loaders, extraction/minification/compression/manifest plugins, types and browser
+  data. Removed package.json's Babel/Browserslist config. Locked npm package/version
+  pairs drop from 814 to 265; no new package versions were introduced. Retained
+  Sass, browser-vendoring, runtime validator and existing lint dependencies.
+- Deleted `config/shakapacker.yml`, `config/webpack/webpack.config.js`, root
+  `babel.config.js`/`postcss.config.js`, and both Shakapacker binstubs. Pack helpers
+  and JS pack entrypoints had already been replaced by Propshaft/import maps.
+- Removed the legacy Compose service/container and its host/port environment
+  settings. Dropped port 3035/WebSocket exceptions from the development CSP while
+  preserving the remaining self/HTTPS connection policy. Removed obsolete pack
+  ignore entries and cleared generated `public/packs`, `public/packs-test`,
+  `tmp/shakapacker` and `tmp/shakapacker.lock` only; database/uploads are preserved.
+- Updated current setup/dependency documentation and verification commands. Dated
+  inventory CSVs and earlier migration notes remain historical records.
+- Full `rails test:all`: **223 tests, 756 assertions, 30 failures, 7 errors,
+  0 skips**; all 53 system tests pass, preserving the legacy failure/error counts.
+  Production assets compile successfully through Propshaft/Sass. Both images build
+  with frozen dependencies, and the recreated services pass Bundler/Yarn integrity
+  checks. Rails boots without Shakapacker or proxy middleware; webpack, Babel and
+  PostCSS cannot resolve from node_modules, while the CSS validator's parser works.
+  After clearing production output and rebuilding CSS, all 43 asset URLs pass
+  HTTP/MIME checks in development. Ruby formatting and `git diff --check` pass.
+  No application behavior or shared system-test configuration was changed.
+
+Next slice: replace Materialize with Tailwind. Keep the working Sass build until
+its remaining styles have moved.
 
 ## 7. Replace Materialize with Tailwind
 

@@ -62,20 +62,14 @@ production database migrations.
 | Historical seeds | seed-fu | Retain until the owner's manual seed follow-up; do not execute seeds during upgrades |
 | Development | debug, brakeman, modloc, rubocop, rubocop-rails-omakase, rubocop-minitest, rubocop-performance, rubocop-rails, haml_lint, listen, web-console | Retain |
 | Tests | capybara, selenium-webdriver, minitest, minitest-matchers, minitest-reporters, minitest-spec-rails, shoulda-matchers, simplecov | Retain; modernizing the legacy spec/matcher layer is separate work |
-| Bundling | shakapacker | Transitional; remove with its npm package and the last asset consumer |
+| Assets/Hotwire | propshaft, importmap-rails, cssbundling-rails, stimulus-rails, turbo-rails | Retain Propshaft/Hotwire; replace the temporary Sass build during Tailwind migration |
 
-There are no exact active gem pins. Only two explicit compatibility ranges remain:
+There are no exact active gem pins. Rails `~> 8.1.0` is the only explicit
+compatibility range, keeping updates within the selected minor while defaults
+and deployment configuration are aligned. Shakapacker and its proxy adapter have
+been removed. `bin/check-development-assets` verifies import-map modules, CSS,
+workers, images and fonts through Rails' Propshaft server.
 
-- Rails `~> 8.1.0` keeps updates within the selected minor while its defaults and
-  deployment configuration are being aligned.
-- Shakapacker `~> 8.2.0` preserves the temporary bundler. Its gem and npm package
-  are both locked to 8.2.0, and its existing version-consistency check remains on.
-
-Shakapacker 8's development proxy needs an explicit backend with rack-proxy 2.
-The application initializer in `config/application.rb` configures that backend
-after Shakapacker registers its middleware. Retire the initializer with the
-bundler. `bin/check-development-assets` checks both packs through the actual
-development server; CI runs it because static system-test packs bypass the proxy.
 
 Minitest is unpinned in the Gemfile. Bundler selects 5.27.0 because the current
 `minitest-matchers` gem requires `minitest ~> 5.0`; reaching Minitest 6 requires
@@ -104,42 +98,39 @@ password-reset tests cannot establish production token compatibility.
 | --- | --- | --- |
 | Retained functionality | ace-builds, @rails/activestorage, glightbox, normalize.css, css | Keep through migration. Ace is now explicit rather than borrowed from react-ace; `css` remains a server-side Node requirement for CSS validation |
 | Materialize/design | @materializecss/materialize, material-design-icons, animate.css | Retire or deliberately retain effects/icons during Tailwind work; do not couple a visual-library minor upgrade to this dependency batch |
-| Bundling/transpilation | shakapacker, webpack, webpack-cli, webpack-dev-server, webpack-assets-manifest, webpack-merge, Babel packages/loaders/plugins, @types/babel__core, @types/webpack, compression-webpack-plugin, terser-webpack-plugin, file-loader | Transitional; preserve compatible majors and remove when the last webpack consumer moves |
-| CSS build | sass, sass-loader, css-loader, style-loader, resolve-url-loader, mini-css-extract-plugin, css-minimizer-webpack-plugin, caniuse-lite | Transitional; remove only after stylesheet ownership changes |
+| CSS build | sass | Transitional Dart Sass build; replace/remove with the Materialize/Tailwind migration |
 | Existing lint tooling | eslint, sass-lint | Review/removal candidates: no ESLint configuration or script is currently wired; sass-lint is legacy and documented but has no newer release |
 
 `react-ace` and its unused transitive dependencies were removed during the direct
 Ace/Stimulus migration. Ace modes/theme and explicit worker URLs live in
-`app/javascript/lib/ace.js`; the worker URLs still use webpack asset modules until
-the Rails asset pipeline migration.
+`app/javascript/lib/ace.js`; worker URLs now use Propshaft asset references.
 The direct Redux dependency, React Redux and Moment were removed with the
 uploader/list replacement; Rails now renders picture rows and timestamps, while
 Stimulus handles uploads. The gallery migration subsequently removed the remaining
 React/ReactDOM, React DnD/backends (including their transitive Redux), prop-types,
 immutability-helper and classnames dependencies. React-only Babel presets/plugins
 and JSX resolution entries were also removed. All active admin widgets now use
-Stimulus and Rails-rendered markup; Shakapacker remains until asset ownership moves.
+Stimulus and Rails-rendered markup; Propshaft and import maps own asset delivery.
 
 JavaScript does not support omitting a dependency's value as Gemfile does. Caret
 ranges are the normal compatible-major equivalent; Yarn still installs exact
 lockfile versions with `--frozen-lockfile`. Most package declarations now use those
 ranges. Rails' Active Storage package uses `~8.1.400` to track the selected Rails
-minor. React/ReactDOM/React Ace, Materialize and Shakapacker retain their exact
-temporary UI versions to avoid changing their behavior before replacement.
+minor. Materialize retains its exact temporary version until replacement; the
+React and Shakapacker dependency trees have been removed.
 `packageManager` and Docker continue to pin the executable Yarn version.
 
-Compatible tooling updates include webpack 5, Babel 7, Sass 1, dev-server 5,
+The original dependency-upgrade batch included webpack 5, Babel 7, Sass 1, dev-server 5,
 loaders and browser data. Babel 8, Shakapacker 10, React Ace 15, Materialize 2.4,
 webpack CLI 7/dev-server 6, CSS minimizer 8, manifest plugin 6, Sass loader 17 and
-ESLint 10 are intentionally not this batch's targets. They upgrade code scheduled
-for removal or require another compatibility migration. Reassess retained tools
-after the frontend replacements instead.
+ESLint 10 were intentionally excluded from that original batch. The bundler
+packages have since been removed; retained tools remain separate upgrade decisions.
 
 Removed unused direct packages: `webpacker-react`, `form-serialize`,
 `@rails/actioncable` and `prismjs`. There are no imports/active initializers for
-them; the application directly mounts React and does not use an Action Cable
-client. This does not remove Rails' Action Cable framework. Transitive copies
-that another package still needs can remain in `yarn.lock`.
+them; the active UI now uses Stimulus and does not use an Action Cable client.
+This does not remove Rails' Action Cable framework. Transitive copies that
+another package still needs can remain in `yarn.lock`.
 
 ## Update and verification commands
 
@@ -153,12 +144,14 @@ docker compose exec web bundle update devise pundit ransack paper_trail
 docker compose exec web yarn upgrade glightbox
 
 # After runtime or dependency changes:
-docker compose build web shakapacker
-docker compose up -d db web shakapacker selenium
+docker compose build web css
+docker compose up -d db web css selenium
 docker compose exec web bundle exec rails test
 docker compose exec web bundle exec rails test:system
 docker compose exec -e RAILS_ENV=production -e NODE_ENV=production -e SECRET_KEY_BASE_DUMMY=1 web bundle exec rails assets:precompile
-docker compose restart shakapacker
+docker compose exec web bundle exec rails assets:clobber
+docker compose exec web yarn build:css
+docker compose restart web css
 ```
 
 Docker installs gems in frozen mode and JavaScript with `--frozen-lockfile`, so
@@ -185,11 +178,11 @@ versions, `vendor/licenses` retains licenses, and `node bin/vendor-assets` updat
 the reviewed subset after an intentional lockfile update. JavaScript/font changes
 must be committed with their matching metadata. No CDN resolution runs at runtime.
 
-Node/Yarn remain for Sass and the server-side `css` validator. Webpack/Shakapacker
-and their dependency tree remain installed for the explicit cleanup TODO, but
-application layouts, tests, development watch and production precompilation no
-longer use them. The old service requires the `legacy-webpack` profile. The dated
-CSV snapshots above intentionally describe the earlier dependency-upgrade batch.
+Node/Yarn remain for Sass, browser vendoring and the server-side `css` validator.
+Webpack/Shakapacker and their dependency tree have been removed; application
+layouts, tests, development watch and production precompilation use Propshaft and
+Sass. The dated CSV snapshots above intentionally describe the earlier upgrade
+batch and retain the removed packages as historical inventory.
 
 ## Turbo and UJS replacement (2026-11-06)
 
@@ -200,3 +193,18 @@ navigation; explicit full-document boundaries preserve public/admin modules,
 authentication changes and script-bearing CMS content. The disabled contact form
 keeps its inert full-page response. See README and TODO section 6 for lifecycle
 cleanup, cache restoration and verification details.
+
+## Shakapacker removal (2026-11-06)
+
+Removed the Shakapacker gem and its now-unused package_json, rack-proxy and
+semantic_range dependencies. Removed 29 direct npm build-tool declarations and
+their unused transitive tree: webpack/dev-server/CLI, Babel, PostCSS, CSS/file/URL
+loaders, extraction/minification/compression/manifest plugins, browser data and
+bundler types. Exact locked npm package/version pairs drop from 814 to 265, with
+no new versions introduced. Retained gem versions are unchanged as well.
+
+Deleted webpack/Babel/PostCSS configuration, binstubs, the legacy Compose service
+and host environment/port settings, and the development CSP port exception.
+Generated `public/packs`, `public/packs-test` and Shakapacker cache/lock artifacts
+are cleared. Existing Sass/lint tools and runtime/vendor dependencies are retained;
+no browser bundle or JavaScript transpilation is part of the application build.

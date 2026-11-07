@@ -15,8 +15,7 @@ Rails.application.configure do
     #     # Specify URI for violation reports
     #     # policy.report_uri "/csp-violation-report-endpoint"
 
-    # Allow shakapacker-dev-server to connect in development mode.
-    policy.connect_src :self, :https, "http://localhost:3035", "ws://localhost:3035" if Rails.env.development?
+    policy.connect_src :self, :https if Rails.env.development?
   end
   #
   #   # Generate session nonces for permitted importmap, inline scripts, and inline styles.

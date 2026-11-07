@@ -34,21 +34,6 @@ services:
     volumes:
       - ".:/portfolio"
       - "node_modules:/portfolio/node_modules"
-  shakapacker:
-    profiles: [legacy-webpack]
-    build:
-      context: .
-      dockerfile: "./Dockerfile"
-    env_file:
-      - ".env"
-    command: "./bin/shakapacker-dev-server"
-    volumes:
-      - ".:/portfolio"
-      - "node_modules:/portfolio/node_modules"
-    ports:
-      - "3035:3035"
-    environment:
-      - "SHAKAPACKER_DEV_SERVER_HOST=0.0.0.0"
   web:
     build:
       context: .
@@ -63,8 +48,6 @@ services:
       - "3000:3000"
     depends_on:
       - "db"
-    environment:
-      - "SHAKAPACKER_DEV_SERVER_HOST=shakapacker"
 
 volumes:
   node_modules:

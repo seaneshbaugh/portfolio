@@ -67,14 +67,13 @@ uploaded files. A custom Compose project name changes the volume name.
 
 ### Dependency updates
 
-The Gemfile generally omits versions; Rails and transitional Shakapacker retain
-documented compatibility ranges. `bundle install` uses the committed lockfile;
+The Gemfile generally omits versions; Rails retains a documented compatibility
+range. `bundle install` uses the committed lockfile;
 use `bundle update <gem names>` for intentional updates. Docker installs gems in
 frozen mode so a build cannot silently rewrite the lockfile.
 
 Most JavaScript declarations use compatible version ranges, with exact installs
-provided by `yarn.lock` and `--frozen-lockfile`. Transitional Materialize and
-Shakapacker retain their tested versions until replacement. See the
+provided by `yarn.lock` and `--frozen-lockfile`. Transitional Materialize retains its tested version until replacement. See the
 [dependency inventory](docs/dependencies/README.md) for before/after versions,
 retained/transitional packages, compatibility exceptions and update commands.
 
@@ -132,9 +131,11 @@ its normal non-Turbo submission and inert thanks response; mail/jobs remain off.
 The uploader keeps its existing fetch/HTML-row contract; no Turbo Frames or Streams
 redesign is included in this step.
 
-The unused Shakapacker tooling remains for its explicit cleanup TODO. Its service
-is behind the `legacy-webpack` profile and is not part of normal startup or asset
-precompilation. React and its associated state/drag libraries have been removed.
+Shakapacker, webpack, Babel and PostCSS tooling have been removed, together with
+their legacy service, port and generated packs. Normal development and production
+asset builds use Propshaft/import maps and the Sass build only. Node/Yarn remain
+for Sass, browser-asset vendoring and server-side CSS validation. React and its
+associated state/drag libraries have been removed.
 
 To compile production assets locally:
 
