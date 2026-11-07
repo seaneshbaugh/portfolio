@@ -476,10 +476,10 @@ retained package requires bundling, resolve that before removing Shakapacker.
 - [x] Keep a temporary CSS build while Sass/Materialize remains, or complete
       Tailwind conversion before retiring that build. Test font/image URLs and
       content-specific assets after each move.
-- [ ] Add Turbo after controllers/widgets tolerate reconnects. Replace Rails UJS
+- [x] Add Turbo after controllers/widgets tolerate reconnects. Replace Rails UJS
       method/confirmation behavior in layouts/views with Turbo-compatible forms
       or attributes, then remove UJS. Test logout, deletes and invalid submissions.
-- [ ] Implement connect/disconnect cleanup for Ace, dialogs, lightboxes and other
+- [x] Implement connect/disconnect cleanup for Ace, dialogs, lightboxes and other
       widgets; test navigation/back/forward, Turbo cache restoration and stored
       CMS scripts. Decide explicit opt-outs for incompatible content.
 - [ ] Remove Shakapacker gem/npm package, pack helpers, webpack/Babel/PostCSS
@@ -670,8 +670,49 @@ Propshaft/import-map migration (2026-11-03):
   assets, rebuilding the CSS outputs cleared by clobber, and restarting Rails, the 43-asset HTTP/MIME check passes again in source
   development mode. Hosted GitHub CI remains unverified locally.
 
-Next slice: introduce Turbo with navigation/cache lifecycle coverage, then remove
-unused Shakapacker tooling once the retained widgets and CSS pass those checks.
+Turbo Drive and UJS replacement (2026-11-06):
+
+- Added `turbo-rails` 2.0.23 without a Gemfile constraint, using its local
+  `turbo.min.js` import-map pin. Replaced UJS startup and removed its npm dependency.
+  Logout and delete links use Turbo method/confirmation attributes; the existing
+  Devise 422/303 responses support normal Turbo form submissions. Updated the
+  server-rendered picture-row assertion for its Turbo delete attribute.
+- Both layout stylesheets are tracked for reload, maintaining public/admin module
+  boundaries. A tracked current-user meta tag also creates a fresh document when
+  authentication changes, including public-layout logout. Ordinary same-layout
+  navigation uses Drive; browser marker tests verify it preserves the document.
+- Ace's before-cache action synchronizes input and destroys the editor/worker,
+  with idempotent disconnect and clean mount markup. Selectors close and abort
+  loading; upload operations abort without leaving pending UI; gallery fields
+  keep their values/keys and clear drag state. Stimulus reconnects fresh instances
+  on restored snapshots. Materialize instances are destroyed before cache/render
+  and reinitialized on load. GLightbox closes synchronously on teardown and opens
+  normally after restoration. Flash handling delegates once, and flash markup is
+  temporary so old success/error messages do not return on Back.
+- `cms_requires_full_reload?` conservatively detects public page/post script fields
+  and inline body scripts, including post-index content. Those responses require
+  a fresh document, opt out of caching, and use full outgoing navigation, preserving
+  stored globals/DOMContentLoaded behavior. This does not disable Drive for normal
+  content. The intentionally disabled contact form explicitly opts out of Turbo
+  to preserve its inert 200 thanks response without adding mail, jobs or endpoints.
+- Added nine browser tests covering document-preserving navigation, editor drafts
+  and one-time picture insertion after Back, gallery flags/order/selection through
+  Back/Forward, aborted uploads and retry, lightbox restoration, Materialize select
+  restoration, cancel/confirm delete, layout/authentication reloads, and field/body
+  CMS scripts. Logout tests now wait for its asynchronous response before making
+  another visit. Shared Wishlist-style system-test configuration is unchanged.
+- Full `rails test:all`: **223 tests, 756 assertions, 30 failures, 7 errors,
+  0 skips**; all 53 system tests pass, preserving the legacy failure/error counts.
+  All 53 system tests also pass against the precompiled production manifest
+  (**381 assertions, zero failures/errors**). Production assets compile without
+  Sass/webpack warnings; both locked Docker images build successfully. Ruby
+  formatting and `git diff --check` pass. After clobbering production output,
+  rebuilding CSS and recreating web/css, all 43 asset URLs pass the development
+  HTTP/MIME check with Turbo in place of UJS.
+
+Next slice: remove unused Shakapacker tooling and dependencies, configs/binstubs,
+legacy service/port/CSP exceptions and obsolete generated assets. Keep the Sass
+build until the Materialize/Tailwind phase replaces it.
 
 ## 7. Replace Materialize with Tailwind
 
@@ -687,6 +728,11 @@ unused Shakapacker tooling once the retained widgets and CSS pass those checks.
       the approved appearance unless a design change is explicitly agreed.
 - [ ] Replace Materialize JS interactions with Stimulus/native elements; Tailwind
       provides styling rather than dialog/dropdown/form behavior.
+- [ ] Replace document-level flash handlers in `app/javascript/flash_messages.js`
+      with a small Stimulus controller and actions on each flash message in
+      `app/views/shared/_flash_messages.html.haml`, following the Wishlist approach.
+      Preserve dismissal/animation behavior and `data-turbo-temporary` so dismissed
+      or cached flashes do not reappear. Keep the current handlers until this work.
 - [ ] Address dynamically built classes in helpers and database-stored content:
       configure explicit sources/class inclusion or retain ordinary scoped CSS.
       Check Tailwind reset effects on CMS content and Ace.

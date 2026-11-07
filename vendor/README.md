@@ -18,6 +18,6 @@ configures only the supported CSS/HTML/JavaScript workers, using Propshaft's
 fingerprinted asset URLs. Ace core/modes/theme load only through the admin
 entrypoint; GLightbox loads only through the public entrypoint.
 
-Rails gems supply Stimulus, Active Storage and Rails UJS directly. Sass sources
+Rails gems supply Turbo, Stimulus and Active Storage directly. Rails UJS is no longer imported. Sass sources
 continue to use npm's Materialize, Animate.css and GLightbox CSS through the
 separate cssbundling-rails build. These builds use the installed lockfile versions.

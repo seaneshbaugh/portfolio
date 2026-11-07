@@ -7,7 +7,7 @@
     %meta{ content: page_meta_description(yield(:meta_description)), name: 'description' }
     %meta{ content: t('.author'), name: 'author' }
     %meta{ content: 'telephone=no', name: 'format-detection' }
-    = stylesheet_link_tag 'application', media: 'all'
+    = stylesheet_link_tag 'application', media: 'all', data: { turbo_track: 'reload' }
     = javascript_importmap_tags 'application'
     %link{ href: '/favicon.ico', rel: 'shortcut icon' }
     %link{ href: asset_path('shared/apple-touch-icon-iphone.png'), rel: 'apple-touch-icon', sizes: '57x57' }
@@ -15,8 +15,12 @@
     %link{ href: asset_path('shared/apple-touch-icon-iphone-retina.png'), rel: 'apple-touch-icon', sizes: '114x114' }
     %link{ href: asset_path('shared/apple-touch-icon-ipad-retina.png'), rel: 'apple-touch-icon', sizes: '144x144' }
     %link{ href: '/humans.txt', rel: 'author' }
+    - if cms_requires_full_reload?
+      = turbo_page_requires_reload_tag
+      %meta{ name: 'turbo-cache-control', content: 'no-cache' }
+    %meta{ name: 'current-user', content: current_user&.id || 'anonymous', data: { turbo_track: 'reload' } }
     = csrf_meta_tags
-  %body{ class: current_user.present? ? 'logged-in' : nil }
+  %body{ class: current_user.present? ? 'logged-in' : nil, data: { turbo: cms_requires_full_reload? ? "false" : nil } }
     .content-wrap
       %header.main-header{ role: 'banner' }
         %h1.main-header-title= t('.title')
@@ -37,7 +41,7 @@
             %li.main-header-nav-list-item= link_to(t('.header_nav.contact'), contact_path, class: 'main-header-nav-list-item-link', style: 'color: #5e0bb0;')
             - if current_user
               %li.main-header-nav-list-item= link_to(t('.header_nav.admin'), admin_root_path, class: 'main-header-nav-list-item-link', style: 'color: #333333;')
-              %li.main-header-nav-list-item= link_to(t('.header_nav.logout'), destroy_user_session_path, method: :delete, class: 'main-header-nav-list-item-link', style: 'color: #333333 ;')
+              %li.main-header-nav-list-item= link_to(t('.header_nav.logout'), destroy_user_session_path, data: { turbo_method: :delete }, class: 'main-header-nav-list-item-link', style: 'color: #333333 ;')
       %main.main-content{ role: 'main' }
         = flash_messages
         = yield

@@ -11,7 +11,7 @@ class AdminFormBuilderTest < ActionView::TestCase
     ace_editor = builder.ace_editor(:body)
 
     expected = <<~HTML.gsub(/\n[[:space:]]*</, "<").strip
-      <div class=\"ace-editor-field input-field\" data-controller=\"ace-editor\" data-ace-editor-mode-value=\"text\" data-ace-editor-theme-value=\"github\">
+      <div class=\"ace-editor-field input-field\" data-controller=\"ace-editor\" data-action=\"turbo:before-cache@document-&gt;ace-editor#disconnect\" data-ace-editor-mode-value=\"text\" data-ace-editor-theme-value=\"github\">
         <label for=\"post_body\">Body</label>
         <div id=\"post_body-editor\" class=\"ace-editor\" data-ace-editor-target=\"editor\"></div>
         <textarea class=\"value\" data-ace-editor-target=\"input\" name=\"post[body]\" id=\"post_body\">\n&lt;p&gt;My first post.&lt;/p&gt;</textarea>

@@ -82,9 +82,10 @@ retained/transitional packages, compatibility exceptions and update commands.
 
 Propshaft serves fingerprinted assets under `/assets`. The public layout loads
 `application.js`; the admin layout loads `admin.js` through import maps. Both use
-`shared.js` for Rails UJS, Materialize initialization and flash messages. Public
+`shared.js` for Turbo Drive, Materialize initialization and flash messages. Public
 pages load GLightbox; admin pages load Stimulus controllers and Ace. Admin modules
-are mapped but not preloaded or fetched by public pages. Turbo is a later step.
+are mapped but not preloaded or fetched by public pages. Turbo handles navigation
+and normal form submissions within each layout.
 
 `app/assets/stylesheets` contains the retained Sass/Materialize sources. The
 `css` Compose service runs `yarn watch:css` and writes public/admin CSS into
@@ -96,7 +97,7 @@ Images live in `app/assets/images` and icon fonts in `app/assets/fonts`.
 Materialize, GLightbox and the supported Ace modes/theme/workers are vendored
 locally in `vendor/javascript`; import maps have no CDN dependency. Their exact
 versions are recorded in `vendor/javascript/versions.json`, with licenses under
-`vendor/licenses`. Rails supplies UJS, Active Storage and Stimulus browser modules.
+`vendor/licenses`. Rails gems supply Turbo, Active Storage and Stimulus browser modules.
 After an intentional npm upgrade, regenerate and review the browser assets with:
 
 ```bash
@@ -109,6 +110,27 @@ Stimulus owns the editor, selector, uploader and gallery nested fields, with
 connect/disconnect cleanup. Rails renders picture rows and gallery field
 partials; uploads and selection preserve the existing endpoints and nested params.
 Native gallery dragging has Move up/Move down alternatives for keyboard/touch.
+
+Before Turbo caches a page, Ace synchronizes its textarea and destroys its editor,
+selectors close/cancel loading, uploads abort pending requests, and gallery drag
+state resets. Materialize instances and GLightbox are destroyed before caching or
+body replacement, then initialized on `turbo:load`. Flash listeners use delegation;
+flash messages are excluded from snapshots. History restores editable drafts and
+gallery fields without duplicate controls or listeners.
+
+Tracked stylesheets force full reloads between public/admin layouts, preserving
+module boundaries. A tracked current-user meta tag also reloads the document when
+authentication changes. Delete/logout links use Turbo method/confirmation
+attributes; Rails UJS is no longer loaded or installed through npm. Devise's
+existing 422/303 response configuration supports Turbo form submissions.
+
+Public CMS pages/posts with script fields or inline body scripts explicitly
+require full reloads, skip Turbo caching, and disable outgoing Turbo navigation.
+This preserves their original globals and DOMContentLoaded assumptions. Pure
+content pages use Drive normally. The intentionally disabled contact form keeps
+its normal non-Turbo submission and inert thanks response; mail/jobs remain off.
+The uploader keeps its existing fetch/HTML-row contract; no Turbo Frames or Streams
+redesign is included in this step.
 
 The unused Shakapacker tooling remains for its explicit cleanup TODO. Its service
 is behind the `legacy-webpack` profile and is not part of normal startup or asset

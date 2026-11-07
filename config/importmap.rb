@@ -3,7 +3,7 @@ pin "application", preload: false
 pin "admin", preload: false
 pin "shared", preload: false
 pin "flash_messages", preload: false
-pin "@rails/ujs", to: "rails-ujs.esm.js", preload: false
+pin "@hotwired/turbo-rails", to: "turbo.min.js", preload: false
 pin "@rails/activestorage", to: "activestorage.esm.js", preload: false
 pin "@hotwired/stimulus", to: "stimulus.min.js", preload: false
 pin "@materializecss/materialize", to: "materialize.js", preload: false

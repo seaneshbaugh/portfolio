@@ -190,3 +190,13 @@ and their dependency tree remain installed for the explicit cleanup TODO, but
 application layouts, tests, development watch and production precompilation no
 longer use them. The old service requires the `legacy-webpack` profile. The dated
 CSV snapshots above intentionally describe the earlier dependency-upgrade batch.
+
+## Turbo and UJS replacement (2026-11-06)
+
+Added unpinned `turbo-rails`, locked at 2.0.23. Its Rails-provided browser module
+replaces the UJS pin; the unused `@rails/ujs` npm dependency is removed. All other
+locked gem/npm versions remain unchanged. Drive covers normal link/form
+navigation; explicit full-document boundaries preserve public/admin modules,
+authentication changes and script-bearing CMS content. The disabled contact form
+keeps its inert full-page response. See README and TODO section 6 for lifecycle
+cleanup, cache restoration and verification details.

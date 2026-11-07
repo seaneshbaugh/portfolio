@@ -15,6 +15,7 @@ export default class extends Controller {
       theme: `ace/theme/${this.themeValue}`,
       wrap: true
     });
+
     this.editor.setValue(this.input.value, -1);
     this.synchronize = () => { this.input.value = this.editor.getValue(); };
     this.editor.on("change", this.synchronize);
@@ -23,12 +24,18 @@ export default class extends Controller {
     this.insertPicture = (event) => {
       const attributes = event.detail.picture.data.attributes;
       const image = document.createElement("img");
+
       image.setAttribute("src", attributes.original_image_url);
-      if (attributes.alt_text) image.setAttribute("alt", attributes.alt_text);
+
+      if (attributes.alt_text) {
+        image.setAttribute("alt", attributes.alt_text);
+      }
+
       this.editor.insert(image.outerHTML);
     };
     this.pictureInserters = Array.from(this.element.closest("form").querySelectorAll(".picture-inserter"))
       .filter((selector) => selector.dataset.target === this.container.id);
+
     this.pictureInserters.forEach((selector) => {
       selector.addEventListener("picture-selector:select", this.insertPicture);
       selector.dataset.pictureSelectorReadyValue = "true";
@@ -36,6 +43,10 @@ export default class extends Controller {
   }
 
   disconnect() {
+    if (!this.editor) {
+      return;
+    }
+
     this.pictureInserters.forEach((selector) => {
       selector.removeEventListener("picture-selector:select", this.insertPicture);
       selector.dataset.pictureSelectorReadyValue = "false";
@@ -44,6 +55,7 @@ export default class extends Controller {
     this.editor.off("change", this.synchronize);
     this.editor.destroy();
     this.container.replaceChildren();
+    this.container.classList.remove("ace_editor", "ace_focus");
     this.editor = null;
   }
 }

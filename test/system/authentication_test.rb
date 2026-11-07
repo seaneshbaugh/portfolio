@@ -29,6 +29,8 @@ class AuthenticationTest < ApplicationSystemTestCase
 
     click_link "Logout"
 
+    assert_current_path root_path
+
     visit admin_pages_path
 
     assert_current_path new_user_session_path
@@ -80,6 +82,8 @@ class AuthenticationTest < ApplicationSystemTestCase
     assert_eventually { @admin.reload.valid_password?("replacement-password") }
 
     click_link "Logout"
+
+    assert_current_path root_path
 
     visit new_user_session_path
 

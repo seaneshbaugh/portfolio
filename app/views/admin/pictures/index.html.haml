@@ -14,7 +14,7 @@
       .input-field.col.s3
         = f.button search_icon, class: caution_button_class
         = cancel_icon_link(admin_pictures_path)
-.pictures-manager{ data: { controller: 'picture-uploads', 'picture-uploads-url-value' => admin_pictures_path, 'picture-uploads-direct-upload-url-value' => rails_direct_uploads_path } }
+.pictures-manager{ data: { controller: 'picture-uploads', action: 'turbo:before-cache@document->picture-uploads#disconnect', 'picture-uploads-url-value' => admin_pictures_path, 'picture-uploads-direct-upload-url-value' => rails_direct_uploads_path } }
   - if policy([:admin, Picture]).create?
     .row
       .image-uploader-container.col.s12

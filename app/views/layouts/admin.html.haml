@@ -7,7 +7,7 @@
     %meta{ content: page_meta_description(yield(:meta_description)), name: 'description' }
     %meta{ content: t('.author'), name: 'author' }
     %meta{ content: 'telephone=no', name: 'format-detection' }
-    = stylesheet_link_tag 'admin', media: 'all'
+    = stylesheet_link_tag 'admin', media: 'all', data: { turbo_track: 'reload' }
     = javascript_importmap_tags 'admin'
     %link{ href: '/favicon.ico', rel: 'shortcut icon' }
     %link{ href: asset_path('shared/apple-touch-icon-iphone.png'), rel: 'apple-touch-icon', sizes: '57x57' }
@@ -15,6 +15,7 @@
     %link{ href: asset_path('shared/apple-touch-icon-iphone-retina.png'), rel: 'apple-touch-icon', sizes: '114x114' }
     %link{ href: asset_path('shared/apple-touch-icon-ipad-retina.png'), rel: 'apple-touch-icon', sizes: '144x144' }
     %link{ href: '/humans.txt', rel: 'author' }
+    %meta{ name: 'current-user', content: current_user&.id || 'anonymous', data: { turbo_track: 'reload' } }
     = csrf_meta_tags
   %body
     %header.main-header{ role: 'banner' }
@@ -42,7 +43,7 @@
                     %li.main-header-nav-list-item= link_to(t('activerecord.models.user').pluralize, admin_users_path, class: 'main-header-nav-list-item-link')
                   %li.main-header-nav-list-item= link_to(t('.header_nav.site_home'), root_path, class: 'main-header-nav-list-item-link')
                   %li.main-header-nav-list-item= link_to(t('.header_nav.my_account'), admin_account_path, class: 'main-header-nav-list-item-link')
-                  %li.main-header-nav-list-item= link_to(t('.header_nav.logout'), destroy_user_session_path, method: :delete, class: 'main-header-nav-list-item-link')
+                  %li.main-header-nav-list-item= link_to(t('.header_nav.logout'), destroy_user_session_path, data: { turbo_method: :delete }, class: 'main-header-nav-list-item-link')
     %main.main-content{ role: 'main' }
       .container
         .row

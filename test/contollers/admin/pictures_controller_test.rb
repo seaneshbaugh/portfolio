@@ -77,7 +77,7 @@ module Admin
         assert_select ".picture-title a[href=?]", admin_picture_path(picture), text: "<b>Uploaded photograph</b>"
         assert_select ".picture-title b", count: 0
         assert_select ".edit a[href=?]", edit_admin_picture_path(picture)
-        assert_select ".delete a[data-method=delete][href=?]", admin_picture_path(picture)
+        assert_select ".delete a[data-turbo-method=delete][href=?]", admin_picture_path(picture)
       end
     end
 

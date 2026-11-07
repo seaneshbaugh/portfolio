@@ -1,11 +1,19 @@
-import Rails from "@rails/ujs";
-import { AutoInit } from "@materializecss/materialize";
+import "@hotwired/turbo-rails";
+import * as Materialize from "@materializecss/materialize";
 import "flash_messages";
 
-Rails.start();
-const initialize = () => AutoInit();
-if (document.readyState === "loading") {
-  document.addEventListener("DOMContentLoaded", initialize, { once: true });
-} else {
-  initialize();
-}
+const components = Object.values(Materialize).filter(component => typeof component.getInstance === "function");
+const teardown = () => {
+  const instances = new Set();
+  document.querySelectorAll("*").forEach(element => {
+    components.forEach(component => {
+      const instance = component.getInstance(element);
+      if (instance) instances.add(instance);
+    });
+  });
+  instances.forEach(instance => instance.destroy());
+};
+
+document.addEventListener("turbo:load", () => Materialize.AutoInit());
+document.addEventListener("turbo:before-cache", teardown);
+document.addEventListener("turbo:before-render", teardown);

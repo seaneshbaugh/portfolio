@@ -3,6 +3,11 @@
 module ApplicationHelper
   include ClassNames
 
+  def cms_requires_full_reload?
+    content = [ @page, @post, *@posts ].compact
+    content.any? { |item| item.script.present? || item.body.to_s.match?(/<script\b/i) }
+  end
+
   def caution_button_class
     "btn btn-flat waves-effect waves-light yellow darken-3"
   end

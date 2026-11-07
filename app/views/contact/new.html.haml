@@ -3,7 +3,8 @@
     %h1{ style: 'color: #5e0bb0;' }= t('.title')
   .page-body
     %p.message= t('.message')
-    = form_for @contact, url: contact_path do |f|
+    -# Contact remains disabled; retain its inert non-redirecting response.
+    = form_for @contact, url: contact_path, html: { data: { turbo: false } } do |f|
       .input-field
         = f.text_field :name
         = f.label :name

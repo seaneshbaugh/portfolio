@@ -25,7 +25,7 @@ module Admin
     end
 
     def delete_icon_link(url_or_path, options = {})
-      link_to(url_or_path, class: warning_button_class, rel: "nofollow", method: :delete, data: { confirm: t("confirm_delete") }) do
+      link_to(url_or_path, class: warning_button_class, rel: "nofollow", data: { turbo_method: :delete, turbo_confirm: t("confirm_delete") }) do
         label = options[:label].to_s if options[:label]
 
         delete_icon(class: { "left" => label }) + label
