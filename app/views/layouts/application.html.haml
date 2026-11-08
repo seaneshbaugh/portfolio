@@ -7,7 +7,9 @@
     %meta{ content: page_meta_description(yield(:meta_description)), name: 'description' }
     %meta{ content: t('.author'), name: 'author' }
     %meta{ content: 'telephone=no', name: 'format-detection' }
-    = stylesheet_link_tag 'application', media: 'all', data: { turbo_track: 'reload' }
+    - if devise_controller?
+      = stylesheet_link_tag 'tailwind', media: 'all', data: { turbo_track: 'reload' }
+    = stylesheet_link_tag 'application', 'glightbox', media: 'all', data: { turbo_track: 'reload' }
     = javascript_importmap_tags 'application'
     %link{ href: '/favicon.ico', rel: 'shortcut icon' }
     %link{ href: asset_path('shared/apple-touch-icon-iphone.png'), rel: 'apple-touch-icon', sizes: '57x57' }

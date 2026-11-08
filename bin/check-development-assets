@@ -14,7 +14,7 @@ loop do
   begin
     Rails.application.assets.load_path.cache_sweeper.execute_if_updated if Rails.application.config.assets.sweep_cache
     imports = JSON.parse(Rails.application.importmap.to_json(resolver: helpers)).fetch("imports").values
-    logical_assets = %w[application.css admin.css ace/worker-css.js ace/worker-html.js ace/worker-javascript.js]
+    logical_assets = %w[application.css tailwind.css glightbox.css ace/worker-css.js ace/worker-html.js ace/worker-javascript.js]
     logical_assets += Dir.glob(Rails.root.join("app/assets/{images,fonts}/**/*")).select { |file| File.file?(file) }
       .map { |file| file.sub(%r{.*app/assets/(images|fonts)/}, "") }
     assets = (imports + logical_assets.map { |name| helpers.asset_path(name) }).uniq
@@ -34,7 +34,7 @@ loop do
         raise "#{uri}: HTTP #{response.code}, content type #{response['content-type'].inspect}"
       end
     end
-    puts "Propshaft: #{assets.length} modules, stylesheets, workers, images and fonts returned HTTP 200 with expected content types."
+    puts "Propshaft: #{assets.length} asset URLs returned HTTP 200 with expected content types."
     break
   rescue StandardError => error
     abort error.message if Process.clock_gettime(Process::CLOCK_MONOTONIC) >= deadline

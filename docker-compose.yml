@@ -30,10 +30,11 @@ services:
     build:
       context: .
       dockerfile: "./Dockerfile"
-    command: "yarn watch:css"
+    env_file:
+      - ".env"
+    command: "bundle exec rails tailwindcss:watch[always]"
     volumes:
       - ".:/portfolio"
-      - "node_modules:/portfolio/node_modules"
   web:
     build:
       context: .

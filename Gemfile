@@ -16,8 +16,8 @@ gem "importmap-rails"
 gem "turbo-rails"
 # Hotwire's modest JavaScript framework [https://stimulus.hotwired.dev]
 gem "stimulus-rails"
-# Temporary Sass build until the Tailwind migration.
-gem "cssbundling-rails"
+# Compile Tailwind with the Rails-integrated standalone CLI.
+gem "tailwindcss-rails"
 # Build JSON APIs with ease [https://github.com/rails/jbuilder]
 # gem "jbuilder"
 

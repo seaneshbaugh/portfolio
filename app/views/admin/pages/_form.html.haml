@@ -1,28 +1,17 @@
-= form_for [:admin, @page], builder: AdminFormBuilder, html: { class: 'col s12' } do |f|
-  .row
-    .input-field.col.s12
-      = f.text_field :title
-      = f.label :title
-  .row
-    .input-field.col.s12
-      = f.picture_inserter :body
-  .row
-    .input-field.col.s12
-      = f.ace_editor :body, mode: 'rhtml'
-  .row
-    .input-field.col.s12
-      = f.ace_editor :style, mode: 'css'
-  .row
-    .input-field.col.s12
-      = f.ace_editor :script, mode: 'javascript'
-  .row
-    .input-field.col.s12
-      = f.number_field :order
-      = f.label :order
-  .row.color-input-field
-    .input-field.col.s12
-      = f.color_field :color
-      = f.label :color
+= form_for [:admin, @page], builder: AdminFormBuilder, html: { class: 'max-w-4xl space-y-6' } do |f|
+  .space-y-1
+    = f.label :title
+    = f.text_field :title
+  = f.picture_inserter :body
+  = f.ace_editor :body, mode: 'rhtml'
+  = f.ace_editor :style, mode: 'css'
+  = f.ace_editor :script, mode: 'javascript'
+  .space-y-1
+    = f.label :order
+    = f.number_field :order
+  .space-y-1
+    = f.label :color
+    = f.color_field :color
   %p
     = f.label :show_in_menu do
       = f.check_box :show_in_menu
@@ -31,7 +20,6 @@
     = f.label :visible do
       = f.check_box :visible
       %span= t('activerecord.attributes.page.visible')
-  .row
-    .input-field.col.s12
-      = f.submit t('submit'), class: success_button_class
-      = link_to t('cancel'), admin_pages_path, class: warning_button_class
+  .flex.flex-wrap.gap-3
+    = f.submit t('submit'), class: success_button_class
+    = link_to t('cancel'), admin_pages_path, class: info_button_class

@@ -68,7 +68,7 @@ module Admin
 
         fill_in "q_first_name_or_last_name_cont", with: name
 
-        click_button "search"
+        click_button "Search"
 
         assert_selector "tr.user", count: 1
         assert_link "Sean Eshbaugh"

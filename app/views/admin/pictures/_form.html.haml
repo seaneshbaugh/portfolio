@@ -1,21 +1,16 @@
-= form_for [:admin, @picture], html: { class: 'col s12' } do |f|
-  .row
-    .input-field.col.s12
-      = f.text_field :title
-      = f.label :title
-  .row
-    .input-field.col.s12
-      = f.text_field :alt_text
-      = f.label :alt_text
-  .row
-    .input-field.col.s12
-      = f.text_field :caption
-      = f.label :caption
-  .row
-    .input-field.col.s12
-      = f.file_field :image
-      = f.label :image
-  .row
-    .input-field.col.s12
-      = f.submit t('submit'), class: success_button_class
-      = link_to t('cancel'), admin_pictures_path, class: warning_button_class
+= form_for [:admin, @picture], builder: AdminFormBuilder, html: { class: 'max-w-4xl space-y-6' } do |f|
+  .space-y-1
+    = f.label :title
+    = f.text_field :title
+  .space-y-1
+    = f.label :alt_text
+    = f.text_field :alt_text
+  .space-y-1
+    = f.label :caption
+    = f.text_field :caption
+  .space-y-1
+    = f.label :image
+    = f.file_field :image, accept: 'image/*'
+  .flex.flex-wrap.gap-3
+    = f.submit t('submit'), class: success_button_class
+    = link_to t('cancel'), admin_pictures_path, class: info_button_class

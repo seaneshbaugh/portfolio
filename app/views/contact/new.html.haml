@@ -5,20 +5,20 @@
     %p.message= t('.message')
     -# Contact remains disabled; retain its inert non-redirecting response.
     = form_for @contact, url: contact_path, html: { data: { turbo: false } } do |f|
-      .input-field
-        = f.text_field :name
+      .form-field
         = f.label :name
-      .input-field
-        = f.email_field :email
+        = f.text_field :name
+      .form-field
         = f.label :email
-      .input-field
-        = f.text_field :phone_number
+        = f.email_field :email
+      .form-field
         = f.label :phone_number
-      .input-field
-        = f.text_field :subject
+        = f.text_field :phone_number
+      .form-field
         = f.label :subject
-      .input-field
-        = f.text_area :body, class: 'materialize-textarea'
+        = f.text_field :subject
+      .form-field
         = f.label :body
-      .input-field
+        = f.text_area :body
+      .form-field
         = f.submit t('.submit'), class: success_button_class

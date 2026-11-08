@@ -1,12 +1,12 @@
 #forgot-password
-  %h1= t('.title')
-  = form_for resource, as: resource_name, url: password_path(resource_name), html: { method: :post } do |f|
+  %h1.mb-6.text-2xl.font-semibold= t('.title')
+  = form_for resource, builder: AdminFormBuilder, as: resource_name, url: password_path(resource_name), html: { method: :post } do |f|
     - if resource.errors.any?
       .flash-messages
         .flash-message.flash-message-error= resource.errors.full_messages.to_sentence
-    .input-field
-      = f.email_field :email, required: true, autocomplete: 'email'
+    .mb-4.space-y-1
       = f.label :email
-    .input-field
+      = f.email_field :email, required: true, autocomplete: 'email'
+    .mb-4.space-y-1
       = f.submit t('.submit'), class: success_button_class
   = render 'devise/shared/links'

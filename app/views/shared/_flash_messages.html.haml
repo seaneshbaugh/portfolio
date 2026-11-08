@@ -1,9 +1,12 @@
 .flash-messages
   - flash.each do |name, message|
-    %div{ class: "flash-message flash-message-#{name} card", data: { turbo_temporary: true } }
-      .flash-message-content.card-content
-        %span.flash-message-title.card-title= name.to_s.capitalize
+    - palette = %w[error alert].include?(name.to_s) ? 'border-red-200 bg-red-50 text-red-900' : 'border-blue-200 bg-blue-50 text-blue-950'
+    %div{ class: "flash-message flash-message-#{name} relative my-4 rounded-lg border p-4 pr-12 text-sm transition-opacity duration-200 motion-reduce:transition-none #{palette}", role: %w[error alert].include?(name.to_s) ? 'alert' : 'status', data: { controller: 'flash', action: 'click->flash#dismiss', turbo_temporary: true } }
+      .flash-message-content
+        %strong.flash-message-title= name.to_s.capitalize
         - if name == 'debug'
-          %pre= message.inspect
+          %pre.whitespace-pre-wrap= message.inspect
         - else
-          %p= message
+          %p.mt-1= message
+      %button.flash-message-dismiss.absolute.right-3.top-3.rounded.p-1{ type: 'button', 'aria-label' => 'Dismiss message' }
+        = icon(:close)

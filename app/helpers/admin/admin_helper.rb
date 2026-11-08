@@ -9,11 +9,11 @@ module Admin
     end
 
     def cancel_icon(options = {})
-      tag.i("clear", class: classnames("material-icons", options[:class]))
+      icon(:close)
     end
 
     def cancel_icon_link(url_or_path, options = {})
-      link_to(url_or_path, class: warning_button_class) do
+      link_to(url_or_path, class: info_button_class, aria: { label: options[:label] || t("cancel") }) do
         label = options[:label].to_s if options[:label]
 
         cancel_icon(class: { "left" => label }) + label
@@ -21,11 +21,11 @@ module Admin
     end
 
     def delete_icon(options = {})
-      tag.i("delete_forever", class: classnames("material-icons", options[:class]))
+      icon(:delete)
     end
 
     def delete_icon_link(url_or_path, options = {})
-      link_to(url_or_path, class: warning_button_class, rel: "nofollow", data: { turbo_method: :delete, turbo_confirm: t("confirm_delete") }) do
+      link_to(url_or_path, class: warning_button_class, aria: { label: options[:label] || t("delete") }, rel: "nofollow", data: { turbo_method: :delete, turbo_confirm: t("confirm_delete") }) do
         label = options[:label].to_s if options[:label]
 
         delete_icon(class: { "left" => label }) + label
@@ -33,11 +33,11 @@ module Admin
     end
 
     def edit_icon(options = {})
-      tag.i("edit", class: classnames("material-icons", options[:class]))
+      icon(:edit)
     end
 
     def edit_icon_link(url_or_path, options = {})
-      link_to(url_or_path, class: success_button_class) do
+      link_to(url_or_path, class: success_button_class, aria: { label: options[:label] || t("edit") }) do
         label = options[:label].to_s if options[:label]
 
         edit_icon(class: { "left" => label }) + label
@@ -72,16 +72,8 @@ module Admin
       `nodejs -v`
     end
 
-    def quick_links_column_width
-      @quick_links_column_width ||= 12 / creatable_models.length
-    end
-
-    def quick_links_offset
-      @quick_links_offset ||= (12 % (creatable_models.length * quick_links_column_width)) / 2
-    end
-
     def search_icon(options = {})
-      tag.i("search", class: classnames("material-icons", options[:class]))
+      icon(:search)
     end
 
     def yarn_version

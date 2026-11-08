@@ -1,13 +1,13 @@
 - present picture do |picture_presenter|
   %tr.picture{ id: dom_id(picture) }
-    %td.picture-thumbnail
+    %td.picture-thumbnail.p-3.px-3.py-3.align-top
       = link_to admin_picture_path(picture) do
-        = picture_presenter.thumbnail_image_tag
-    %td.picture-title= link_to picture.title, admin_picture_path(picture)
-    %td.picture-created-at= picture_presenter.created_at
-    %td.edit
+        = image_tag picture.thumbnail_image_path, alt: picture.alt_text, title: picture.title, class: "h-16 w-20 rounded object-contain"
+    %td.picture-title.px-3.py-3.align-top= link_to picture.title, admin_picture_path(picture)
+    %td.picture-created-at.px-3.py-3.align-top= picture_presenter.created_at
+    %td.edit.px-3.py-3.align-top
       - if policy([:admin, picture]).edit?
         = edit_icon_link edit_admin_picture_path(picture)
-    %td.delete
+    %td.delete.px-3.py-3.align-top
       - if policy([:admin, picture]).destroy?
         = delete_icon_link admin_picture_path(picture)

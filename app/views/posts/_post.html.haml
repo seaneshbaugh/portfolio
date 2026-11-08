@@ -1,14 +1,14 @@
 - present post do |post_presenter|
-  %article.post.row{ id: "post-#{post.slug}" }
-    %h1.post-title.col-xs-12
+  %article.post{ id: "post-#{post.slug}" }
+    %h1.post-title
       = link_to post_presenter.title, post
-    .post-date.col-xs-12
+    .post-date
       = post_presenter.created_at('%B %d, %Y %l:%M:%S %p')
-    .post-body.col-xs-12
+    .post-body
       = post_presenter.style_tag
       = post_presenter.more(params[:action] == 'index')
       = post_presenter.script_tag
-    %footer.post-footer.col-xs-12
+    %footer.post-footer
       - if post_presenter.tag_list.present?
         .post-tags.well.well-sm
           %strong Tags:

@@ -1,43 +1,43 @@
 - present @account do |user_presenter|
-  .row
-    .col.s12
-      %h2= t('.title')
-  .row
-    .admin-actions.col.s12
+  .mb-4
+    .min-w-0
+      %h2.mb-6.text-2xl.font-semibold= t('.title')
+  .mb-4
+    .admin-actions.flex.flex-wrap.gap-2
       = edit_icon_link(edit_admin_account_path, label: t('edit'))
   .user
-    .attribute.first-name.row
-      .attribute-name.col.s12.m3.l3= t('activerecord.attributes.user.first_name')
-      .attribute-value.col.s12.m9.l9= user_presenter.first_name
-    .attribute.last-name.row
-      .attribute-name.col.s12.m3.l3= t('activerecord.attributes.user.last_name')
-      .attribute-value.col.s12.m9.l9= user_presenter.last_name
-    .attribute.email.row
-      .attribute-name.col.s12.m3.l3= t('activerecord.attributes.user.email')
-      .attribute-value.col.s12.m9.l9
+    .attribute.first-name.grid.gap-2.border-b.border-slate-200.py-3{ class: 'md:grid-cols-4' }
+      .attribute-name.text-sm.font-medium.text-slate-600= t('activerecord.attributes.user.first_name')
+      .attribute-value.min-w-0.break-words{ class: 'md:col-span-3' }= user_presenter.first_name
+    .attribute.last-name.grid.gap-2.border-b.border-slate-200.py-3{ class: 'md:grid-cols-4' }
+      .attribute-name.text-sm.font-medium.text-slate-600= t('activerecord.attributes.user.last_name')
+      .attribute-value.min-w-0.break-words{ class: 'md:col-span-3' }= user_presenter.last_name
+    .attribute.email.grid.gap-2.border-b.border-slate-200.py-3{ class: 'md:grid-cols-4' }
+      .attribute-name.text-sm.font-medium.text-slate-600= t('activerecord.attributes.user.email')
+      .attribute-value.min-w-0.break-words{ class: 'md:col-span-3' }
         = user_presenter.email
         = user_presenter.email_link
-    .attribute.roles.row
-      .attribute-name.col.s12.m3.l3= t('activerecord.attributes.user.roles')
-      .attribute-value.col.s12.m9.l9= user_presenter.roles
-    .attribute.sign-in-count.row
-      .attribute-name.col.s12.m3.l3= t('activerecord.attributes.user.sign_in_count')
-      .attribute-value.col.s12.m9.l9= user_presenter.sign_in_count
-    .attribute.current-sign-in-at.row
-      .attribute-name.col.s12.m3.l3= t('activerecord.attributes.user.current_sign_in_at')
-      .attribute-value.col.s12.m9.l9= user_presenter.current_sign_in_at
-    .attribute.last-sign-in-at.row
-      .attribute-name.col.s12.m3.l3= t('activerecord.attributes.user.last_sign_in_at')
-      .attribute-value.col.s12.m9.l9= user_presenter.last_sign_in_at
-    .attribute.current-sign-in-ip.row
-      .attribute-name.col.s12.m3.l3= t('activerecord.attributes.user.current_sign_in_ip')
-      .attribute-value.col.s12.m9.l9= user_presenter.current_sign_in_ip
-    .attribute.last-sign-in-ip.row
-      .attribute-name.col.s12.m3.l3= t('activerecord.attributes.user.last_sign_in_ip')
-      .attribute-value.col.s12.m9.l9= user_presenter.last_sign_in_ip
-    .attribute.created-at.row
-      .attribute-name.col.s12.m3.l3= t('activerecord.attributes.user.created_at')
-      .attribute-value.col.s12.m9.l9= user_presenter.created_at
-    .attribute.updated-at.row
-      .attribute-name.col.s12.m3.l3= t('activerecord.attributes.user.updated_at')
-      .attribute-value.col.s12.m9.l9= user_presenter.updated_at
+    .attribute.roles.grid.gap-2.border-b.border-slate-200.py-3{ class: 'md:grid-cols-4' }
+      .attribute-name.text-sm.font-medium.text-slate-600= t('activerecord.attributes.user.roles')
+      .attribute-value.min-w-0.break-words{ class: 'md:col-span-3' }= user_presenter.roles
+    .attribute.sign-in-count.grid.gap-2.border-b.border-slate-200.py-3{ class: 'md:grid-cols-4' }
+      .attribute-name.text-sm.font-medium.text-slate-600= t('activerecord.attributes.user.sign_in_count')
+      .attribute-value.min-w-0.break-words{ class: 'md:col-span-3' }= user_presenter.sign_in_count
+    .attribute.current-sign-in-at.grid.gap-2.border-b.border-slate-200.py-3{ class: 'md:grid-cols-4' }
+      .attribute-name.text-sm.font-medium.text-slate-600= t('activerecord.attributes.user.current_sign_in_at')
+      .attribute-value.min-w-0.break-words{ class: 'md:col-span-3' }= user_presenter.current_sign_in_at
+    .attribute.last-sign-in-at.grid.gap-2.border-b.border-slate-200.py-3{ class: 'md:grid-cols-4' }
+      .attribute-name.text-sm.font-medium.text-slate-600= t('activerecord.attributes.user.last_sign_in_at')
+      .attribute-value.min-w-0.break-words{ class: 'md:col-span-3' }= user_presenter.last_sign_in_at
+    .attribute.current-sign-in-ip.grid.gap-2.border-b.border-slate-200.py-3{ class: 'md:grid-cols-4' }
+      .attribute-name.text-sm.font-medium.text-slate-600= t('activerecord.attributes.user.current_sign_in_ip')
+      .attribute-value.min-w-0.break-words{ class: 'md:col-span-3' }= user_presenter.current_sign_in_ip
+    .attribute.last-sign-in-ip.grid.gap-2.border-b.border-slate-200.py-3{ class: 'md:grid-cols-4' }
+      .attribute-name.text-sm.font-medium.text-slate-600= t('activerecord.attributes.user.last_sign_in_ip')
+      .attribute-value.min-w-0.break-words{ class: 'md:col-span-3' }= user_presenter.last_sign_in_ip
+    .attribute.created-at.grid.gap-2.border-b.border-slate-200.py-3{ class: 'md:grid-cols-4' }
+      .attribute-name.text-sm.font-medium.text-slate-600= t('activerecord.attributes.user.created_at')
+      .attribute-value.min-w-0.break-words{ class: 'md:col-span-3' }= user_presenter.created_at
+    .attribute.updated-at.grid.gap-2.border-b.border-slate-200.py-3{ class: 'md:grid-cols-4' }
+      .attribute-name.text-sm.font-medium.text-slate-600= t('activerecord.attributes.user.updated_at')
+      .attribute-value.min-w-0.break-words{ class: 'md:col-span-3' }= user_presenter.updated_at

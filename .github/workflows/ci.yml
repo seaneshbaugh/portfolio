@@ -61,7 +61,7 @@ jobs:
 
       - name: Production asset build
         if: ${{ !cancelled() && steps.prepare.outcome == 'success' }}
-        run: docker compose exec -T -e RAILS_ENV=production -e NODE_ENV=production -e SECRET_KEY_BASE_DUMMY=1 web bundle exec rails assets:precompile
+        run: docker compose exec -T -e RAILS_ENV=production -e SECRET_KEY_BASE_DUMMY=1 web bundle exec rails assets:precompile
 
       - name: Collect service logs
         if: failure()

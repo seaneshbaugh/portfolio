@@ -212,11 +212,10 @@ class TurboNavigationTest < ApplicationSystemTestCase
     assert page.evaluate_script("window.inlineScriptLoaded")
   end
 
-  test "Materialize select reconnects after history restoration without duplicate controls" do
+  test "native select keeps its value after history restoration" do
     visit admin_users_path
-    assert_selector ".select-wrapper", count: 1
-    find("input.select-dropdown").click
-    find(".dropdown-content li", text: "Admin", exact_text: true).click
+    assert_selector "select#q_roles_name_eq", count: 1
+    select "Admin", from: "q_roles_name_eq"
     assert_field "q_roles_name_eq", with: "admin", visible: :all
     within ".main-header-nav" do
       click_link "Pages"
@@ -224,10 +223,9 @@ class TurboNavigationTest < ApplicationSystemTestCase
     assert_link "New Page"
     page.go_back
     assert_current_path admin_users_path
-    assert_selector ".select-wrapper", count: 1
+    assert_selector "select#q_roles_name_eq", count: 1
     assert_field "q_roles_name_eq", with: "admin", visible: :all
-    find("input.select-dropdown").click
-    assert_selector ".dropdown-content li", text: "Admin"
-    page.send_keys :escape
+    find("select#q_roles_name_eq option[value='']").select_option
+    assert_field "q_roles_name_eq", with: ""
   end
 end

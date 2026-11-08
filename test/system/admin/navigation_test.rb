@@ -28,7 +28,7 @@ module Admin
 
       fill_in "Title", with: "About"
 
-      click_button "search"
+      click_button "Search"
 
       assert_selector "tr.page", count: 1
       assert_link "About", href: admin_page_path(pages(:about))
@@ -41,7 +41,7 @@ module Admin
 
       fill_in "Title", with: "No matching page"
 
-      click_button "search"
+      click_button "Search"
 
       assert_no_selector "tr.page"
       assert_selector ".no-items"

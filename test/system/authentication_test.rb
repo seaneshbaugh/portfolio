@@ -30,6 +30,7 @@ class AuthenticationTest < ApplicationSystemTestCase
     click_link "Logout"
 
     assert_current_path root_path
+    assert_no_link "Logout"
 
     visit admin_pages_path
 
@@ -84,6 +85,7 @@ class AuthenticationTest < ApplicationSystemTestCase
     click_link "Logout"
 
     assert_current_path root_path
+    assert_no_link "Logout"
 
     visit new_user_session_path
 

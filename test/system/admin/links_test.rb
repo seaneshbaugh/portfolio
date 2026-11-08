@@ -14,7 +14,7 @@ module Admin
       fill_in "link_url", with: "https://example.test/browser"
       fill_in_ace "link_description", with: "<p>Browser description.</p>"
       fill_in "link_tag_list", with: "browser-link"
-      fill_in "link_published_at", with: "Feb 09, 2021"
+      fill_in "link_published_at", with: "2021-02-09"
 
       click_button "Submit"
 
@@ -23,6 +23,7 @@ module Admin
       assert_current_path admin_link_path(saved)
 
       assert_equal "<p>Browser description.</p>", saved.description
+      assert_equal Date.new(2021, 2, 9), saved.published_at.to_date
       assert_includes saved.tag_list, "browser-link"
 
       visit edit_admin_link_path(saved)

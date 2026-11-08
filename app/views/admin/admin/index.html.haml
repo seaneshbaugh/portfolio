@@ -1,65 +1,44 @@
 - unless creatable_models.empty?
-  %section.quick-links
-    .row
-      .col.s12
-        %h2= t('.section.quick_links.title')
-    .row
-      - creatable_models.each_with_index do |model, index|
-        %div{ class: "quick-link col s#{quick_links_column_width} #{index == 0 ? "offset-s#{quick_links_offset}" : '' }" }
-          = link_to(send("new_admin_#{model.name.downcase}_path")) do
-            %i.material-icons= t(".section.quick_links.material_icons.#{model.name.downcase}")
-            %span.caption= t("admin.#{model.name.pluralize.downcase}.index.new_#{model.name.downcase}")
+  %section.quick-links.space-y-4
+    %h2.text-2xl.font-semibold= t('.section.quick_links.title')
+    .grid.gap-3{ class: 'sm:grid-cols-2 lg:grid-cols-3' }
+      - creatable_models.each do |model|
+        = link_to(send("new_admin_#{model.name.downcase}_path"), class: 'quick-link flex items-center gap-3 rounded-lg border border-slate-200 bg-white p-4 text-blue-700 hover:border-blue-500 hover:bg-blue-50') do
+          = icon(:plus)
+          %span.caption= t("admin.#{model.name.pluralize.downcase}.index.new_#{model.name.downcase}")
 - if policy([:admin, Post]).create?
-  %section.quick-post
-    .row
-      .col.s12
-        %h2= t('.section.quick_post.title')
-    .row
-      = form_for [:admin, Post.new], builder: AdminFormBuilder, html: { class: 'col s12' } do |f|
-        .row
-          .input-field.col.s12
-            = f.text_field :title
-            = f.label :title
-        .row
-          .input-field.col.s12
-            = f.picture_inserter :body
-        .row
-          .input-field.col.s12
-            = f.ace_editor :body, mode: 'rhtml'
-        .row
-          .input-field.col.s12
-            = f.submit t('submit'), class: success_button_class
-%section.rails-info
-  .row
-    .col.s12
-      %h2= t('.section.rails_info.title')
-  .row
-    .col.s12
-      = Rails::Info.to_html.html_safe
-%section.gems
-  .row
-    .col.s12
-      %h2= t('.section.gems.title')
-  .row
-    .col.s12
-      %ul
-        - gem_dependencies.each do |gem|
-          %li
-            = gem[:name]
-            (#{gem[:version]})
-            - if gem[:dependencies].present?
-              %ul
-                - gem[:dependencies].each do |dependency|
-                  %li
-                    = dependency[:name]
-                    (#{dependency[:requirement]})
-%section.nodejs-info
-  %h2= t('.section.nodejs_info.title')
-  %table
+  %section.quick-post.rounded-lg.border.border-slate-200.bg-white.p-6
+    %h2.mb-4.text-2xl.font-semibold= t('.section.quick_post.title')
+    = form_for [:admin, Post.new], builder: AdminFormBuilder, html: { class: 'space-y-6' } do |f|
+      .space-y-1
+        = f.label :title
+        = f.text_field :title
+      = f.picture_inserter :body
+      = f.ace_editor :body, mode: 'rhtml'
+      = f.submit t('submit'), class: success_button_class
+%section.rails-info.space-y-4.overflow-x-auto{ class: '[&_table]:w-full [&_td]:border-b [&_td]:border-slate-200 [&_td]:p-2 [&_td]:align-top' }
+  %h2.text-2xl.font-semibold= t('.section.rails_info.title')
+  = Rails::Info.to_html.html_safe
+%section.gems.space-y-4
+  %h2.text-2xl.font-semibold= t('.section.gems.title')
+  %ul.space-y-2.text-sm
+    - gem_dependencies.each do |gem|
+      %li
+        = gem[:name]
+        (#{gem[:version]})
+        - if gem[:dependencies].present?
+          %ul.ml-6.list-disc.text-slate-600
+            - gem[:dependencies].each do |dependency|
+              %li
+                = dependency[:name]
+                (#{dependency[:requirement]})
+%section.nodejs-info.space-y-4
+  %h2.text-2xl.font-semibold= t('.section.nodejs_info.title')
+  %table.w-full.text-sm
     %tbody
       %tr
-        %td.name= t('.section.nodejs_info.labels.nodejs_version')
-        %td.value= node_version
+        %th.p-2.text-left= t('.section.nodejs_info.labels.nodejs_version')
+        %td.p-2= node_version
       %tr
-        %td.name= t('.section.nodejs_info.labels.yarn_version')
-        %td.value= yarn_version
+        %th.p-2.text-left= t('.section.nodejs_info.labels.yarn_version')
+        %td.p-2= yarn_version

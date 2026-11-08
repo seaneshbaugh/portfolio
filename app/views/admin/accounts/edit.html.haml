@@ -1,29 +1,20 @@
-.row
-  .col.s12
-    %h2= t('.title')
-.row
-  = form_for @account, url: admin_account_path, as: :account, html: { class: 'col s12' } do |f|
-    .row
-      .input-field.col.s12
-        = f.text_field :first_name
-        = f.label :first_name
-    .row
-      .input-field.col.s12
-        = f.text_field :last_name
-        = f.label :last_name
-    .row
-      .input-field.col.s12
-        = f.email_field :email
-        = f.label :email
-    .row
-      .input-field.col.s12
-        = f.password_field :password
-        = f.label :password
-    .row
-      .input-field.col.s12
-        = f.password_field :password_confirmation
-        = f.label :password_confirmation
-    .row
-      .input-field.col.s12
-        = f.submit t('submit'), class: success_button_class
-        = link_to t('cancel'), admin_account_path, class: warning_button_class
+%h2.mb-6.text-2xl.font-semibold= t('.title')
+= form_for @account, url: admin_account_path, as: :account, builder: AdminFormBuilder, html: { class: 'max-w-2xl space-y-6' } do |f|
+  .space-y-1
+    = f.label :first_name
+    = f.text_field :first_name
+  .space-y-1
+    = f.label :last_name
+    = f.text_field :last_name
+  .space-y-1
+    = f.label :email
+    = f.email_field :email
+  .space-y-1
+    = f.label :password
+    = f.password_field :password
+  .space-y-1
+    = f.label :password_confirmation
+    = f.password_field :password_confirmation
+  .flex.flex-wrap.gap-3
+    = f.submit t('submit'), class: success_button_class
+    = link_to t('cancel'), admin_account_path, class: info_button_class

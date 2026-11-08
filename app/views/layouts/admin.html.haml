@@ -7,7 +7,7 @@
     %meta{ content: page_meta_description(yield(:meta_description)), name: 'description' }
     %meta{ content: t('.author'), name: 'author' }
     %meta{ content: 'telephone=no', name: 'format-detection' }
-    = stylesheet_link_tag 'admin', media: 'all', data: { turbo_track: 'reload' }
+    = stylesheet_link_tag 'tailwind', media: 'all', data: { turbo_track: 'reload' }
     = javascript_importmap_tags 'admin'
     %link{ href: '/favicon.ico', rel: 'shortcut icon' }
     %link{ href: asset_path('shared/apple-touch-icon-iphone.png'), rel: 'apple-touch-icon', sizes: '57x57' }
@@ -17,39 +17,30 @@
     %link{ href: '/humans.txt', rel: 'author' }
     %meta{ name: 'current-user', content: current_user&.id || 'anonymous', data: { turbo_track: 'reload' } }
     = csrf_meta_tags
-  %body
-    %header.main-header{ role: 'banner' }
-      .container
-        .row
-          .col.s12
-            %h1.main-header-title= t('.title')
-        .row
-          .col.s12
-            %nav.main-header-nav.nav.navbar
-              .nav-wrapper
-                %ul.main-header-nav-list.left
-                  %li.main-header-nav-list-item= link_to(t('.header_nav.home'), admin_root_path, rel: 'home', class: 'main-header-nav-list-item-link')
-                  - if policy([:admin, Post]).index?
-                    %li.main-header-nav-list-item= link_to(t('activerecord.models.post').pluralize, admin_posts_path, class: 'main-header-nav-list-item-link')
-                  - if policy([:admin, Page]).index?
-                    %li.main-header-nav-list-item= link_to(t('activerecord.models.page').pluralize, admin_pages_path, class: 'main-header-nav-list-item-link')
-                  - if policy([:admin, Picture]).index?
-                    %li.main-header-nav-list-item= link_to(t('activerecord.models.picture').pluralize, admin_pictures_path, class: 'main-header-nav-list-item-link')
-                  - if policy([:admin, Gallery]).index?
-                    %li.main-header-nav-list-item= link_to(t('activerecord.models.gallery').pluralize, admin_galleries_path, class: 'main-header-nav-list-item-link')
-                  - if policy([:admin, Link]).index?
-                    %li.main-header-nav-list-item= link_to(t('activerecord.models.link').pluralize, admin_links_path, class: 'main-header-nav-list-item-link')
-                  - if policy([:admin, User]).index?
-                    %li.main-header-nav-list-item= link_to(t('activerecord.models.user').pluralize, admin_users_path, class: 'main-header-nav-list-item-link')
-                  %li.main-header-nav-list-item= link_to(t('.header_nav.site_home'), root_path, class: 'main-header-nav-list-item-link')
-                  %li.main-header-nav-list-item= link_to(t('.header_nav.my_account'), admin_account_path, class: 'main-header-nav-list-item-link')
-                  %li.main-header-nav-list-item= link_to(t('.header_nav.logout'), destroy_user_session_path, data: { turbo_method: :delete }, class: 'main-header-nav-list-item-link')
-    %main.main-content{ role: 'main' }
-      .container
-        .row
-          .col.s12
-            = flash_messages
-        .row
-          .col.s12
-            = yield
+  %body.bg-slate-50.font-sans.text-slate-900.antialiased
+    %header.main-header.border-b.border-slate-200.bg-white{ role: 'banner' }
+      .mx-auto.max-w-7xl.px-4.py-5{ class: 'sm:px-6 lg:px-8' }
+        %h1.main-header-title.mb-4.text-xl.font-semibold= t('.title')
+        %nav.main-header-nav{ 'aria-label' => 'Administration' }
+          %ul.main-header-nav-list.flex.flex-wrap.items-center.gap-2
+            %li.main-header-nav-list-item= link_to(t('.header_nav.home'), admin_root_path, rel: 'home', class: 'rounded-md px-2 py-1 text-sm font-medium text-slate-700 hover:bg-slate-100 hover:text-blue-700')
+            - if policy([:admin, Post]).index?
+              %li.main-header-nav-list-item= link_to(t('activerecord.models.post').pluralize, admin_posts_path, class: 'rounded-md px-2 py-1 text-sm font-medium text-slate-700 hover:bg-slate-100 hover:text-blue-700')
+            - if policy([:admin, Page]).index?
+              %li.main-header-nav-list-item= link_to(t('activerecord.models.page').pluralize, admin_pages_path, class: 'rounded-md px-2 py-1 text-sm font-medium text-slate-700 hover:bg-slate-100 hover:text-blue-700')
+            - if policy([:admin, Picture]).index?
+              %li.main-header-nav-list-item= link_to(t('activerecord.models.picture').pluralize, admin_pictures_path, class: 'rounded-md px-2 py-1 text-sm font-medium text-slate-700 hover:bg-slate-100 hover:text-blue-700')
+            - if policy([:admin, Gallery]).index?
+              %li.main-header-nav-list-item= link_to(t('activerecord.models.gallery').pluralize, admin_galleries_path, class: 'rounded-md px-2 py-1 text-sm font-medium text-slate-700 hover:bg-slate-100 hover:text-blue-700')
+            - if policy([:admin, Link]).index?
+              %li.main-header-nav-list-item= link_to(t('activerecord.models.link').pluralize, admin_links_path, class: 'rounded-md px-2 py-1 text-sm font-medium text-slate-700 hover:bg-slate-100 hover:text-blue-700')
+            - if policy([:admin, User]).index?
+              %li.main-header-nav-list-item= link_to(t('activerecord.models.user').pluralize, admin_users_path, class: 'rounded-md px-2 py-1 text-sm font-medium text-slate-700 hover:bg-slate-100 hover:text-blue-700')
+            %li.main-header-nav-list-item= link_to(t('.header_nav.site_home'), root_path, class: 'rounded-md px-2 py-1 text-sm font-medium text-slate-700 hover:bg-slate-100 hover:text-blue-700')
+            %li.main-header-nav-list-item= link_to(t('.header_nav.my_account'), admin_account_path, class: 'rounded-md px-2 py-1 text-sm font-medium text-slate-700 hover:bg-slate-100 hover:text-blue-700')
+            %li.main-header-nav-list-item= link_to(t('.header_nav.logout'), destroy_user_session_path, data: { turbo_method: :delete }, class: 'rounded-md px-2 py-1 text-sm font-medium text-slate-700 hover:bg-slate-100 hover:text-blue-700')
+    %main.main-content.mx-auto.w-full.max-w-7xl.px-4.py-8{ role: 'main', class: 'sm:px-6 lg:px-8' }
+      = flash_messages
+      .space-y-6
+        = yield
     %footer.main-footer{ role: 'contentinfo' }

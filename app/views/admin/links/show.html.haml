@@ -1,42 +1,42 @@
 - present @link do |link_presenter|
-  .row
-    .col.s12
-      %h2= "#{t('.title')}: #{link_presenter.text}"
-  .row
-    .admin-actions.col.s12
+  .mb-4
+    .min-w-0
+      %h2.mb-6.text-2xl.font-semibold= "#{t('.title')}: #{link_presenter.text}"
+  .mb-4
+    .admin-actions.flex.flex-wrap.gap-2
       = link_to t('.back_to_links'), admin_links_path, class: info_button_class
       - if policy([:admin, @link]).edit?
         = edit_icon_link(edit_admin_link_path(@link), label: t('edit'))
       - if policy([:admin, @link]).destroy?
         = delete_icon_link(admin_link_path(@link), label: t('delete'))
   .link
-    .attribute.text.row
-      .attribute-name.col.s12.m3.l3= t('activerecord.attributes.link.text')
-      .attribute-value.col.s12.m9.l9= link_presenter.text
-    .attribute.slug.row
-      .attribute-name.col.s12.m3.l3= t('activerecord.attributes.link.url')
-      .attribute-value.col.s12.m9.l9
+    .attribute.text.grid.gap-2.border-b.border-slate-200.py-3{ class: 'md:grid-cols-4' }
+      .attribute-name.text-sm.font-medium.text-slate-600= t('activerecord.attributes.link.text')
+      .attribute-value.min-w-0.break-words{ class: 'md:col-span-3' }= link_presenter.text
+    .attribute.slug.grid.gap-2.border-b.border-slate-200.py-3{ class: 'md:grid-cols-4' }
+      .attribute-name.text-sm.font-medium.text-slate-600= t('activerecord.attributes.link.url')
+      .attribute-value.min-w-0.break-words{ class: 'md:col-span-3' }
         = link_presenter.url
         = link_presenter.share_link(target: '_blank')
-    .attribute.description.row
-      .attribute-name.col.s12.m3.l3= t('activerecord.attributes.link.description')
-      .attribute-value.col.s12.m9.l9
+    .attribute.description.grid.gap-2.border-b.border-slate-200.py-3{ class: 'md:grid-cols-4' }
+      .attribute-name.text-sm.font-medium.text-slate-600= t('activerecord.attributes.link.description')
+      .attribute-value.min-w-0.break-words{ class: 'md:col-span-3' }
         - if link_presenter.description.present?
           %pre
             - link_presenter.description.split("\n").each do |line|
               = content_tag(:span, line)
-    .attribute.visible.row
-      .attribute-name.col.s12.m3.l3= t('activerecord.attributes.link.visible')
-      .attribute-value.col.s12.m9.l9= link_presenter.visible
-    .attribute.visible.row
-      .attribute-name.col.s12.m3.l3= t('activerecord.attributes.link.visible')
-      .attribute-value.col.s12.m9.l9= link_presenter.visible
-    .attribute.tags.row
-      .attribute-name.col.s12.m3.l3= t('activerecord.attributes.link.tag_list')
-      .attribute-value.col.s12.m9.l9= link_presenter.tag_list
-    .attribute.created-at.row
-      .attribute-name.col.s12.m3.l3= t('activerecord.attributes.link.created_at')
-      .attribute-value.col.s12.m9.l9= link_presenter.created_at
-    .attribute.updated-at.row
-      .attribute-name.col.s12.m3.l3= t('activerecord.attributes.link.updated_at')
-      .attribute-value.col.s12.m9.l9= link_presenter.updated_at
+    .attribute.visible.grid.gap-2.border-b.border-slate-200.py-3{ class: 'md:grid-cols-4' }
+      .attribute-name.text-sm.font-medium.text-slate-600= t('activerecord.attributes.link.visible')
+      .attribute-value.min-w-0.break-words{ class: 'md:col-span-3' }= link_presenter.visible
+    .attribute.visible.grid.gap-2.border-b.border-slate-200.py-3{ class: 'md:grid-cols-4' }
+      .attribute-name.text-sm.font-medium.text-slate-600= t('activerecord.attributes.link.visible')
+      .attribute-value.min-w-0.break-words{ class: 'md:col-span-3' }= link_presenter.visible
+    .attribute.tags.grid.gap-2.border-b.border-slate-200.py-3{ class: 'md:grid-cols-4' }
+      .attribute-name.text-sm.font-medium.text-slate-600= t('activerecord.attributes.link.tag_list')
+      .attribute-value.min-w-0.break-words{ class: 'md:col-span-3' }= link_presenter.tag_list
+    .attribute.created-at.grid.gap-2.border-b.border-slate-200.py-3{ class: 'md:grid-cols-4' }
+      .attribute-name.text-sm.font-medium.text-slate-600= t('activerecord.attributes.link.created_at')
+      .attribute-value.min-w-0.break-words{ class: 'md:col-span-3' }= link_presenter.created_at
+    .attribute.updated-at.grid.gap-2.border-b.border-slate-200.py-3{ class: 'md:grid-cols-4' }
+      .attribute-name.text-sm.font-medium.text-slate-600= t('activerecord.attributes.link.updated_at')
+      .attribute-value.min-w-0.break-words{ class: 'md:col-span-3' }= link_presenter.updated_at

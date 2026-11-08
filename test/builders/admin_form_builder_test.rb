@@ -5,20 +5,21 @@ require "test_helper"
 class AdminFormBuilderTest < ActionView::TestCase
   test "ace_editor renders a container div with a label, editor div, and textarea" do
     post = posts(:first_post)
-
     builder = AdminFormBuilder.new(:post, post, self, {})
-
     ace_editor = builder.ace_editor(:body)
+    fragment = Nokogiri::HTML.fragment(ace_editor)
+    field = fragment.at_css("[data-controller=ace-editor]")
 
-    expected = <<~HTML.gsub(/\n[[:space:]]*</, "<").strip
-      <div class=\"ace-editor-field input-field\" data-controller=\"ace-editor\" data-action=\"turbo:before-cache@document-&gt;ace-editor#disconnect\" data-ace-editor-mode-value=\"text\" data-ace-editor-theme-value=\"github\">
-        <label for=\"post_body\">Body</label>
-        <div id=\"post_body-editor\" class=\"ace-editor\" data-ace-editor-target=\"editor\"></div>
-        <textarea class=\"value\" data-ace-editor-target=\"input\" name=\"post[body]\" id=\"post_body\">\n&lt;p&gt;My first post.&lt;/p&gt;</textarea>
-      </div>
-    HTML
+    assert_equal "text", field["data-ace-editor-mode-value"]
+    assert_equal "github", field["data-ace-editor-theme-value"]
+    assert_equal "post_body", field.at_css("label")["for"]
+    assert_equal "post_body-editor", field.at_css("[data-ace-editor-target=editor]")["id"]
 
-    assert_dom_equal(expected, ace_editor)
+    textarea = field.at_css("textarea[data-ace-editor-target=input]")
+
+    assert_equal "post[body]", textarea["name"]
+    assert_equal post.body, textarea.text.strip
+    assert textarea.key?("hidden")
   end
 
   test "picture_inserter renders a selector targeting the editor" do

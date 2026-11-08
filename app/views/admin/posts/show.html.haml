@@ -1,49 +1,49 @@
 - present @post do |post_presenter|
-  .row
-    .col.s12
-      %h2= "#{t('.title')}: #{post_presenter.title}"
-  .row
-    .admin-actions.col.s12
+  .mb-4
+    .min-w-0
+      %h2.mb-6.text-2xl.font-semibold= "#{t('.title')}: #{post_presenter.title}"
+  .mb-4
+    .admin-actions.flex.flex-wrap.gap-2
       = link_to t('.back_to_posts'), admin_posts_path, class: info_button_class
       - if policy([:admin, @post]).edit?
         = edit_icon_link(edit_admin_post_path(@post), label: t('edit'))
       - if policy([:admin, @post]).destroy?
         = delete_icon_link(admin_post_path(@post), label: t('delete'))
   .post
-    .attribute.title.row
-      .attribute-name.col.s12.m3.l3= t('activerecord.attributes.post.title')
-      .attribute-value.col.s12.m9.l9= post_presenter.title
-    .attribute.slug.row
-      .attribute-name.col.s12.m3.l3= t('activerecord.attributes.post.slug')
-      .attribute-value.col.s12.m9.l9
+    .attribute.title.grid.gap-2.border-b.border-slate-200.py-3{ class: 'md:grid-cols-4' }
+      .attribute-name.text-sm.font-medium.text-slate-600= t('activerecord.attributes.post.title')
+      .attribute-value.min-w-0.break-words{ class: 'md:col-span-3' }= post_presenter.title
+    .attribute.slug.grid.gap-2.border-b.border-slate-200.py-3{ class: 'md:grid-cols-4' }
+      .attribute-name.text-sm.font-medium.text-slate-600= t('activerecord.attributes.post.slug')
+      .attribute-value.min-w-0.break-words{ class: 'md:col-span-3' }
         = post_presenter.slug
         = post_presenter.share_link target: '_blank'
-    .attribute.body.row
-      .attribute-name.col.s12.m3.l3= t('activerecord.attributes.post.body')
-      .attribute-value.col.s12.m9.l9
+    .attribute.body.grid.gap-2.border-b.border-slate-200.py-3{ class: 'md:grid-cols-4' }
+      .attribute-name.text-sm.font-medium.text-slate-600= t('activerecord.attributes.post.body')
+      .attribute-value.min-w-0.break-words{ class: 'md:col-span-3' }
         - if post_presenter.body.present?
           %pre
             - post_presenter.body.split("\n").each do |line|
               = content_tag(:span, line)
-    .attribute.style.row
-      .attribute-name.col.s12.m3.l3= t('activerecord.attributes.post.style')
-      .attribute-value.col.s12.m9.l9
+    .attribute.style.grid.gap-2.border-b.border-slate-200.py-3{ class: 'md:grid-cols-4' }
+      .attribute-name.text-sm.font-medium.text-slate-600= t('activerecord.attributes.post.style')
+      .attribute-value.min-w-0.break-words{ class: 'md:col-span-3' }
         - if post_presenter.style.present?
           %pre= post_presenter.style
-    .attribute.script.row
-      .attribute-name.col.s12.m3.l3= t('activerecord.attributes.post.script')
-      .attribute-value.col.s12.m9.l9
+    .attribute.script.grid.gap-2.border-b.border-slate-200.py-3{ class: 'md:grid-cols-4' }
+      .attribute-name.text-sm.font-medium.text-slate-600= t('activerecord.attributes.post.script')
+      .attribute-value.min-w-0.break-words{ class: 'md:col-span-3' }
         - if post_presenter.script.present?
           %pre= post_presenter.script
-    .attribute.visible.row
-      .attribute-name.col.s12.m3.l3= t('activerecord.attributes.post.visible')
-      .attribute-value.col.s12.m9.l9= post_presenter.visible
-    .attribute.tags.row
-      .attribute-name.col.s12.m3.l3= t('activerecord.attributes.post.tag_list')
-      .attribute-value.col.s12.m9.l9= post_presenter.tag_list
-    .attribute.created-at.row
-      .attribute-name.col.s12.m3.l3= t('activerecord.attributes.post.created_at')
-      .attribute-value.col.s12.m9.l9= post_presenter.created_at
-    .attribute.updated-at.row
-      .attribute-name.col.s12.m3.l3= t('activerecord.attributes.post.updated_at')
-      .attribute-value.col.s12.m9.l9= post_presenter.updated_at
+    .attribute.visible.grid.gap-2.border-b.border-slate-200.py-3{ class: 'md:grid-cols-4' }
+      .attribute-name.text-sm.font-medium.text-slate-600= t('activerecord.attributes.post.visible')
+      .attribute-value.min-w-0.break-words{ class: 'md:col-span-3' }= post_presenter.visible
+    .attribute.tags.grid.gap-2.border-b.border-slate-200.py-3{ class: 'md:grid-cols-4' }
+      .attribute-name.text-sm.font-medium.text-slate-600= t('activerecord.attributes.post.tag_list')
+      .attribute-value.min-w-0.break-words{ class: 'md:col-span-3' }= post_presenter.tag_list
+    .attribute.created-at.grid.gap-2.border-b.border-slate-200.py-3{ class: 'md:grid-cols-4' }
+      .attribute-name.text-sm.font-medium.text-slate-600= t('activerecord.attributes.post.created_at')
+      .attribute-value.min-w-0.break-words{ class: 'md:col-span-3' }= post_presenter.created_at
+    .attribute.updated-at.grid.gap-2.border-b.border-slate-200.py-3{ class: 'md:grid-cols-4' }
+      .attribute-name.text-sm.font-medium.text-slate-600= t('activerecord.attributes.post.updated_at')
+      .attribute-value.min-w-0.break-words{ class: 'md:col-span-3' }= post_presenter.updated_at

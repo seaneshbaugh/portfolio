@@ -3,28 +3,18 @@
   "private": true,
   "dependencies": {
     "@hotwired/stimulus": "^3.2.2",
-    "@materializecss/materialize": "2.2.2",
     "@rails/activestorage": "~8.1.400",
     "ace-builds": "^1.45.2",
-    "animate.css": "^4.1.1",
     "css": "^3.0.0",
-    "glightbox": "^3.3.1",
-    "material-design-icons": "^3.0.1",
-    "normalize.css": "^8.0.1"
+    "glightbox": "^3.3.1"
   },
   "devDependencies": {
-    "eslint": "^9.25.1",
-    "sass": "^1.87.0",
-    "sass-lint": "^1.13.1"
+    "eslint": "^9.25.1"
   },
   "packageManager": "yarn@1.22.22+sha512.a6b2f7906b721bba3d67d4aff083df04dad64c399707841b7acf00f6b133b7ac24255f2652fa22ae3534329dc6180534e98d17432037ff6fd140556e2bb3137e",
   "version": "2.0.0",
   "engines": {
     "node": ">=26 <27",
     "yarn": "1.22.x"
-  },
-  "scripts": {
-    "build:css": "sass --load-path=node_modules --quiet-deps --no-source-map app/assets/stylesheets/application.scss:app/assets/builds/application.css app/assets/stylesheets/admin.scss:app/assets/builds/admin.css",
-    "watch:css": "yarn build:css --watch"
   }
 }

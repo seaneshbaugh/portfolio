@@ -7,6 +7,7 @@ class ApplicationPresenter
   delegate :params, to: :@template
   delegate :t, to: :@template
   delegate :tag, to: :@template
+  delegate :icon, to: :@template
 
   def initialize(object, template)
     @object = object

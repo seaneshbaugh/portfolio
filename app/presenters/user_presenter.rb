@@ -16,7 +16,7 @@ class UserPresenter < ApplicationPresenter
   end
 
   def email_link
-    link_to(tag.i("email", class: "material-icons"), "mailto:#{@user.email}")
+    link_to(icon(:mail), "mailto:#{@user.email}", aria: { label: "Email #{@user.email}" }, class: "inline-flex text-blue-700")
   end
 
   def last_sign_in_at

@@ -12,6 +12,6 @@ module Linkable
   end
 
   def share_link(options = {})
-    link_to(tag.i("open_in_browser", class: "material-icons"), send(link_url_method), options)
+    link_to(icon(:external), send(link_url_method), { aria: { label: "Open link" } }.merge(options))
   end
 end

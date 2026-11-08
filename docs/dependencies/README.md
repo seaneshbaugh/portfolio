@@ -62,7 +62,7 @@ production database migrations.
 | Historical seeds | seed-fu | Retain until the owner's manual seed follow-up; do not execute seeds during upgrades |
 | Development | debug, brakeman, modloc, rubocop, rubocop-rails-omakase, rubocop-minitest, rubocop-performance, rubocop-rails, haml_lint, listen, web-console | Retain |
 | Tests | capybara, selenium-webdriver, minitest, minitest-matchers, minitest-reporters, minitest-spec-rails, shoulda-matchers, simplecov | Retain; modernizing the legacy spec/matcher layer is separate work |
-| Assets/Hotwire | propshaft, importmap-rails, cssbundling-rails, stimulus-rails, turbo-rails | Retain Propshaft/Hotwire; replace the temporary Sass build during Tailwind migration |
+| Assets/Hotwire | propshaft, importmap-rails, tailwindcss-rails, stimulus-rails, turbo-rails | Retain Propshaft/Hotwire; Tailwind builds admin/auth CSS using its standalone compiler |
 
 There are no exact active gem pins. Rails `~> 8.1.0` is the only explicit
 compatibility range, keeping updates within the selected minor while defaults
@@ -97,9 +97,8 @@ password-reset tests cannot establish production token compatibility.
 | Group | Packages | Plan |
 | --- | --- | --- |
 | Retained functionality | ace-builds, @rails/activestorage, glightbox, normalize.css, css | Keep through migration. Ace is now explicit rather than borrowed from react-ace; `css` remains a server-side Node requirement for CSS validation |
-| Materialize/design | @materializecss/materialize, material-design-icons, animate.css | Retire or deliberately retain effects/icons during Tailwind work; do not couple a visual-library minor upgrade to this dependency batch |
-| CSS build | sass | Transitional Dart Sass build; replace/remove with the Materialize/Tailwind migration |
-| Existing lint tooling | eslint, sass-lint | Review/removal candidates: no ESLint configuration or script is currently wired; sass-lint is legacy and documented but has no newer release |
+| CSS build | tailwindcss-rails / tailwindcss-ruby gems | Standalone Tailwind; no Node CSS build |
+| Existing lint tooling | eslint | Review/removal candidate: no ESLint configuration or script is currently wired |
 
 `react-ace` and its unused transitive dependencies were removed during the direct
 Ace/Stimulus migration. Ace modes/theme and explicit worker URLs live in
@@ -116,8 +115,7 @@ JavaScript does not support omitting a dependency's value as Gemfile does. Caret
 ranges are the normal compatible-major equivalent; Yarn still installs exact
 lockfile versions with `--frozen-lockfile`. Most package declarations now use those
 ranges. Rails' Active Storage package uses `~8.1.400` to track the selected Rails
-minor. Materialize retains its exact temporary version until replacement; the
-React and Shakapacker dependency trees have been removed.
+minor. The React, Shakapacker and Materialize dependency trees have been removed.
 `packageManager` and Docker continue to pin the executable Yarn version.
 
 The original dependency-upgrade batch included webpack 5, Babel 7, Sass 1, dev-server 5,
@@ -148,9 +146,9 @@ docker compose build web css
 docker compose up -d db web css selenium
 docker compose exec web bundle exec rails test
 docker compose exec web bundle exec rails test:system
-docker compose exec -e RAILS_ENV=production -e NODE_ENV=production -e SECRET_KEY_BASE_DUMMY=1 web bundle exec rails assets:precompile
+docker compose exec -e RAILS_ENV=production -e SECRET_KEY_BASE_DUMMY=1 web bundle exec rails assets:precompile
 docker compose exec web bundle exec rails assets:clobber
-docker compose exec web yarn build:css
+docker compose exec web bundle exec rails tailwindcss:build
 docker compose restart web css
 ```
 
@@ -208,3 +206,19 @@ and host environment/port settings, and the development CSP port exception.
 Generated `public/packs`, `public/packs-test` and Shakapacker cache/lock artifacts
 are cleared. Existing Sass/lint tools and runtime/vendor dependencies are retained;
 no browser bundle or JavaScript transpilation is part of the application build.
+
+## Tailwind and Materialize removal (2026-11-07)
+
+Added unpinned `tailwindcss-rails` 4.7.0 and platform-specific `tailwindcss-ruby`
+4.3.4; removed cssbundling-rails. The standalone compiler builds the explicit
+`app/assets/tailwind/application.css` entrypoint. Source scanning includes views,
+helpers, form builders, presenters and controllers, with complete literal utility
+strings rather than assembled color/size fragments. Database content/styles are
+not purged or rewritten; the public site keeps plain CSS without Preflight.
+
+Removed Materialize, material-design-icons, Animate.css, normalize.css, Sass and
+sass-lint; deleted their vendored JS/fonts/licenses, SCSS source tree and obsolete
+lint/task configuration. GLightbox CSS is copied by the existing vendor command.
+Node/Yarn remain for that vendoring workflow and the server-side `css` parser.
+No application JS bundler or npm stylesheet build is required. This section
+supersedes the historical Materialize/Sass ownership notes above.

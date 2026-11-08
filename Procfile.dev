@@ -1,2 +1,2 @@
 web: bin/rails server
-css: yarn watch:css
+css: bin/rails tailwindcss:watch

@@ -1,30 +1,18 @@
-= form_for [:admin, @post], builder: AdminFormBuilder, html: { class: 'col s12' } do |f|
-  .row
-    .input-field.col.s12
-      = f.text_field :title
-      = f.label :title
-  .row
-    .input-field.col.s12
-      = f.picture_inserter :body
-  .row
-    .input-field.col.s12
-      = f.ace_editor :body, mode: 'rhtml'
-  .row
-    .input-field.col.s12
-      = f.ace_editor :style, mode: 'css'
-  .row
-    .input-field.col.s12
-      = f.ace_editor :script, mode: 'javascript'
-  .row
-    .input-field.taglist-input-field.col.s12
-      =# f.tag_list :tag_list, suggestions: ActsAsTaggableOn::Tag.pluck(:name)
-      = f.text_field :tag_list
-      = f.label :tag_list
+= form_for [:admin, @post], builder: AdminFormBuilder, html: { class: 'max-w-4xl space-y-6' } do |f|
+  .space-y-1
+    = f.label :title
+    = f.text_field :title
+  = f.picture_inserter :body
+  = f.ace_editor :body, mode: 'rhtml'
+  = f.ace_editor :style, mode: 'css'
+  = f.ace_editor :script, mode: 'javascript'
+  .space-y-1
+    = f.label :tag_list
+    = f.text_field :tag_list
   %p
     = f.label :visible do
       = f.check_box :visible
       %span= t('activerecord.attributes.post.visible')
-  .row
-    .input-field.col.s12
-      = f.submit t('submit'), class: success_button_class
-      = link_to t('cancel'), admin_posts_path, class: warning_button_class
+  .flex.flex-wrap.gap-3
+    = f.submit t('submit'), class: success_button_class
+    = link_to t('cancel'), admin_posts_path, class: info_button_class

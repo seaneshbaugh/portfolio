@@ -19,7 +19,12 @@ export default class extends Controller {
     this.editor.setValue(this.input.value, -1);
     this.synchronize = () => { this.input.value = this.editor.getValue(); };
     this.editor.on("change", this.synchronize);
-    this.element.querySelector("label")?.classList.remove("active");
+
+    const input = this.container.querySelector("textarea");
+
+    if (input) {
+      input.setAttribute("aria-label", this.element.querySelector("label")?.textContent.trim() || "Code editor");
+    }
 
     this.insertPicture = (event) => {
       const attributes = event.detail.picture.data.attributes;

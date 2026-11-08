@@ -8,6 +8,11 @@ small, independently verifiable steps. General bug finding and code review are
 outside this plan. Address failures encountered while bringing up or migrating
 the application, and record unrelated work separately.
 
+Owner's styling direction (2026-11-07): prioritize functional, conventional
+Tailwind admin/forms over visual parity. Keep public custom CSS small; the owner
+will convert it to utilities and polish the design later. Resolve routine markup
+choices directly, but pause and ask when a translation/design choice is unclear.
+
 Assessment: 2026-10-16, branch `rails_8_upgrade`, commit `2fad994`; production
 reference: local `master` at `dcbf028`. Implementation status below is based on
 source and git history, not a running browser or passing test suite. No dependency
@@ -744,29 +749,70 @@ its remaining styles have moved.
 
 ## 7. Replace Materialize with Tailwind
 
-- [ ] Choose a Rails-integrated Tailwind build (for example `tailwindcss-rails`)
+- [x] Choose a Rails-integrated Tailwind build (for example `tailwindcss-rails`)
       and document its build/watch processes. Compare default Rails asset handling
       with this deliberate CSS framework addition.
-- [ ] Inventory Materialize markup and initialization in layouts, admin CRUD
+- [x] Inventory Materialize markup and initialization in layouts, admin CRUD
       views, Devise forms, pagination, shared flashes and `AdminFormBuilder`;
-      include classes embedded in React while migration overlaps.
-- [ ] Establish spacing, typography, colors, responsive layout, focus, forms,
+      include helper/form-builder/Stimulus classes; React has already been removed.
+- [x] Establish spacing, typography, colors, responsive layout, focus, forms,
       buttons, tables, dialogs and icon treatment before converting screens.
-- [ ] Convert public/shared screens and admin sections in bounded slices; preserve
-      the approved appearance unless a design change is explicitly agreed.
-- [ ] Replace Materialize JS interactions with Stimulus/native elements; Tailwind
+- [x] Convert public/shared screens and admin sections in bounded slices; follow
+      the owner's functional-first Tailwind direction rather than visual parity.
+- [x] Replace Materialize JS interactions with Stimulus/native elements; Tailwind
       provides styling rather than dialog/dropdown/form behavior.
-- [ ] Replace document-level flash handlers in `app/javascript/flash_messages.js`
+- [x] Replace document-level flash handlers in `app/javascript/flash_messages.js`
       with a small Stimulus controller and actions on each flash message in
       `app/views/shared/_flash_messages.html.haml`, following the Wishlist approach.
       Preserve dismissal/animation behavior and `data-turbo-temporary` so dismissed
-      or cached flashes do not reappear. Keep the current handlers until this work.
-- [ ] Address dynamically built classes in helpers and database-stored content:
+      or cached flashes do not reappear.
+- [x] Address dynamically built classes in helpers and database-stored content:
       configure explicit sources/class inclusion or retain ordinary scoped CSS.
       Check Tailwind reset effects on CMS content and Ace.
-- [ ] Remove Materialize Sass imports, AutoInit, obsolete variables/overrides and
+- [x] Remove Materialize Sass imports, AutoInit, obsolete variables/overrides and
       dependencies after the last consumer. Remove Sass tooling if no longer used;
       keep small custom CSS where it serves existing content or widgets.
+
+Implementation (2026-11-07):
+
+- Added `tailwindcss-rails` 4.7.0 / standalone `tailwindcss-ruby` 4.3.4, replacing
+  cssbundling-rails, Sass, and the Node CSS scripts. The `css` Compose service and
+  Procfile use Tailwind watch; setup/test/production tasks build its standard input
+  into ignored `app/assets/builds/tailwind.css`. Kept the Wishlist system-test
+  configuration unchanged.
+- Admin uses slate/white surfaces, blue primary and red destructive actions,
+  wrapping navigation, responsive search grids, scrollable tables and explicit
+  typography/spacing utilities. Reused AdminFormBuilder for CRUD/search/Devise
+  fields with labels above controls, native selects/checks/file/color/date inputs,
+  focus outlines and a shared utility palette. Date values submit ISO calendar
+  dates; picture/gallery keys, flags/order, validation and authorization stay intact.
+- Replaced font icons with labelled inline SVG actions. Selector/upload/gallery
+  presentation uses utilities while retaining Stimulus hooks and cleanup. Ace is
+  bordered/responsive and its internal input receives its visible field label.
+- Public site keeps a small ordinary stylesheet (~3.6 KB), native CMS typography,
+  responsive gallery columns and existing branding; no Tailwind reset on regular
+  public pages. Auth screens load Tailwind for their forms. GLightbox CSS is a
+  separate unchanged vendor asset. Stored CSS/scripts and full-reload exceptions
+  remain supported. Existing database Materialize-class snippets can be revisited
+  manually with the owner's later public-content styling work; none were rewritten.
+- Added the small shared flash Stimulus controller, binding to each message with
+  a keyboard-accessible dismiss control, opacity transition/reduced-motion handling,
+  timer cleanup and temporary Turbo markup. Removed document-level flash handlers.
+- Explicit Tailwind source paths cover views/helpers/builders/presenters/JS; helper
+  palettes use complete literal classes. Removed AutoInit, all Materialize/Sass
+  source/overrides, icon fonts, animation/normalizer packages and obsolete lint/build
+  tasks. Vendoring now retains only Ace and GLightbox JS/CSS with their licenses.
+- Updated tests to use native controls and semantic editor/SVG assertions. Added
+  mobile viewport/native checkbox and flash dismissal/restoration coverage. Logout
+  tests wait for the navbar as well as the URL to avoid racing a same-URL response.
+  Reviewed desktop/mobile form, user-table and public screenshots; temporary preview
+  harness was removed, with images retained only under ignored tmp/screenshots.
+- Validation: all 55 system tests pass against precompiled production assets
+  (400 assertions). The full suite runs 225 tests / 783 assertions with the same
+  30 legacy failures and 7 errors. Development and production images build;
+  production asset precompilation and checks of 40 development asset URLs pass.
+  All 15 changed Ruby files pass RuboCop. Restored source-based development assets
+  and the running Tailwind watcher after production verification.
 
 ## 8. Complete Rails configuration alignment
 

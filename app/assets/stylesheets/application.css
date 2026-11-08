@@ -1,0 +1,282 @@
+html {
+    min-height: 100%;
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    color: #444;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    line-height: 1.5;
+}
+
+a {
+    color: #039be5;
+    text-decoration: none;
+}
+
+.content-wrap {
+    flex: 1;
+}
+
+.main-header,
+.main-content,
+.main-footer-credit,
+.main-footer-nav {
+    width: 90%;
+    max-width: 75rem;
+    margin-inline: auto;
+}
+
+.main-header-title {
+    font-size: clamp(2.5rem, 6vw, 5rem);
+    font-weight: 500;
+    margin: 0;
+    padding-top: 0.625rem;
+    line-height: 1.2;
+}
+
+.main-header-subtitle {
+    font-size: 1.3rem;
+    font-weight: 300;
+    margin: 0;
+    padding-bottom: 2rem;
+}
+
+.main-header-nav-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1rem;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    font-size: clamp(1.15rem, 3vw, 2.5rem);
+    font-weight: 700;
+}
+
+.main-header-nav-list a {
+    text-decoration: none;
+}
+
+.main-content {
+    margin-block: 2rem;
+}
+
+.main-content img {
+    max-width: 100%;
+    height: auto;
+}
+
+.main-footer {
+    padding-block: 0.75rem;
+    background: #111;
+    color: #eee;
+}
+
+.main-footer-credit {
+    padding-block: 0.25rem;
+}
+
+.main-footer-credit a {
+    color: #acace7;
+}
+
+.main-footer-nav-list {
+    display: flex;
+    gap: 0.625rem;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.main-footer-nav img {
+    width: 2rem;
+    height: 2rem;
+}
+
+.post,
+.page {
+    overflow: hidden;
+}
+
+.page-title {
+    font-size: 2rem;
+    font-weight: 700;
+}
+
+pre {
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+}
+
+.galleries {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));
+    gap: 1.5rem;
+}
+
+.galleries .gallery {
+    text-align: center;
+}
+
+.galleries .gallery-name a {
+    color: #111;
+}
+
+.gallery-description {
+    font-size: 1.25rem;
+}
+
+.gallery-pictures {
+    margin-top: 2rem;
+}
+
+.masonry {
+    column-gap: 1.875rem;
+    text-align: center;
+}
+
+.masonry .brick {
+    display: inline-block;
+    width: 100%;
+    margin-bottom: 1.875rem;
+    break-inside: avoid;
+}
+
+.masonry img {
+    vertical-align: middle;
+    transition: opacity 0.2s;
+}
+
+.masonry a:hover img {
+    opacity: 0.8;
+}
+
+@media (min-width: 48rem) {
+    .masonry {
+        column-count: 2;
+    }
+}
+
+@media (min-width: 64rem) {
+    .masonry {
+        column-count: 3;
+    }
+}
+
+.links .day {
+    border-bottom: 1px solid #ddd;
+    font-size: 0.85rem;
+    font-weight: 400;
+}
+
+.links .link {
+    margin-bottom: 1rem;
+}
+
+.links .link .link {
+    font-size: 1.25rem;
+    margin: 0;
+}
+
+.links .description,
+.links .tags {
+    margin: 0;
+}
+
+.links .tags {
+    font-size: 0.85rem;
+}
+
+#page-contact form {
+    max-width: 36rem;
+}
+
+#page-contact .form-field {
+    margin-bottom: 1rem;
+}
+
+#page-contact label {
+    display: block;
+    margin-bottom: 0.25rem;
+    font-weight: 600;
+}
+
+#page-contact input:not([type="checkbox"]):not([type="submit"]),
+#page-contact textarea {
+    box-sizing: border-box;
+    width: 100%;
+    padding: 0.6rem;
+    border: 1px solid #aaa;
+    border-radius: 0.3rem;
+    font: inherit;
+}
+
+#page-contact textarea {
+    min-height: 8rem;
+}
+
+#page-contact input[type="submit"] {
+    padding: 0.6rem 1rem;
+    cursor: pointer;
+}
+
+.flash-message {
+    position: relative;
+    margin-block: 1rem;
+    padding: 1rem 3rem 1rem 1rem;
+    border: 1px solid #ccc;
+    border-radius: 0.5rem;
+    transition: opacity 0.2s;
+}
+
+.flash-message-success,
+.flash-message-notice {
+    background: #f0fdf4;
+}
+
+.flash-message-error,
+.flash-message-alert {
+    background: #fef2f2;
+}
+
+.flash-message.opacity-0 {
+    opacity: 0;
+}
+
+.flash-message p {
+    margin: 0.25rem 0;
+}
+
+.flash-message-dismiss {
+    position: absolute;
+    right: 0.75rem;
+    top: 0.75rem;
+    border: 0;
+    padding: 0.25rem;
+    background: transparent;
+    color: inherit;
+    cursor: pointer;
+}
+
+.pagination {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    list-style: none;
+    padding: 0;
+}
+
+.pagination a {
+    display: block;
+    padding: 0.3rem 0.6rem;
+    border: 1px solid #ddd;
+    border-radius: 0.25rem;
+}
+
+.pagination .active a {
+    font-weight: 700;
+    background: #eee;
+}

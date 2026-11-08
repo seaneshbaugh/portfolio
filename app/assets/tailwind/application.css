@@ -1,0 +1,16 @@
+@import "tailwindcss" source(none);
+@source "../../views";
+@source "../../helpers";
+@source "../../builders";
+@source "../../presenters";
+@source "../../javascript";
+
+@layer base {
+  [hidden] { display: none !important; }
+  button, [role="button"] { cursor: pointer; }
+  button:disabled { cursor: not-allowed; }
+}
+
+/* Widget state lives in attributes/classes rather than generated utility names. */
+.gallery-picture.dragging { opacity: 0.35; }
+.image-uploader.hover { border-color: var(--color-blue-600); background: var(--color-blue-50); }

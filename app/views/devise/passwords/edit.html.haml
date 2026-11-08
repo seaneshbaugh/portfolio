@@ -1,16 +1,16 @@
 #reset-password
-  %h1= t('.title')
-  = form_for resource, as: resource_name, url: password_path(resource_name), html: { method: :put } do |f|
+  %h1.mb-6.text-2xl.font-semibold= t('.title')
+  = form_for resource, builder: AdminFormBuilder, as: resource_name, url: password_path(resource_name), html: { method: :put } do |f|
     = f.hidden_field :reset_password_token
     - if resource.errors.any?
       .flash-messages
         .flash-message.flash-message-error= resource.errors.full_messages.to_sentence
-    .input-field
-      = f.password_field :password, required: true, autocomplete: 'new-password'
+    .mb-4.space-y-1
       = f.label :password, t('.new_password')
-    .input-field
-      = f.password_field :password_confirmation, required: true, autocomplete: 'new-password'
+      = f.password_field :password, required: true, autocomplete: 'new-password'
+    .mb-4.space-y-1
       = f.label :password_confirmation, t('.confirm_password')
-    .input-field
+      = f.password_field :password_confirmation, required: true, autocomplete: 'new-password'
+    .mb-4.space-y-1
       = f.submit t('.submit'), class: success_button_class
   = render 'devise/shared/links'

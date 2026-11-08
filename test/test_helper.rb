@@ -23,7 +23,7 @@ mean_time_reporter_options = {
 
 Minitest::Reporters.use! Minitest::Reporters::MeanTimeReporter.new(mean_time_reporter_options)
 
-system("yarn build:css", exception: true)
+system("bin/rails tailwindcss:build", exception: true)
 
 module ActiveSupport
   self.test_order = :random

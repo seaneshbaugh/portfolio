@@ -1,19 +1,19 @@
 #page-login.page
   %header.page-header
-    %h1= t('.title')
+    %h1.mb-6.text-2xl.font-semibold= t('.title')
   .page-body
-    = form_for resource, as: resource_name, url: session_path(resource_name) do |f|
-      .input-field
-        = f.email_field :email
+    = form_for resource, builder: AdminFormBuilder, as: resource_name, url: session_path(resource_name) do |f|
+      .mb-4.space-y-1
         = f.label :email
-      .input-field
-        = f.password_field :password
+        = f.email_field :email
+      .mb-4.space-y-1
         = f.label :password
+        = f.password_field :password
       - if devise_mapping.rememberable?
         %p
           = f.label :remember_me do
             = f.check_box :remember_me
             %span= t('.remember_me')
-      .input-field
+      .mb-4.space-y-1
         = f.submit t('.submit'), class: success_button_class
     = render 'devise/shared/links'

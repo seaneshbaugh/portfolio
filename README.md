@@ -38,13 +38,14 @@ Visit the website at <http://localhost:3000> and Mailcatcher at
 <http://localhost:1080>. Optional pgAdmin: `docker compose up -d pgadmin`, then
 <http://localhost:5555> (credentials are in Compose).
 
-The web and CSS services share a Docker-managed `node_modules` volume.
+The web service uses a Docker-managed `node_modules` volume. The standalone
+Tailwind watcher does not need that volume.
 It initializes from the image on first use. After changing JS manifests/lockfiles,
 refresh it explicitly; rebuilding an image does not update an existing volume:
 
 ```bash
-docker compose run --rm --no-deps css yarn install --frozen-lockfile
-docker compose restart css
+docker compose run --rm --no-deps web yarn install --frozen-lockfile
+docker compose restart web
 ```
 
 For a large dependency-tree change, Yarn can leave stale nested packages in an
@@ -73,7 +74,7 @@ use `bundle update <gem names>` for intentional updates. Docker installs gems in
 frozen mode so a build cannot silently rewrite the lockfile.
 
 Most JavaScript declarations use compatible version ranges, with exact installs
-provided by `yarn.lock` and `--frozen-lockfile`. Transitional Materialize retains its tested version until replacement. See the
+provided by `yarn.lock` and `--frozen-lockfile`. See the
 [dependency inventory](docs/dependencies/README.md) for before/after versions,
 retained/transitional packages, compatibility exceptions and update commands.
 
@@ -81,22 +82,37 @@ retained/transitional packages, compatibility exceptions and update commands.
 
 Propshaft serves fingerprinted assets under `/assets`. The public layout loads
 `application.js`; the admin layout loads `admin.js` through import maps. Both use
-`shared.js` for Turbo Drive, Materialize initialization and flash messages. Public
-pages load GLightbox; admin pages load Stimulus controllers and Ace. Admin modules
+`shared.js` for Turbo Drive and a small Stimulus flash controller. Public pages
+load GLightbox; admin pages additionally load the editor/gallery/upload controllers. Admin modules
 are mapped but not preloaded or fetched by public pages. Turbo handles navigation
 and normal form submissions within each layout.
 
-`app/assets/stylesheets` contains the retained Sass/Materialize sources. The
-`css` Compose service runs `yarn watch:css` and writes public/admin CSS into
-`app/assets/builds`; `yarn build:css` performs one build. cssbundling-rails also
-builds CSS for production precompilation, respecting `yarn.lock` through a frozen
-install task. Node is still required for Sass and server-side CSS validation.
+`tailwindcss-rails` uses its standalone compiler, without an npm CSS build. The
+`css` Compose service runs `bundle exec rails tailwindcss:watch[always]` and writes
+`app/assets/builds/tailwind.css`. Run a single build with
+`docker compose exec web bundle exec rails tailwindcss:build`. Production
+precompilation and test preparation also build Tailwind automatically.
 
-Images live in `app/assets/images` and icon fonts in `app/assets/fonts`.
-Materialize, GLightbox and the supported Ace modes/theme/workers are vendored
-locally in `vendor/javascript`; import maps have no CDN dependency. Their exact
-versions are recorded in `vendor/javascript/versions.json`, with licenses under
-`vendor/licenses`. Rails gems supply Turbo, Active Storage and Stimulus browser modules.
+Admin screens use Tailwind's default reset, a neutral slate/white layout, blue
+primary actions, red destructive actions, responsive search grids and scrollable
+tables. `AdminFormBuilder` shares literal utility classes across CRUD/search and
+authentication forms. Labels sit above native inputs; checkboxes, selects, dates
+and files use browser controls. Inline SVG icons replace the icon font. Public
+CMS pages keep a small plain stylesheet (`app/assets/stylesheets/application.css`,
+about 3.6 KB) and browser-default content typography. They do not load Tailwind's
+reset. Login/password screens load Tailwind for their forms while keeping the
+public header. Further public CSS-to-utility conversion and cosmetic polish are
+intentionally deferred to the owner.
+
+Images live in `app/assets/images`. GLightbox and the supported Ace
+modes/theme/workers are vendored locally in `vendor/javascript`; GLightbox's
+unchanged CSS lives in `vendor/assets/stylesheets`. Import maps have no CDN
+dependency. Exact browser versions are recorded in `vendor/javascript/versions.json`,
+with licenses under `vendor/licenses`. Rails gems supply Turbo, Active Storage
+and Stimulus browser modules. Materialize, Sass, Animate.css and the icon-font
+packages have been removed. Node remains for browser vendoring and server-side
+CSS validation, not stylesheet compilation.
+
 After an intentional npm upgrade, regenerate and review the browser assets with:
 
 ```bash
@@ -112,9 +128,10 @@ Native gallery dragging has Move up/Move down alternatives for keyboard/touch.
 
 Before Turbo caches a page, Ace synchronizes its textarea and destroys its editor,
 selectors close/cancel loading, uploads abort pending requests, and gallery drag
-state resets. Materialize instances and GLightbox are destroyed before caching or
-body replacement, then initialized on `turbo:load`. Flash listeners use delegation;
-flash messages are excluded from snapshots. History restores editable drafts and
+state resets. GLightbox is destroyed before caching or body replacement, then
+initialized on `turbo:load`. Flash actions bind locally through Stimulus, with
+keyboard-accessible dismissal and reduced-motion support; messages are excluded
+from snapshots. History restores editable drafts and
 gallery fields without duplicate controls or listeners.
 
 Tracked stylesheets force full reloads between public/admin layouts, preserving
@@ -133,8 +150,8 @@ redesign is included in this step.
 
 Shakapacker, webpack, Babel and PostCSS tooling have been removed, together with
 their legacy service, port and generated packs. Normal development and production
-asset builds use Propshaft/import maps and the Sass build only. Node/Yarn remain
-for Sass, browser-asset vendoring and server-side CSS validation. React and its
+asset builds use Propshaft/import maps and Tailwind only. Node/Yarn remain
+for browser-asset vendoring and server-side CSS validation. React and its
 associated state/drag libraries have been removed.
 
 To compile production assets locally:
@@ -149,7 +166,7 @@ Propshaft resolves edited source files:
 
 ```bash
 docker compose exec web bundle exec rails assets:clobber
-docker compose exec web yarn build:css
+docker compose exec web bundle exec rails tailwindcss:build
 docker compose restart web
 ```
 
@@ -200,7 +217,7 @@ without validation or delivery. That behavior has been preserved.
 
 ### Optional native process launcher
 
-`bin/dev` uses `Procfile.dev` to run Rails and the Sass watcher with Foreman when
+`bin/dev` uses `Procfile.dev` to run Rails and the Tailwind watcher with Foreman when
 running Ruby/Node on the host. Supply the database environment yourself (both
 hosts should be `localhost` when using Compose's published PostgreSQL port),
 install the pinned dependencies and libvips, and use `bin/setup --skip-server`
@@ -225,7 +242,7 @@ docker compose exec web ruby bin/check-development-assets
 ```
 
 This resolves the current import-map and asset-helper URLs and checks all modules,
-stylesheets, Ace workers, images and fonts over HTTP through Rails.
+stylesheets, Ace workers and images over HTTP through Rails.
 
 Selenium connects to the test server at `http://web:3001`. Port 3001 does not
 need to be published to the host. Run only one system-test command at a time.
@@ -233,7 +250,7 @@ Running `test:all` also makes the other tests sequential; use the separate
 commands when you want to retain the non-system suite's independent execution
 settings.
 
-The test helper builds CSS, and system tests load assets through Propshaft;
+The test helper builds Tailwind, and system tests load assets through Propshaft;
 no webpack server is needed. Fixtures use a separate test
 database, local `tmp/storage` attachments, and Rails' in-memory mail delivery;
 they do not use development content, S3, or Mailcatcher. The upload helper purges
@@ -267,7 +284,7 @@ deferred failures/errors; see TODO.md for the recorded baseline.
 #### Missing JavaScript or CSS assets
 
 Run the asset check above to identify the missing URL. Refresh npm dependencies
-with the locked Yarn install if needed, then run `yarn build:css` and restart the
+with the locked Yarn install if needed, then build Tailwind with `bin/rails tailwindcss:build` and restart the
 CSS watcher. After an intentional browser-library upgrade, regenerate and review
 `bin/vendor-assets` output. Clear a stale production manifest using the documented
 clobber/rebuild/restart sequence.
@@ -288,10 +305,6 @@ This happens from time to time. Dead containers and unused images can be cleaned
 ### HAML
 
     $ docker compose run --rm web bundle exec haml-lint
-
-### SCSS
-
-    $ docker compose run --rm web  yarn run sass-lint --verbose --no-exit --config .sass-lint.yml
 
 ## Contacts
 

@@ -3,10 +3,9 @@
 const fs = require('node:fs');
 const path = require('node:path');
 const packages = {
-  '@materializecss/materialize': { 'dist/js/materialize.mjs': 'vendor/javascript/materialize.js' },
-  glightbox: { 'dist/js/glightbox.min.js': 'vendor/javascript/glightbox.js' },
+  glightbox: { 'dist/js/glightbox.min.js': 'vendor/javascript/glightbox.js', 'dist/css/glightbox.css': 'vendor/assets/stylesheets/glightbox.css' },
   'ace-builds': Object.fromEntries(['ace', 'mode-css', 'mode-html', 'mode-javascript', 'mode-text', 'mode-rhtml', 'theme-github', 'worker-css', 'worker-html', 'worker-javascript'].map(name => [`src-noconflict/${name}.js`, `vendor/javascript/ace/${name === 'ace' ? 'core' : name}.js`])),
-  'material-design-icons': Object.fromEntries(['woff2', 'woff', 'ttf'].map(ext => [`iconfont/MaterialIcons-Regular.${ext}`, `app/assets/fonts/material-icons/MaterialIcons-Regular.${ext}`]))
+
 };
 const versions = {};
 for (const [name, files] of Object.entries(packages)) {

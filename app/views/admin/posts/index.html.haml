@@ -1,48 +1,47 @@
-%h2= t('.title')
-.row
-  = search_form_for @search, url: admin_posts_path, html: { class: 'col s12', method: :get } do |f|
-    .row
-      .input-field.col.s3
-        = f.text_field :title_cont
-        = f.label :title_cont, t('activerecord.attributes.post.title')
-      .input-field.col.s6
-        = f.text_field :body_or_style_cont
-        = f.label :body_or_style_or_cont, t('activerecord.attributes.post.body_or_style')
-      .input-field.col.s3
-        = f.button search_icon, class: caution_button_class
-        = cancel_icon_link(admin_posts_path)
+%h2.mb-6.text-2xl.font-semibold= t('.title')
+.mb-4
+  = search_form_for @search, builder: AdminFormBuilder, url: admin_posts_path, html: { class: 'grid items-end gap-4 rounded-lg border border-slate-200 bg-slate-50 p-4 md:grid-cols-4', method: :get } do |f|
+    .space-y-1.min-w-0
+      = f.label :title_cont, t('activerecord.attributes.post.title')
+      = f.text_field :title_cont
+    .space-y-1.min-w-0
+      = f.label :body_or_style_cont, t('activerecord.attributes.post.body_or_style')
+      = f.text_field :body_or_style_cont
+    .space-y-1.min-w-0
+      = f.button search_icon, aria: { label: "Search" }, class: caution_button_class
+      = cancel_icon_link(admin_posts_path)
 - if policy([:admin, Post]).create?
-  .row
-    .col.s12
+  .mb-4
+    .min-w-0
       = link_to t('.new_post'), new_admin_post_path, class: success_button_class
 - if @posts.present?
-  .row
-    .col.s12
-      %table.posts.responsive-table
-        %thead
+  .mb-4
+    .min-w-0.overflow-x-auto
+      %table.posts.min-w-full.divide-y.divide-slate-200.text-sm
+        %thead.bg-slate-50.text-left.px-3.py-3.text-left.font-semibold
           %tr
-            %th.post-title= sort_link @search, :title
-            %th.post-user= sort_link @search, :user_last_name, [:user_last_name, :user_first_name], t('activerecord.attributes.post.user')
-            %th.post-created-at= sort_link @search, :created_at
-            %th.edit
-            %th.delete
-        %tbody
+            %th.post-title.px-3.py-3.text-left.font-semibold= sort_link @search, :title
+            %th.post-user.px-3.py-3.text-left.font-semibold= sort_link @search, :user_last_name, [:user_last_name, :user_first_name], t('activerecord.attributes.post.user')
+            %th.post-created-at.px-3.py-3.text-left.font-semibold= sort_link @search, :created_at
+            %th.edit.px-3.py-3.text-left.font-semibold
+            %th.delete.px-3.py-3.text-left.font-semibold
+        %tbody.divide-y.divide-slate-200
           - @posts.each do |post|
             - present post do |post_presenter|
               %tr{ class: classnames('post', { 'inactive' => !post_presenter.published? }) }
-                %td.post-title
+                %td.post-title.px-3.py-3.align-top
                   = link_to post_presenter.title, admin_post_path(post)
                   = post_presenter.share_link target: '_blank'
-                %td.post-user= link_to post_presenter.user_full_name, admin_user_path(post.user)
-                %td.post-created-at= post_presenter.created_at
-                %td.edit
+                %td.post-user.px-3.py-3.align-top= link_to post_presenter.user_full_name, admin_user_path(post.user)
+                %td.post-created-at.px-3.py-3.align-top= post_presenter.created_at
+                %td.edit.px-3.py-3.align-top
                   - if policy([:admin, post]).edit?
                     = edit_icon_link edit_admin_post_path(post)
-                %td.delete
+                %td.delete.px-3.py-3.align-top
                   - if policy([:admin, post]).destroy?
                     = delete_icon_link admin_post_path(post)
-  .row
-    .col.s12
+  .mb-4
+    .min-w-0
       = paginate @posts
 - else
   %p.no-items= t('.no_posts')
