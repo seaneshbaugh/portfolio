@@ -37,13 +37,13 @@ Rails.application.configure do
   config.action_mailer.delivery_method = :test
 
   # Set host to be used by links generated in mailer templates.
-  config.action_mailer.default_url_options = { host: "localhost", port: 3000 }
+  config.action_mailer.default_url_options = { host: "example.com" }
 
   # Print deprecation notices to the stderr.
   config.active_support.deprecation = :stderr
 
   # Raises error for missing translations.
-  config.i18n.raise_on_missing_translations = true
+  # config.i18n.raise_on_missing_translations = true
 
   # Annotate rendered view with file names.
   # config.action_view.annotate_rendered_view_with_filenames = true
@@ -52,5 +52,5 @@ Rails.application.configure do
   config.action_controller.raise_on_missing_callback_actions = true
 end
 
-# Set default host for URLs.
+# Picture model/serializer URL helpers also run outside a request.
 Rails.application.routes.default_url_options[:host] = "test"

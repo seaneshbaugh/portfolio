@@ -13,7 +13,7 @@ class AssetsTest < ApplicationSystemTestCase
     resources = page.evaluate_script("performance.getEntriesByType('resource').map(entry => new URL(entry.name).pathname)")
 
     assert resources.any? { |path| path.start_with?("/assets/") }
-    assert_not resources.any? { |path| path.match?(%r{/assets/(ace/|controllers/(ace_editor|gallery_pictures|picture_selector|picture_uploads|index)|admin-|tailwind-)}) }
+    assert_not resources.any? { |path| path.match?(%r{/assets/(ace/|controllers/(ace_editor|gallery_pictures|picture_selector|picture_uploads)|admin-|tailwind-)}) }
 
     imports = JSON.parse(find("script[type=importmap]", visible: :all).text(:all)).fetch("imports")
 

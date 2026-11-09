@@ -82,9 +82,10 @@ retained/transitional packages, compatibility exceptions and update commands.
 
 Propshaft serves fingerprinted assets under `/assets`. The public layout loads
 `application.js`; the admin layout loads `admin.js` through import maps. Both use
-`shared.js` for Turbo Drive and a small Stimulus flash controller. Public pages
+`shared.js` for Turbo Drive and Rails-supported lazy Stimulus controller discovery. Public pages
 load GLightbox; admin pages additionally load the editor/gallery/upload controllers. Admin modules
-are mapped but not preloaded or fetched by public pages. Turbo handles navigation
+are mapped but not preloaded or fetched by public pages. Shared Hotwire modules use
+normal preloads, and entrypoint-specific modules use scoped preloads. Turbo handles navigation
 and normal form submissions within each layout.
 
 `tailwindcss-rails` uses its standalone compiler, without an npm CSS build. The
@@ -309,3 +310,11 @@ This happens from time to time. Dead containers and unused images can be cleaned
 ## Contacts
 
 * [Sean Eshbaugh](mailto:seaneshbaugh@gmail.com)
+
+### Rails configuration reference
+
+See [Rails configuration alignment](docs/rails-configuration.md) for the Rails 8.1.4
+generated baseline, retained application/Docker exceptions, asset and bin script
+choices, and deployment prerequisites. `bin/ci` provides the standard native Rails
+check runner; the GitHub workflow continues to run the Docker-based checks.
+Historical seeds are excluded from automated setup and CI replanting.

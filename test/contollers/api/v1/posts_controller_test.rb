@@ -18,7 +18,7 @@ module Api
 
         assert_response :ok
 
-        assert_equal(PostSerializer.new(post).to_json, response.body)
+        assert_equal(JSON.parse(PostSerializer.new(post).to_json), response.parsed_body)
       end
 
       test "should not show a post that does not exist" do

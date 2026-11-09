@@ -1,9 +1,9 @@
-# PostgreSQL. Versions 9.3 and up are supported.
+# PostgreSQL. Versions 9.5 and up are supported.
 #
 # Install the pg driver:
 #   gem install pg
 # On macOS with Homebrew:
-#   gem install pg -- --with-pg-config=/usr/local/bin/pg_config
+#   gem install pg -- --with-pg-config=/opt/homebrew/bin/pg_config
 # On Windows:
 #   gem install pg
 #       Choose the win32 build.
@@ -15,9 +15,11 @@
 default: &default
   adapter: postgresql
   encoding: unicode
+  # Keep historical SeedFu fixtures opt-in, including fresh db:prepare runs.
+  seeds: false
   # For details on connection pooling, see Rails configuration guide
   # https://guides.rubyonrails.org/configuring.html#database-pooling
-  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+  max_connections: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
 
 development:
   <<: *default

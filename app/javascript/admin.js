@@ -1,2 +1,1 @@
 import "shared";
-import "controllers";

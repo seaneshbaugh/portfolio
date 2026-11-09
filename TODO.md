@@ -816,36 +816,136 @@ Implementation (2026-11-07):
 
 ## 8. Complete Rails configuration alignment
 
-- [ ] Compare against a separately generated application for the selected Rails
-      version, recording intentional differences. Do not run an unattended
-      generator overwrite across this historical application.
-- [ ] Review `config/application.rb`, environment files, Puma, initializers,
-      boot/setup/dev/jobs/entrypoint scripts and asset config against that template.
-      Preserve Haml, Devise, policies, time zone, locales, URL settings and storage.
-- [ ] Verify Solid Cache/Queue/Cable as a complete operational choice: database
-      creation/schema loading, config and worker processes. Queue/cache are wired
-      in production; `config/cable.yml` currently still uses `async` there.
-      Decide whether unused Cable needs a database/service rather than enabling
-      everything solely because the template includes it.
-- [ ] Review Solid Queue 1.7's optional batching migration before using batching
+Goal: match a default Rails 8.1 application as closely as possible. Keep only
+configuration required by this application's code, retained gems, data/content or
+Docker runtime. Historical preferences alone are not reasons to retain overrides.
+Retain Haml in this phase. Deployment uses Rancher Machine, not Kamal or Thruster.
+
+- [x] Generate an isolated reference app using this checkout's locked Rails version
+      (currently 8.1.4): `rails _8.1.4_ new test_app -d postgresql --skip-kamal
+      --skip-thruster --css tailwind`. Record Rails and installer/gem versions and
+      actual generation options; use an isolated environment so local `.railsrc`
+      options cannot silently change the baseline. Do not run `app:update` or
+      overwrite this application with generator output. Generating/building the
+      reference must not prepare or connect to Portfolio databases.
+- [x] Compare the reference against Portfolio and the read-only Wishlist checkout
+      at `/home/sean/Projects/wishlist`. The generated app is the authority for
+      defaults; Wishlist illustrates justified container/production adaptations,
+      rather than being copied wholesale (it also has customizations).
+- [x] Record a concise file/setting inventory in `docs/rails-configuration.md`:
+      generated default, current difference, proposed action and concrete reason
+      for each retained exception. Classify changes as adopt default, retain
+      required exception, or defer pending deployment context. Resolve consequential
+      behavior choices with the owner before implementing them.
+- [x] Align `config/application.rb`, boot/environment files and framework loading.
+      Move `config.load_defaults 8.0` to 8.1 after reviewing the installed Rails
+      upgrade notes/default changes and their effects on this existing app/data.
+      Compare selective railties with generated `rails/all`; do not retain selective
+      loading simply because it is historical. Preserve required Central time,
+      locale loading, Pundit response mapping and application identity.
+- [x] Compare development/test settings individually: reload/watch behavior,
+      asset logging, redirect logging, translation errors, exception rendering,
+      mail URLs, route URL defaults, caching and Docker web-console access.
+      Prefer template settings unless the code/tests or container workflow require
+      a difference. Keep the Wishlist-style sequential remote-browser test setup.
+- [x] Audit every initializer against generated defaults and the retained gems:
+      Devise, Haml, FriendlyId, Rolify, PaperTrail, parameter filtering, inflections,
+      CSP and assets. Remove obsolete/redundant settings; verify whether the
+      PostgreSQL database-task monkey patch is still required before retaining it.
+      Keep this focused on configuration compatibility, not general code review.
+- [x] Give assets/JavaScript a dedicated comparison: Propshaft's automatically
+      provided paths versus `config/initializers/assets.rb`; importmap pins,
+      preloading, local vendoring, controller discovery and Stimulus startup;
+      `application.js`/`admin.js`/`shared.js`; layout importmap/stylesheet tags;
+      Tailwind input/output/source discovery; setup/test/build/watch hooks.
+      Remove redundant paths/settings and adopt standard installer conventions
+      wherever possible. Verify whether separate public/admin entrypoints and
+      manual controller loading remain necessary to keep Ace/admin assets off
+      public pages; document any required exception rather than preserving the
+      current architecture automatically. Retain working CMS script/style content,
+      Turbo lifecycle cleanup and native-form behavior while simplifying setup.
+- [x] Compare every `bin/*` file, executable bit, shebang and argument forwarding
+      with the generated counterpart, including rails/rake/importmap/jobs,
+      setup/dev/docker-entrypoint and lint/security/CI launchers. Restore default
+      bodies where possible. Check legacy `bin/bundle`, extra tooling scripts,
+      Foreman setup and package installation/build steps for actual necessity.
+      Keep custom asset verification/vendoring scripts only where still required.
+      Preserve the protection against automatically loading historical SeedFu data
+      using `seeds: false` and default `db:prepare`; do not introduce `db:reset`
+      or destructive bootstrap behavior for parity.
+- [x] Align Puma, database configuration/pooling, Active Storage, mail and
+      Solid Cache/Queue/Cable with the reference. Preserve existing database names,
+      credentials interfaces, S3 attachments and persisted data. Compare schema and
+      migration requirements for existing databases as well as fresh setup.
+      Prefer default Solid Cable production configuration; identify operational
+      prerequisites before changing the currently async production adapter.
+- [x] Review Solid Queue 1.7's optional batching migration before using batching
       (`solid_queue:update`, then review the generated migration for the queue DB).
-      Confirm recurring jobs' time zones after the 1.5 default changed to the
-      application's zone. Keep this with production queue/worker rehearsal.
-- [ ] Verify contact jobs run through the intended production worker and mail
-      transport; verify migrations for existing production data, not only schema
-      loading on a fresh database.
-- [ ] Consolidate inherited production overrides with template settings where
-      appropriate (logger, static serving, SSL/proxy behavior). Validate `/up`
-      through the actual proxy and retain necessary custom configuration.
+      Compare recurring-job configuration with the template, including cleanup and
+      application time zone. Validate queue/cache/cable schemas and worker startup;
+      rehearse migrations and real worker delivery in section 9.
+- [x] Align production logging, static asset serving, SSL/proxy settings, host
+      handling, health checks and mail with the template. In particular, reconcile
+      the duplicate logger override and debug log default. Use Wishlist's stdout,
+      reverse-proxy and runtime-environment patterns where applicable, preserving
+      Portfolio's domain, S3/mail integration and exception notifications.
+      Contact submission remains disabled. Record deployment-dependent decisions
+      for section 9 instead of assuming Rancher/proxy details or enabling Kamal.
+- [x] Apply agreed changes in small groups: Rails/environment defaults and
+      initializers; assets/JavaScript; binstubs; production/data-service config.
+      After each group, run relevant checks and compare to the known test baseline.
+      Finish with eager loading, all system tests, production asset compilation,
+      public/admin/auth/CMS/editor/upload/gallery smoke checks and development
+      watch/reload/asset checks. Verify bootstrap only against disposable databases.
+      Document retained exceptions and section 9 prerequisites; no production
+      deployment or destructive database operations in this phase.
+
+Implementation (2026-11-08):
+
+- Generated an isolated Rails 8.1.4/PostgreSQL/Tailwind reference with Kamal,
+  Thruster and personal railsrc options excluded. Used the installed locked asset
+  and Solid installers to finish it; inspected Wishlist read-only. File/setting
+  decisions and retained exceptions are in `docs/rails-configuration.md`.
+- Adopted `rails/all`, 8.1 defaults, generated environment logging/watcher settings,
+  Puma and CSP/assets initializers. Removed duplicate production logging/static
+  serving overrides, the PostgreSQL drop monkey patch, obsolete Haml and empty
+  PaperTrail initializers, and unused Rolify dynamic-shortcut configuration.
+- Kept required route-host defaults (Picture URLs outside requests), Central time,
+  gem/account/slug configuration, Docker mail/console access and production
+  domain/S3/SMTP/exception handling. Excluded dormant `lib/ext` reopenings from
+  Zeitwerk rather than activating an unrelated historical analyzer patch.
+- Replaced manual controller registration with Rails-supported lazy discovery;
+  restored shared/scoped preloads and removed redundant JS asset paths. Preserved
+  public/admin separation, local vendor libraries, selective CSS/reset loading,
+  Tailwind's Ruby source scanning and CMS/Turbo lifecycle behavior.
+- Standardized dev/entrypoint/tool binstubs; removed `bin/bundle`; added generated
+  native CI/audit launchers and locked bundler-audit 0.9.3. Setup/entrypoint now use
+  `db:prepare`, with automatic historical seeding disabled by database configuration.
+  Explicit seeding remains opt-in and automated reset/replanting remains excluded.
+- Adopted production Solid Cable, default queue polling and recurring cleanup.
+  Added the generated batching migration under `db/queue_migrate` and current
+  fresh queue schema. On disposable databases, verified default `db:prepare`
+  creates all four schemas without historical seed users, cache writes, async
+  cable persistence and queue enqueueing. Separately verified migrating the old
+  queue schema preserves an existing queued job.
+- Validation: 55 system tests / 400 assertions pass against precompiled production
+  assets; the non-system suite runs 170 tests / 383 assertions with the unchanged
+  30 legacy failures / 7 errors. Updated one JSON assertion for Rails 8.1's default
+  escaping and the asset assertion for controller discovery. Eager loading, image
+  builds, changed Ruby lint and 41 development asset URL checks pass.
+- Actual Rancher/proxy host/health checks, production database migration release
+  steps, worker/recurring-job process rehearsal and mail delivery remain section 9
+  work. Existing development/production data and disabled contact remain intact.
 
 ## 9. Align development and production Docker
 
-### Development (wishlist comparison pending)
+### Development (Wishlist reference available)
 
-- [ ] Obtain wishlist Dockerfile/Compose/entrypoint and expected workflow before
-      adopting its conventions. The immediate dependency fix does not depend on it.
+- [ ] Use the reviewed Wishlist Dockerfile/Compose/entrypoint as a reference;
+      confirm the desired workflow before adopting its container conventions.
 - [ ] Align bind mounts/dependency volumes, runtime pins, database readiness,
-      startup/database preparation, mail, optional pgAdmin and asset watcher.
+      startup/database preparation (`seeds: false` keeps historical fixtures opt-in),
+      mail, optional pgAdmin and asset watcher.
 - [ ] Keep test database credentials and browser-driver networking explicit;
       verify edit/reload, clean-machine bootstrap and lockfile refresh behavior.
 - [ ] Update README version claims (currently Ruby 2.7/Rails 6/Node 14), Compose
@@ -864,26 +964,34 @@ Implementation (2026-11-07):
       material; deliberately supply runtime secrets instead of copying the checkout.
 - [ ] Define deployment topology for web, queue workers, database and proxy;
       preserve S3 attachments, mail, exception notifications, SSL and static assets.
-      Treat Kamal/Thruster as deployment choices rather than required rewrites.
+      Target Rancher Machine; do not introduce Kamal or Thruster.
 - [ ] Rehearse database backups/restores, multi-database preparation and schema
-      migrations in staging; document release and rollback commands and asset
+      migrations in staging, including `db:migrate:queue` for existing Solid Queue
+      databases; rehearse the worker and recurring cleanup using Central time.
+      Document release and rollback commands and asset
       compatibility across deploys. Do not perform destructive production changes.
 - [ ] Boot the built image in production mode, run `/up`, public/admin smoke and
       browser checks, contact job/mail checks and attachment variant requests.
 
 ## Context to collect as needed
 
-- [ ] Wishlist development setup and which aspects should be matched.
+- [ ] Confirm which Wishlist development workflow conventions should be matched;
+      its source is available read-only at `/home/sean/Projects/wishlist`.
 - [ ] Current production deploy/proxy/container configuration, environment variable
       names, database version and job process setup (sanitized, no secret values).
 - [ ] Representative local content/attachments and safe admin access; whether
       master exactly matches deployed production, and screenshots where it does not.
 - [ ] Intended visual parity versus redesign during Tailwind replacement, supported
       browsers/devices, and any CMS content relying on global Materialize/JS APIs.
-- [ ] Desired Rails 8 minor target and deployment constraints. These choices do
-      not block restoring the currently pinned application locally.
+- [ ] Remaining Rancher Machine/proxy deployment details; Rails 8.1 is the
+      configuration target and Kamal/Thruster are explicitly excluded.
 
 ## Low-priority follow-ups (after the upgrade)
+
+- [ ] Remove Haml in a separate, low-priority pass: convert layouts/views and
+      helper-generated templates to ERB, remove its initializer/gems/lint tooling,
+      and verify rendering/forms with the system suite. Retain Haml throughout
+      configuration alignment; do not combine template conversion with section 8.
 
 - [ ] Investigate the current state of spam prevention for contact forms, including
       automated/LLM-assisted submissions, maintenance burden, accessibility, false
