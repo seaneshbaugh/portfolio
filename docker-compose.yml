@@ -1,54 +1,57 @@
 services:
   db:
-    image: "postgres:17.11-bookworm"
+    image: postgres:17.11-bookworm
     env_file:
-      - ".env"
+      - .env
     volumes:
-      - "./tmp/db:/var/lib/postgresql/data"
+      - postgres_data:/var/lib/postgresql/data
     ports:
       - "5432:5432"
-  mail:
-    image: "schickling/mailcatcher"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -h 127.0.0.1 -U \"$$POSTGRES_USER\" -d postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+      start_period: 10s
+    stop_grace_period: 1m
+  mailpit:
+    image: axllent/mailpit
     ports:
-      - "1080:1080"
+      - "8025:8025"
   pgadmin:
-    image: "dpage/pgadmin4:9.2"
+    image: dpage/pgadmin4:9.2
+    profiles:
+      - tools
     depends_on:
-      - "db"
+      db:
+        condition: service_healthy
     ports:
       - "5555:80"
     environment:
-      PGADMIN_DEFAULT_EMAIL: "pgadmin4@pgadmin.org"
-      PGADMIN_DEFAULT_PASSWORD: "admin"
-    restart: "unless-stopped"
+      PGADMIN_DEFAULT_EMAIL: pgadmin4@pgadmin.org
+      PGADMIN_DEFAULT_PASSWORD: admin
   selenium:
     image: selenium/standalone-firefox:latest
     shm_size: 2gb
     profiles:
       - system-test
-  css:
-    build:
-      context: .
-      dockerfile: "./Dockerfile"
-    env_file:
-      - ".env"
-    command: "bundle exec rails tailwindcss:watch[always]"
-    volumes:
-      - ".:/portfolio"
   web:
-    build:
-      context: .
-      dockerfile: "./Dockerfile"
+    build: .
     env_file:
-      - ".env"
-    command: "bundle exec rails s -p 3000 -b '0.0.0.0'"
+      - .env
     volumes:
-      - ".:/portfolio"
-      - "node_modules:/portfolio/node_modules"
+      - .:/app
+      - bundle:/usr/local/bundle
+      - node_modules:/app/node_modules
     ports:
       - "3000:3000"
     depends_on:
-      - "db"
+      db:
+        condition: service_healthy
+    tty: true
+    init: true
 
 volumes:
+  bundle:
   node_modules:
+  postgres_data:

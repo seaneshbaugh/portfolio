@@ -1,19 +1,65 @@
-.git/
-.env
-node_modules/
-log/
-tmp/
+# See https://docs.docker.com/engine/reference/builder/#dockerignore-file for more about ignoring files.
+
+# Ignore git directory.
+/.git
+/.gitignore
+
+# Local tooling and credential directories do not belong in the image.
+/.aws
+/.codex
+/.agents
+
+# Ignore bundler config.
+/.bundle
+
+# Ignore all environment files.
+/.env*
+!.env.example
+
+# Ignore all default key files.
+/config/master.key
+/config/credentials/*.key
+
+# Ignore all logfiles and tempfiles.
+/log/*
+/tmp/*
+!/log/.keep
+!/tmp/.keep
+
+# Ignore storage (uploaded files in development and any SQLite databases).
+/storage/*
+!/storage/.keep
+/tmp/storage/*
+!/tmp/storage/.keep
+
+# Ignore assets.
+/node_modules/
+/app/assets/builds/*
+!/app/assets/builds/.keep
+/public/assets
+
+# Ignore CI service files.
+/.github
+
+# Ignore development files
+/.devcontainer
+
+# Ignore Docker-related files
+/.dockerignore
+/Dockerfile*
+
+.ssh/
+coverage/
 .byebug_history
 .pry_history
-docker-compose.yml
-docker-compose.production.yml
-yarn-error.log
+**/.#*
+**/#*#
+**/*~
 *.sql
-coverage/
-fixtures/files/
-storage/
-
-# Build assets from source rather than copying a host precompile/cache.
-public/assets/
-app/assets/builds/*
-!app/assets/builds/.keep
+*.sql.gz
+*.dump
+*.pem
+yarn-error.log
+yarn-debug.log*
+docker-compose*.yml
+compose*.yml

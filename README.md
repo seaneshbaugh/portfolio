@@ -6,7 +6,7 @@ This is the repository for my personal website.
 
 This branch uses Ruby 4.0.9, Rails 8.1.4, Node.js 26.13.0 LTS, Yarn 1.22.22,
 Bundler 4.0.23, and PostgreSQL 17.11 on Bookworm. Runtime versions are pinned in
-`.tool-versions`, `.ruby-version`, and Dockerfile/Compose; exact library versions
+`.tool-versions`, `.ruby-version`, and the Dockerfiles/Compose; exact library versions
 belong in `Gemfile.lock` and `yarn.lock`.
 The container includes libvips for Active Storage variants; no host installation
 is needed for the Compose workflow.
@@ -19,52 +19,48 @@ The example uses separate development/test databases and the `db` hostname
 reachable inside Compose. PostgreSQL initialization credentials only apply to a
 new data directory. They do not change users/passwords in an existing database.
 
-Start the database and local mail server, then build the app images:
+Build and start the Wishlist-style development services:
 
 ```bash
-docker compose up -d db mail
-docker compose build web css
-docker compose run --rm --no-deps web bin/setup --skip-server
-docker compose up -d web css
+docker compose build web
+docker compose run --rm web bin/setup --skip-server
+docker compose up -d web mailpit
 ```
 
-If PostgreSQL is still starting, retry the setup command after it is ready.
-`bin/setup` installs locked dependencies and creates/migrates development and test
-databases without loading the historical seeds. It also clears local logs/temp
-files, so save diagnostic logs first if needed. It stops if dependency installation
-fails. Existing records are retained.
+Compose waits for PostgreSQL's health check. `bin/setup` installs locked
+Ruby/JavaScript dependencies and prepares development/test databases without
+running historical seeds. It also clears local logs/temp files. The web service
+runs `bin/dev`: Foreman owns Rails and the Tailwind watcher in one container.
+`init: true` forwards shutdown signals; source is mounted at `/app`.
 
-Visit the website at <http://localhost:3000> and Mailcatcher at
-<http://localhost:1080>. Optional pgAdmin: `docker compose up -d pgadmin`, then
-<http://localhost:5555> (credentials are in Compose).
+Visit <http://localhost:3000> and Mailpit at <http://localhost:8025>.
+Optional pgAdmin: `docker compose --profile tools up -d pgadmin`, then
+<http://localhost:5555> (local credentials are in Compose). Selenium remains an
+optional service started explicitly for system tests.
 
-The web service uses a Docker-managed `node_modules` volume. The standalone
-Tailwind watcher does not need that volume.
-It initializes from the image on first use. After changing JS manifests/lockfiles,
-refresh it explicitly; rebuilding an image does not update an existing volume:
+PostgreSQL 17.11 uses the `postgres_data` named volume. The `bundle` and
+`node_modules` volumes cache dependencies across rebuilds. Uploaded development
+files remain in the checkout's `storage` directory. For this existing checkout,
+the old `tmp/db` cluster was copied while stopped, checked against a logical
+backup, and retained in place. See [Docker operations](docs/docker.md) for migration
+and rollback details. Do not use `docker compose down -v` to refresh dependencies:
+it also removes the database volume.
+
+After changing dependency manifests/lockfiles, rebuilding does not update an
+existing dependency volume. Refresh only those caches, then restart Foreman:
 
 ```bash
+docker compose build web
+docker compose run --rm --no-deps web bundle install
 docker compose run --rm --no-deps web yarn install --frozen-lockfile
 docker compose restart web
 ```
 
-For a large dependency-tree change, Yarn can leave stale nested packages in an
-existing volume even after a forced install. To initialize a clean cache from the
-rebuilt image, stop/remove only the application containers and their dependency
-volume:
-
-```bash
-docker compose build web css
-docker compose stop web css
-docker compose rm -f web css
-docker volume ls --filter label=com.docker.compose.volume=node_modules
-# Verify the volume belongs to this project. With the default project name:
-docker volume rm portfolio_node_modules
-docker compose up -d web css
-```
-
-This refreshes cached JavaScript dependencies. Keep the database directory and
-uploaded files. A custom Compose project name changes the volume name.
+The image installs the committed locks in frozen mode; an intentional dependency
+update is performed in the development container, then reviewed and committed.
+A fresh cache initializes from the image. Keep the PostgreSQL and attachment
+volumes when refreshing caches; detailed recovery commands are in the operations
+notes.
 
 ### Dependency updates
 
@@ -89,7 +85,7 @@ normal preloads, and entrypoint-specific modules use scoped preloads. Turbo hand
 and normal form submissions within each layout.
 
 `tailwindcss-rails` uses its standalone compiler, without an npm CSS build. The
-`css` Compose service runs `bundle exec rails tailwindcss:watch[always]` and writes
+Tailwind process in `bin/dev` runs `bin/rails tailwindcss:watch[always]` and writes
 `app/assets/builds/tailwind.css`. Run a single build with
 `docker compose exec web bundle exec rails tailwindcss:build`. Production
 precompilation and test preparation also build Tailwind automatically.
@@ -212,7 +208,7 @@ nil
 ```
 
 Sign in at `/login`. This creates a separate account and leaves existing users
-unchanged. Development SMTP points to the Compose Mailcatcher service (`mail:1025`).
+unchanged. Development SMTP points to the Compose Mailpit service (`mailpit:1025`).
 Contact submission is currently disabled in the controller: it renders thanks
 without validation or delivery. That behavior has been preserved.
 
@@ -254,7 +250,7 @@ settings.
 The test helper builds Tailwind, and system tests load assets through Propshaft;
 no webpack server is needed. Fixtures use a separate test
 database, local `tmp/storage` attachments, and Rails' in-memory mail delivery;
-they do not use development content, S3, or Mailcatcher. The upload helper purges
+they do not use development content, S3, or Mailpit. The upload helper purges
 attachments created by each system test, since transaction rollback alone cannot
 remove files from disk.
 
@@ -318,3 +314,16 @@ generated baseline, retained application/Docker exceptions, asset and bin script
 choices, and deployment prerequisites. `bin/ci` provides the standard native Rails
 check runner; the GitHub workflow continues to run the Docker-based checks.
 Historical seeds are excluded from automated setup and CI replanting.
+
+### Production containers
+
+`Dockerfile.production` follows the generated Rails multi-stage layout, runs as
+UID 1000, and builds assets without production keys or a database. Node and the
+locked `css` package remain at runtime for CMS validators. Browser JS is vendored;
+there is no runtime asset bundler. `docker-compose.production.yml` describes the
+web and separate Solid Queue worker services; database/proxy network integration
+must be adapted to the actual Rancher Machine stack before deployment.
+
+See [Docker operations](docs/docker.md) for runtime environment, release,
+backup/restore and rollback instructions. Production credentials are supplied at
+runtime, not copied into the image. Kamal and Thruster are not used.

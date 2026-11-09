@@ -941,26 +941,26 @@ Implementation (2026-11-08):
 
 ### Development (Wishlist reference available)
 
-- [ ] Use the reviewed Wishlist Dockerfile/Compose/entrypoint as a reference;
+- [x] Use the reviewed Wishlist Dockerfile/Compose/entrypoint as a reference;
       confirm the desired workflow before adopting its container conventions.
-- [ ] Align bind mounts/dependency volumes, runtime pins, database readiness,
+- [x] Align bind mounts/dependency volumes, runtime pins, database readiness,
       startup/database preparation (`seeds: false` keeps historical fixtures opt-in),
       mail, optional pgAdmin and asset watcher.
-- [ ] Keep test database credentials and browser-driver networking explicit;
+- [x] Keep test database credentials and browser-driver networking explicit;
       verify edit/reload, clean-machine bootstrap and lockfile refresh behavior.
-- [ ] Update README version claims (currently Ruby 2.7/Rails 6/Node 14), Compose
-      commands and troubleshooting; replace obsolete Node Sass instructions.
+- [x] Keep current runtime versions, Compose commands, cache/volume instructions
+      and troubleshooting documented in README and `docs/docker.md`.
 
 ### Production
 
-- [ ] Build a separate production target/path using a selected Rails template:
+- [x] Build a separate production target/path using a selected Rails template:
       multi-stage dependency/asset build, lean non-root runtime, production env,
       required libvips/Postgres client libraries, and explicit entrypoint/CMD.
-- [ ] Reconcile `bin/docker-entrypoint` database preparation with the actual server
-      command; the current Dockerfile does not install it as ENTRYPOINT.
-- [ ] Compile assets in the build stage with safe build-only secret handling;
+- [x] Reconcile `bin/docker-entrypoint` database preparation with the actual server
+      command; the production Dockerfile now installs it as ENTRYPOINT.
+- [x] Compile assets in the build stage with safe build-only secret handling;
       verify compilation never needs production data or exposes runtime credentials.
-- [ ] Update `.dockerignore` for `.env`, host dependencies and local/credential
+- [x] Update `.dockerignore` for `.env`, host dependencies and local/credential
       material; deliberately supply runtime secrets instead of copying the checkout.
 - [ ] Define deployment topology for web, queue workers, database and proxy;
       preserve S3 attachments, mail, exception notifications, SSL and static assets.
@@ -970,12 +970,47 @@ Implementation (2026-11-08):
       databases; rehearse the worker and recurring cleanup using Central time.
       Document release and rollback commands and asset
       compatibility across deploys. Do not perform destructive production changes.
-- [ ] Boot the built image in production mode, run `/up`, public/admin smoke and
+- [x] Boot the built image in production mode, run `/up`, public/admin smoke and
       browser checks, contact job/mail checks and attachment variant requests.
+
+Implementation (2026-11-09):
+
+- Confirmed Wishlist-style development workflow: `web` runs Rails and Tailwind
+  through Foreman, source at `/app`, named gem/Node dependency volumes, Mailpit,
+  PostgreSQL health checks, optional pgAdmin and unchanged remote-Firefox setup.
+  Kept PostgreSQL 17.11. Backed up/stopped/copied the original `tmp/db` cluster to
+  a named volume and verified its logical contents match exactly; original data
+  directory and private backup remain available for rollback.
+- Added `Dockerfile.production` using the generated Rails multi-stage layout,
+  non-root runtime, libvips/Postgres client, jemalloc and precompiled assets.
+  Retained pinned Node and only the locked CSS validator's npm dependency tree
+  at runtime; no JS/CSS bundler. Explicitly created writable non-root storage.
+- Added a production web/worker Compose template, runtime env example and
+  build-context exclusions for keys/env/dependency/data/cache files. Assets build
+  without production secrets or a database. CI now builds the actual production
+  image rather than compiling into development's mounted asset directory.
+- Validation: 225 tests / 783 assertions, with all 55 system tests passing and the
+  unchanged 30 legacy failures / 7 errors. Fresh isolated source/dependency/database
+  volumes pass normal bootstrap without historical seeds; 41 development asset
+  URLs and both Compose definitions pass checks.
+- The actual production image passed isolated TLS browser login/admin/Ace CRUD,
+  native CSS/JS validation and libvips attachment variant requests. A separate
+  worker delivered a synthetic contact job to Mailpit, registered the Central-time
+  recurring scheduler and executed finished-job cleanup. Four synthetic databases
+  were backed up/restored under new names; content, roles, attachment references,
+  cache/Cable data and queue configuration survived repeat `db:prepare`.
+- `docs/docker.md` records setup, volume migration/rollback, runtime configuration,
+  topology assumptions, coordinated backup/restore and release/asset retention.
+  Local production checks use dummy credentials, a TLS proxy, captured SMTP and
+  local attachment storage; real Spaces/Gmail access is not claimed as verified.
+- Remaining unchecked production items need the current Rancher Machine stack,
+  database ownership/version, proxy/network/TLS and registry details. Rehearse
+  against an actual staging backup and those integrations before deployment;
+  no production service, data, credentials or proxy configuration was changed.
 
 ## Context to collect as needed
 
-- [ ] Confirm which Wishlist development workflow conventions should be matched;
+- [x] Confirm which Wishlist development workflow conventions should be matched;
       its source is available read-only at `/home/sean/Projects/wishlist`.
 - [ ] Current production deploy/proxy/container configuration, environment variable
       names, database version and job process setup (sanitized, no secret values).

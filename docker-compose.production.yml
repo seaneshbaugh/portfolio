@@ -1,0 +1,41 @@
+# Standalone app services. Supply the actual Rancher database/proxy network at deployment.
+x-logging: &logging
+  driver: json-file
+  options:
+    max-size: "10m"
+    max-file: "3"
+
+services:
+  web:
+    image: portfolio:production
+    build:
+      context: .
+      dockerfile: Dockerfile.production
+    env_file:
+      - path: .env.production
+        required: false
+    init: true
+    restart: unless-stopped
+    logging: *logging
+    expose:
+      - "3000"
+    healthcheck:
+      test: ["CMD", "curl", "--fail", "--silent", "--show-error", "http://127.0.0.1:3000/up"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+    stop_grace_period: 30s
+  worker:
+    image: portfolio:production
+    command: ["./bin/jobs"]
+    env_file:
+      - path: .env.production
+        required: false
+    depends_on:
+      web:
+        condition: service_healthy
+    init: true
+    restart: unless-stopped
+    logging: *logging
+    stop_grace_period: 1m

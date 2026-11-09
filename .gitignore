@@ -36,3 +36,9 @@ yarn-debug.log*
 
 /app/assets/builds/*
 !/app/assets/builds/.keep
+
+# Runtime environment files are supplied outside the image.
+.env
+.env.*
+!.env.example
+!.env.production.example

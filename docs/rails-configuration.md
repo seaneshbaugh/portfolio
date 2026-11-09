@@ -18,7 +18,7 @@ rails _8.1.4_ new /tmp/portfolio-rails-reference/test_app \
 
 `--no-rc` excludes personal generator options. `--skip-git` only avoids creating a
 nested repository. To avoid resolving a second dependency set, installation was
-completed with Portfolio's locked bundle (`BUNDLE_GEMFILE=/portfolio/Gemfile`),
+completed with Portfolio's locked bundle (`BUNDLE_GEMFILE=/app/Gemfile`),
 using the installed importmap, Turbo and Stimulus templates and the Tailwind and
 Solid install tasks. No reference database was created or connected. The install
 steps ran only inside the disposable reference directory. Reference credentials
@@ -36,7 +36,7 @@ installed versions, rather than whatever a new unconstrained bundle resolves.
 | `config/application.rb` | `rails/all`, `load_defaults 8.1`; Portfolio selected frameworks and loaded 8.0 defaults | Adopt both defaults. Keep Central time for existing dates/jobs and Pundit's forbidden-response mapping. |
 | `config.autoload_lib` | Ignore assets/tasks; an old `lib/ext` Active Storage reopening does not define its matching namespace | Also ignore `ext`. This permits eager loading without accidentally activating a dormant patch. Reworking EXIF extraction is outside configuration alignment. |
 | `config/boot.rb`, `environment.rb`, `config.ru`, `Rakefile` | Standard entrypoints | Retain; no alternate boot mechanism is needed. |
-| Development | Standard cache/reload/log settings; custom evented watcher and strict translations | Adopt generated watcher and translation settings, asset quieting and redirect logging. Keep Mailcatcher SMTP and Docker web-console access because those services are reached over container networking. |
+| Development | Standard cache/reload/log settings; custom evented watcher and strict translations | Adopt generated watcher and translation settings, asset quieting and redirect logging. Keep container SMTP and Docker web-console access because those services are reached over container networking. |
 | Test environment | Generated `example.com` mail URL and normal translation handling | Adopt defaults. Keep route host `test`: `Picture` and serializers generate absolute attachment URLs without a controller request. Remote Firefox setup and sequential execution remain unchanged. |
 | Route URL defaults | Not present in generated app | Keep development localhost/3000 and production domain as well as test host for model/presenter/serializer URL helpers. These are distinct from mailer URL settings. |
 | Production logging | One tagged stdout logger, info level | Remove old `/proc/1/fd/1`/environment logger replacement, custom formatter and debug default. Use the generated logger and `RAILS_LOG_LEVEL` override. |
@@ -75,7 +75,8 @@ installed versions, rather than whatever a new unconstrained bundle resolves.
 - `bin/rails`, `rake`, `importmap`, `jobs`, `rubocop` and `brakeman` already match
   their generated equivalents. Keep their executable modes.
 - `bin/dev` now matches the Tailwind installer: Foreman, default port, and lazy
-  remote-debug settings. Compose still launches web/CSS separately until section 9.
+  remote-debug settings. Section 9 now launches both processes through `bin/dev`
+  in the Compose web container, matching Wishlist.
 - Remove inherited `bin/bundle`; use the installed, lockfile-aware Bundler.
 - Add generated `bin/ci`, `bin/bundler-audit` and audit configuration, including the
   unpinned development/test `bundler-audit` dependency (locked to 0.9.3). Native CI
@@ -83,13 +84,13 @@ installed versions, rather than whatever a new unconstrained bundle resolves.
   GitHub Docker CI remains the container workflow; it is not replaced by Wishlist CI.
 - `bin/setup` retains the standard structure and `--skip-server`, with necessary
   Yarn install/Tailwind steps. It uses standard `db:prepare`, with automatic seed
-  loading disabled in database configuration. It deliberately offers no reset,
-  since Rails reset runs explicit seeding even with that setting.
+  loading disabled in database configuration. The explicit `--reset` option is
+  separate and runs Rails reset/seed tasks; normal setup does not use it.
 - `bin/docker-entrypoint` drops the old jemalloc search and matches the generated
   command dispatch and `db:prepare`. Database configuration prevents automatic
   SeedFu loading. The current
-  development Dockerfile does not install it as ENTRYPOINT; final server arguments,
-  database preparation and jemalloc runtime setup belong to section 9.
+  development image starts `bin/dev`; section 9 installs the entrypoint in the
+  separate production image and configures jemalloc in its base stage.
 - Keep `bin/vendor-assets` (run via Node) and `bin/check-development-assets` as
   application-specific maintenance/check tools. Default generator examples such as
   a destructive seed CI step are not automatically appropriate for this database.
