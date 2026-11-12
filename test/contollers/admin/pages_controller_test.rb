@@ -23,9 +23,9 @@ module Admin
     end
 
     test "should not show a page that does not exist" do
-      assert_raises(ActiveRecord::RecordNotFound) do
-        get admin_page_url(id: "does-not-exist")
-      end
+      get admin_page_url(id: "does-not-exist")
+
+      assert_response :not_found
     end
 
     test "should get a new page" do
@@ -43,9 +43,9 @@ module Admin
     end
 
     test "should not get a page that does not exist to edit" do
-      assert_raises(ActiveRecord::RecordNotFound) do
-        get edit_admin_page_url(id: "does-not-exist")
-      end
+      get edit_admin_page_url(id: "does-not-exist")
+
+      assert_response :not_found
     end
 
     test "should create a page" do
@@ -91,9 +91,9 @@ module Admin
     end
 
     test "should not update a page that does not exist" do
-      assert_raises(ActiveRecord::RecordNotFound) do
-        patch admin_page_url(id: "does-not-exist"), params: { page: { title: "Does Not Exist", body: "Page intentionally left blank." } }
-      end
+      patch admin_page_url(id: "does-not-exist"), params: { page: { title: "Does Not Exist", body: "Page intentionally left blank." } }
+
+      assert_response :not_found
     end
 
     test "should destroy a page" do
@@ -109,9 +109,9 @@ module Admin
     end
 
     test "should not destroy a page that does not exist" do
-      assert_raises(ActiveRecord::RecordNotFound) do
-        delete admin_page_url(id: "does-not-exist")
-      end
+      delete admin_page_url(id: "does-not-exist")
+
+      assert_response :not_found
     end
   end
 end

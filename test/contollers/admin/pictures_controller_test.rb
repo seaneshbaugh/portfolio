@@ -25,9 +25,9 @@ module Admin
     end
 
     test "should not show a picture that does not exist" do
-      assert_raises(ActiveRecord::RecordNotFound) do
-        get admin_picture_url(id: "does-not-exist")
-      end
+      get admin_picture_url(id: "does-not-exist")
+
+      assert_response :not_found
     end
 
     test "should get a new picture" do
@@ -45,9 +45,9 @@ module Admin
     end
 
     test "should not get a picture that does not exist to edit" do
-      assert_raises(ActiveRecord::RecordNotFound) do
-        get edit_admin_picture_url(id: "does-not-exist")
-      end
+      get edit_admin_picture_url(id: "does-not-exist")
+
+      assert_response :not_found
     end
 
     test "should create a picture" do
@@ -135,9 +135,9 @@ module Admin
     end
 
     test "should not update a picture that does not exist" do
-      assert_raises(ActiveRecord::RecordNotFound) do
-        patch admin_picture_url(id: "does-not-exist"), params: { picture: { title: "Does Not Exist", body: "Picture intentionally left blank." } }
-      end
+      patch admin_picture_url(id: "does-not-exist"), params: { picture: { title: "Does Not Exist", body: "Picture intentionally left blank." } }
+
+      assert_response :not_found
     end
 
     test "should destroy a picture" do
@@ -153,9 +153,9 @@ module Admin
     end
 
     test "should not destroy a picture that does not exist" do
-      assert_raises(ActiveRecord::RecordNotFound) do
-        delete admin_picture_url(id: "does-not-exist")
-      end
+      delete admin_picture_url(id: "does-not-exist")
+
+      assert_response :not_found
     end
   end
 end

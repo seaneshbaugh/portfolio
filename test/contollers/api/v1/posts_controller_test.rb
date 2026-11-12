@@ -22,9 +22,9 @@ module Api
       end
 
       test "should not show a post that does not exist" do
-        assert_raises(ActiveRecord::RecordNotFound) do
-          get api_v1_post_url(id: "does-not-exist")
-        end
+        get api_v1_post_url(id: "does-not-exist")
+
+        assert_response :not_found
       end
     end
   end

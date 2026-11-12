@@ -18,8 +18,8 @@ class PostsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should not show a post that does not exist" do
-    assert_raise(ActiveRecord::RecordNotFound) do
-      get post_url(id: "does-not-exist")
-    end
+    get post_url(id: "does-not-exist")
+
+    assert_response :not_found
   end
 end

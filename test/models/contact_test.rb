@@ -8,11 +8,13 @@ class ContactTest < ActiveSupport::TestCase
   describe "validations" do
     describe "name" do
       it "validates length of name" do
-        _(contact).must validate_length_of(:name).is_at_most(128)
+        matcher = validate_length_of(:name).is_at_most(128)
+        assert matcher.matches?(contact), -> { matcher.failure_message }
       end
 
       it "validates presence of name" do
-        _(contact).must validate_presence_of(:name)
+        matcher = validate_presence_of(:name)
+        assert matcher.matches?(contact), -> { matcher.failure_message }
       end
     end
 
@@ -21,27 +23,32 @@ class ContactTest < ActiveSupport::TestCase
       # end
 
       it "validates presence of email" do
-        _(contact).must validate_presence_of(:email)
+        matcher = validate_presence_of(:email)
+        assert matcher.matches?(contact), -> { matcher.failure_message }
       end
     end
 
     describe "subject" do
       it "validates presence of subject" do
-        _(contact).must validate_presence_of(:subject)
+        matcher = validate_presence_of(:subject)
+        assert matcher.matches?(contact), -> { matcher.failure_message }
       end
 
       it "validates length of subject" do
-        _(contact).must validate_length_of(:subject).is_at_least(4).is_at_most(128)
+        matcher = validate_length_of(:subject).is_at_least(4).is_at_most(128)
+        assert matcher.matches?(contact), -> { matcher.failure_message }
       end
     end
 
     describe "body" do
       it "validates presence of body" do
-        _(contact).must validate_presence_of(:body)
+        matcher = validate_presence_of(:body)
+        assert matcher.matches?(contact), -> { matcher.failure_message }
       end
 
       it "validates length of body" do
-        _(contact).must validate_length_of(:body).is_at_least(8).is_at_most(2048)
+        matcher = validate_length_of(:body).is_at_least(8).is_at_most(2048)
+        assert matcher.matches?(contact), -> { matcher.failure_message }
       end
     end
   end

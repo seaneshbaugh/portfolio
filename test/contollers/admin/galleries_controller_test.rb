@@ -25,9 +25,9 @@ module Admin
     end
 
     test "should not show a gallery that does not exist" do
-      assert_raises(ActiveRecord::RecordNotFound) do
-        get admin_gallery_url(id: "does-not-exist")
-      end
+      get admin_gallery_url(id: "does-not-exist")
+
+      assert_response :not_found
     end
 
     test "should get a new gallery" do
@@ -45,9 +45,9 @@ module Admin
     end
 
     test "should not get a gallery that does not exist to edit" do
-      assert_raises(ActiveRecord::RecordNotFound) do
-        get edit_admin_gallery_url(id: "does-not-exist")
-      end
+      get edit_admin_gallery_url(id: "does-not-exist")
+
+      assert_response :not_found
     end
 
     test "should create a gallery" do
@@ -93,9 +93,9 @@ module Admin
     end
 
     test "should not update a gallery that does not exist" do
-      assert_raises(ActiveRecord::RecordNotFound) do
-        patch admin_gallery_url(id: "does-not-exist"), params: { gallery: { name: "Does Not Exist", description: "Gallery intentionally left blank." } }
-      end
+      patch admin_gallery_url(id: "does-not-exist"), params: { gallery: { name: "Does Not Exist", description: "Gallery intentionally left blank." } }
+
+      assert_response :not_found
     end
 
     test "should destroy a gallery" do
@@ -111,9 +111,9 @@ module Admin
     end
 
     test "should not destroy a gallery that does not exist" do
-      assert_raises(ActiveRecord::RecordNotFound) do
-        delete admin_gallery_url(id: "does-not-exist")
-      end
+      delete admin_gallery_url(id: "does-not-exist")
+
+      assert_response :not_found
     end
   end
 end

@@ -23,9 +23,9 @@ module Admin
     end
 
     test "should not show a user that does not exist" do
-      assert_raises(ActiveRecord::RecordNotFound) do
-        get admin_user_url(id: "does-not-exist")
-      end
+      get admin_user_url(id: "does-not-exist")
+
+      assert_response :not_found
     end
 
     test "should get a new user" do
@@ -43,9 +43,9 @@ module Admin
     end
 
     test "should not get a user that does not exist to edit" do
-      assert_raises(ActiveRecord::RecordNotFound) do
-        get edit_admin_user_url(id: "does-not-exist")
-      end
+      get edit_admin_user_url(id: "does-not-exist")
+
+      assert_response :not_found
     end
 
     test "should create a user" do
@@ -91,9 +91,9 @@ module Admin
     end
 
     test "should not update a user that does not exist" do
-      assert_raises(ActiveRecord::RecordNotFound) do
-        patch admin_user_url(id: "does-not-exist"), params: { user: { email: "doesnotexist@seaneshbaugh.com" } }
-      end
+      patch admin_user_url(id: "does-not-exist"), params: { user: { email: "doesnotexist@seaneshbaugh.com" } }
+
+      assert_response :not_found
     end
 
     test "should destroy a user" do
@@ -109,9 +109,9 @@ module Admin
     end
 
     test "should not destroy a user that does not exist" do
-      assert_raises(ActiveRecord::RecordNotFound) do
-        delete admin_user_url(id: "does-not-exist")
-      end
+      delete admin_user_url(id: "does-not-exist")
+
+      assert_response :not_found
     end
   end
 end

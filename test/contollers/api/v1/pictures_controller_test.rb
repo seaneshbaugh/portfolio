@@ -26,9 +26,9 @@ module Api
       end
 
       test "should not show a picture that does not exist" do
-        assert_raises(ActiveRecord::RecordNotFound) do
-          get api_v1_picture_url(id: "does-not-exist")
-        end
+        get api_v1_picture_url(id: "does-not-exist")
+
+        assert_response :not_found
       end
     end
   end

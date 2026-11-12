@@ -962,10 +962,10 @@ Implementation (2026-11-08):
       verify compilation never needs production data or exposes runtime credentials.
 - [x] Update `.dockerignore` for `.env`, host dependencies and local/credential
       material; deliberately supply runtime secrets instead of copying the checkout.
-- [ ] Define deployment topology for web, queue workers, database and proxy;
+- [x] Define deployment topology for web, queue workers, database and proxy;
       preserve S3 attachments, mail, exception notifications, SSL and static assets.
       Target Rancher Machine; do not introduce Kamal or Thruster.
-- [ ] Rehearse database backups/restores, multi-database preparation and schema
+- [x] Rehearse database backups/restores, multi-database preparation and schema
       migrations in staging, including `db:migrate:queue` for existing Solid Queue
       databases; rehearse the worker and recurring cleanup using Central time.
       Document release and rollback commands and asset
@@ -1012,13 +1012,13 @@ Implementation (2026-11-09):
 
 - [x] Confirm which Wishlist development workflow conventions should be matched;
       its source is available read-only at `/home/sean/Projects/wishlist`.
-- [ ] Current production deploy/proxy/container configuration, environment variable
+- [x] Current production deploy/proxy/container configuration, environment variable
       names, database version and job process setup (sanitized, no secret values).
 - [ ] Representative local content/attachments and safe admin access; whether
       master exactly matches deployed production, and screenshots where it does not.
 - [ ] Intended visual parity versus redesign during Tailwind replacement, supported
       browsers/devices, and any CMS content relying on global Materialize/JS APIs.
-- [ ] Remaining Rancher Machine/proxy deployment details; Rails 8.1 is the
+- [x] Remaining Rancher Machine/proxy deployment details; Rails 8.1 is the
       configuration target and Kamal/Thruster are explicitly excluded.
 
 ## Low-priority follow-ups (after the upgrade)

@@ -16,8 +16,8 @@ class LinksControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should not show a year of links outside valid year range" do
-    assert_raise(ActionController::RoutingError) do
-      get links_url(year: "2020")
-    end
+    get links_url(year: "2020")
+
+    assert_response :not_found
   end
 end

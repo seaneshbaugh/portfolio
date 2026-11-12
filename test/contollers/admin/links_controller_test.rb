@@ -23,9 +23,9 @@ module Admin
     end
 
     test "should not show a link that does not exist" do
-      assert_raises(ActiveRecord::RecordNotFound) do
-        get admin_link_url(id: "does-not-exist")
-      end
+      get admin_link_url(id: "does-not-exist")
+
+      assert_response :not_found
     end
 
     test "should get a new link" do
@@ -43,9 +43,9 @@ module Admin
     end
 
     test "should not get a link that does not exist to edit" do
-      assert_raises(ActiveRecord::RecordNotFound) do
-        get edit_admin_link_url(id: "does-not-exist")
-      end
+      get edit_admin_link_url(id: "does-not-exist")
+
+      assert_response :not_found
     end
 
     test "should create a link" do
@@ -91,9 +91,9 @@ module Admin
     end
 
     test "should not update a link that does not exist" do
-      assert_raises(ActiveRecord::RecordNotFound) do
-        patch admin_link_url(id: "does-not-exist"), params: { link: { text: "Does Not Exist", body: "I have nothing to say." } }
-      end
+      patch admin_link_url(id: "does-not-exist"), params: { link: { text: "Does Not Exist", body: "I have nothing to say." } }
+
+      assert_response :not_found
     end
 
     test "should destroy a link" do
@@ -109,9 +109,9 @@ module Admin
     end
 
     test "should not destroy a link that does not exist" do
-      assert_raises(ActiveRecord::RecordNotFound) do
-        delete admin_link_url(id: "does-not-exist")
-      end
+      delete admin_link_url(id: "does-not-exist")
+
+      assert_response :not_found
     end
   end
 end

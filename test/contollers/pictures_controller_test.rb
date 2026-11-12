@@ -22,8 +22,8 @@ class PicturesControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should not show a picture gallery that does not exist" do
-    assert_raise(ActiveRecord::RecordNotFound) do
-      get picture_url(id: "does-not-exist")
-    end
+    get picture_url(id: "does-not-exist")
+
+    assert_response :not_found
   end
 end
