@@ -1,8 +1,8 @@
 # Application review — 2026-11-10
 
 This review began as an analysis pass following the Rails 8.1/Ruby 4 deployment.
-The test assertions have since been corrected as recorded below; application
-behavior remains unchanged. Production deployment,
+The test assertions and direct-upload access control have since been corrected
+as recorded below. Other findings remain open. Production deployment,
 TLS, login and editing are owner-confirmed. Server-wide backups are being handled
 separately and are outside this review's remediation work.
 
@@ -39,14 +39,14 @@ confirm that policy before changing public lookups.
 
 ## Confirmed findings
 
-### R1 — P1: anonymous direct uploads can allocate blobs and obtain upload URLs
+### R1 — P1: anonymous direct uploads can allocate blobs and obtain upload URLs (access control resolved)
 
 References: `config/routes.rb` (Active Storage engine routes),
 `app/javascript/controllers/picture_uploads_controller.js:68`,
 `app/views/admin/pictures/index.html.haml`, `app/controllers/admin/pictures_controller.rb:5`.
 
-The admin picture action is protected, but the standard
-`POST /rails/active_storage/direct_uploads` endpoint is not authenticated or
+At initial review the admin picture action was protected, but the standard
+`POST /rails/active_storage/direct_uploads` endpoint was not authenticated or
 policy-checked by this application. In a fresh anonymous test session, with
 forgery protection explicitly enabled and a genuine CSRF token read from the
 public home page, this endpoint returned HTTP 200 and a blob `signed_id`.
@@ -371,3 +371,23 @@ configuration and application behavior are unchanged.
 790 assertions, 0 failures, 0 errors, 0 skips**, including all 55 system tests.
 RuboCop passes for all 18 files in the controller-test directories plus the
 Contact model test. Other review findings remain open.
+
+## Direct-upload access control completed — 2026-11-11
+
+The standard Active Storage direct-upload POST path now routes to
+`Admin::DirectUploadsController`, which inherits Rails' upload implementation and
+requires Devise authentication plus `Admin::PicturePolicy#create?` before blob
+creation. The route is unconditional and precedes the engine route, so anonymous
+requests cannot fall through to an unprotected engine endpoint. Existing helpers,
+JSON responses, CSRF checks and public signed read routes remain supported.
+
+Seven integration tests cover the standard and .json paths, anonymous requests
+with a valid public CSRF token, non-admin rejection, successful admin allocation,
+CSRF rejection/acceptance and public signed blob reads. Rejected requests do not
+allocate blobs; ordinary authorization checks also assert no attachments/pictures
+are created. File-type and byte-limit policy remains a separate hardening item.
+
+Full verification: **232 tests, 833 assertions, 0 failures, 0 errors, 0 skips**,
+including all 55 existing system tests and their real browser upload workflows.
+RuboCop passes for the controller, routes and new integration test. No live
+production requests, changes or Spaces uploads were performed.

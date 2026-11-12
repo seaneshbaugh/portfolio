@@ -123,6 +123,13 @@ connect/disconnect cleanup. Rails renders picture rows and gallery field
 partials; uploads and selection preserve the existing endpoints and nested params.
 Native gallery dragging has Move up/Move down alternatives for keyboard/touch.
 
+Direct-upload creation uses the standard Active Storage URL through an
+application controller requiring login and the admin Picture create policy.
+Anonymous requests cannot allocate blobs, including with a valid public CSRF
+token. Public signed image/variant read routes remain available. The integration
+suite covers this boundary; browser tests cover the normal admin upload flow.
+
+
 Before Turbo caches a page, Ace synchronizes its textarea and destroys its editor,
 selectors close/cancel loading, uploads abort pending requests, and gallery drag
 state resets. GLightbox is destroyed before caching or body replacement, then

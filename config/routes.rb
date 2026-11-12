@@ -22,6 +22,10 @@ Rails.application.routes.draw do
     put "/update-password" => "devise/passwords#update"
   end
 
+  scope ActiveStorage.routes_prefix do
+    post "/direct_uploads", to: "admin/direct_uploads#create"
+  end
+
   get "/contact" => "contact#new", as: :contact
 
   post "/contact" => "contact#create"
