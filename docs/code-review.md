@@ -1,8 +1,8 @@
 # Application review — 2026-11-10
 
 This review began as an analysis pass following the Rails 8.1/Ruby 4 deployment.
-The test assertions and direct-upload access control have since been corrected
-as recorded below. Other findings remain open. Production deployment,
+The test assertions, direct-upload access control and publication boundaries have
+since been corrected as recorded below. Other findings remain open. Production deployment,
 TLS, login and editing are owner-confirmed. Server-wide backups are being handled
 separately and are outside this review's remediation work.
 
@@ -13,10 +13,9 @@ No requests or probes were sent to production or Spaces. Runtime probes used the
 local test database, rolled-back transactions and dummy attachment metadata.
 
 Priority: P1 = address promptly (access/storage boundary); P2 = functional/query
-correctness; P3 = maintenance or hardening. Severity assumes `visible: false`
-means unpublished, consistent with the `published` scopes and Pages' separate
-`show_in_menu` flag. If it intentionally means publicly accessible but unlisted,
-confirm that policy before changing public lookups.
+correctness; P3 = maintenance or hardening. The owner confirmed that
+`visible: false` means unpublished and must return 404 from public content routes.
+Pages' separate `show_in_menu` flag controls navigation independently.
 
 ## Evidence and test baseline
 
@@ -68,14 +67,15 @@ Regression tests: anonymous visitor (including valid CSRF token), signed-in
 non-admin, admin; rejected metadata; valid direct upload plus picture persistence;
 no unauthorized blob creation. Do not exercise this against the live bucket.
 
-### R2 — P1: unpublished content is accessible through public detail endpoints
+### R2 — P1: unpublished content is accessible through public detail endpoints (resolved)
 
 References: `app/controllers/pages_controller.rb:5`,
 `app/controllers/posts_controller.rb:17`, `app/controllers/api/v1/posts_controller.rb:13`,
 `app/controllers/pictures_controller.rb:5` and `:9`.
 
-Setting an existing Page/Post to `visible: false` still produces HTTP 200 for its
-public HTML detail URL; the API post detail also returns HTTP 200. The normal post
+At initial review, setting an existing Page/Post to `visible: false` still
+produced HTTP 200 for its public HTML detail URL; the API post detail also returned
+HTTP 200. The normal post
 index filters unpublished records, so direct access is inconsistent with listing.
 The public gallery index/show relations also omit `Gallery.published`; the hidden
 fixture gallery can be selected by both. Child membership visibility does not
@@ -391,3 +391,23 @@ Full verification: **232 tests, 833 assertions, 0 failures, 0 errors, 0 skips**,
 including all 55 existing system tests and their real browser upload workflows.
 RuboCop passes for the controller, routes and new integration test. No live
 production requests, changes or Spaces uploads were performed.
+
+## Publication boundaries completed — 2026-11-11
+
+The owner confirmed hidden content must return 404. Public Page/Post HTML detail
+and Post API detail now use their published scopes before FriendlyId lookup.
+Public gallery listings and detail also require a published Gallery, retaining
+the existing child-membership visibility filtering. Both slugs and numeric IDs
+return 404 for hidden content, including for signed-in members and administrators.
+Admin show/edit actions retain access to hidden records through admin URLs.
+
+Eight integration tests cover those lookup boundaries, navigation/list/API/sitemap
+exclusion, independent page menu visibility, admin access, and visible gallery
+membership rendering/cover fallback. The old public-gallery success test now
+explicitly publishes its otherwise-hidden fixture. The separate R3 empty-cover
+issue and public signed attachment read behavior are unchanged.
+
+Full suite: **240 tests, 896 assertions, 0 failures, 0 errors, 0 skips**, including
+all 55 system tests. Focused public/controller coverage passes (19 tests,
+75 assertions), as does RuboCop for all six changed Ruby files. No production data
+was modified or automatically republished.

@@ -2,8 +2,6 @@
 
 class PagesController < ApplicationController
   def show
-    @page = Page.friendly.find(params[:id])
-
-    raise ActiveRecord::RecordNotFound if @page.nil?
+    @page = Page.published.friendly.find(params[:id])
   end
 end

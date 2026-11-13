@@ -14,9 +14,7 @@ class PostsController < ApplicationController
   end
 
   def show
-    @post = Post.friendly.find(params[:id])
-
-    raise ActiveRecord::RecordNotFound if @post.nil?
+    @post = Post.published.friendly.find(params[:id])
   end
 
   private

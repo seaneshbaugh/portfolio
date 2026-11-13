@@ -129,6 +129,12 @@ Anonymous requests cannot allocate blobs, including with a valid public CSRF
 token. Public signed image/variant read routes remain available. The integration
 suite covers this boundary; browser tests cover the normal admin upload flow.
 
+Public page, post and gallery detail URLs return 404 when `visible` is false,
+including for signed-in administrators; the posts API follows the same rule.
+Hidden content is excluded from public listings and navigation. Admin URLs remain
+available to view/edit hidden records. A published page can be omitted from the
+menu with `show_in_menu: false` while its public URL remains accessible.
+
 
 Before Turbo caches a page, Ace synchronizes its textarea and destroys its editor,
 selectors close/cancel loading, uploads abort pending requests, and gallery drag

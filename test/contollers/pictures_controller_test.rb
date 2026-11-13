@@ -15,6 +15,7 @@ class PicturesControllerTest < ActionDispatch::IntegrationTest
 
   test "should show a picture gallery" do
     gallery = galleries(:salt_plains)
+    gallery.update!(visible: true)
 
     get picture_url(gallery)
 
