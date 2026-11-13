@@ -1,8 +1,8 @@
 # Application review — 2026-11-10
 
 This review began as an analysis pass following the Rails 8.1/Ruby 4 deployment.
-The test assertions, direct-upload access control and publication boundaries have
-since been corrected as recorded below. Other findings remain open. Production deployment,
+The test assertions, direct-upload access control, publication boundaries and
+public rendering defects (R3–R5) have since been corrected as recorded below. Other findings remain open. Production deployment,
 TLS, login and editing are owner-confirmed. Server-wide backups are being handled
 separately and are outside this review's remediation work.
 
@@ -90,7 +90,7 @@ Regression tests: published/unpublished HTML and API detail, gallery index and
 show, hidden children, navigation/sitemap consistency, and any explicit preview
 contract. Expect 404 for unpublished public lookups if they are drafts.
 
-### R3 — P2: a gallery whose memberships are all hidden can crash the index
+### R3 — P2: a gallery whose memberships are all hidden can crash the index (resolved)
 
 References: `app/views/pictures/index.html.haml:3`, `app/models/gallery.rb:35`.
 
@@ -107,7 +107,7 @@ shown with an explicit placeholder. Coordinate this with R2 and the query fixes.
 Regression tests: no memberships, all hidden, hidden featured with visible fallback,
 and visible featured cover; no nil dereference or hidden-image disclosure.
 
-### R4 — P2: the RSS feed raises on Rails 8
+### R4 — P2: the RSS feed raises on Rails 8 (resolved)
 
 Reference: `app/views/posts/index.rss.builder:14`.
 
@@ -119,7 +119,7 @@ Regression test: request the RSS format with a published post and parse the XML,
 checking its publication date and exclusion of unpublished posts. Empty-feed status
 checks alone would not exercise this line.
 
-### R5 — P2: gallery sitemap entries use `<lock>` instead of `<loc>`
+### R5 — P2: gallery sitemap entries use `<lock>` instead of `<loc>` (resolved)
 
 Reference: `app/views/sitemap/index.xml.builder:77`.
 
@@ -411,3 +411,18 @@ Full suite: **240 tests, 896 assertions, 0 failures, 0 errors, 0 skips**, includ
 all 55 system tests. Focused public/controller coverage passes (19 tests,
 75 assertions), as does RuboCop for all six changed Ruby files. No production data
 was modified or automatically republished.
+
+## Public rendering fixes completed — 2026-11-12
+
+R3–R5 are resolved. The gallery index selects its cover before rendering and
+omits galleries with no published picture, including empty galleries and those
+whose memberships are all hidden. Existing featured/first-visible selection is
+preserved. RSS publication dates use `to_fs(:rfc822)`, and gallery sitemap URLs
+use the standard `<loc>` element.
+
+No new tests were added, as requested. Manual requests inside a rolled-back local
+test database transaction confirmed HTTP 200 for the empty/all-hidden gallery
+index, valid RSS XML and parseable publication dates, and a namespaced sitemap
+gallery `<loc>` with no `<lock>` elements. The existing suite passes: **240 tests,
+896 assertions, 0 failures, 0 errors, 0 skips**, including all 55 system tests.
+RuboCop passes for both modified Builder templates; `git diff --check` passes.

@@ -74,7 +74,7 @@ xml.urlset xmlns: "http://www.sitemaps.org/schemas/sitemap/0.9" do
                      "yearly"
       end
 
-      xml.lock picture_url(gallery)
+      xml.loc picture_url(gallery)
       xml.lastmod gallery.updated_at.xmlschema
       xml.changefreq changefreq
     end
