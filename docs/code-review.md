@@ -2,7 +2,7 @@
 
 This review began as an analysis pass following the Rails 8.1/Ruby 4 deployment.
 The test assertions, direct-upload access control, publication boundaries and
-public rendering defects (R3–R5) have since been corrected as recorded below. Other findings remain open. Production deployment,
+public rendering defects (R3–R5) and list N+1 queries (R12) have since been corrected as recorded below. Other findings remain open. Production deployment,
 TLS, login and editing are owner-confirmed. Server-wide backups are being handled
 separately and are outside this review's remediation work.
 
@@ -199,7 +199,7 @@ unique-user query accordingly. A blanket DISTINCT with ORDER BY roles.name needs
 care on PostgreSQL; test the generated query rather than assuming it fixes sorting.
 Cover two roles on one user, filters, sort directions and pagination.
 
-### R12 — P2: multiple list paths have confirmed N+1 queries
+### R12 — P2: multiple list paths have confirmed N+1 queries (resolved)
 
 | Path | Cause | Local measurement / evidence | Suggested change |
 | --- | --- | --- | --- |
@@ -426,3 +426,53 @@ index, valid RSS XML and parseable publication dates, and a namespaced sitemap
 gallery `<loc>` with no `<lock>` elements. The existing suite passes: **240 tests,
 896 assertions, 0 failures, 0 errors, 0 skips**, including all 55 system tests.
 RuboCop passes for both modified Builder templates; `git diff --check` passes.
+
+## Query efficiency pass completed — 2026-11-12
+
+Revisited controllers, models, presenters, serializers, layouts, list/detail views,
+policies and the installed tagging/attachment implementations. R12's seven paths
+are addressed:
+
+- Gallery covers use a PostgreSQL `DISTINCT ON (gallery_id)` association, ordered
+  by visible featured first, then membership order/creation time (ID breaks exact
+  ties). The index preloads only those selected memberships, pictures and image
+  attachments/blobs. It does not load every gallery image to show one cover.
+  Empty/all-hidden galleries remain omitted. Standalone `featured_picture` and
+  `first_picture` remain individual lookups; active list rendering uses the batch
+  cover association instead.
+- Public HTML post lists preload `unowned_tags`. Unlike `tag_list`, this scoped
+  association can use Rails' preload cache. The presenter uses it when loaded and
+  retains the gem's existing `tag_list` behavior for other paths, including unsaved
+  tag edits. Tagger-owned tags stay excluded, matching the original behavior.
+- Admin posts preload authors; admin users preload roles. Rails' loaded collection
+  `pluck(:name)` in UserPresenter uses that preload. R11's multi-role sorting and
+  duplicate-user behavior remains a separate decision.
+- Admin picture HTML/JSON, public picture API collections and the legacy picture
+  selector relation use `with_attached_image`, including Rails' variant preloads.
+- Admin gallery lookup now also loads each picture's attachment/blob for form
+  thumbnails. Public gallery detail already loaded the complete rendering path.
+- Link month/tag lists preload tags; archive menu routes avoid unused tag loading.
+
+Additional improvements: removed unused author preloads from public HTML/RSS;
+navigation selects only ID/title/slug/color; sitemap queries select only
+ID/slug/updated_at; tag JSON endpoints pluck names without instantiating Tag models.
+No response pagination, publication or authorization rules were changed.
+
+The extra pass found no further N+1 paths in active rendering beyond these paths.
+The unused version-reification UI remains R13, rather than a live performance
+claim. Large root result sets in RSS, the public posts API and link lists remain
+unbounded; choosing limits/pagination changes behavior and is recorded in TODO.md.
+That file also records concrete cover/list/search index candidates and the plan
+measurements needed before adding migrations. No schema changes were made.
+
+Six regression tests compare SQL growth after adding distinct authors, roles,
+posts/tags, pictures, galleries and memberships. Measurements clear the query
+cache, exclude schema/cached events and check per-table growth, rather than fixed
+whole-request totals or timings. They cover tagged routes, both picture JSON
+paths, admin gallery editing, cover selection and owned-tag exclusion. Cover
+traversal after preload issues zero further SELECTs, and the full membership
+collection remains unloaded. Focused query checks: 6 tests, 76 assertions pass.
+
+Full verification: **246 tests, 972 assertions, 0 failures, 0 errors, 0 skips**,
+including all 55 system tests. RuboCop passes for all 16 changed Ruby files;
+`git diff --check` passes. No production queries or schema changes were performed.

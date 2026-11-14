@@ -7,7 +7,7 @@ module Admin
 
       @search = Picture.ransack(params[:q])
 
-      @pictures = @search.result.page(params[:page]).per(25).reverse_chronological
+      @pictures = @search.result.with_attached_image.page(params[:page]).per(25).reverse_chronological
 
       # TODO: Consider moving this to a proper API with some sort of token based authentication.
       respond_to do |format|
@@ -106,7 +106,7 @@ module Admin
     def selector
       authorize Picture, :create
 
-      @pictures = Picture.reverse_chronological
+      @pictures = Picture.with_attached_image.reverse_chronological
 
       render layout: false
     end

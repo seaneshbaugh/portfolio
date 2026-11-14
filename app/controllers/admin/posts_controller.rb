@@ -9,7 +9,7 @@ module Admin
 
       @search = Post.ransack(params[:q])
 
-      @posts = @search.result.page(params[:page]).per(25).reverse_chronological
+      @posts = @search.result.preload(:user).page(params[:page]).per(25).reverse_chronological
     end
 
     def show

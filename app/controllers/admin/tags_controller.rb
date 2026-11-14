@@ -6,9 +6,9 @@ module Admin
     def index
       @search = ActsAsTaggableOn::Tag.ransack(params[:q])
 
-      @tags = @search.result
+      @tags = @search.result.pluck(:name)
 
-      render json: @tags.map(&:name).to_json
+      render json: @tags
     end
   end
 end

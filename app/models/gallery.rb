@@ -10,6 +10,11 @@ class Gallery < ApplicationRecord
 
   has_many :gallery_pictures, inverse_of: :gallery, dependent: :destroy
   has_many :pictures, through: :gallery_pictures, inverse_of: :galleries
+  has_one :cover_gallery_picture, -> {
+    published.joins(:picture)
+      .select("DISTINCT ON (gallery_pictures.gallery_id) gallery_pictures.*")
+      .order(:gallery_id, featured: :desc, order: :asc, created_at: :asc, id: :asc)
+  }, class_name: "GalleryPicture", inverse_of: :gallery
 
   accepts_nested_attributes_for :gallery_pictures, allow_destroy: true
 
@@ -37,7 +42,7 @@ class Gallery < ApplicationRecord
   end
 
   def featured_or_first_picture
-    featured_picture || first_picture
+    cover_gallery_picture&.picture
   end
 
   def first_picture

@@ -75,7 +75,7 @@ module Admin
     private
 
     def find_gallery
-      Gallery.friendly.eager_load(gallery_pictures: :picture).merge(GalleryPicture.by_order).merge(GalleryPicture.chronological).find(params[:id])
+      Gallery.friendly.eager_load(gallery_pictures: { picture: { image_attachment: :blob } }).merge(GalleryPicture.by_order).merge(GalleryPicture.chronological).find(params[:id])
     end
 
     def gallery_params

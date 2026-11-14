@@ -22,6 +22,9 @@ class Post < ApplicationRecord
 
   acts_as_taggable
 
+  # Match tag_list's unowned tags without its per-record query through base_tags.
+  has_many :unowned_tags, -> { where(taggings: { tagger_id: nil }) }, through: :tag_taggings, source: :tag
+
   friendly_id :title
 
   has_paper_trail

@@ -2,7 +2,7 @@
 
 class PicturesController < ApplicationController
   def index
-    @galleries = Gallery.published.by_order.chronological.eager_load(gallery_pictures: { picture: { image_attachment: :blob } })
+    @galleries = Gallery.published.by_order.chronological.preload(cover_gallery_picture: { picture: { image_attachment: :blob } })
   end
 
   def show

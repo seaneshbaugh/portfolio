@@ -2,11 +2,11 @@
 
 class SitemapController < ApplicationController
   def index
-    @pages = Page.published.by_order
+    @pages = Page.published.select(:id, :slug, :updated_at).by_order
 
-    @posts = Post.published.reverse_chronological
+    @posts = Post.published.select(:id, :slug, :updated_at).reverse_chronological
 
-    @galleries = Gallery.published.reverse_chronological
+    @galleries = Gallery.published.select(:id, :slug, :updated_at).reverse_chronological
 
     respond_to do |format|
       format.xml do

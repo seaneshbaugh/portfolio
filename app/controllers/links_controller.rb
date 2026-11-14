@@ -10,6 +10,7 @@ class LinksController < ApplicationController
     @tag = params[:tag]
 
     @links = find_links
+    @links = @links.preload(:tags) if @month.present? || @tag.present?
 
     if @year
       if @month

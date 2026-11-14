@@ -21,13 +21,13 @@ class PostsController < ApplicationController
 
   def posts_for_html
     if params[:tag].present?
-      Post.published.tagged_with(params[:tag]).includes(:user).page(params[:page]).per(25).reverse_chronological
+      Post.published.tagged_with(params[:tag]).preload(:unowned_tags).page(params[:page]).per(25).reverse_chronological
     else
-      Post.published.includes(:user).page(params[:page]).per(25).reverse_chronological
+      Post.published.preload(:unowned_tags).page(params[:page]).per(25).reverse_chronological
     end
   end
 
   def posts_for_rss
-    Post.published.includes(:user).reverse_chronological
+    Post.published.reverse_chronological
   end
 end

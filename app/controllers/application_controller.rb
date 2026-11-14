@@ -14,6 +14,6 @@ class ApplicationController < ActionController::Base
   end
 
   def load_pages
-    @pages = Page.published.in_menu.by_order
+    @pages = Page.published.in_menu.select(:id, :title, :slug, :color).by_order
   end
 end

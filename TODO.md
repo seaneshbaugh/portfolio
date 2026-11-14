@@ -1021,6 +1021,49 @@ Implementation (2026-11-09):
 - [x] Remaining Rancher Machine/proxy deployment details; Rails 8.1 is the
       configuration target and Kamal/Thruster are explicitly excluded.
 
+## Query performance follow-ups requiring schema changes
+
+No indexes or other schema changes were made during the N+1 cleanup. These are
+candidates to validate with production-sized data, not a recommendation to add
+all of them to this small database.
+
+- [ ] Capture `EXPLAIN (ANALYZE, BUFFERS)` on a local restored database before
+      choosing indexes. Check actual row counts, sort cost, selectivity and write
+      overhead; compare before/after plans and preserve existing query results.
+      Do not infer production speedups from tiny fixture tables.
+- [ ] Evaluate a partial cover-selection index on `gallery_pictures`
+      `(gallery_id, featured DESC, "order", created_at, id) WHERE visible = true`.
+      `Gallery#cover_gallery_picture` now uses `DISTINCT ON (gallery_id)` with
+      precisely this ordering. Compare it with the existing `gallery_id` index
+      before adding a concurrent-index migration.
+- [ ] Evaluate list-order indexes where real plans show expensive sorting:
+      `posts(created_at) WHERE visible = true` for public HTML/RSS, a full
+      `posts(created_at)` for admin, `pictures(created_at)` for paginated picture
+      lists, and `users(last_name, first_name)` for admin users. Avoid redundant
+      indexes; a single-column B-tree can serve either scan direction. The links
+      table already has a `published_at` index; consider a visible-only variant
+      only if the published/unpublished distribution justifies it.
+- [ ] If substring searches become slow, evaluate `pg_trgm` and selective GIN
+      trigram indexes for the actual Ransack `ILIKE '%term%'` predicates on user
+      names/email and post/page text. Ordinary B-tree indexes do not solve these
+      searches. Choose columns from observed usage, particularly before indexing
+      large body/style fields. The tagging gem also uses `LOWER(tags.name)` in
+      tag filters; assess a matching expression index or trigram index against
+      the emitted predicate rather than assuming the existing name index fits.
+
+## Query follow-ups requiring a behavior decision
+
+- [ ] Decide archive/feed/API bounds before changing the currently unbounded
+      RSS, public posts API and link month/tag lists. Pagination or feed limits
+      affect consumers and navigation; preloading removes N+1s but does not bound
+      the root result size. Link year/month archive menus currently fetch one
+      `published_at` value per matching link: consider distinct calendar buckets
+      in SQL if necessary, preserving `Time.zone` at year/month boundaries.
+- [ ] Resolve review R11: define which role represents a multi-role user for
+      sorting, then make the admin users query return each user once before
+      pagination. A plain `DISTINCT` with `ORDER BY roles.name` is insufficient on
+      PostgreSQL. This remains separate from preloading roles for display.
+
 ## Low-priority follow-ups (after the upgrade)
 
 - [ ] Remove Haml in a separate, low-priority pass: convert layouts/views and

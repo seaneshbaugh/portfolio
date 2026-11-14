@@ -7,7 +7,7 @@ module Admin
 
       @search = User.ransack(params[:q])
 
-      @users = @search.result.page(params[:page]).per(25).alphabetical
+      @users = @search.result.preload(:roles).page(params[:page]).per(25).alphabetical
     end
 
     def show

@@ -51,12 +51,12 @@ class PostPresenter < ApplicationPresenter
 
   # rubocop:disable Rails/OutputSafety
   def tag_links
-    @post.tag_list.map { |tag| link_to(tag, root_path(tag: tag)) }.join(", ").html_safe
+    tag_names.map { |tag| link_to(tag, root_path(tag: tag)) }.join(", ").html_safe
   end
   # rubocop:enable Rails/OutputSafety
 
   def tag_list
-    @post.tag_list.join(", ")
+    tag_names.join(", ")
   end
 
   def truncated?
@@ -78,6 +78,14 @@ class PostPresenter < ApplicationPresenter
   end
 
   private
+
+  def tag_names
+    if @post.association(:unowned_tags).loaded?
+      @post.unowned_tags.map(&:name)
+    else
+      @post.tag_list
+    end
+  end
 
   def link_text_method
     :title

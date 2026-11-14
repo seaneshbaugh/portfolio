@@ -4,9 +4,9 @@ module Api
   module V1
     class TagsController < ApiController
       def index
-        @tags = ActsAsTaggableOn::Tag.all
+        @tags = ActsAsTaggableOn::Tag.pluck(:name)
 
-        render json: @tags.map(&:name)
+        render json: @tags
       end
     end
   end
