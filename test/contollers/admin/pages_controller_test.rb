@@ -1,9 +1,12 @@
 # frozen_string_literal: true
 
 require "test_helper"
+require_relative "../../support/admin_access_assertions"
 
 module Admin
   class PagesControllerTest < ActionDispatch::IntegrationTest
+    include AdminAccessAssertions
+
     setup do
       sign_in users(:sean_eshbaugh)
     end
@@ -31,6 +34,44 @@ module Admin
         assert_select ".flash-message", text: /Color/
         assert_equal original_color, page.reload.color
         assert_equal original_title, page.title
+      end
+    end
+
+    test "guests cannot create update or destroy pages" do
+      prepare_admin_access_actor
+
+      record = pages(:about)
+      attributes = { title: "Unauthorized page", body: "<p>Unauthorized content.</p>", color: "#abcdef", visible: true }
+
+      [
+        [ :post, admin_pages_path, { page: attributes } ],
+        [ :patch, admin_page_path(record), { page: attributes } ],
+        [ :delete, admin_page_path(record), {} ]
+      ].each do |method, path, parameters|
+        assert_admin_data_unchanged(record) do
+          public_send(method, path, params: parameters)
+        end
+
+        assert_redirected_to new_user_session_path
+      end
+    end
+
+    test "non-admin users cannot create update or destroy pages" do
+      prepare_admin_access_actor(users(:casie_clark))
+
+      record = pages(:about)
+      attributes = { title: "Unauthorized page", body: "<p>Unauthorized content.</p>", color: "#abcdef", visible: true }
+
+      [
+        [ :post, admin_pages_path, { page: attributes } ],
+        [ :patch, admin_page_path(record), { page: attributes } ],
+        [ :delete, admin_page_path(record), {} ]
+      ].each do |method, path, parameters|
+        assert_admin_data_unchanged(record) do
+          public_send(method, path, params: parameters)
+        end
+
+        assert_response :forbidden
       end
     end
 

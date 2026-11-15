@@ -23,7 +23,7 @@ class AuthenticationTest < ApplicationSystemTestCase
 
     find("input[type=submit]").click
 
-    visit admin_pages_path
+    assert_current_path admin_pages_path
 
     assert_link "New Page"
 
@@ -52,6 +52,48 @@ class AuthenticationTest < ApplicationSystemTestCase
 
     assert_text "not allowed to Admin::PagePolicy#index?"
     assert_no_link "New Page"
+  end
+
+  test "non-admin direct links deny user management and post edits but allow account recovery" do
+    member = users(:casie_clark)
+
+    member.update!(password: "member-access-password")
+
+    sign_in member
+
+    visit admin_account_path
+
+    assert_text "Casie"
+
+    visit admin_users_path
+
+    assert_text "not allowed to Admin::UserPolicy#index?"
+    assert_no_link "New User"
+
+    visit edit_admin_post_path(posts(:first_post))
+
+    assert_text "not allowed to Admin::PostPolicy#edit?"
+    assert_no_selector "form.edit_post"
+
+    visit edit_admin_account_path
+
+    assert_field "First Name", with: member.first_name
+
+    fill_in "First Name", with: "Updated member"
+
+    click_button "Submit"
+
+    assert_current_path edit_admin_account_path
+    assert_equal "Updated member", member.reload.first_name
+    assert_not member.has_role?(:admin)
+
+    click_link "Logout"
+
+    assert_current_path root_path
+
+    visit admin_users_path
+
+    assert_current_path new_user_session_path
   end
 
   test "password reset email leads to a working new password" do
@@ -93,6 +135,8 @@ class AuthenticationTest < ApplicationSystemTestCase
     fill_in "Password", with: "replacement-password"
 
     find("input[type=submit]").click
+
+    assert_current_path root_path
 
     visit admin_pages_path
 

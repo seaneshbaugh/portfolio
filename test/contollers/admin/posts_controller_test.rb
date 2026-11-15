@@ -1,11 +1,52 @@
 # frozen_string_literal: true
 
 require "test_helper"
+require_relative "../../support/admin_access_assertions"
 
 module Admin
   class PostsControllerTest < ActionDispatch::IntegrationTest
+    include AdminAccessAssertions
+
     setup do
       sign_in users(:sean_eshbaugh)
+    end
+
+    test "guests cannot create update or destroy posts" do
+      prepare_admin_access_actor
+
+      record = posts(:first_post)
+      attributes = { title: "Unauthorized post", body: "<p>Unauthorized content.</p>", visible: true }
+
+      [
+        [ :post, admin_posts_path, { post: attributes } ],
+        [ :patch, admin_post_path(record), { post: attributes } ],
+        [ :delete, admin_post_path(record), {} ]
+      ].each do |method, path, parameters|
+        assert_admin_data_unchanged(record) do
+          public_send(method, path, params: parameters)
+        end
+
+        assert_redirected_to new_user_session_path
+      end
+    end
+
+    test "non-admin users cannot create update or destroy posts" do
+      prepare_admin_access_actor(users(:casie_clark))
+
+      record = posts(:first_post)
+      attributes = { title: "Unauthorized post", body: "<p>Unauthorized content.</p>", visible: true }
+
+      [
+        [ :post, admin_posts_path, { post: attributes } ],
+        [ :patch, admin_post_path(record), { post: attributes } ],
+        [ :delete, admin_post_path(record), {} ]
+      ].each do |method, path, parameters|
+        assert_admin_data_unchanged(record) do
+          public_send(method, path, params: parameters)
+        end
+
+        assert_response :forbidden
+      end
     end
 
     test "should get posts index" do

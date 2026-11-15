@@ -1,11 +1,65 @@
 # frozen_string_literal: true
 
 require "test_helper"
+require_relative "../../support/admin_access_assertions"
 
 module Admin
   class UsersControllerTest < ActionDispatch::IntegrationTest
+    include AdminAccessAssertions
+
     setup do
       sign_in users(:sean_eshbaugh)
+    end
+
+    test "guests cannot create update or destroy users" do
+      prepare_admin_access_actor
+
+      record = users(:sean_eshbaugh)
+      attributes = { email: "unauthorized@example.com", first_name: "Unauthorized", last_name: "Administrator", password: "unauthorized-password", password_confirmation: "unauthorized-password", role_ids: [ roles(:admin).id ] }
+
+      [
+        [ :post, admin_users_path, { user: attributes } ],
+        [ :patch, admin_user_path(record), { user: attributes } ],
+        [ :delete, admin_user_path(record), {} ]
+      ].each do |method, path, parameters|
+        assert_admin_data_unchanged(record) do
+          public_send(method, path, params: parameters)
+        end
+
+        assert_redirected_to new_user_session_path
+      end
+    end
+
+    test "non-admin users cannot create update or destroy users" do
+      prepare_admin_access_actor(users(:casie_clark))
+      record = users(:sean_eshbaugh)
+
+      attributes = { email: "unauthorized@example.com", first_name: "Unauthorized", last_name: "Administrator", password: "unauthorized-password", password_confirmation: "unauthorized-password", role_ids: [ roles(:admin).id ] }
+
+      [
+        [ :post, admin_users_path, { user: attributes } ],
+        [ :patch, admin_user_path(record), { user: attributes } ],
+        [ :delete, admin_user_path(record), {} ]
+      ].each do |method, path, parameters|
+        assert_admin_data_unchanged(record) do
+          public_send(method, path, params: parameters)
+        end
+
+        assert_response :forbidden
+      end
+    end
+
+    test "non-admin users cannot grant themselves the admin role" do
+      member = users(:casie_clark)
+
+      prepare_admin_access_actor(member)
+
+      assert_admin_data_unchanged(member) do
+        patch admin_user_path(member), params: { user: { role_ids: [ roles(:admin).id ] } }
+      end
+
+      assert_response :forbidden
+      assert_not member.reload.has_role?(:admin)
     end
 
     test "should get users index" do

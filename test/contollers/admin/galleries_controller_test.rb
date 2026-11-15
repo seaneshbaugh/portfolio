@@ -1,13 +1,54 @@
 # frozen_string_literal: true
 
 require "test_helper"
+require_relative "../../support/admin_access_assertions"
 
 module Admin
   class GalleriesControllerTest < ActionDispatch::IntegrationTest
+    include AdminAccessAssertions
+
     setup do
       attach_images_to_pictures!
 
       sign_in users(:sean_eshbaugh)
+    end
+
+    test "guests cannot create update or destroy galleries" do
+      prepare_admin_access_actor
+
+      record = galleries(:salt_plains)
+      attributes = { name: "Unauthorized gallery", description: "<p>Unauthorized gallery.</p>", order: 0, visible: true }
+
+      [
+        [ :post, admin_galleries_path, { gallery: attributes } ],
+        [ :patch, admin_gallery_path(record), { gallery: attributes } ],
+        [ :delete, admin_gallery_path(record), {} ]
+      ].each do |method, path, parameters|
+        assert_admin_data_unchanged(record) do
+          public_send(method, path, params: parameters)
+        end
+
+        assert_redirected_to new_user_session_path
+      end
+    end
+
+    test "non-admin users cannot create update or destroy galleries" do
+      prepare_admin_access_actor(users(:casie_clark))
+
+      record = galleries(:salt_plains)
+      attributes = { name: "Unauthorized gallery", description: "<p>Unauthorized gallery.</p>", order: 0, visible: true }
+
+      [
+        [ :post, admin_galleries_path, { gallery: attributes } ],
+        [ :patch, admin_gallery_path(record), { gallery: attributes } ],
+        [ :delete, admin_gallery_path(record), {} ]
+      ].each do |method, path, parameters|
+        assert_admin_data_unchanged(record) do
+          public_send(method, path, params: parameters)
+        end
+
+        assert_response :forbidden
+      end
     end
 
     test "should get galleries index" do

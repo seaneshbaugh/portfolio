@@ -314,12 +314,11 @@ Verified on 2026-10-19 using temporary local records and Chromium:
       year/month/tag views, gallery/lightbox, disabled contact submission, login/
       logout/password reset, permission denial, account editing, and CRUD for all
       six admin resources. Check page/gallery invalid-form recovery and user search.
-- [ ] Expand remaining boundary/error cases: validation on posts/links/users/
-      pictures, selector/network/direct-upload failures, password reset invalid
-      inputs, permissions across resource types, and admin pagination/sort variants.
-      Keep API/feed assertions in request tests. The pagination test encountered
-      `/posts.rss` failing with populated posts because `index.rss.builder` still
-      calls `created_at.to_s(:rfc822)`; address that alongside feed request coverage.
+- [ ] Expand remaining boundary/error cases in the small batches listed in
+      section 10. Several upload/selector, publication, date/color and sorting
+      regressions have since been added; extend those rather than duplicating
+      them. RSS rendering is fixed; remaining XML/API contract assertions belong
+      in controller/request tests.
 - [x] Use deterministic local fixtures and attachments, test mail delivery and
       isolated databases/storage; keep external SMTP/S3 out of routine tests.
 - [x] Assert meaningful persisted results, not only rendered elements. Capture
@@ -1007,6 +1006,145 @@ Implementation (2026-11-09):
   database ownership/version, proxy/network/TLS and registry details. Rehearse
   against an actual staging backup and those integrations before deployment;
   no production service, data, credentials or proxy configuration was changed.
+
+## 10. Expand meaningful test coverage in small batches
+
+Proposed strategy: favor browser tests of real CMS workflows, following
+Wishlist's behavior-oriented approach. Empty model test files and coverage
+percentages are not a backlog by themselves. Test application rules, important
+failure paths and persisted outcomes; do not add one matcher per Rails validation,
+association, scope, serializer field or library feature. Implement one selected
+batch at a time.
+
+Existing coverage already includes normal public/admin navigation and CRUD,
+login/logout/password-reset success, publication request boundaries, direct-upload
+access/CSRF checks, upload/selector failures, Ace/Turbo lifecycle behavior, gallery
+ordering, 26+ image selection, role-sort pagination and query-growth checks.
+Recent date/color, tag-encoding and excerpt regressions are also in place. Extend
+these tests where useful instead of rebuilding their coverage in new files.
+
+Use `test/system/` for interactions whose form wiring, JavaScript, navigation or
+error recovery matters. Keep direct HTTP authorization and JSON/XML contracts in
+controller/request tests; use focused model/validator/job tests when they isolate
+an application rule or failure boundary better than a browser. Single-controller
+request tests belong with that controller; genuinely cross-controller workflows
+may use system/integration tests. Do not duplicate every scenario across layers:
+a browser can prove recovery while a request/unit test covers its input matrix.
+
+Each unchecked item below is an independent piece of work. Before implementing
+one, read its existing tests, identify the remaining behavior and keep the batch
+to one coherent workflow (usually one or two files). A batch is complete when its
+behavior assertions and the existing affected tests pass; run the complete suite
+before considering it finished. Use the current Wishlist-style Selenium setup,
+Ace helpers, sequential system execution and local storage/mail. No external
+Spaces/SMTP requests, new harness, fixed sleeps or coverage target are needed.
+If a test exposes a bug or an undecided policy, report it and scope that change
+explicitly rather than silently turning this into another application rewrite.
+
+- [x] **1. Complete admin access-boundary coverage.** Extend
+      `test/system/authentication_test.rb` with representative direct-navigation
+      denial/recovery for a signed-in non-admin beyond the already-covered Pages
+      list. In the relevant admin controller tests, exercise forbidden create,
+      update and destroy requests across the six managed resources with no data
+      changes, and distinguish guest login requirements from non-admin rejection.
+      Reuse the existing direct-upload tests; hidden buttons alone do not prove
+      server authorization. Keep Account access working for ordinary members.
+      Completed 2026-11-15: 13 controller tests cover 37 denied writes (guest and
+      non-admin create/update/destroy across all six resources, plus self-admin
+      escalation), checking unchanged records, roles and related row counts.
+      A browser test covers direct Users/Post-edit denials, return to successful
+      own-account editing, and logout/login protection. Shared test assertions
+      establish actor sessions before snapshots; existing login/reset tests now
+      wait for their redirect destinations before navigating again. Application
+      code and system-test configuration are unchanged. Full suite: 271 tests,
+      1,856 assertions, zero failures/errors/skips, including 57 system tests.
+      RuboCop passes for all eight changed Ruby files.
+- [ ] **2. Browser publication workflow for pages and posts.** Extend
+      `test/system/admin/pages_test.rb` and `posts_test.rb`: publish/hide content
+      through the actual checkbox, save/reopen, and check its public URL/listing
+      from a separate anonymous browser session. Exercise Page's independent
+      Show in menu flag. Retain the existing request matrix for roles, slugs/IDs
+      and API visibility rather than reproducing that matrix in Firefox.
+- [ ] **3. Browser gallery visibility and cover transitions.** Extend
+      `test/system/admin/galleries_test.rb`: save/reopen gallery and membership
+      visibility changes, verify hidden parent exclusion and visible-cover
+      fallback on the public index, and verify empty/all-hidden galleries do not
+      render broken cards. Reuse current ordering/featured/selector tests. Do not
+      invent a placeholder design or lock in an unspecified empty-detail policy.
+- [ ] **4. Post form error recovery.** Extend `test/system/admin/posts_test.rb`
+      with a rejected submission followed by correction/save: retain body/style/
+      script Ace values, tags and visibility, and confirm failed updates leave
+      persisted content unchanged. Use representative application validation;
+      leave the full invalid-input matrix in validator/controller tests.
+- [ ] **5. Link form error recovery and usable tag navigation.** Extend
+      `test/system/admin/links_test.rb` to clear the date, correct the error and
+      save while preserving entered URL/text/description/tags. Follow a saved
+      special-character tag link through the public interface. Existing Links
+      controller tests already cover blank create/update dates and multiple
+      encoded tag values; do not repeat all those cases in the browser.
+- [ ] **6. User/account correction and credential changes.** Extend
+      `test/system/admin/users_test.rb` with rejected user/account edits followed
+      by correction; verify names/email/roles are retained appropriately and
+      failed saves do not partly change credentials or roles. Cover an actual
+      successful password change by logging in with it. Reuse current blank-
+      password preservation and successful role-assignment coverage.
+- [ ] **7. Password-reset error recovery through the custom routes.** Extend
+      `test/system/authentication_test.rb` with a bad/expired reset link and a
+      mismatched-password submission followed by correction using a valid link.
+      Check visible guidance and that failed submissions do not change the
+      password. Keep mail local; test the application's routes/forms, not Devise's
+      token-generation algorithm or every built-in validation.
+- [ ] **8. Browser role sorting/filtering across page boundaries.** Extend
+      `test/system/admin/users_test.rb` (or the existing admin navigation tests)
+      to click the role header, filter and paginate a list containing a multi-role
+      user. Assert unique rows and retained search/sort state through navigation.
+      Keep direction/filter combination matrices in UsersControllerTest, which
+      already covers SQL-level uniqueness and pagination.
+- [ ] **9. Selector next-page failure and cancellation.** Extend existing
+      `test/system/admin/ace_editors_test.rb` / `posts_test.rb` with a failed Load
+      more request, successful retry without duplicate thumbnails, and closing
+      during a pending next-page request. Earlier pictures must remain usable,
+      late results must not reopen a closed selector, and focus must stay usable.
+      Reuse existing first-page failure, disconnect, reopen and 26+ selection
+      coverage; simulate only the network failure boundary, not the whole UI.
+- [ ] **10. RSS and sitemap response contracts.** Extend
+      `test/contollers/posts_controller_test.rb` and `sitemap_controller_test.rb`
+      with parsed XML assertions for populated and empty data, RSS publication
+      dates/links and sitemap namespace/loc entries including published galleries.
+      Check hidden content exclusion without duplicating the entire publication
+      test matrix. The underlying rendering bugs are already fixed; status-only
+      tests currently leave these response contracts largely unchecked.
+- [ ] **11. Public API contracts at the HTTP boundary.** Extend the existing
+      `test/contollers/api/v1/` tests to assert the current envelope and meaningful
+      fields directly, picture URLs/metadata, pagination boundaries where already
+      implemented, and absence of private account/storage credentials. Preserve
+      intended public signed read URLs. Avoid
+      deriving every expected response by invoking the same serializer under
+      test. Preserve existing contracts and unbounded endpoints pending the
+      separate pagination decision; do not redesign the API in this batch.
+- [ ] **12. Small model tests for application-owned behavior only.** Following
+      Wishlist's `ListTest`, `UserTest` and `PurchaseTest`, select uncovered rules
+      such as User's default-role callback preserving explicitly assigned roles,
+      Picture's filename-derived title preserving an explicit title, and custom
+      slug normalization in `ApplicationRecord`. Use a few persisted examples
+      where callbacks matter; do not fill every empty model test file. Gallery
+      cover choice already has query/visibility coverage. Deletion cascades,
+      foreign-key guarantees, duplicate memberships and featured uniqueness need
+      their policy/schema decisions first; add their regressions with that work.
+- [ ] **13. Test directory naming cleanup, separately.** Rename
+      `test/contollers` to `test/controllers` and update any explicit commands/docs
+      or scripts referring to it. Verify discovery and the same tests still run.
+      This is organization only; do not mix assertion rewrites or new coverage
+      into the move. Until then, use the actual existing directory paths above.
+
+Deferred within this coverage plan: ContactJob is inactive because contact
+submission is intentionally disabled. Its payload is JSON, not an Active Record
+reference, so the review's generic deleted-record job example does not fit it.
+Do not manufacture job behavior, enable contact, or add tests merely to fill the
+empty job file. If contact delivery is retained as a supported feature later,
+define its payload/failure policy and then test delivery/failure behavior locally.
+Tags autocomplete and version restore remain reserved for the owner's separate
+requirements; no new feature tasks or tests for them are introduced here.
 
 ## Context to collect as needed
 
