@@ -1131,7 +1131,7 @@ explicitly rather than silently turning this into another application rewrite.
       cover choice already has query/visibility coverage. Deletion cascades,
       foreign-key guarantees, duplicate memberships and featured uniqueness need
       their policy/schema decisions first; add their regressions with that work.
-- [ ] **13. Test directory naming cleanup, separately.** Rename
+- [x] **13. Test directory naming cleanup, separately.** Rename
       `test/contollers` to `test/controllers` and update any explicit commands/docs
       or scripts referring to it. Verify discovery and the same tests still run.
       This is organization only; do not mix assertion rewrites or new coverage
