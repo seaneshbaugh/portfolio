@@ -31,6 +31,57 @@ module Admin
       end
     end
 
+    test "pictures beyond the first page can be selected in Ace and gallery forms" do
+      attach_images_to_pictures!
+
+      source = pictures(:conney)
+
+      26.times do |index|
+        Picture.create!(title: "Selector page image #{index}", image: source.image.blob, created_at: 1.minute.from_now)
+      end
+
+      visit new_admin_post_path
+
+      click_button "Insert Picture"
+
+      assert_selector ".picture-selector-modal-picture", count: 25
+
+      click_button "Load more pictures"
+
+      assert_selector ".picture-selector-modal-picture", count: 28
+      assert_no_button "Load more pictures"
+
+      find(".picture-selector-modal-picture", text: source.title).click
+
+      assert_no_selector ".picture-selector-modal"
+      assert_includes find_field("post_body", visible: :all).value, source.original_image_path
+
+      visit new_admin_gallery_path
+
+      click_button "Add Picture"
+
+      assert_selector ".picture-selector-modal-picture", count: 25
+
+      click_button "Load more pictures"
+
+      assert_selector ".picture-selector-modal-picture", count: 28
+
+      find(".picture-selector-modal-picture", text: source.title).click
+
+      assert_no_selector ".picture-selector-modal"
+      assert_selector ".gallery-picture input[name$='[picture_id]'][value='#{source.id}']", visible: :all
+
+      # Reopening starts a fresh page and Escape restores focus to the opener.
+      click_button "Add Picture"
+
+      assert_selector ".picture-selector-modal-picture", count: 25
+
+      find(".picture-selector-close-button").send_keys(:escape)
+
+      assert_no_selector ".picture-selector-modal"
+      assert_selector "button:focus", text: "Add Picture"
+    end
+
     test "disconnect destroys the editor and reconnect preserves text without duplicate insertion" do
       attach_images_to_pictures!
 

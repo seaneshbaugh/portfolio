@@ -113,5 +113,63 @@ module Admin
 
       assert_response :not_found
     end
+
+    test "role sorts and filters return unique users before pagination" do
+      admin = users(:sean_eshbaugh)
+
+      admin.add_role(:user)
+
+      26.times do |index|
+        copy = users(:casie_clark).dup
+
+        copy.assign_attributes(first_name: "Paging", last_name: "User #{index.to_s.rjust(2, '0')}", email: "paging-#{index}@example.com", slug: "paging-#{index}")
+        copy.save!(validate: false)
+        copy.add_role(:user)
+      end
+
+      [ "asc", "desc" ].each do |direction|
+        ids = []
+
+        [ 1, 2 ].each do |page|
+          get admin_users_path, params: { q: { s: "role_name #{direction}" }, page: page }
+
+          assert_response :ok
+
+          ids.concat(user_paths)
+        end
+
+        assert_equal User.count, ids.length
+        assert_equal ids.uniq, ids
+        assert_equal admin_user_path(admin), direction == "asc" ? ids.first : ids.last
+      end
+
+      get admin_users_path, params: { q: { s: "role_name desc", roles_name_in: %w[admin user] } }
+
+      assert_response :ok
+
+      first_page = user_paths
+
+      assert_equal 25, first_page.length
+
+      get admin_users_path, params: { q: { s: "role_name desc", roles_name_in: %w[admin user] }, page: 2 }
+
+      assert_response :ok
+
+      all = first_page + user_paths
+
+      assert_equal User.count, all.length
+      assert_equal all.uniq, all
+
+      get admin_users_path, params: { q: { s: "role_name asc", roles_name_eq: "admin" } }
+
+      assert_response :ok
+      assert_equal [ admin_user_path(admin) ], user_paths
+    end
+
+    private
+
+    def user_paths
+      Nokogiri::HTML(response.body).css("td.user-name a").map { |link| link["href"] }
+    end
   end
 end

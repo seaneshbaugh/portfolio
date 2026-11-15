@@ -7,7 +7,16 @@ module Admin
 
       @search = User.ransack(params[:q])
 
-      @users = @search.result.preload(:roles).page(params[:page]).per(25).alphabetical
+      matching_user_ids = @search.result.reorder(nil).select(:id)
+      unique_users = User.where(id: matching_user_ids)
+
+      sort_parameters = @search.sorts.map { |sort| "#{sort.name} #{sort.dir}" }
+      sorted_users = unique_users.ransack(s: sort_parameters).result
+
+      @users = sorted_users
+        .preload(:roles)
+        .page(params[:page]).per(25)
+        .alphabetical.order(:id)
     end
 
     def show

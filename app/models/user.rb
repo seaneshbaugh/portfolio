@@ -22,6 +22,14 @@ class User < ApplicationRecord
 
   rolify
 
+  ransacker :role_name do
+    Arel.sql(<<~SQL.squish)
+      (SELECT MIN(roles.name) FROM roles
+       INNER JOIN users_roles ON users_roles.role_id = roles.id
+       WHERE users_roles.user_id = users.id)
+    SQL
+  end
+
   resourcify :other_users
 
   def self.ransackable_associations(auth_object = nil)
@@ -29,7 +37,7 @@ class User < ApplicationRecord
   end
 
   def self.ransackable_attributes(auth_object = nil)
-    %w[first_name last_name email created_at]
+    %w[first_name last_name email created_at role_name]
   end
 
   def full_name

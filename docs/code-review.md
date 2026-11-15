@@ -128,7 +128,7 @@ gallery, the response is HTTP 200 but contains this invalid URL entry. The defau
 fixture gallery is hidden, so the existing status-only test misses the branch.
 Use `xml.loc` and verify the parsed sitemap's namespace/elements and URL values.
 
-### R6 — P2: the picture selector cannot reach pictures beyond its first page
+### R6 — P2: the picture selector cannot reach pictures beyond its first page (resolved)
 
 References: `app/controllers/admin/pictures_controller.rb:10`,
 `app/views/shared/admin/_picture_selector.html.haml:1`,
@@ -144,7 +144,7 @@ stable ordering, or deliberately return all records for this small application.
 Prefer an explicit bounded design over silently making the entire admin index
 unpaginated. Test selection of record 26+ and preserve modal cancellation/focus.
 
-### R7 — P2: a missing link date fails at the database instead of validation
+### R7 — P2: a missing link date fails at the database instead of validation (resolved)
 
 References: `app/models/link.rb:8`, `db/schema.rb` (links.published_at NOT NULL),
 `app/controllers/admin/links_controller.rb:31`.
@@ -157,7 +157,7 @@ Suggested fix: validate presence of published_at and retain the database
 constraint. Test empty date on both create and update, including preservation of
 entered text/URL and the displayed field error.
 
-### R8 — P2: a leading read-more marker displays the entire body
+### R8 — P2: a leading read-more marker displays the entire body (resolved)
 
 Reference: `app/presenters/post_presenter.rb:33`.
 
@@ -166,7 +166,7 @@ whole body. Reproduced with the presenter's link renderer stubbed so the asserti
 isolates truncation. Use a length slice or split with an explicit first segment.
 Test beginning/middle/end markers and absent markers.
 
-### R9 — P2: link tag URLs do not encode the query parameter
+### R9 — P2: link tag URLs do not encode the query parameter (resolved)
 
 Reference: `app/presenters/link_presenter.rb:20`.
 
@@ -185,7 +185,7 @@ raising; use whole-string anchors for the color pattern. Test nil, blank, multil
 and ordinary valid colors. The normal color widget hides this case, but controller
 parameters can still contain nil.
 
-### R11 — P2: role sorting duplicates admin user rows
+### R11 — P2: role sorting duplicates admin user rows (resolved)
 
 References: `app/controllers/admin/users_controller.rb:10`,
 `app/views/admin/users/index.html.haml:25`.
@@ -216,7 +216,7 @@ unbounded eager loading of full image collections solely to display one cover.
 Use 1-vs-5/10 record regression checks with distinct associations, excluding schema
 queries and fixture setup; avoid brittle exact counts for whole rendered requests.
 
-### R13 — P3: obsolete endpoints and restoration UI are incomplete
+### R13 — P3: obsolete endpoints and restoration UI are incomplete (selector removed; other endpoints retained)
 
 - `Admin::PicturesController#selector` calls `authorize Picture, :create` rather
   than `:create?`: reproduced NoMethodError on Admin::PicturePolicy. No selector
@@ -476,3 +476,42 @@ collection remains unloaded. Focused query checks: 6 tests, 76 assertions pass.
 Full verification: **246 tests, 972 assertions, 0 failures, 0 errors, 0 skips**,
 including all 55 system tests. RuboCop passes for all 16 changed Ruby files;
 `git diff --check` passes. No production queries or schema changes were performed.
+
+## Admin and public edge-case cleanup — 2026-11-14
+
+R6, R7, R8, R9 and R11 are resolved:
+
+- The picture JSON endpoint retains its 25-item array response and exposes the
+  next page through `X-Next-Page`. Ordering now breaks timestamp ties with ID.
+  The shared Stimulus selector appends pages with a Load more button, deduplicates
+  already-loaded picture IDs, retains selected-image dispatch for Ace/gallery
+  consumers, and handles final-page focus, aborts and failures. Initial-load
+  errors retain the existing retry-from-opener behavior; subsequent-page errors
+  appear inside the dialog and leave earlier pictures available.
+- Link dates have a presence validation, preserving the database NOT NULL
+  constraint. Blank create/update dates return 422 with entered values retained
+  and leave stored content unchanged.
+- Link tag URLs encode query values, including `C++`, ampersands and Unicode.
+  Post excerpts use a length slice so a leading `<!--more-->` produces an empty
+  excerpt and read-more link. Detail views still render the complete body.
+- Admin users sort by their alphabetically first role name (e.g. Admin for an
+  Admin/User), independently of role filters. A correlated MIN query supplies
+  one sort key per user; an ID subquery prevents role-filter joins from duplicating
+  outer users before pagination. Last name, first name and ID break ties. The
+  admin role column uses the `role_name` sort key; old sort URLs are not translated.
+
+After explicit owner confirmation, removed only `GET /admin/pictures/selector`
+and its unused controller action. The live selector continues to use
+`/admin/pictures.json`. The owner explicitly retained `GET /admin/tags.json`,
+`POST /versions/:id/revert`, and the version partials for future work, and will
+supply their TODO requirements separately. No new TODO entries were added for
+those endpoints. The unrelated EXIF reopening remains unchanged.
+
+Regression coverage includes role sorting in both directions, multi-role
+filtering and pagination, blank-date create/update preservation, image JSON page
+boundaries, special-character tag-link round trips, marker positions and complete
+post details, and browser selection beyond page one in both Ace and gallery forms.
+
+Full suite: **252 tests, 1,075 assertions, 0 failures, 0 errors, 0 skips**,
+including all 56 system tests. RuboCop passes for all 10 changed Ruby files;
+JavaScript syntax and `git diff --check` pass. No schema changes were needed.

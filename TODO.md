@@ -1059,10 +1059,11 @@ all of them to this small database.
       the root result size. Link year/month archive menus currently fetch one
       `published_at` value per matching link: consider distinct calendar buckets
       in SQL if necessary, preserving `Time.zone` at year/month boundaries.
-- [ ] Resolve review R11: define which role represents a multi-role user for
-      sorting, then make the admin users query return each user once before
-      pagination. A plain `DISTINCT` with `ORDER BY roles.name` is insufficient on
-      PostgreSQL. This remains separate from preloading roles for display.
+- [x] Resolve review R11: sort multi-role users by their alphabetically first
+      role name using a scalar subquery, and deduplicate role-filter results via
+      an ID subquery before pagination. Preserve independent role preloading and
+      deterministic last-name/first-name/ID tie breakers; cover both directions,
+      role filters and page boundaries.
 
 ## Low-priority follow-ups (after the upgrade)
 

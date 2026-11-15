@@ -6,6 +6,7 @@ class Link < ApplicationRecord
   scope :reverse_chronological, -> { order(published_at: :desc) }
   scope :unpublished, -> { where(visible: false) }
 
+  validates :published_at, presence: true
   validates :text, presence: true, length: { minimum: 4, maximum: 255 }
   validates :url, presence: true, url: { allow_blank: true }
   validates :description, length: { maximum: 2047 }

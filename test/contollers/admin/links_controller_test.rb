@@ -113,5 +113,29 @@ module Admin
 
       assert_response :not_found
     end
+
+    test "blank link dates render validation errors and preserve entered values" do
+      attributes = { text: "Entered link", url: "https://example.com/kept", description: "Keep this description", published_at: "", visible: true }
+
+      assert_no_difference "Link.count" do
+        post admin_links_path, params: { link: attributes }
+      end
+
+      assert_response :unprocessable_entity
+      assert_select ".flash-message", text: /Published At can't be blank/
+      assert_select "input[name='link[text]'][value='Entered link']"
+      assert_select "input[name='link[url]'][value='https://example.com/kept']"
+      assert_select "textarea[name='link[description]']", text: "Keep this description"
+
+      link = links(:seaneshbaugh)
+      original_date = link.published_at
+
+      patch admin_link_path(link), params: { link: attributes }
+
+      assert_response :unprocessable_entity
+      assert_select "input[name='link[text]'][value='Entered link']"
+      assert_equal original_date, link.reload.published_at
+      assert_not_equal attributes[:text], link.text
+    end
   end
 end

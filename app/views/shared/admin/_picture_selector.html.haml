@@ -8,7 +8,9 @@
       %button.picture-selector-close-button.rounded.p-2{ type: 'button', class: 'hover:bg-slate-100 focus-visible:outline-2 focus-visible:outline-blue-600', 'aria-label' => 'Close picture selector', data: { action: 'picture-selector#close', 'picture-selector-target' => 'closeButton' } }
         = icon(:close)
     .picture-selector-modal-body
+      %p.mt-2.text-sm.text-red-700{ role: 'alert', hidden: true, data: { 'picture-selector-target' => 'pageError' } }
       .picture-selector-modal-pictures.grid.grid-cols-2.gap-4{ class: 'sm:grid-cols-3', data: { 'picture-selector-target' => 'pictures' } }
+      %button.mt-4{ type: 'button', class: info_button_class, hidden: true, data: { action: 'picture-selector#loadMore', 'picture-selector-target' => 'loadMore' } } Load more pictures
   %template{ data: { 'picture-selector-target' => 'pictureTemplate' } }
     %button.picture-selector-modal-picture.rounded-lg.border.border-slate-200.p-3.text-left{ type: 'button', class: 'hover:bg-blue-50 focus-visible:outline-2 focus-visible:outline-blue-600', data: { action: 'picture-selector#select' } }
       %img.h-24.w-full.object-contain

@@ -7,13 +7,14 @@ module Admin
 
       @search = Picture.ransack(params[:q])
 
-      @pictures = @search.result.with_attached_image.page(params[:page]).per(25).reverse_chronological
+      @pictures = @search.result.with_attached_image.page(params[:page]).per(25).reverse_chronological.order(id: :desc)
 
       # TODO: Consider moving this to a proper API with some sort of token based authentication.
       respond_to do |format|
         format.html
 
         format.json do
+          response.set_header("X-Next-Page", @pictures.next_page.to_s)
           render json: @pictures.map { |picture| PictureSerializer.new(picture).as_json }
         end
       end
@@ -101,14 +102,6 @@ module Admin
       flash[:success] = t(".success")
 
       redirect_to admin_pictures_url, status: :see_other
-    end
-
-    def selector
-      authorize Picture, :create
-
-      @pictures = Picture.with_attached_image.reverse_chronological
-
-      render layout: false
     end
 
     private

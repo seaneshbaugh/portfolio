@@ -157,5 +157,36 @@ module Admin
 
       assert_response :not_found
     end
+
+    test "picture JSON pages have stable ordering and advertise the next page" do
+      source = pictures(:conney)
+
+      timestamp = Time.current.change(usec: 0)
+
+      26.times do |index|
+        picture = Picture.create!(title: "Paging picture #{index}", image: source.image.blob, created_at: timestamp)
+
+        assert picture.persisted?
+      end
+
+      get admin_pictures_path(format: :json)
+
+      assert_response :ok
+
+      first_page = response.parsed_body.map { |picture| picture.fetch("data").fetch("id").to_i }
+
+      assert_equal 25, first_page.length
+      assert_equal "2", response.headers["X-Next-Page"]
+
+      get admin_pictures_path(format: :json), params: { page: 2 }
+
+      assert_response :ok
+
+      second_page = response.parsed_body.map { |picture| picture.fetch("data").fetch("id").to_i }
+
+      assert_equal "", response.headers["X-Next-Page"]
+      assert_equal Picture.reverse_chronological.order(id: :desc).pluck(:id), first_page + second_page
+      assert_empty first_page & second_page
+    end
   end
 end

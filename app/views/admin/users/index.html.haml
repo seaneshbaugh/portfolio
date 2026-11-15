@@ -25,7 +25,7 @@
           %tr
             %th.user-name.px-3.py-3.text-left.font-semibold= sort_link @search, :last_name, [:last_name, :first_name], t('activerecord.attributes.user.full_name')
             %th.user-email.px-3.py-3.text-left.font-semibold= sort_link @search, :email
-            %th.user-role.px-3.py-3.text-left.font-semibold= sort_link @search, :roles_name, t('activerecord.attributes.user.roles')
+            %th.user-role.px-3.py-3.text-left.font-semibold= sort_link @search, :role_name, t('activerecord.attributes.user.roles')
             %th.user-created-at.px-3.py-3.text-left.font-semibold= sort_link @search, :created_at
             %th.edit.px-3.py-3.text-left.font-semibold
             %th.delete.px-3.py-3.text-left.font-semibold

@@ -17,7 +17,7 @@ class LinkPresenter < ApplicationPresenter
 
   # rubocop:disable Rails/OutputSafety
   def tag_links(base_path)
-    @link.tags.map { |tag| link_to(tag, "#{base_path}?tag=#{tag}") }.join(", ").html_safe
+    @link.tags.map { |tag| link_to(tag, "#{base_path}?#{ { tag: tag.name }.to_query}") }.join(", ").html_safe
   end
   # rubocop:enable Rails/OutputSafety
 

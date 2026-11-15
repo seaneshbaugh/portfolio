@@ -62,11 +62,7 @@ Rails.application.routes.draw do
 
       resources :pages
 
-      resources :pictures do
-        collection do
-          get :selector
-        end
-      end
+      resources :pictures
 
       resources :posts
 
