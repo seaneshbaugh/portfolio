@@ -8,6 +8,32 @@ module Admin
       sign_in users(:sean_eshbaugh)
     end
 
+    test "invalid colors return form errors on create and update without changing stored pages" do
+      page = pages(:about)
+      original_color = page.color
+      original_title = page.title
+
+      [ nil, "", "invalid\n#abcdef" ].each do |color|
+        attributes = { title: "Page with invalid color", body: "<p>Keep this body.</p>", color: color }
+
+        assert_no_difference "Page.count" do
+          post admin_pages_path, params: { page: attributes }
+        end
+
+        assert_response :unprocessable_entity
+        assert_select ".flash-message", text: /Color/
+        assert_select "input[name='page[title]'][value='Page with invalid color']"
+        assert_select "textarea[name='page[body]']", text: "<p>Keep this body.</p>"
+
+        patch admin_page_path(page), params: { page: attributes }
+
+        assert_response :unprocessable_entity
+        assert_select ".flash-message", text: /Color/
+        assert_equal original_color, page.reload.color
+        assert_equal original_title, page.title
+      end
+    end
+
     test "should get pages index" do
       get admin_pages_url
 

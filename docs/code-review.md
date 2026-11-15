@@ -175,7 +175,7 @@ Rack decodes this as `C  `, not `C++`. Ampersands and other query characters hav
 similar problems. The post presenter already uses a route helper with parameters.
 Use a route/query builder and test tags containing plus, ampersand and Unicode.
 
-### R10 — P2: null page color raises instead of producing validation errors
+### R10 — P2: null page color raises instead of producing validation errors (resolved)
 
 Reference: `app/validators/css_color_validator.rb:10`.
 
@@ -515,3 +515,20 @@ post details, and browser selection beyond page one in both Ace and gallery form
 Full suite: **252 tests, 1,075 assertions, 0 failures, 0 errors, 0 skips**,
 including all 56 system tests. RuboCop passes for all 10 changed Ruby files;
 JavaScript syntax and `git diff --check` pass. No schema changes were needed.
+
+## Page color validation completed — 2026-11-14
+
+R10 is resolved. `CssColorValidator` checks that a value is a String before
+matching, so nil and other non-string values add validation errors instead of
+raising. The pattern uses whole-string anchors (`\A` and `\z`), preventing a
+valid color line from hiding invalid surrounding text. Existing supported hex,
+RGB/RGBA and HSL/HSLA formats and optional `allow_blank` behavior are preserved.
+Page colors remain required by the existing presence validation.
+
+Validator regressions cover nil, blanks, non-string inputs, multiline surrounding
+text and ordinary supported formats. Admin page controller regressions verify
+nil, blank and multiline colors return 422 on create/update, preserve entered
+form content, and leave persisted pages unchanged. Focused validation: **20 tests,
+94 assertions, 0 failures, 0 errors, 0 skips**. RuboCop passes for all three changed
+Ruby files, and `git diff --check` passes. The full suite was not rerun for this
+localized validator change.
