@@ -1102,12 +1102,21 @@ explicitly rather than silently turning this into another application rewrite.
       FriendlyId slug cannot break the retry URL. Public slug generation remains
       unchanged. Full suite: 279 tests, 2,062 assertions, zero
       failures/errors/skips, including 65 system tests. RuboCop passes.
-- [ ] **5. Link form error recovery and usable tag navigation.** Extend
+- [x] **5. Link form error recovery and usable tag navigation.** Extend
       `test/system/admin/links_test.rb` to clear the date, correct the error and
       save while preserving entered URL/text/description/tags. Follow a saved
       special-character tag link through the public interface. Existing Links
       controller tests already cover blank create/update dates and multiple
       encoded tag values; do not repeat all those cases in the browser.
+      Completed 2026-11-15: one browser workflow clears a saved link's date,
+      verifies unchanged stored columns/tag assignments and retained URL/text/
+      Ace description/tags, then corrects the date and saves/reopens successfully.
+      An isolated anonymous browser follows the year/month archive and the saved
+      C++ tag, verifying the filtered link/description and exclusion of an
+      unrelated control link. Reused the anonymous-browser helper; no application
+      or configuration changes were needed. Full suite: 280 tests,
+      2,094 assertions, zero failures/errors/skips, including 66 system
+      tests. RuboCop passes.
 - [ ] **6. User/account correction and credential changes.** Extend
       `test/system/admin/users_test.rb` with rejected user/account edits followed
       by correction; verify names/email/roles are retained appropriately and
