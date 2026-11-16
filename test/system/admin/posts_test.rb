@@ -1,15 +1,68 @@
 require "application_system_test_case"
 require_relative "../../support/editor_system_test_helpers"
+require_relative "../../support/anonymous_browser_helpers"
 require_relative "../../support/system_test_uploads"
 
 module Admin
   class PostsTest < ApplicationSystemTestCase
     include EditorSystemTestHelpers
+    include AnonymousBrowserHelpers
     include SystemTestUploads
 
     setup do
       sign_in users(:sean_eshbaugh)
       attach_images_to_pictures!
+    end
+
+    test "post visibility changes persist and control anonymous listings and direct access" do
+      record = posts(:first_post)
+
+      [ false, true, false ].each do |visible|
+        visit edit_admin_post_path(record)
+
+        if visible
+          check "post_visible", allow_label_click: true
+        else
+          uncheck "post_visible", allow_label_click: true
+        end
+
+        click_button "Submit"
+
+        assert_current_path edit_admin_post_path(record)
+        assert_equal visible, record.reload.visible
+
+        visit edit_admin_post_path(record)
+
+        visible ? assert_checked_field("post_visible") : assert_unchecked_field("post_visible")
+
+        with_anonymous_browser do
+          visit root_path
+
+          assert_no_selector "body.logged-in"
+
+          # A visible control prevents an empty/broken listing from satisfying exclusion.
+          assert_selector "article#post-#{posts(:second_post).slug}"
+
+          if visible
+            within "article#post-#{record.slug}" do
+              click_link record.title
+            end
+          else
+            assert_no_selector "article#post-#{record.slug}"
+
+            visit post_path(record)
+          end
+
+          assert_current_path post_path(record)
+
+          if visible
+            assert_selector "article#post-#{record.slug} .body-content", text: "My first post."
+          else
+            assert_no_selector "article#post-#{record.slug}"
+            assert_no_text "My first post."
+          end
+        end
+      end
     end
 
     test "post editors and picture insertion survive saving and reopening" do

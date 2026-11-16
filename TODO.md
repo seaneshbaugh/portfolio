@@ -1059,12 +1059,21 @@ explicitly rather than silently turning this into another application rewrite.
       code and system-test configuration are unchanged. Full suite: 271 tests,
       1,856 assertions, zero failures/errors/skips, including 57 system tests.
       RuboCop passes for all eight changed Ruby files.
-- [ ] **2. Browser publication workflow for pages and posts.** Extend
+- [x] **2. Browser publication workflow for pages and posts.** Extend
       `test/system/admin/pages_test.rb` and `posts_test.rb`: publish/hide content
       through the actual checkbox, save/reopen, and check its public URL/listing
       from a separate anonymous browser session. Exercise Page's independent
       Show in menu flag. Retain the existing request matrix for roles, slugs/IDs
       and API visibility rather than reproducing that matrix in Firefox.
+      Completed 2026-11-15: three browser tests save/reopen actual checkbox
+      changes, exercise hidden/published/hidden transitions, and verify anonymous
+      navigation/listings and direct content access. Page menu inclusion is
+      tested independently of publication. A small helper runs isolated admin
+      and anonymous browsers sequentially within Selenium's existing single slot;
+      application code and system-test configuration are unchanged. Existing
+      request tests retain the exact HTTP 404/role/ID/API matrix. Full suite:
+      274 tests, 1,930 assertions, zero failures/errors/skips, including 60 system
+      tests. RuboCop passes for all three changed Ruby files.
 - [ ] **3. Browser gallery visibility and cover transitions.** Extend
       `test/system/admin/galleries_test.rb`: save/reopen gallery and membership
       visibility changes, verify hidden parent exclusion and visible-cover
@@ -1108,14 +1117,14 @@ explicitly rather than silently turning this into another application rewrite.
       Reuse existing first-page failure, disconnect, reopen and 26+ selection
       coverage; simulate only the network failure boundary, not the whole UI.
 - [ ] **10. RSS and sitemap response contracts.** Extend
-      `test/contollers/posts_controller_test.rb` and `sitemap_controller_test.rb`
+      `test/controllers/posts_controller_test.rb` and `sitemap_controller_test.rb`
       with parsed XML assertions for populated and empty data, RSS publication
       dates/links and sitemap namespace/loc entries including published galleries.
       Check hidden content exclusion without duplicating the entire publication
       test matrix. The underlying rendering bugs are already fixed; status-only
       tests currently leave these response contracts largely unchecked.
 - [ ] **11. Public API contracts at the HTTP boundary.** Extend the existing
-      `test/contollers/api/v1/` tests to assert the current envelope and meaningful
+      `test/controllers/api/v1/` tests to assert the current envelope and meaningful
       fields directly, picture URLs/metadata, pagination boundaries where already
       implemented, and absence of private account/storage credentials. Preserve
       intended public signed read URLs. Avoid
@@ -1135,7 +1144,8 @@ explicitly rather than silently turning this into another application rewrite.
       `test/contollers` to `test/controllers` and update any explicit commands/docs
       or scripts referring to it. Verify discovery and the same tests still run.
       This is organization only; do not mix assertion rewrites or new coverage
-      into the move. Until then, use the actual existing directory paths above.
+      into the move. Completed separately by the owner; paths above now use
+      `test/controllers`.
 
 Deferred within this coverage plan: ContactJob is inactive because contact
 submission is intentionally disabled. Its payload is JSON, not an Active Record
