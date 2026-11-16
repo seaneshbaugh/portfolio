@@ -14,6 +14,101 @@ module Admin
       attach_images_to_pictures!
     end
 
+    test "a rejected new post retains its draft fields and can be corrected and saved" do
+      draft = {
+        body: "<p>Keep this unpublished draft.</p>",
+        style: "p { color: purple; }",
+        script: "window.recoveredPostDraft = true;"
+      }
+      tags = 'recovery, "design, art", C++'
+
+      visit new_admin_post_path
+
+      draft.each { |field, value| fill_in_ace "post_#{field}", with: value }
+
+      fill_in "post_tag_list", with: tags
+
+      uncheck "post_visible", allow_label_click: true
+
+      assert_no_difference "Post.count" do
+        click_button "Submit"
+
+        assert_text "Title can't be blank"
+      end
+
+      assert_field "post_title", with: ""
+      assert_post_draft draft, tags: tags, visible: false
+
+      fill_in "Title", with: "Recovered post draft"
+
+      click_button "Submit"
+
+      assert_text "Post was successfully created."
+
+      saved = Post.find_by!(title: "Recovered post draft")
+
+      assert_current_path admin_post_path(saved)
+      assert_equal draft.stringify_keys, saved.attributes.slice(*draft.keys.map(&:to_s))
+      assert_equal [ "C++", "design, art", "recovery" ], saved.tag_list.sort
+      assert_not saved.visible
+
+      visit edit_admin_post_path(saved)
+
+      assert_field "post_title", with: saved.title
+      assert_post_draft draft, tags: tags, visible: false
+    end
+
+    test "a rejected post update preserves stored content and saves corrected draft values" do
+      record = posts(:first_post)
+
+      record.update!(visible: false)
+
+      original_attributes = record.attributes
+      original_tags = record.tags.order(:name).pluck(:name)
+      draft = {
+        body: "<p>Keep this edited body.</p>",
+        style: "p { color: teal; }",
+        script: "window.recoveredPostEdit = true;"
+      }
+      tags = "edited, C++"
+
+      visit edit_admin_post_path(record)
+
+      fill_in "Title", with: ""
+
+      draft.each { |field, value| fill_in_ace "post_#{field}", with: value }
+
+      fill_in "post_tag_list", with: tags
+
+      check "post_visible", allow_label_click: true
+
+      click_button "Submit"
+
+      assert_text "Title can't be blank"
+      assert_equal original_attributes, record.reload.attributes
+      assert_equal original_tags, record.tags.order(:name).pluck(:name)
+      assert_field "post_title", with: ""
+      assert_post_draft draft, tags: tags, visible: true
+
+      fill_in "Title", with: "Recovered edited post"
+
+      click_button "Submit"
+
+      assert_text "Post was successfully updated."
+
+      saved = Post.find(record.id)
+
+      assert_current_path edit_admin_post_path(saved)
+      assert_equal "Recovered edited post", saved.title
+      assert_equal draft.stringify_keys, saved.attributes.slice(*draft.keys.map(&:to_s))
+      assert_equal [ "C++", "edited" ], saved.tag_list.sort
+      assert saved.visible
+
+      visit edit_admin_post_path(saved)
+
+      assert_post_draft draft, tags: tags, visible: true
+    end
+
     test "post visibility changes persist and control anonymous listings and direct access" do
       record = posts(:first_post)
 
@@ -231,6 +326,25 @@ module Admin
       body = find_field("post_body", visible: :all).value
 
       assert_equal 1, Nokogiri::HTML.fragment(body).css("img").length
+    end
+
+    private
+
+    def assert_post_draft(editors, tags:, visible:)
+      editors.each do |field, value|
+        assert_field "post_#{field}", with: value, visible: :all
+
+        assert_selector "#post_#{field}-editor.ace_editor" do |editor|
+          editor.evaluate_script("this.env.editor.getValue()") == value
+        end
+      end
+
+      expected_tags = ActsAsTaggableOn.default_parser.new(tags).parse.sort
+      actual_tags = ActsAsTaggableOn.default_parser.new(find_field("post_tag_list").value).parse.sort
+
+      assert_equal expected_tags, actual_tags
+
+      visible ? assert_checked_field("post_visible") : assert_unchecked_field("post_visible")
     end
   end
 end

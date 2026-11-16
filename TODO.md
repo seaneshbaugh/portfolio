@@ -1088,11 +1088,20 @@ explicitly rather than silently turning this into another application rewrite.
       helper; application code, test configuration and empty-detail policy are
       unchanged. Full suite: 277 tests, 2,004 assertions,
       zero failures/errors/skips, including 63 system tests. RuboCop passes.
-- [ ] **4. Post form error recovery.** Extend `test/system/admin/posts_test.rb`
+- [x] **4. Post form error recovery.** Extend `test/system/admin/posts_test.rb`
       with a rejected submission followed by correction/save: retain body/style/
       script Ace values, tags and visibility, and confirm failed updates leave
       persisted content unchanged. Use representative application validation;
       leave the full invalid-input matrix in validator/controller tests.
+      Completed 2026-11-15: two browser tests cover rejected create/update,
+      correction/save/reopen, all three Ace editors and their submitted fields,
+      multiple/quoted tags and both visibility values. Failed updates preserve
+      stored attributes and tag assignments. The tests exposed two Post form
+      bugs, fixed here: explicit TagList formatting preserves separators/quoted
+      names, and persisted forms target the stable database ID so an unsaved
+      FriendlyId slug cannot break the retry URL. Public slug generation remains
+      unchanged. Full suite: 279 tests, 2,062 assertions, zero
+      failures/errors/skips, including 65 system tests. RuboCop passes.
 - [ ] **5. Link form error recovery and usable tag navigation.** Extend
       `test/system/admin/links_test.rb` to clear the date, correct the error and
       save while preserving entered URL/text/description/tags. Follow a saved
