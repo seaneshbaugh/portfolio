@@ -1,4 +1,4 @@
-= form_for [:admin, @user], builder: AdminFormBuilder, html: { class: 'max-w-4xl space-y-6' } do |f|
+= form_for [:admin, @user], url: (@user.persisted? ? admin_user_path(@user.id) : admin_users_path), builder: AdminFormBuilder, html: { class: 'max-w-4xl space-y-6' } do |f|
   .space-y-1
     = f.label :first_name
     = f.text_field :first_name

@@ -1117,12 +1117,21 @@ explicitly rather than silently turning this into another application rewrite.
       or configuration changes were needed. Full suite: 280 tests,
       2,094 assertions, zero failures/errors/skips, including 66 system
       tests. RuboCop passes.
-- [ ] **6. User/account correction and credential changes.** Extend
+- [x] **6. User/account correction and credential changes.** Extend
       `test/system/admin/users_test.rb` with rejected user/account edits followed
       by correction; verify names/email/roles are retained appropriately and
       failed saves do not partly change credentials or roles. Cover an actual
       successful password change by logging in with it. Reuse current blank-
       password preservation and successful role-assignment coverage.
+      Completed 2026-11-15: two browser tests reject mismatched-password edits,
+      retain names/email and selected roles while clearing password inputs, and
+      verify unchanged stored credentials/roles before correction. Corrected
+      user/account edits persist and reopen; actual account login rejects the old
+      password and accepts the new email/password. The user-edit workflow exposed
+      the same unsaved-FriendlyId retry bug as Posts; its form now targets the
+      stable database ID. No controller/model or test-configuration changes were
+      needed. Full suite: 282 tests, 2,143 assertions, zero failures/errors/skips,
+      including 68 system tests. RuboCop passes.
 - [ ] **7. Password-reset error recovery through the custom routes.** Extend
       `test/system/authentication_test.rb` with a bad/expired reset link and a
       mismatched-password submission followed by correction using a valid link.
