@@ -1,15 +1,179 @@
 require "application_system_test_case"
 require_relative "../../support/editor_system_test_helpers"
 require_relative "../../support/system_test_uploads"
+require_relative "../../support/anonymous_browser_helpers"
 
 module Admin
   class GalleriesTest < ApplicationSystemTestCase
     include EditorSystemTestHelpers
     include SystemTestUploads
+    include AnonymousBrowserHelpers
 
     setup do
       sign_in users(:sean_eshbaugh)
       attach_images_to_pictures!
+    end
+
+    test "gallery publication changes persist and control anonymous listing and direct access" do
+      gallery = galleries(:salt_plains)
+
+      [ false, true, false ].each do |visible|
+        visit edit_admin_gallery_path(gallery)
+
+        if visible
+          check "gallery_visible", allow_label_click: true
+        else
+          uncheck "gallery_visible", allow_label_click: true
+        end
+
+        click_button "Submit"
+
+        assert_current_path edit_admin_gallery_path(gallery)
+        assert_equal visible, gallery.reload.visible
+
+        visit edit_admin_gallery_path(gallery)
+
+        visible ? assert_checked_field("gallery_visible") : assert_unchecked_field("gallery_visible")
+
+        with_anonymous_browser do
+          visit pictures_path
+
+          assert_no_selector "body.logged-in"
+          assert_selector ".galleries"
+
+          if visible
+            within ".galleries" do
+              click_link gallery.name
+            end
+
+            assert_current_path picture_path(gallery)
+            assert_selector "#gallery-#{gallery.slug} .gallery-pictures .gallery-picture", count: 2
+          else
+            assert_no_link gallery.name, href: picture_path(gallery)
+
+            visit picture_path(gallery)
+
+            assert_current_path picture_path(gallery)
+            assert_no_selector "#gallery-#{gallery.slug}"
+            assert_no_selector ".gallery-pictures"
+          end
+        end
+      end
+    end
+
+    test "hiding a featured membership falls back to the visible cover and restoring it restores the cover" do
+      gallery = galleries(:salt_plains)
+      featured = pictures(:conney)
+      fallback = pictures(:cowboy)
+
+      [ true, false, true ].each do |visible|
+        visit edit_admin_gallery_path(gallery)
+
+        check "gallery_visible", allow_label_click: true
+
+        within gallery_row(featured) do
+          assert_checked_field "Featured", visible: :all
+
+          if visible
+            check "Visible", allow_label_click: true
+          else
+            uncheck "Visible", allow_label_click: true
+          end
+        end
+
+        click_button "Submit"
+
+        assert_current_path edit_admin_gallery_path(gallery)
+
+        membership = gallery.gallery_pictures.find_by!(picture: featured)
+
+        assert_equal visible, membership.visible
+        assert membership.featured
+        assert gallery.reload.visible
+
+        visit edit_admin_gallery_path(gallery)
+
+        within gallery_row(featured) do
+          visible ? assert_checked_field("Visible", visible: :all) : assert_unchecked_field("Visible", visible: :all)
+
+          assert_checked_field "Featured", visible: :all
+        end
+
+        with_anonymous_browser do
+          visit pictures_path
+
+          assert_no_selector "body.logged-in"
+
+          cover = visible ? featured : fallback
+
+          assert_selector ".gallery-preview a[href='#{picture_path(gallery)}'] img[src='#{cover.medium_image_path}']" do |image|
+            image.evaluate_script("this.complete && this.naturalWidth > 0")
+          end
+
+          click_link gallery.name
+          assert_current_path picture_path(gallery)
+          assert_selector ".gallery-pictures a[href='#{fallback.original_image_path}']"
+
+          if visible
+            assert_selector ".gallery-pictures a[href='#{featured.original_image_path}']"
+          else
+            assert_no_selector ".gallery-pictures a[href='#{featured.original_image_path}']"
+          end
+        end
+      end
+    end
+
+    test "empty and all-hidden published galleries are omitted without breaking other gallery cards" do
+      empty = Gallery.create!(name: "Empty published gallery", visible: true, order: 1)
+      control = Gallery.create!(name: "Visible control gallery", visible: true, order: 2)
+
+      GalleryPicture.create!(gallery: control, picture: pictures(:cowboy), visible: true, featured: true, order: 0)
+
+      gallery = galleries(:salt_plains)
+
+      visit edit_admin_gallery_path(gallery)
+
+      check "gallery_visible", allow_label_click: true
+
+      [ pictures(:conney), pictures(:cowboy) ].each do |picture|
+        within gallery_row(picture) do
+          uncheck "Visible", allow_label_click: true
+        end
+      end
+
+      click_button "Submit"
+
+      assert_current_path edit_admin_gallery_path(gallery)
+      assert gallery.reload.visible
+      assert_not gallery.gallery_pictures.reload.any?(&:visible)
+
+      visit edit_admin_gallery_path(gallery)
+
+      assert_checked_field "gallery_visible"
+
+      [ pictures(:conney), pictures(:cowboy) ].each do |picture|
+        within gallery_row(picture) do
+          assert_unchecked_field "Visible", visible: :all
+        end
+      end
+
+      with_anonymous_browser do
+        visit pictures_path
+
+        assert_no_selector "body.logged-in"
+        assert_selector ".galleries .gallery", count: 1
+        assert_no_link empty.name, href: picture_path(empty)
+        assert_no_link gallery.name, href: picture_path(gallery)
+
+        assert_selector ".gallery-preview a[href='#{picture_path(control)}'] img" do |image|
+          image.evaluate_script("this.complete && this.naturalWidth > 0")
+        end
+
+        click_link control.name
+
+        assert_current_path picture_path(control)
+        assert_selector ".gallery-pictures .gallery-picture", count: 1
+      end
     end
 
     test "create a gallery with selected pictures and remove a saved membership" do

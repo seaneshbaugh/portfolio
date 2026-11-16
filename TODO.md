@@ -1074,12 +1074,20 @@ explicitly rather than silently turning this into another application rewrite.
       request tests retain the exact HTTP 404/role/ID/API matrix. Full suite:
       274 tests, 1,930 assertions, zero failures/errors/skips, including 60 system
       tests. RuboCop passes for all three changed Ruby files.
-- [ ] **3. Browser gallery visibility and cover transitions.** Extend
+- [x] **3. Browser gallery visibility and cover transitions.** Extend
       `test/system/admin/galleries_test.rb`: save/reopen gallery and membership
       visibility changes, verify hidden parent exclusion and visible-cover
       fallback on the public index, and verify empty/all-hidden galleries do not
       render broken cards. Reuse current ordering/featured/selector tests. Do not
       invent a placeholder design or lock in an unspecified empty-detail policy.
+      Completed 2026-11-15: three browser tests save/reopen parent and membership
+      visibility, verify anonymous gallery listing/detail exclusion, hide/restore
+      a featured membership to exercise visible-cover fallback, and ensure empty/
+      all-hidden galleries are omitted while a control gallery still renders a
+      loaded cover and working detail link. Reused the existing anonymous-browser
+      helper; application code, test configuration and empty-detail policy are
+      unchanged. Full suite: 277 tests, 2,004 assertions,
+      zero failures/errors/skips, including 63 system tests. RuboCop passes.
 - [ ] **4. Post form error recovery.** Extend `test/system/admin/posts_test.rb`
       with a rejected submission followed by correction/save: retain body/style/
       script Ace values, tags and visibility, and confirm failed updates leave
