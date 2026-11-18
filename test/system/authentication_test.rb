@@ -96,26 +96,103 @@ class AuthenticationTest < ApplicationSystemTestCase
     assert_current_path new_user_session_path
   end
 
+  test "an invalid reset link leaves the password unchanged and provides a route to request a new one" do
+    original_password = @admin.encrypted_password
+
+    visit edit_user_password_path(reset_password_token: "invalid-reset-link")
+
+    fill_in "user_password", with: "invalid-link-password"
+    fill_in "user_password_confirmation", with: "invalid-link-password"
+
+    click_button "Update password"
+
+    assert_text "Reset Password Token is invalid"
+    assert_equal original_password, @admin.reload.encrypted_password
+    assert @admin.valid_password?("system-test-password")
+    assert_not @admin.valid_password?("invalid-link-password")
+    assert_no_link "Logout"
+
+    click_link "Login", exact: true
+
+    assert_current_path new_user_session_path
+
+    click_link "Forgot your password?", exact: true
+
+    assert_current_path new_user_password_path
+    assert_field "Email"
+    assert_button "Send reset instructions"
+  end
+
+  test "an expired emailed reset link leaves the password unchanged and a fresh link works" do
+    expired_link = request_password_reset_link
+    original_password = @admin.reload.encrypted_password
+
+    @admin.update_column(:reset_password_sent_at, (User.reset_password_within + 1.minute).ago)
+
+    visit expired_link
+
+    fill_in "user_password", with: "expired-link-password"
+    fill_in "user_password_confirmation", with: "expired-link-password"
+
+    click_button "Update password"
+
+    assert_text "Reset Password Token has expired, please request a new one"
+    assert_equal original_password, @admin.reload.encrypted_password
+    assert @admin.valid_password?("system-test-password")
+    assert_not @admin.valid_password?("expired-link-password")
+    assert_no_link "Logout"
+
+    click_link "Login", exact: true
+
+    assert_current_path new_user_session_path
+
+    click_link "Forgot your password?", exact: true
+
+    assert_current_path new_user_password_path
+
+    visit request_password_reset_link
+    fill_in "user_password", with: "fresh-link-password"
+    fill_in "user_password_confirmation", with: "fresh-link-password"
+
+    click_button "Update password"
+
+    assert_current_path root_path
+    assert_link "Logout"
+    assert @admin.reload.valid_password?("fresh-link-password")
+    assert_not @admin.valid_password?("system-test-password")
+  end
+
+  test "mismatched reset passwords can be corrected in the same form without requesting another link" do
+    visit request_password_reset_link
+
+    original_password = @admin.reload.encrypted_password
+
+    fill_in "user_password", with: "corrected-reset-password"
+    fill_in "user_password_confirmation", with: "mismatched-reset-password"
+
+    click_button "Update password"
+
+    assert_text "Confirm Password doesn't match Password"
+    assert_equal original_password, @admin.reload.encrypted_password
+    assert @admin.valid_password?("system-test-password")
+    assert_not @admin.valid_password?("corrected-reset-password")
+    assert_no_link "Logout"
+    assert_field "user_password", with: ""
+    assert_field "user_password_confirmation", with: ""
+
+    fill_in "user_password", with: "corrected-reset-password"
+    fill_in "user_password_confirmation", with: "corrected-reset-password"
+
+    click_button "Update password"
+
+    assert_current_path root_path
+    assert_link "Logout"
+    assert @admin.reload.valid_password?("corrected-reset-password")
+    assert_not @admin.valid_password?("system-test-password")
+  end
+
   test "password reset email leads to a working new password" do
-    ActionMailer::Base.deliveries.clear
-
-    visit new_user_password_path
-
-    fill_in "Email", with: @admin.email
-
-    find("input[type=submit]").click
-
-    assert_eventually { ActionMailer::Base.deliveries.any? }
-
-    mail = ActionMailer::Base.deliveries.last
-
-    assert_equal [ @admin.email ], mail.to
-
-    url = Nokogiri::HTML(mail.body.decoded).at_css("a")["href"]
-    # Mail links use the configured public host; keep the browser on Capybara.
-    uri = URI.parse(url)
-
-    visit "#{uri.path}?#{uri.query}"
+    visit request_password_reset_link
 
     fill_in "user_password", with: "replacement-password"
     fill_in "user_password_confirmation", with: "replacement-password"
@@ -141,5 +218,29 @@ class AuthenticationTest < ApplicationSystemTestCase
     visit admin_pages_path
 
     assert_link "New Page"
+  end
+
+  private
+
+  def request_password_reset_link
+    ActionMailer::Base.deliveries.clear
+
+    visit new_user_password_path
+
+    fill_in "Email", with: @admin.email
+
+    click_button "Send reset instructions"
+
+    assert_current_path new_user_session_path
+    assert_eventually { ActionMailer::Base.deliveries.any? }
+
+    mail = ActionMailer::Base.deliveries.last
+
+    assert_equal [ @admin.email ], mail.to
+
+    # Mail links use the public host; keep the browser on the local test server.
+    uri = URI.parse(Nokogiri::HTML(mail.body.decoded).at_css("a")["href"])
+
+    "#{uri.path}?#{uri.query}"
   end
 end

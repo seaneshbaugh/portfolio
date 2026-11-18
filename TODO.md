@@ -1132,12 +1132,23 @@ explicitly rather than silently turning this into another application rewrite.
       stable database ID. No controller/model or test-configuration changes were
       needed. Full suite: 282 tests, 2,143 assertions, zero failures/errors/skips,
       including 68 system tests. RuboCop passes.
-- [ ] **7. Password-reset error recovery through the custom routes.** Extend
+- [x] **7. Password-reset error recovery through the custom routes.** Extend
       `test/system/authentication_test.rb` with a bad/expired reset link and a
       mismatched-password submission followed by correction using a valid link.
       Check visible guidance and that failed submissions do not change the
       password. Keep mail local; test the application's routes/forms, not Devise's
       token-generation algorithm or every built-in validation.
+      Completed 2026-11-15: three browser tests cover invalid-token guidance and
+      navigation to the recovery form, expired emailed links followed by a working
+      fresh link, and mismatched passwords corrected in the same form. Rejected
+      attempts preserve the stored password; successful resets authenticate the
+      user and save the new credential. Password fields clear after a mismatch.
+      Reused local test mail and extracted its request/link helper from the
+      existing successful reset/login test. Expiration is simulated by aging the
+      issued timestamp past the configured window, without testing token
+      generation internals. No application or configuration changes were needed.
+      Full suite: 285 tests, 2,181 assertions, zero failures/errors/skips, including
+      71 system tests. RuboCop passes.
 - [ ] **8. Browser role sorting/filtering across page boundaries.** Extend
       `test/system/admin/users_test.rb` (or the existing admin navigation tests)
       to click the role header, filter and paginate a list containing a multi-role
