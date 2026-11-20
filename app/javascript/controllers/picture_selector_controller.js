@@ -42,6 +42,12 @@ export default class extends Controller {
     const request = new AbortController();
     this.request = request;
     this.buttonTarget.disabled = true;
+
+    // Disabling the focused button drops focus in Firefox. Keep it in the dialog.
+    if (document.activeElement === this.loadMoreTarget) {
+      this.closeButtonTarget.focus();
+    }
+
     this.loadMoreTarget.disabled = true;
     this.loadMoreTarget.hidden = false;
     this.loadMoreTarget.textContent = "Loading pictures…";

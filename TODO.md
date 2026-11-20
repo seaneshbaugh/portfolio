@@ -1163,13 +1163,24 @@ explicitly rather than silently turning this into another application rewrite.
       remain in controller tests. No application or configuration changes were
       needed. Full suite: 286 tests, 2,205 assertions, zero failures/errors/skips,
       including 72 system tests. RuboCop passes.
-- [ ] **9. Selector next-page failure and cancellation.** Extend existing
+- [x] **9. Selector next-page failure and cancellation.** Extend existing
       `test/system/admin/ace_editors_test.rb` / `posts_test.rb` with a failed Load
       more request, successful retry without duplicate thumbnails, and closing
       during a pending next-page request. Earlier pictures must remain usable,
       late results must not reopen a closed selector, and focus must stay usable.
       Reuse existing first-page failure, disconnect, reopen and 26+ selection
       coverage; simulate only the network failure boundary, not the whole UI.
+      Completed 2026-11-19: three browser tests cover a failed second page and
+      retry without duplicate/lost thumbnails, selecting an earlier picture after
+      failure, and closing/aborting a pending load whose real response arrives
+      late. Reopening and loading another page still works, with draft contents
+      and focus preserved. Network mocks target only page two (one 503 or a held
+      real response body); no fixed sleeps or controller-state stubs were added.
+      The tests exposed Firefox dropping focus when Load more is disabled; the
+      selector now moves focus to Close before disabling that button. API/upload
+      behavior and test configuration are unchanged. Full suite: 289
+      tests, 2,250 assertions, zero failures/errors/skips, including 75
+      system tests. RuboCop and JavaScript syntax checks pass.
 - [ ] **10. RSS and sitemap response contracts.** Extend
       `test/controllers/posts_controller_test.rb` and `sitemap_controller_test.rb`
       with parsed XML assertions for populated and empty data, RSS publication
