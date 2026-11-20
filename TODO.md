@@ -1149,12 +1149,20 @@ explicitly rather than silently turning this into another application rewrite.
       generation internals. No application or configuration changes were needed.
       Full suite: 285 tests, 2,181 assertions, zero failures/errors/skips, including
       71 system tests. RuboCop passes.
-- [ ] **8. Browser role sorting/filtering across page boundaries.** Extend
+- [x] **8. Browser role sorting/filtering across page boundaries.** Extend
       `test/system/admin/users_test.rb` (or the existing admin navigation tests)
       to click the role header, filter and paginate a list containing a multi-role
       user. Assert unique rows and retained search/sort state through navigation.
       Keep direction/filter combination matrices in UsersControllerTest, which
       already covers SQL-level uniqueness and pagination.
+      Completed 2026-11-17: one browser workflow filters 27 users by name,
+      email and role, clicks the role header, and navigates next/previous pages.
+      It verifies a multi-role user sorts under Admin while matching the User
+      filter, the full ordered result contains each user once, and filter values,
+      sort state and first-page rows survive pagination. Broader combinations
+      remain in controller tests. No application or configuration changes were
+      needed. Full suite: 286 tests, 2,205 assertions, zero failures/errors/skips,
+      including 72 system tests. RuboCop passes.
 - [ ] **9. Selector next-page failure and cancellation.** Extend existing
       `test/system/admin/ace_editors_test.rb` / `posts_test.rb` with a failed Load
       more request, successful retry without duplicate thumbnails, and closing

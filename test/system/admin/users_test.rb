@@ -4,6 +4,68 @@ module Admin
   class UsersTest < ApplicationSystemTestCase
     setup { sign_in users(:sean_eshbaugh) }
 
+    test "role sorting and filtering survive pagination without duplicating multi-role users" do
+      members = 27.times.map do |index|
+        User.create!(
+          first_name: "Paging",
+          last_name: "Member #{index.to_s.rjust(2, '0')}",
+          email: "role-paging-#{index}@example.test",
+          password: "paging-test-password",
+          password_confirmation: "paging-test-password"
+        ).tap { |user| user.add_role(:user) }
+      end
+
+      multi_role = members.last
+      multi_role.add_role(:admin)
+
+      visit admin_users_path
+
+      fill_in "q_first_name_or_last_name_cont", with: "Paging"
+      fill_in "q_email_cont", with: "role-paging-"
+
+      select "User", from: "q_roles_name_eq"
+
+      click_button "Search"
+
+      assert_no_link users(:casie_clark).full_name, href: admin_user_path(users(:casie_clark))
+      assert_selector "tr.user", count: 25
+
+      within "th.user-role" do
+        click_link "Roles"
+      end
+
+      # The multi-role user sorts under Admin even though the filter matches User.
+      assert_selector "tbody tr.user:first-child td.user-name", text: multi_role.full_name
+      assert_user_paging_filters
+
+      within find("tr.user", text: multi_role.email) do
+        assert_selector "td.user-roles", text: /Admin/
+        assert_selector "td.user-roles", text: /User/
+      end
+
+      first_page = displayed_user_paths
+
+      find(".pagination a[rel='next']").click
+
+      assert_selector ".pagination [aria-current='page']", exact_text: "2"
+      assert_selector "tr.user", count: 2
+      assert_user_paging_filters
+      second_page = displayed_user_paths
+
+      all_paths = first_page + second_page
+      expected_order = [ multi_role, *members.first(26) ].map { |user| admin_user_path(user) }
+
+      assert_equal expected_order, all_paths
+      assert_equal all_paths.uniq, all_paths
+
+      find(".pagination a[rel='prev']").click
+
+      assert_selector ".pagination [aria-current='page']", exact_text: "1"
+      assert_selector "tr.user", count: 25
+      assert_user_paging_filters
+      assert_equal first_page, displayed_user_paths
+    end
+
     test "a rejected user edit retains names email and roles without changing stored credentials" do
       member = users(:casie_clark)
       member.update!(password: "original-member-password")
@@ -181,6 +243,22 @@ module Admin
         assert_selector "tr.user", count: 1
         assert_link "Sean Eshbaugh"
       end
+    end
+
+    private
+
+    def displayed_user_paths
+      all("td.user-name a").map { |link| URI.parse(link[:href]).path }
+    end
+
+    def assert_user_paging_filters
+      assert_field "q_first_name_or_last_name_cont", with: "Paging"
+      assert_field "q_email_cont", with: "role-paging-"
+      assert_select "q_roles_name_eq", selected: "User"
+
+      query = Rack::Utils.parse_nested_query(URI.parse(page.current_url).query)
+
+      assert_equal "role_name asc", query.dig("q", "s")
     end
   end
 end
