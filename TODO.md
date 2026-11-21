@@ -1198,7 +1198,7 @@ explicitly rather than silently turning this into another application rewrite.
       old sitemap status-only test. No application/configuration changes were
       needed. Full suite: 292 tests, 2,306 assertions, zero failures/errors/skips,
       including 75 system tests. RuboCop passes.
-- [ ] **11. Public API contracts at the HTTP boundary.** Extend the existing
+- [x] **11. Public API contracts at the HTTP boundary.** Extend the existing
       `test/controllers/api/v1/` tests to assert the current envelope and meaningful
       fields directly, picture URLs/metadata, pagination boundaries where already
       implemented, and absence of private account/storage credentials. Preserve
@@ -1206,6 +1206,17 @@ explicitly rather than silently turning this into another application rewrite.
       deriving every expected response by invoking the same serializer under
       test. Preserve existing contracts and unbounded endpoints pending the
       separate pagination decision; do not redesign the API in this batch.
+      Completed 2026-11-20: controller tests assert JSON envelopes and explicit
+      public field allowlists, content/metadata values and parseable timestamps
+      without deriving expected documents from the serializers. Picture tests
+      cover original/medium/thumbnail paths and absolute URLs, anonymous signed
+      reads, ordered 25-item page boundaries, no overlaps and an empty final page.
+      Post/tag lists retain their unbounded behavior with more than 25 records;
+      empty results, hidden/missing post details and special-character tag names
+      are covered. Detailed field checks use representative documents instead of
+      repeating every assertion across pagination data. No application, API or
+      configuration changes were needed. Full suite: 293 tests, 2,413 assertions,
+      zero failures/errors/skips, including 75 system tests. RuboCop passes.
 - [ ] **12. Small model tests for application-owned behavior only.** Following
       Wishlist's `ListTest`, `UserTest` and `PurchaseTest`, select uncovered rules
       such as User's default-role callback preserving explicitly assigned roles,
