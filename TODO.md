@@ -1181,13 +1181,23 @@ explicitly rather than silently turning this into another application rewrite.
       behavior and test configuration are unchanged. Full suite: 289
       tests, 2,250 assertions, zero failures/errors/skips, including 75
       system tests. RuboCop and JavaScript syntax checks pass.
-- [ ] **10. RSS and sitemap response contracts.** Extend
+- [x] **10. RSS and sitemap response contracts.** Extend
       `test/controllers/posts_controller_test.rb` and `sitemap_controller_test.rb`
       with parsed XML assertions for populated and empty data, RSS publication
       dates/links and sitemap namespace/loc entries including published galleries.
       Check hidden content exclusion without duplicating the entire publication
       test matrix. The underlying rendering bugs are already fixed; status-only
       tests currently leave these response contracts largely unchecked.
+      Completed 2026-11-19: populated/empty request tests strictly parse XML.
+      RSS checks metadata, newest-first published items, escaped title/HTML body
+      round trips, RFC-compatible publication dates and absolute item links/GUIDs.
+      Sitemap checks the standard namespace, required loc/lastmod fields, unique
+      published page/post/gallery URLs (including pages outside the menu), and
+      valid modification dates. Hidden records are excluded; empty responses keep
+      their required feed metadata/homepage/gallery-index entries. Replaced the
+      old sitemap status-only test. No application/configuration changes were
+      needed. Full suite: 292 tests, 2,306 assertions, zero failures/errors/skips,
+      including 75 system tests. RuboCop passes.
 - [ ] **11. Public API contracts at the HTTP boundary.** Extend the existing
       `test/controllers/api/v1/` tests to assert the current envelope and meaningful
       fields directly, picture URLs/metadata, pagination boundaries where already
