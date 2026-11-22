@@ -2,6 +2,7 @@
 
 class Picture < ApplicationRecord
   include FriendlyId
+  include SlugNormalization
   include Rails.application.routes.url_helpers
 
   has_many :gallery_pictures, inverse_of: :picture, dependent: :destroy

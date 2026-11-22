@@ -2,6 +2,7 @@
 
 class Page < ApplicationRecord
   extend FriendlyId
+  include SlugNormalization
 
   scope :alphabetical, -> { order(:title) }
   scope :by_order, -> { order(:order) }

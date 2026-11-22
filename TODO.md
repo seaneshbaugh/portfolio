@@ -1217,7 +1217,7 @@ explicitly rather than silently turning this into another application rewrite.
       repeating every assertion across pagination data. No application, API or
       configuration changes were needed. Full suite: 293 tests, 2,413 assertions,
       zero failures/errors/skips, including 75 system tests. RuboCop passes.
-- [ ] **12. Small model tests for application-owned behavior only.** Following
+- [x] **12. Small model tests for application-owned behavior only.** Following
       Wishlist's `ListTest`, `UserTest` and `PurchaseTest`, select uncovered rules
       such as User's default-role callback preserving explicitly assigned roles,
       Picture's filename-derived title preserving an explicit title, and custom
@@ -1226,6 +1226,17 @@ explicitly rather than silently turning this into another application rewrite.
       cover choice already has query/visibility coverage. Deletion cascades,
       foreign-key guarantees, duplicate memberships and featured uniqueness need
       their policy/schema decisions first; add their regressions with that work.
+      Completed 2026-11-20: four focused tests use real saves/reloads to verify
+      default-role assignment and preservation of explicit role selections, plus
+      filename-derived titles for nil/whitespace inputs and preservation of chosen
+      titles through metadata edits. Uploaded test files are purged in teardown.
+      Runtime inspection found the ApplicationRecord normalizer is shadowed by
+      FriendlyId on the checked models, so unused-code tests and slug behavior
+      changes were deferred to the separate low-priority policy follow-up below.
+      Other empty model files remain untouched. No application/configuration
+      changes were needed. Full suite: 297 tests, 2,420
+      assertions, zero failures/errors/skips, including 75 system tests. RuboCop
+      passes for both changed Ruby files.
 - [x] **13. Test directory naming cleanup, separately.** Rename
       `test/contollers` to `test/controllers` and update any explicit commands/docs
       or scripts referring to it. Verify discovery and the same tests still run.
@@ -1305,6 +1316,16 @@ all of them to this small database.
       helper-generated templates to ERB, remove its initializer/gems/lint tooling,
       and verify rendering/forms with the system suite. Retain Haml throughout
       configuration alignment; do not combine template conversion with section 8.
+
+- [x] Restore the intended custom slug normalizer (2026-11-21). Moved the
+      unchanged implementation from `ApplicationRecord` into `SlugNormalization`,
+      included after FriendlyId configuration in Page, Post, User, Gallery and
+      Picture so it takes precedence over `FriendlyId::Slugged`. Tests cover
+      normalization rules, actual model dispatch, persisted generation/lookup,
+      renaming and preservation of existing slugs during unrelated edits. No
+      bulk slug regeneration or migration was added. Full suite: 302 tests,
+      2,443 assertions, zero failures/errors/skips. RuboCop passes for the changed
+      Ruby files.
 
 - [ ] Investigate the current state of spam prevention for contact forms, including
       automated/LLM-assisted submissions, maintenance burden, accessibility, false

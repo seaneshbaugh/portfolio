@@ -2,6 +2,7 @@
 
 class Gallery < ApplicationRecord
   extend FriendlyId
+  include SlugNormalization
 
   scope :alphabetical, -> { order(:name) }
   scope :by_order, -> { order(:order) }
