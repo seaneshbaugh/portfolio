@@ -69,7 +69,7 @@ module Admin
     test "a rejected user edit retains names email and roles without changing stored credentials" do
       member = users(:casie_clark)
       member.update!(password: "original-member-password")
-      original_attributes = member.attributes.slice(*User.column_names)
+      original_attributes = member.reload.attributes.slice(*User.column_names)
       original_roles = member.roles.order(:id).ids
 
       visit edit_admin_user_path(member)

@@ -11,8 +11,6 @@ class Post < ApplicationRecord
 
   belongs_to :user
 
-  validates :user_id, presence: true
-  validates_associated :user
   validates :title, presence: true, length: { maximum: 255 }, uniqueness: true
   validates :body, presence: true, length: { minimum: 4, maximum: 16_777_215 }, html: { allow_blank: true }
   validates :style, length: { maximum: 4_194_303 }, css: { allow_blank: true }

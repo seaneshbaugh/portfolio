@@ -1253,6 +1253,172 @@ define its payload/failure policy and then test delivery/failure behavior locall
 Tags autocomplete and version restore remain reserved for the owner's separate
 requirements; no new feature tasks or tests for them are introduced here.
 
+## 11. Harden model/data invariants
+
+Agreed direction (2026-11-24): model validation supplies useful errors; database
+constraints protect structural rules under concurrent and non-Rails writes.
+Preserve Rails deletion callbacks/PaperTrail. Do not cascade deletions in SQL,
+regenerate existing slugs or silently repair historical data. Work through these
+batches individually, keeping the complete suite green after each batch.
+
+- [x] **1. Audit the supplied production snapshot before enforcing constraints.**
+      Restored `portfolio_production.dump` (PostgreSQL 18.6 archive dated
+      2026-11-22 UTC) without owner/ACL restoration into the separate local
+      `portfolio_invariants_audit_20261124` database using development PostgreSQL
+      17.11 tools. All audit SELECTs ran in explicit read-only transactions;
+      Rails was not loaded and no production/Spaces services were contacted.
+      Aggregate findings and repeat-audit requirements are recorded in
+      `docs/model-invariants-audit.md`. Recheck current production immediately
+      before deployment; this snapshot is evidence, not a guarantee about later
+      writes. Keep the private dump untracked; do not include content/account
+      values in audit reports.
+- [x] **2. Add concrete foreign keys and simplify parent validation.** Add FKs
+      for posts.user_id, gallery_pictures.gallery_id/picture_id,
+      users_roles.user_id/role_id, active_storage_attachments.blob_id and
+      taggings.tag_id. Retain the existing variant-record blob FK. Use restrictive
+      references with existing Rails dependent-destroy behavior; verify user/post,
+      gallery/membership, picture/membership, role assignment and attachment/tag
+      removal lifecycles against installed gems before shipping. No ordinary FKs
+      for polymorphic owners; historical PaperTrail versions must survive deletion.
+      In Post and GalleryPicture, replace redundant FK-presence/parent
+      validates_associated declarations with required belongs_to semantics after
+      verifying the effective configuration. Test nonexistent references at the
+      model and database boundaries, Rails deletions with callbacks/history intact,
+      new nested galleries, and invalid nested submissions without recursion or
+      collateral parent validation. Use transactions/savepoints for rejected SQL.
+      Completed 2026-11-24: migration `20261124000000` adds all seven validated
+      restrictive FKs, retaining the existing variant-record FK. Removed four
+      redundant validation declarations; required belongs_to behavior remains.
+      Twelve focused tests cover missing references, DB bypasses/restricted
+      deletes, parent-validation independence, nested galleries, Rails dependent
+      cleanup, retained version history and attachment/blob lifecycle. Migration
+      apply/rollback/reapply passed on a disposable production-snapshot clone;
+      the audit database/dump remain unchanged. Two existing browser tests now
+      reload their saved baselines to compare PostgreSQL timestamp precision.
+      Full suite: 314 tests, 2500 assertions, 0 failures, 0 errors, 0 skips,
+      including 75 system tests. RuboCop passes for all eight changed Ruby files.
+- [ ] **3. Make role assignments and role identities unique.** Add NOT NULL to
+      users_roles.user_id/role_id and a unique (user_id, role_id) index; remove only
+      indexes made genuinely redundant. Add required/nonblank role names in the
+      model/database after checking Rolify's hooks. Replace the nonunique roles
+      identity index with UNIQUE NULLS NOT DISTINCT on
+      (name, resource_type, resource_id), supported by local PostgreSQL 17 and
+      production 18. Preserve global roles (both resource columns null), class
+      scopes (resource_type present, resource_id null), and instance scopes.
+      Reject resource_id without resource_type; do not require both columns to
+      be null or nonnull together. Confirm schema.rb round-trips this index.
+      Exercise Rolify add/remove/default-role behavior, each supported scope,
+      repeated assignments and direct SQL duplicates/nulls; handle concurrent
+      identity conflicts deliberately rather than hiding arbitrary exceptions.
+- [ ] **4. Enforce gallery membership and ordering policy.** Add integer,
+      nonnegative GalleryPicture.order validation and CHECK constraints for
+      nonnegative pages.order, galleries.order and gallery_pictures.order.
+      Keep tied/noncontiguous positions legal. Reject duplicate picture_id values
+      within a gallery, with a unique (gallery_id, picture_id) index and validation
+      of the final nested collection excluding rows marked for destruction.
+      Enforce at most one featured membership per gallery, hidden or visible,
+      with a partial unique gallery_id index WHERE featured. Validate the final
+      nested state and clear the old featured membership before setting its
+      replacement in a transaction; verify concurrent edits and save ordering.
+      Preserve hidden-featured fallback to the first visible picture. Update
+      the existing duplicate-selection system test to assert the new rejection
+      behavior; preserve entered fields/422 feedback. Cover switching featured,
+      remove/re-add, duplicate new/existing rows, failed saves and DB bypasses.
+- [ ] **5. Normalize names/titles and enforce case-insensitive identities.**
+      Introduce a small concern for explicitly opted-in title/name attributes:
+      strip surrounding whitespace, preserve internal whitespace/case, and do
+      not touch HTML/CSS/JavaScript. Apply to Page/Post titles, Gallery name,
+      Picture title and User first_name/last_name; normalize before Picture's
+      filename fallback and slug generation. Add case-insensitive model uniqueness
+      plus unique lower(title)/lower(name) indexes for Page, Post and Gallery,
+      replacing their case-sensitive identity indexes. Picture titles and user
+      personal names remain nonunique. Retain unique Page/Post/Gallery slug
+      indexes; add NOT NULL and unique slug indexes for User and Picture after
+      auditing blanks/collisions. Do not rewrite existing slugs. Test mixed-case
+      duplicates, surrounding whitespace, same-record edits, fallback titles,
+      normalized slug generation and unrelated-edit URL preservation. Add selected
+      database nonblank checks for required identities; don't duplicate every
+      format/length validation in SQL. Reaudit whitespace-normalized conflicts
+      with the exact Ruby normalization semantics before any backfill.
+- [ ] **6. Consolidate User email validation and database uniqueness.** Installed
+      Devise 5.0.4 :validatable supplies email presence, format and case-sensitive
+      uniqueness; format/uniqueness run on email changes and skip blanks. It also
+      supplies conditional password presence/confirmation and password length
+      (configured 6..128), allowing blank length validation; existing users need
+      not supply a password on unrelated edits. Devise already strips/downcases
+      email. Remove redundant explicit User email presence/format declarations,
+      retain an explicit case-insensitive uniqueness validation alongside Devise
+      unless a cleaner supported configuration is identified; do not disable all
+      :validatable checks just to remove overlap. Replace users.email's unique
+      index with a unique lower(email) index. Preserve password behavior and
+      admin create/edit/recovery flows, with mixed-case identity and direct-SQL
+      duplicate regressions. No password-policy change is authorized by this batch.
+- [ ] **7. Make optional text consistently textual and revise content limits.**
+      Explicitly normalize nil to empty string for optional NOT NULL text fields:
+      Page/Post style, script, meta_description and meta_keywords; Gallery
+      description; Picture alt_text/caption; Link description. Keep required
+      fields required; do not stringify arbitrary objects or strip source content.
+      Remove Post.body and Link.text minimum lengths, retaining presence and
+      existing maximums except Page/Post body/style/script. Proposed model limit:
+      1,048,576 characters per body/style/script field (Rails length semantics,
+      approximately 1 MiB for ASCII, not a byte/request-size limit); confirm this
+      distinction before implementation if a strict byte cap is wanted. Leave
+      other maximums unchanged unless a concrete reason emerges. Keep database
+      NOT NULL defaults and selected structural checks; no blanket length-check
+      expansion. Exercise explicit nil create/update, editor source preservation,
+      short nonblank values and boundary lengths without subprocess-parsing huge
+      fixtures unnecessarily. Contact remains disabled and outside this batch.
+
+## 12. Follow-up: application validator and upload hardening
+
+Separate from section 11's model/schema batches. These are implementation plans,
+not authorization to choose unconfirmed upload limits or rewrite the authoring
+format. Add focused custom-rule tests plus representative system/request paths;
+keep trusted-author HTML/CSS/JavaScript and public signed image reads working.
+
+- [ ] **1. Correct URL validation.** In UrlValidator, retain HTTP, HTTPS and FTP
+      host-based URLs and support hostless mailto with explicit recipient syntax.
+      Decide handling of multiple recipients, query headers, internationalized
+      addresses/hosts and scheme case using URI's actual parsed forms. Reject
+      unsupported schemes, malformed inputs and wrong types with validation
+      errors. Add a 2,048-character Link.url maximum; don't add this as a blanket
+      SQL check. Cover a real mailto link round trip and ordinary FTP/HTTP links,
+      blanks/malformed addresses, forbidden schemes and length boundaries.
+- [ ] **2. Replace the ad hoc CSS color regex with a defined parser policy.**
+      Aim to accept valid standalone color literals, including modern functional
+      syntax, with named colors optional pending owner confirmation. Evaluate a
+      maintained standards-aware parser using representative hex, rgb/hsl,
+      hwb, lab/lch, oklab/oklch, color() and color-mix() inputs; inspect support
+      rather than assuming the existing npm CSS parser validates values. Decide
+      context-dependent var()/currentColor, CSS-wide keywords and relative colors
+      separately: valid CSS syntax may not resolve to a concrete standalone color.
+      Validate one complete value and reject declaration injection/trailing tokens.
+      Check compatibility with Page's native color input, contrast_color helper/PagePresenter
+      and public inline-style rendering before selecting a library or changing
+      the UI. Don't build an ever-growing regex or add a headless-browser runtime
+      dependency without discussion. Preserve safe nil/error handling.
+- [ ] **3. Make syntax-validator subprocess failures explicit.** Use argv-form
+      node --check in JavascriptValidator, inspect exit status and distinguish
+      syntax errors from unavailable/crashed subprocesses. Define bounded execution
+      and cleanup behavior; preserve tempfile safety and useful line diagnostics.
+      Apply the failure/timeout policy to CssValidator too. Verify supported
+      authoring syntax against the installed parser; HTML syntax validation remains
+      separate from sanitization. Test valid/invalid source and representative
+      subprocess failures without depending on fragile exact Node stderr wording.
+- [ ] **4. Enforce a server-side image upload policy.** Agree supported formats,
+      maximum bytes and any decoded-dimension/pixel limits with the owner first.
+      Apply shared metadata rules before direct-upload blob allocation in
+      Admin::DirectUploadsController and attachment validation on Picture for
+      direct and ordinary multipart writes. Treat client MIME/filename metadata
+      as untrusted; define byte inspection/decode timing after bytes exist,
+      compatibility with libvips and attachment replacement, and failure cleanup
+      without purging files referenced by other records or in-flight uploads.
+      Metadata acceptance alone must not be described as byte verification.
+      Test authorization remains first, forbidden metadata allocates no blob,
+      bad/mismatched bytes cannot create a valid Picture, limits, valid supported
+      images and useful admin errors. No live Spaces requests; unattached-upload
+      retention/cleanup remains an explicit separate lifecycle decision.
+
 ## Context to collect as needed
 
 - [x] Confirm which Wishlist development workflow conventions should be matched;

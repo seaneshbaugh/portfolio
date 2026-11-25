@@ -10,17 +10,16 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_03_28_235527) do
-
+ActiveRecord::Schema[8.1].define(version: 2026_11_24_233512) do
   # These are extensions that must be enabled in order to support this database
-  enable_extension "plpgsql"
+  enable_extension "pg_catalog.plpgsql"
 
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
     t.bigint "record_id", null: false
     t.bigint "blob_id", null: false
-    t.datetime "created_at", null: false
+    t.datetime "created_at", precision: nil, null: false
     t.index ["blob_id"], name: "index_active_storage_attachments_on_blob_id"
     t.index ["record_type", "record_id", "name", "blob_id"], name: "index_active_storage_attachments_uniqueness", unique: true
   end
@@ -32,7 +31,7 @@ ActiveRecord::Schema.define(version: 2021_03_28_235527) do
     t.text "metadata"
     t.bigint "byte_size", null: false
     t.string "checksum", null: false
-    t.datetime "created_at", null: false
+    t.datetime "created_at", precision: nil, null: false
     t.string "service_name", null: false
     t.index ["key"], name: "index_active_storage_blobs_on_key", unique: true
   end
@@ -48,7 +47,7 @@ ActiveRecord::Schema.define(version: 2021_03_28_235527) do
     t.integer "sluggable_id", null: false
     t.string "sluggable_type", limit: 50
     t.string "scope"
-    t.datetime "created_at"
+    t.datetime "created_at", precision: nil
     t.index ["slug", "sluggable_type", "scope"], name: "index_friendly_id_slugs_on_slug_and_sluggable_type_and_scope", unique: true
     t.index ["slug", "sluggable_type"], name: "index_friendly_id_slugs_on_slug_and_sluggable_type"
     t.index ["sluggable_id"], name: "index_friendly_id_slugs_on_sluggable_id"
@@ -61,8 +60,8 @@ ActiveRecord::Schema.define(version: 2021_03_28_235527) do
     t.text "description", default: "", null: false
     t.integer "order", default: 0, null: false
     t.boolean "visible", default: true, null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["name"], name: "index_galleries_on_name", unique: true
     t.index ["slug"], name: "index_galleries_on_slug", unique: true
   end
@@ -73,8 +72,8 @@ ActiveRecord::Schema.define(version: 2021_03_28_235527) do
     t.integer "order", default: 0, null: false
     t.boolean "visible", default: true, null: false
     t.boolean "featured", default: false, null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["gallery_id"], name: "index_gallery_pictures_on_gallery_id"
     t.index ["picture_id"], name: "index_gallery_pictures_on_picture_id"
   end
@@ -83,10 +82,10 @@ ActiveRecord::Schema.define(version: 2021_03_28_235527) do
     t.text "text", default: "", null: false
     t.text "url", default: "", null: false
     t.text "description", default: "", null: false
-    t.datetime "published_at", null: false
+    t.datetime "published_at", precision: nil, null: false
     t.boolean "visible", default: true, null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["published_at"], name: "index_links_on_published_at"
   end
 
@@ -102,8 +101,8 @@ ActiveRecord::Schema.define(version: 2021_03_28_235527) do
     t.string "color", default: "#000000", null: false
     t.boolean "show_in_menu", default: true, null: false
     t.boolean "visible", default: true, null: false
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
     t.index ["slug"], name: "index_pages_on_slug", unique: true
     t.index ["title"], name: "index_pages_on_title", unique: true
   end
@@ -112,8 +111,8 @@ ActiveRecord::Schema.define(version: 2021_03_28_235527) do
     t.text "title", default: "", null: false
     t.text "alt_text", default: "", null: false
     t.text "caption", default: "", null: false
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
     t.string "slug"
     t.index ["slug"], name: "index_pictures_on_slug"
   end
@@ -128,8 +127,8 @@ ActiveRecord::Schema.define(version: 2021_03_28_235527) do
     t.text "meta_description", default: "", null: false
     t.text "meta_keywords", default: "", null: false
     t.boolean "visible", default: true, null: false
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
     t.index ["slug"], name: "index_posts_on_slug", unique: true
     t.index ["title"], name: "index_posts_on_title", unique: true
     t.index ["user_id"], name: "index_posts_on_user_id"
@@ -139,8 +138,8 @@ ActiveRecord::Schema.define(version: 2021_03_28_235527) do
     t.string "name"
     t.string "resource_type"
     t.bigint "resource_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.index ["name", "resource_type", "resource_id"], name: "index_roles_on_name_and_resource_type_and_resource_id"
     t.index ["resource_type", "resource_id"], name: "index_roles_on_resource_type_and_resource_id"
   end
@@ -152,7 +151,7 @@ ActiveRecord::Schema.define(version: 2021_03_28_235527) do
     t.integer "tagger_id"
     t.string "tagger_type"
     t.string "context", limit: 128
-    t.datetime "created_at"
+    t.datetime "created_at", precision: nil
     t.index ["context"], name: "index_taggings_on_context"
     t.index ["tag_id", "taggable_id", "taggable_type", "context", "tagger_id", "tagger_type"], name: "taggings_idx", unique: true
     t.index ["tag_id"], name: "index_taggings_on_tag_id"
@@ -176,15 +175,15 @@ ActiveRecord::Schema.define(version: 2021_03_28_235527) do
     t.string "first_name", default: "", null: false
     t.string "last_name", default: "", null: false
     t.string "reset_password_token"
-    t.datetime "reset_password_sent_at"
-    t.datetime "remember_created_at"
+    t.datetime "reset_password_sent_at", precision: nil
+    t.datetime "remember_created_at", precision: nil
     t.integer "sign_in_count", default: 0, null: false
-    t.datetime "current_sign_in_at"
-    t.datetime "last_sign_in_at"
+    t.datetime "current_sign_in_at", precision: nil
+    t.datetime "last_sign_in_at", precision: nil
     t.inet "current_sign_in_ip"
     t.inet "last_sign_in_ip"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
     t.string "slug"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
@@ -205,9 +204,16 @@ ActiveRecord::Schema.define(version: 2021_03_28_235527) do
     t.string "event", null: false
     t.string "whodunnit"
     t.text "object"
-    t.datetime "created_at"
+    t.datetime "created_at", precision: nil
     t.index ["item_type", "item_id"], name: "index_versions_on_item_type_and_item_id"
   end
 
+  add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "gallery_pictures", "galleries"
+  add_foreign_key "gallery_pictures", "pictures"
+  add_foreign_key "posts", "users"
+  add_foreign_key "taggings", "tags"
+  add_foreign_key "users_roles", "roles"
+  add_foreign_key "users_roles", "users"
 end

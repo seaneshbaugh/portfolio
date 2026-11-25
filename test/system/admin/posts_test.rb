@@ -63,7 +63,7 @@ module Admin
 
       record.update!(visible: false)
 
-      original_attributes = record.attributes
+      original_attributes = record.reload.attributes
       original_tags = record.tags.order(:name).pluck(:name)
       draft = {
         body: "<p>Keep this edited body.</p>",
