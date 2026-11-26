@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_11_24_233512) do
+ActiveRecord::Schema[8.1].define(version: 2026_11_25_063609) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -135,13 +135,15 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_24_233512) do
   end
 
   create_table "roles", force: :cascade do |t|
-    t.string "name"
+    t.string "name", null: false
     t.string "resource_type"
     t.bigint "resource_id"
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
-    t.index ["name", "resource_type", "resource_id"], name: "index_roles_on_name_and_resource_type_and_resource_id"
+    t.index ["name", "resource_type", "resource_id"], name: "index_roles_on_name_and_resource_type_and_resource_id", unique: true, nulls_not_distinct: true
     t.index ["resource_type", "resource_id"], name: "index_roles_on_resource_type_and_resource_id"
+    t.check_constraint "name::text ~ '[^[:space:]]'::text", name: "roles_name_not_blank"
+    t.check_constraint "resource_id IS NULL OR resource_type IS NOT NULL", name: "roles_resource_type_required"
   end
 
   create_table "taggings", force: :cascade do |t|
@@ -191,11 +193,10 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_24_233512) do
   end
 
   create_table "users_roles", id: false, force: :cascade do |t|
-    t.bigint "user_id"
-    t.bigint "role_id"
+    t.bigint "user_id", null: false
+    t.bigint "role_id", null: false
     t.index ["role_id"], name: "index_users_roles_on_role_id"
-    t.index ["user_id", "role_id"], name: "index_users_roles_on_user_id_and_role_id"
-    t.index ["user_id"], name: "index_users_roles_on_user_id"
+    t.index ["user_id", "role_id"], name: "index_users_roles_on_user_id_and_role_id", unique: true
   end
 
   create_table "versions", force: :cascade do |t|

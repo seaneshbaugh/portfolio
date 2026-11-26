@@ -91,3 +91,24 @@ without repairs or SQL cascade actions. The original audit database and dump
 were not modified. The migration also applied to the local development database.
 Normal deployment still requires applying the migration and checking for new
 orphans created since the snapshot; no production migration was run here.
+
+## Role identities and assignments rehearsal — 2026-11-25
+
+Migration `20261125063609` applied, rolled back and reapplied on the disposable
+`portfolio_fk_rehearsal_20261124` snapshot clone without repairing existing data.
+It was invoked by exact version because that clone records the previous FK
+migration under its original filename, subsequently renamed by the owner.
+The original audit database and dump remain unchanged.
+
+Loaded the schema into a fresh local `portfolio_roles_schema_rehearsal_20261125`
+database and dumped it again: NULLS NOT DISTINCT, NOT NULL, checks, foreign keys
+and legacy timestamp precision declarations survive. The committed schema reflects
+this round trip, avoiding unrelated changes from the development database's
+explicit timestamp precision.
+
+Separate two-connection probes on the disposable snapshot clone checked two users
+creating/sharing a new global role and two stale user instances granting the same
+existing role simultaneously. Both converged on one identity/assignment without
+unhandled database errors. Temporary probe records were cleaned up by the final
+probe; earlier diagnostic attempts may have left synthetic race records on the
+disposable clone only. No production services or Spaces were contacted.

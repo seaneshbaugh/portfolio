@@ -1297,7 +1297,7 @@ batches individually, keeping the complete suite green after each batch.
       reload their saved baselines to compare PostgreSQL timestamp precision.
       Full suite: 314 tests, 2500 assertions, 0 failures, 0 errors, 0 skips,
       including 75 system tests. RuboCop passes for all eight changed Ruby files.
-- [ ] **3. Make role assignments and role identities unique.** Add NOT NULL to
+- [x] **3. Make role assignments and role identities unique.** Add NOT NULL to
       users_roles.user_id/role_id and a unique (user_id, role_id) index; remove only
       indexes made genuinely redundant. Add required/nonblank role names in the
       model/database after checking Rolify's hooks. Replace the nonunique roles
@@ -1310,6 +1310,21 @@ batches individually, keeping the complete suite green after each batch.
       Exercise Rolify add/remove/default-role behavior, each supported scope,
       repeated assignments and direct SQL duplicates/nulls; handle concurrent
       identity conflicts deliberately rather than hiding arbitrary exceptions.
+      Completed 2026-11-25: migration `20261125063609` requires assignment IDs,
+      makes role links unique, removes the redundant standalone user_id index,
+      and adds required/nonblank role names plus a resource-shape check and
+      NULLS NOT DISTINCT role identity index. Model validations retain global,
+      class and instance scopes. User#add_role retries once inside a
+      savepoint for conflicts on precisely these two identity indexes, resetting
+      stale association state; add_role and grant both use it. Other failures
+      propagate. Five focused role tests cover scopes, invalid data/DB bypasses,
+      sharing/removal and stale-cache grants; existing default-role/deletion
+      tests pass. Apply/rollback/reapply passed on the disposable snapshot clone;
+      a fresh schema load/dump preserved the new index/checks and legacy timestamp
+      precision. Two-connection probes on the clone verified shared role creation
+      and simultaneous same-user grants. Full suite: 319 tests, 2,531 assertions,
+      zero failures/errors/skips, including 75 system tests. RuboCop passes for
+      all five changed Ruby files. No production changes or automatic data repair.
 - [ ] **4. Enforce gallery membership and ordering policy.** Add integer,
       nonnegative GalleryPicture.order validation and CHECK constraints for
       nonnegative pages.order, galleries.order and gallery_pictures.order.

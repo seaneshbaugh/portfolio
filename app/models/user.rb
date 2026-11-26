@@ -45,6 +45,34 @@ class User < ApplicationRecord
     "#{first_name} #{last_name}"
   end
 
+  # Rolify checks before inserting both roles and assignments. A competing writer
+  # can win either insert; retry once with a fresh association after that conflict.
+  # Without the unique indexes added on roles and users_roles add_roles could
+  # potentially add duplicate roles or users_roles, but with the unique indexes
+  # a concurrent call to add_user can raise, this ensures the call that lost the
+  # race can retry gracefully. This is an issue with Rolify, and likely has to do
+  # with needing to maintain SQL database compatibility; nulls_not_distinct, which
+  # makes the unique index on roles work is Postgres only.
+  def add_role(role_name, resource = nil)
+    retried = false
+
+    begin
+      self.class.transaction(requires_new: true) { super }
+    rescue ActiveRecord::RecordNotUnique => error
+      constraint = error.cause&.result&.error_field(PG::Result::PG_DIAG_CONSTRAINT_NAME)
+
+      raise if retried || !%w[index_roles_on_name_and_resource_type_and_resource_id index_users_roles_on_user_id_and_role_id].include?(constraint)
+
+      retried = true
+
+      roles.reset
+
+      retry
+    end
+  end
+
+  alias_method :grant, :add_role
+
   private
 
   def assign_default_role
